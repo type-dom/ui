@@ -1,6 +1,5 @@
 import { fromEvent } from 'rxjs';
-import { TextNode } from '../../../../../type-dom/text-node/text-node.class';
-import { TypeButton } from '../../../../../type-dom/type-element/type-html/button/button.abstract';
+import { TextNode, TypeButton } from 'type-dom.ts';
 import { OverlayFooter } from '../footer';
 
 export class ConfirmButton extends TypeButton {

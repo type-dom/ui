@@ -1,5 +1,6 @@
-import { TextNode } from '../../../../../type-dom/text-node/text-node.class';
-import { TypeSpan } from '../../../../../type-dom/type-element/type-html/span/span.abstract';
+// import { TextNode } from '../../../../../type-dom/text-node/text-node.class';
+// import { TypeSpan } from '../../../../../type-dom/type-element/type-html/span/span.abstract';
+import { TextNode, TypeSpan } from 'type-dom.ts';
 import { OverlayHeader } from '../header';
 
 export class OverlayTitle extends TypeSpan {

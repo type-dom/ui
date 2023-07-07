@@ -1,10 +1,7 @@
 import { fromEvent } from 'rxjs';
-import { TypeSpan } from '../../../type-dom/type-element/type-html/span/span.abstract';
-import { Input } from '../../../type-dom/element/html-element/input/input.class';
-import { TextNode } from '../../../type-dom/text-node/text-node.class';
+import { Input, TextNode, TypeSpan } from 'type-dom.ts';
 import { CheckboxGroup } from '../checkbox-group.class';
 import { ICheckboxOption } from './checkbox-option.interface';
-
 export class CheckboxOption extends TypeSpan implements ICheckboxOption {
   className: 'CheckboxOption';
   childNodes: [Input, TextNode];

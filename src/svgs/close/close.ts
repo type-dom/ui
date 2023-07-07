@@ -1,6 +1,8 @@
-import { TypeSvgSvg } from '../../../type-dom/type-element/type-svg/svg/svg.abstract';
-import { TypeHtml } from '../../../type-dom/type-element/type-html/type-html.abstract';
-import { SvgPath } from '../../../type-dom/element/svg-element/path/path.class';
+// import { TypeSvgSvg } from '../../../type-dom/type-element/type-svg/svg/svg.abstract';
+// import { TypeHtml } from '../../../type-dom/type-element/type-html/type-html.abstract';
+// import { SvgPath } from '../../../type-dom/element/svg-element/path/path.class';
+
+import { SvgPath, TypeHtml, TypeSvgSvg } from 'type-dom.ts';
 
 export class CloseSvg extends TypeSvgSvg {
   className: 'CloseSvg';

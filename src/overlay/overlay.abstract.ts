@@ -1,6 +1,7 @@
 import { fromEvent } from 'rxjs';
-import { Display, StylePosition } from '../../type-dom/style/style.enum';
-import { TypeDiv } from '../../type-dom/type-element/type-html/div/div.abstract';
+import { TypeDiv } from 'type-dom.ts';
+import { Display, StylePosition } from '../style/style.enum';
+// import { TypeDiv } from '../../type-dom/type-element/type-html/div/div.abstract';
 import { OverlayContainer } from './container/container';
 
 export abstract class Overlay extends TypeDiv {

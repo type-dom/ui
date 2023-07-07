@@ -1,7 +1,5 @@
 import { fromEvent } from 'rxjs';
-import { Input } from '../../../type-dom/element/html-element/input/input.class';
-import { TypeSpan } from '../../../type-dom/type-element/type-html/span/span.abstract';
-import { TextNode } from '../../../type-dom/text-node/text-node.class';
+import { Input, TextNode, TypeSpan } from 'type-dom.ts';
 import { RadioGroup } from '../radio-group.class';
 import { IRadioOption } from './radio-option.interface';
 

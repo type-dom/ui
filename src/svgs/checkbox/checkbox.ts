@@ -1,6 +1,4 @@
-import { TypeSvgSvg } from '../../../type-dom/type-element/type-svg/svg/svg.abstract';
-import { SvgPath } from '../../../type-dom/element/svg-element/path/path.class';
-import { TypeHtml } from '../../../type-dom/type-element/type-html/type-html.abstract';
+import {SvgPath, TypeHtml, TypeSvgSvg} from "type-dom.ts";
 
 export class CheckboxSvg extends TypeSvgSvg {
   className: 'CheckboxSvg';

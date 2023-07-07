@@ -1,7 +1,11 @@
-import { IType } from '../../../type-dom/style/var';
-import { ISpan } from '../../../type-dom/element/html-element/span/span.interface';
+// import { IType } from '../../../type-dom/style/var';
+// import { ISpan } from '../../../type-dom/element/html-element/span/span.interface';
+// import { ITdIcon } from '../td-icon/td-icon.interface';
+// import { ITypeButton } from '../../../type-dom/type-element/type-html/button/button.interface';
+import { ITypeButton } from 'type-dom.ts';
+import { ISpan } from 'type-dom.ts/element/html-element/span/span.interface';
 import { ITdIcon } from '../td-icon/td-icon.interface';
-import { ITypeButton } from '../../../type-dom/type-element/type-html/button/button.interface';
+
 export interface ITdButton extends ITypeButton {
   // nodeName: 'button',
   className: 'TdButton',

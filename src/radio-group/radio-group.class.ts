@@ -1,8 +1,7 @@
-import { TypeDiv } from '../../type-dom/type-element/type-html/div/div.abstract';
+import { TypeDiv, TypeHtml } from 'type-dom.ts';
+import { IOption } from '../checkbox-group/checkbox-option/checkbox-option.interface';
 import { RadioOption } from './radio-option/radio-option.class';
 import { IRadioGroup } from './radio-group.interface';
-import {TypeHtml} from "../../type-dom/type-element/type-html/type-html.abstract";
-import {IOption} from "../checkbox-group/checkbox-option/checkbox-option.interface";
 
 export class RadioGroup extends TypeDiv implements IRadioGroup {
   className: 'RadioGroup';

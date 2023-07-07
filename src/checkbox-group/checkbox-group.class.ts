@@ -1,9 +1,8 @@
-import { TypeDiv } from '../../type-dom/type-element/type-html/div/div.abstract';
-import { TypeHtml } from '../../type-dom/type-element/type-html/type-html.abstract';
 
+import { TypeDiv, TypeHtml } from 'type-dom.ts';
 import { CheckboxOption } from './checkbox-option/checkbox-option.class';
 import { ICheckboxGroup } from './checkbox-group.interface';
-import {IOption} from "./checkbox-option/checkbox-option.interface";
+import { IOption } from './checkbox-option/checkbox-option.interface';
 
 export class CheckboxGroup extends TypeDiv implements ICheckboxGroup {
   className: 'CheckboxGroup';

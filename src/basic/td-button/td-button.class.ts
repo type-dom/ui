@@ -1,16 +1,17 @@
 import { fromEvent } from 'rxjs';
-import { TextNode } from '../../../type-dom/text-node/text-node.class';
-import { TypeButton } from '../../../type-dom/type-element/type-html/button/button.abstract';
-import { TypeHtml } from '../../../type-dom/type-element/type-html/type-html.abstract';
-import { Span } from '../../../type-dom/element/html-element/span/span.class';
-import { Template } from '../../../type-dom/element/html-element/template/template.class';
-import { Slot } from '../../../type-dom/element/html-element/slot/slot.class';
-import { $buttonPlainColors, $buttonStateColors, sizeOpts, tdButtonBase } from '../../../type-dom/style/td-button.style';
-import { $iconLeft, $iconLoading, $iconRight } from '../../../type-dom/style/td-icon.style';
-import { $borderRadius, $button, $buttonPaddingVertical } from '../../../type-dom/style/var';
+import { TypeButton, TextNode, Span, Template, TypeHtml, Slot } from 'type-dom.ts';
+// import { TextNode } from '../../../type-dom/text-node/text-node.class';
+// import { TypeButton } from '../../../type-dom/type-element/type-html/button/button.abstract';
+// import { TypeHtml } from '../../../type-dom/type-element/type-html/type-html.abstract';
+// import { Span } from '../../../type-dom/element/html-element/span/span.class';
+// import { Template } from '../../../type-dom/element/html-element/template/template.class';
+// import { Slot } from '../../../type-dom/element/html-element/slot/slot.class';
+import { $buttonPlainColors, $buttonStateColors, sizeOpts, tdButtonBase } from '../../style/td-button.style';
+import { $iconLeft, $iconLoading, $iconRight } from '../../style/td-icon.style';
+import { $borderRadius, $button, $buttonPaddingVertical } from '../../style/var';
+import { Cursor } from '../../style/style.enum';
 import { TdIcon } from '../td-icon/td-icon.class';
 import { IButtonType, ITdButton, ITdButtonConfig } from './td-button.interface';
-import { Cursor } from '../../../type-dom/style/style.enum';
 
 export class TdButton extends TypeButton implements ITdButton {
   className: 'TdButton';

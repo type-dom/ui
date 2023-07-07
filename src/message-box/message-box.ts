@@ -1,7 +1,5 @@
-import { TextNode } from '../../type-dom/text-node/text-node.class';
-import { Span } from '../../type-dom/element/html-element/span/span.class';
+import { Span, TextNode, TypeRoot } from 'type-dom.ts';
 import { Overlay } from '../overlay/overlay.abstract';
-import {TypeRoot} from "../../type-dom/type-root/type-root.class";
 export class MessageBox extends Overlay {
   className: 'MessageBox';
   constructor(public parent: TypeRoot) {
