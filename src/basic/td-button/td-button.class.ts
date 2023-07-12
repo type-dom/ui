@@ -1,5 +1,5 @@
 import { fromEvent } from 'rxjs';
-import { TypeButton, TextNode, Span, Template, TypeHtml, Slot } from 'type-dom.ts';
+import { TypeButton, TextNode, Span, Template, TypeHtml, Slot, Cursor } from 'type-dom.ts';
 // import { TextNode } from '../../../type-dom/text-node/text-node.class';
 // import { TypeButton } from '../../../type-dom/type-element/type-html/button/button.abstract';
 // import { TypeHtml } from '../../../type-dom/type-element/type-html/type-html.abstract';
@@ -9,7 +9,6 @@ import { TypeButton, TextNode, Span, Template, TypeHtml, Slot } from 'type-dom.t
 import { $buttonPlainColors, $buttonStateColors, sizeOpts, tdButtonBase } from '../../style/td-button.style';
 import { $iconLeft, $iconLoading, $iconRight } from '../../style/td-icon.style';
 import { $borderRadius, $button, $buttonPaddingVertical } from '../../style/var';
-import { Cursor } from '../../style/style.enum';
 import { TdIcon } from '../td-icon/td-icon.class';
 import { IButtonType, ITdButton, ITdButtonConfig } from './td-button.interface';
 

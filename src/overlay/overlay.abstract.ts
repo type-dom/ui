@@ -1,9 +1,7 @@
 import { fromEvent } from 'rxjs';
-import { TypeDiv } from 'type-dom.ts';
-import { Display, StylePosition } from '../style/style.enum';
+import { TypeDiv, Display, StylePosition } from 'type-dom.ts';
 // import { TypeDiv } from '../../type-dom/type-element/type-html/div/div.abstract';
 import { OverlayContainer } from './container/container';
-
 export abstract class Overlay extends TypeDiv {
   abstract className: string;
   // abstract parent: FormEditor;

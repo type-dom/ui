@@ -1,5 +1,4 @@
-import { IStyle } from './style.interface';
-import { Cursor } from './style.enum';
+import { IStyle, Cursor } from 'type-dom.ts';
 import {
   $borderColors,
   $colors,

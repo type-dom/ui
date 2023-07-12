@@ -1,7 +1,6 @@
 import { fromEvent } from 'rxjs';
-import { TypeButton } from 'type-dom.ts';
+import { TypeButton, Cursor, StylePosition } from 'type-dom.ts';
 // import { TypeButton } from '../../../../../type-dom/type-element/type-html/button/button.abstract';
-import { Cursor, StylePosition } from '../../../../style/style.enum';
 import { CloseSvg } from '../../../../svgs/close/close';
 import { OverlayHeader } from '../header';
 

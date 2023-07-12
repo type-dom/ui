@@ -1,6 +1,5 @@
 import { fromEvent } from 'rxjs';
-import { StylePosition } from '../../style/style.enum';
-import { TypeDiv } from 'type-dom.ts';
+import { TypeDiv, StylePosition } from 'type-dom.ts';
 // import { TypeDiv } from '../../../type-dom/type-element/type-html/div/div.abstract';
 import { Overlay } from '../overlay.abstract';
 import { OverlayHeader } from './header/header';
