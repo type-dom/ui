@@ -40,15 +40,15 @@
         如果设为true，编译每个ts文件之后会生成一个js文件和一个声明文件。
         但是declaration和allowJs不能同时设为true */
     /* Generates corresponding '.d.ts' file. */
-//     "declaration": true,
+     "declaration": true,
     // 类型声明文件的输出目录
     //    "declarationDir": "./dist/types",
     /* declarationMap值为true或false，指定是否为声明文件.d.ts生成map文件 */
     /* Generates a sourcemap for each corresponding '.d.ts' file. */
-    // "declarationMap": true,
+//     "declarationMap": true,
     /* sourceMap的值为true或false，用来指定编译时是否生成.map文件 */
     /* Generates corresponding '.map' file. */
-    "sourceMap": true,
+//    "sourceMap": true,
     /* outFile用于指定将输出文件合并为一个文件，它的值为一个文件路径名。
       比如设置为"./dist/main.js"，则输出的文件为一个main.js文件。
       但是要注意，只有设置module的值为amd和system模块时才支持这个配置 */

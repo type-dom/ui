@@ -22,9 +22,7 @@ console.log('当前模式', process.argv); // process.env.NODE_ENV);
 module.exports = {
   // 入口 (单个入口 或多个入口),现在是多入口
   entry: {
-    uiComponentView: './src/ui-components-view.ts',
-    // lib: './src/example-lib.ts'
-    // layout: './src/layout/layout.ts'
+    UIView: './public/ui-view.ts',
   },
   // 出口
   output: {
@@ -39,7 +37,7 @@ module.exports = {
     // library 一般是结合dll使用
     library: {
       // 整个库向外暴露的变量名
-      name: 'formEditor',
+      name: 'TypeDomUI',
       type: 'umd',
       // export: 'formEditor' // default umd
     },
@@ -176,9 +174,9 @@ module.exports = {
     // new CleanWebpackPlugin(),
     // 多个html页面
     new HtmlWebpackPlugin({
-      template: './public/ui-components-view.html', // 把哪个html文件打包到dist目录中
+      template: './public/ui-view.html', // 把哪个html文件打包到dist目录中
       title: 'ui view',
-      filename: 'ui-components-view.html', // 输出什么名字 默认 example-design-mode.html
+      filename: 'ui-view.html', // 输出什么名字 默认 example-design-mode.html
       // chunks: ['read', 'vendor']
       minify: {
         collapseWhitespace: true,

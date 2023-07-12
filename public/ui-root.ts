@@ -1,20 +1,13 @@
 import { TypeRoot, TextNode, Division, Br } from 'type-dom.ts';
-import { TdButton } from './basic/td-button/td-button.class';
-import { ConnectionSvg } from './svgs/connetion/connection';
-import { CloseSvg } from './svgs/close/close';
-import { TimeSvg } from './svgs/time/time';
-import { AddSvg } from './svgs/add/add';
-import { AttachmentSvg } from './svgs/attachment/attachment';
-import { DeleteSvg } from './svgs/delete/delete';
-import { SelectSvg } from './svgs/select/select';
-import { DateSvg } from './svgs/date/date';
+import { TdCloseSvg, TdConnectionSvg, TdDateSvg, TdDeleteSvg, TdSelectSvg, TdTimeSvg } from 'type-dom-svgs';
+import { TdButton } from '../src/basic/td-button/td-button.class';
 /**
  * 应用根节点，必须存在。
  * 应用继承 TypeRoot;
  * 因为属性和方法要全局调用，所以全部设置为静态 static; 包括get也设置为静态
  * UI组件显示页面
  */
-export class UIView extends TypeRoot {
+export class UiRoot extends TypeRoot {
   className: 'UIView';
   constructor(editorEl: HTMLElement) {
     super(editorEl);
@@ -23,6 +16,18 @@ export class UIView extends TypeRoot {
     this.addStyleObj({
       padding: '30px'
     });
+    this.createNormalButton();
+    this.createPlainButton();
+    this.createRoundButton();
+    this.createCircleButton();
+    this.createDisableNormalButton();
+    this.createDisablePlainButton();
+    this.createIconLeftButton();
+    this.createIconRightButton();
+    this.createSizeButton();
+    this.render();
+  }
+  createNormalButton() {
     this.createItems(this, [
       {
         TypeClass: Division,
@@ -128,7 +133,8 @@ export class UIView extends TypeRoot {
       //   TypeClass: Br
       // }
     ]);
-    // this.addChildren(...normalItems);
+  }
+  createPlainButton() {
     this.createItems(this, [
       {
         TypeClass: Division,
@@ -240,6 +246,8 @@ export class UIView extends TypeRoot {
         TypeClass: Br
       }
     ]);
+  }
+  createRoundButton() {
     this.createItems(this, [
       {
         TypeClass: Division,
@@ -351,6 +359,8 @@ export class UIView extends TypeRoot {
         TypeClass: Br
       }
     ]);
+  }
+  createCircleButton() {
     this.createItems(this, [
       {
         TypeClass: Division,
@@ -372,7 +382,7 @@ export class UIView extends TypeRoot {
               }
             },
             config: {
-              SvgClass: CloseSvg,
+              SvgClass: TdCloseSvg,
               circle: true
             }
           },
@@ -387,7 +397,7 @@ export class UIView extends TypeRoot {
               }
             },
             config: {
-              SvgClass: DeleteSvg,
+              SvgClass: TdDeleteSvg,
               type: 'primary',
               circle: true
             }
@@ -403,7 +413,7 @@ export class UIView extends TypeRoot {
               }
             },
             config: {
-              SvgClass: SelectSvg,
+              SvgClass: TdSelectSvg,
               type: 'success',
               circle: true
             }
@@ -419,7 +429,7 @@ export class UIView extends TypeRoot {
               }
             },
             config: {
-              SvgClass: DateSvg,
+              SvgClass: TdDateSvg,
               type: 'info',
               circle: true
             }
@@ -435,7 +445,7 @@ export class UIView extends TypeRoot {
               }
             },
             config: {
-              SvgClass: TimeSvg,
+              SvgClass: TdTimeSvg,
               type: 'warning',
               circle: true
             }
@@ -451,7 +461,7 @@ export class UIView extends TypeRoot {
               }
             },
             config: {
-              SvgClass: ConnectionSvg,
+              SvgClass: TdConnectionSvg,
               type: 'danger',
               circle: true
             },
@@ -462,6 +472,8 @@ export class UIView extends TypeRoot {
         TypeClass: Br
       }
     ]);
+  }
+  createDisableNormalButton() {
     this.createItems(this, [
       {
         TypeClass: Division,
@@ -573,6 +585,8 @@ export class UIView extends TypeRoot {
         TypeClass: Br
       }
     ]);
+  }
+  createDisablePlainButton() {
     this.createItems(this, [
       {
         TypeClass: Division,
@@ -691,6 +705,8 @@ export class UIView extends TypeRoot {
         TypeClass: Br
       }
     ]);
+  }
+  createIconLeftButton() {
     this.createItems(this, [
       {
         TypeClass: Division,
@@ -712,7 +728,7 @@ export class UIView extends TypeRoot {
               }
             },
             config: {
-              SvgClass: CloseSvg,
+              SvgClass: TdCloseSvg,
               title: 'Default'
             }
           },
@@ -727,7 +743,7 @@ export class UIView extends TypeRoot {
               }
             },
             config: {
-              SvgClass: DeleteSvg,
+              SvgClass: TdDeleteSvg,
               type: 'primary',
               title: 'Primary'
             }
@@ -743,7 +759,7 @@ export class UIView extends TypeRoot {
               }
             },
             config: {
-              SvgClass: SelectSvg,
+              SvgClass: TdSelectSvg,
               title: 'Success',
               type: 'success',
             }
@@ -759,7 +775,7 @@ export class UIView extends TypeRoot {
               }
             },
             config: {
-              SvgClass: DateSvg,
+              SvgClass: TdDateSvg,
               type: 'info',
               title: 'Info'
             }
@@ -775,7 +791,7 @@ export class UIView extends TypeRoot {
               }
             },
             config: {
-              SvgClass: TimeSvg,
+              SvgClass: TdTimeSvg,
               type: 'warning',
               title: 'warning',
             }
@@ -791,7 +807,7 @@ export class UIView extends TypeRoot {
               }
             },
             config: {
-              SvgClass: ConnectionSvg,
+              SvgClass: TdConnectionSvg,
               type: 'danger',
               title: 'Danger'
             },
@@ -802,6 +818,8 @@ export class UIView extends TypeRoot {
         TypeClass: Br
       }
     ]);
+  }
+  createIconRightButton() {
     this.createItems(this, [
       {
         TypeClass: Division,
@@ -824,7 +842,7 @@ export class UIView extends TypeRoot {
               }
             },
             config: {
-              SvgClass: CloseSvg,
+              SvgClass: TdCloseSvg,
               iconPosition: 'right',
               title: 'Default'
             }
@@ -840,7 +858,7 @@ export class UIView extends TypeRoot {
               }
             },
             config: {
-              SvgClass: DeleteSvg,
+              SvgClass: TdDeleteSvg,
               iconPosition: 'right',
               type: 'primary',
               title: 'Primary'
@@ -857,7 +875,7 @@ export class UIView extends TypeRoot {
               }
             },
             config: {
-              SvgClass: SelectSvg,
+              SvgClass: TdSelectSvg,
               iconPosition: 'right',
               title: 'Success',
               type: 'success',
@@ -874,7 +892,7 @@ export class UIView extends TypeRoot {
               }
             },
             config: {
-              SvgClass: DateSvg,
+              SvgClass: TdDateSvg,
               iconPosition: 'right',
               type: 'info',
               title: 'Info'
@@ -891,7 +909,7 @@ export class UIView extends TypeRoot {
               }
             },
             config: {
-              SvgClass: TimeSvg,
+              SvgClass: TdTimeSvg,
               iconPosition: 'right',
               type: 'warning',
               title: 'warning',
@@ -908,7 +926,7 @@ export class UIView extends TypeRoot {
               }
             },
             config: {
-              SvgClass: ConnectionSvg,
+              SvgClass: TdConnectionSvg,
               iconPosition: 'right',
               type: 'danger',
               title: 'Danger'
@@ -920,6 +938,8 @@ export class UIView extends TypeRoot {
         TypeClass: Br
       }
     ]);
+  }
+  createSizeButton() {
     this.createItems(this, [
       {
         TypeClass: Division,
@@ -941,7 +961,7 @@ export class UIView extends TypeRoot {
               }
             },
             config: {
-              SvgClass: CloseSvg,
+              SvgClass: TdCloseSvg,
               title: 'Large',
               size: 'large'
             }
@@ -957,7 +977,7 @@ export class UIView extends TypeRoot {
               }
             },
             config: {
-              SvgClass: DeleteSvg,
+              SvgClass: TdDeleteSvg,
               type: 'primary',
               title: 'Middle',
               size: 'middle'
@@ -974,7 +994,7 @@ export class UIView extends TypeRoot {
               }
             },
             config: {
-              SvgClass: SelectSvg,
+              SvgClass: TdSelectSvg,
               title: 'Small',
               type: 'success',
               size: 'small'
@@ -1034,6 +1054,5 @@ export class UIView extends TypeRoot {
         TypeClass: Br
       }
     ]);
-    this.render();
   }
 }

@@ -1,7 +1,6 @@
 import { fromEvent } from 'rxjs';
 import { TypeDiv } from 'type-dom.ts';
 import { Display, StylePosition } from '../style/style.enum';
-// import { TypeDiv } from '../../type-dom/type-element/type-html/div/div.abstract';
 import { OverlayContainer } from './container/container';
 
 export abstract class Overlay extends TypeDiv {
@@ -24,7 +23,7 @@ export abstract class Overlay extends TypeDiv {
       overflow: 'auto',
       display: Display.none,
     });
-    document.body.appendChild(this.dom); // 挂载在 body 上
+    // document.body.appendChild(this.dom); // 挂载在 body 上
     this.container = new OverlayContainer(this);
     this.childNodes = [this.container];
     this.initEvents();
