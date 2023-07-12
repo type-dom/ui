@@ -1,10 +1,10 @@
 import { TypeRoot } from 'type-dom.ts';
 import { Overlay } from '../overlay/overlay.abstract';
-export class WebDialog extends Overlay {
-  className: 'WebDialog';
+export class Dialog extends Overlay {
+  className: 'Dialog';
   constructor(public parent: TypeRoot) {
     super();
-    this.className = 'WebDialog';
+    this.className = 'Dialog';
     this.addAttrObj({
       name: 'editor-dialog',
     });

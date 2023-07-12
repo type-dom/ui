@@ -5,7 +5,7 @@
 
 ## 安装
 >  npm install type-dom-ui
-
+> 
 ## 框架介绍
 
     1、技术栈
