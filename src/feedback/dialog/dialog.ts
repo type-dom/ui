@@ -6,7 +6,7 @@ export class Dialog extends Overlay {
     super();
     this.className = 'Dialog';
     this.addAttrObj({
-      name: 'editor-dialog',
+      name: 'dialog',
     });
   }
 }
