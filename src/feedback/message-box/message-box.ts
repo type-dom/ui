@@ -1,4 +1,4 @@
-import { Span, TextNode, TypeRoot } from 'type-dom.ts';
+import { TypeRoot } from 'type-dom.ts';
 import { Overlay } from '../overlay/overlay.abstract';
 export class MessageBox extends Overlay {
   className: 'MessageBox';
@@ -9,12 +9,14 @@ export class MessageBox extends Overlay {
       name: 'message-box',
     });
   }
-  confirm(message: string): void {
-    // this.root.app.
-    const span = new Span(this.container.body);
-    const textNode = new TextNode(span, message);
-    span.addChild(textNode);
-    this.container.body.appendChild(span);
-    // this.container.footer.
+  toast(title: string, message: string): void {
+    // this.clear();
+    this.setTitle(title);
+    this.setMsg(message);
+    this.show();
+  }
+  confirm(title: string, message: string): void {
+    this.setTitle(title);
+    this.setMsg(message);
   }
 }

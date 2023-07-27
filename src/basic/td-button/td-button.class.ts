@@ -1,5 +1,5 @@
 import { fromEvent } from 'rxjs';
-import { TypeButton, TextNode, Span, Template, TypeHtml, Slot, Cursor } from 'type-dom.ts';
+import { TypeButton, TextNode, Span, TypeHtml, Slot, Cursor } from 'type-dom.ts';
 // import { TextNode } from '../../../type-dom/text-node/text-node.class';
 // import { TypeButton } from '../../../type-dom/type-element/type-html/button/button.abstract';
 // import { TypeHtml } from '../../../type-dom/type-element/type-html/type-html.abstract';
@@ -17,14 +17,14 @@ export class TdButton extends TypeButton implements ITdButton {
   childNodes: (Span | TdIcon)[];
   span: Span;
   textNode: TextNode;
-  template: Template;
+  // template: Template;
   private type?: IButtonType;
   private plain?: boolean;
   private disabled?: boolean;
-  constructor(public parent: TypeHtml, config?: Partial<ITdButtonConfig>) {
+  constructor(public parent: TypeHtml, config?: ITdButtonConfig) {
     super();
     this.className = 'TdButton';
-    this.template = new Template(this);
+    // this.template = new Template(this);
     this.span = new Span(this);
     this.span.addStyleObj({
       display: 'inline-flex',
@@ -38,7 +38,7 @@ export class TdButton extends TypeButton implements ITdButton {
     this.setConfig(config);
     this.initEvents();
   }
-  setConfig(config?: Partial<ITdButtonConfig>): void {
+  setConfig(config?: ITdButtonConfig): void {
     this.addStyleObj(tdButtonBase);
     if (config?.title) {
       this.textNode.setText(config.title);

@@ -1,5 +1,5 @@
 import { fromEvent } from 'rxjs';
-import { TypeDiv, Display, StylePosition } from 'type-dom.ts';
+import { TypeDiv, Display, StylePosition, TextNode, Span } from 'type-dom.ts';
 import { OverlayContainer } from './container/container';
 export abstract class Overlay extends TypeDiv {
   abstract className: string;
@@ -31,7 +31,18 @@ export abstract class Overlay extends TypeDiv {
     this.container.header.title.text.setText(title);
     this.container.header.render();
   }
-
+  // 设置消息
+  setMsg(msg: string): void {
+    const span = new Span(this.container.body);
+    const textNode = new TextNode(span, msg);
+    span.addChild(textNode);
+    this.container.body.clearChild();
+    this.container.body.appendChild(span);
+  }
+  // 设置复杂的内容
+  setContent(content: string) {
+    //   ToDo
+  }
   show(): void {
     this.setStyle('display', 'block');
   }
