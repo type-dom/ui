@@ -1,9 +1,4 @@
-// import { IType } from '../../../type-dom/style/var';
-// import { ISpan } from '../../../type-dom/element/html-element/span/span.interface';
-// import { ITdIcon } from '../td-icon/td-icon.interface';
-// import { ITypeButton } from '../../../type-dom/type-element/type-html/button/button.interface';
-import { ITypeButton } from 'type-dom.ts';
-import { ISpan } from 'type-dom.ts/element/html-element/span/span.interface';
+import { ITypeButton, ISpan } from 'type-dom.ts';
 import { ITdIcon } from '../td-icon/td-icon.interface';
 
 export interface ITdButton extends ITypeButton {

@@ -2,12 +2,10 @@ import { fromEvent } from 'rxjs';
 import { TypeButton, Cursor, StylePosition } from 'type-dom.ts';
 import { TdCloseSvg } from 'type-dom-svgs';
 import { OverlayHeader } from '../header';
-
 export class CloseButton extends TypeButton {
   className: 'CloseButton';
   childNodes: [TdCloseSvg];
   private readonly svg: TdCloseSvg;
-
   constructor(public parent: OverlayHeader) {
     super();
     this.className = 'CloseButton';
@@ -27,10 +25,8 @@ export class CloseButton extends TypeButton {
         name: 'close-button',
       }
     };
-
     this.svg = new TdCloseSvg(this);
     this.childNodes = [this.svg];
-
     this.initEvents();
   }
   initEvents(): void {

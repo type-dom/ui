@@ -1,13 +1,13 @@
 import { TypeDiv } from 'type-dom.ts';
 import { OverlayContainer } from '../container';
-import { CancelButton } from './cancel-button/cancel-button';
-import { ConfirmButton } from './confirm-button/confirm-button';
-
+import { TdButton } from '../../../../basic/td-button/td-button.class';
+import {fromEvent} from "rxjs";
+// import { CancelButton } from './cancel-button/cancel-button';
+// import { ConfirmButton } from './confirm-button/confirm-button';
 export class OverlayFooter extends TypeDiv {
   className: 'OverlayFooter';
-  cancelBtn: CancelButton;
-  confirmBtn: ConfirmButton;
-
+  cancelBtn: TdButton;
+  confirmBtn: TdButton;
   constructor(public parent: OverlayContainer) {
     super();
     this.className = 'OverlayFooter';
@@ -18,11 +18,26 @@ export class OverlayFooter extends TypeDiv {
       boxSizing: 'border-box',
     });
     this.addAttrName('overlay-foot');
-    this.cancelBtn = new CancelButton(this);
+    // this.cancelBtn = new CancelButton(this);
+    this.cancelBtn = new TdButton(this, {
+      title: '取消',
+    });
     // cancelBtn.hide();
     // this.cancelBtn.setTitle('取消');
-    this.confirmBtn = new ConfirmButton(this);
+    this.confirmBtn = new TdButton(this, {
+      title: '确定'
+    });
     // this.confirmBtn.setTitle('确定');
     this.childNodes = [this.cancelBtn, this.confirmBtn];
+  }
+  initEvents() {
+    this.events.push(
+      fromEvent(this.cancelBtn.dom, 'click').subscribe(() => {
+        this.parent.parent.hide();
+      }),
+      fromEvent(this.dom, 'click').subscribe(() => {
+        this.parent.parent.hide();
+      }),
+    );
   }
 }

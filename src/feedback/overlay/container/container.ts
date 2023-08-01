@@ -1,18 +1,15 @@
 import { fromEvent } from 'rxjs';
 import { TypeDiv, StylePosition } from 'type-dom.ts';
-// import { TypeDiv } from '../../../type-dom/type-element/type-html/div/div.abstract';
 import { Overlay } from '../overlay.abstract';
 import { OverlayHeader } from './header/header';
 import { OverlayBody } from './body/body';
 import { OverlayFooter } from './footer/footer';
-
 export class OverlayContainer extends TypeDiv {
   className: 'OverlayContainer';
   childNodes: [OverlayHeader, OverlayBody, OverlayFooter];
   header: OverlayHeader;
   body: OverlayBody;
   footer: OverlayFooter;
-
   constructor(public parent: Overlay) {
     super();
     this.className = 'OverlayContainer';
