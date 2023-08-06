@@ -45,7 +45,12 @@ export class TdButton extends TypeButton implements ITdButton {
         icon.addStyleObj($iconRight);
         this.addChild(icon);
       } else {
-        icon.addStyleObj($iconLeft);
+        if (config.title) {
+          icon.addStyleObj($iconLeft);
+        }
+        // else {
+        //   icon.addStyleObj()
+        // }
         this.unshiftChild(icon);
       }
       if (config.loading) {

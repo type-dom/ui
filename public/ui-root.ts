@@ -1,6 +1,7 @@
 import { TypeRoot, TextNode, Division, Br } from 'type-dom.ts';
 import { TdCloseSvg, TdConnectionSvg, TdDateSvg, TdDeleteSvg, TdSelectSvg, TdTimeSvg } from 'type-dom-svgs';
-import { TdButton } from '../src/basic/td-button/td-button.class';
+import { TdButton, Dialog, MessageBox } from '../src';
+import {fromEvent} from "rxjs";
 /**
  * 应用根节点，必须存在。
  * 应用继承 TypeRoot;
@@ -9,6 +10,8 @@ import { TdButton } from '../src/basic/td-button/td-button.class';
  */
 export class UiRoot extends TypeRoot {
   className: 'UIView';
+  dialog: Dialog;
+  messageBox: MessageBox;
   constructor(editorEl: HTMLElement) {
     super(editorEl);
     console.log('UIView constructor . ');
@@ -25,6 +28,17 @@ export class UiRoot extends TypeRoot {
     this.createIconLeftButton();
     this.createIconRightButton();
     this.createSizeButton();
+    this.dialog = new Dialog(this);
+    this.messageBox = new MessageBox(this);
+    this.addChildren(this.dialog, this.messageBox);
+    this.events.push(
+      fromEvent(this.childNodes[0].dom, 'click').subscribe(() => {
+        this.dialog.show();
+      }),
+      fromEvent(this.childNodes[1].dom, 'click').subscribe(() => {
+        this.messageBox.toast('MessageBox', 'show MessageBox');
+      })
+    );
     this.render();
   }
   createNormalButton() {
@@ -46,11 +60,12 @@ export class UiRoot extends TypeRoot {
               },
               attrObj: {
                 name: 'default-btn',
+                click: 'handleClick'
               }
             },
             config: {
               title: 'Default',
-            }
+            },
           },
           {
             TypeClass: TdButton,
@@ -60,12 +75,13 @@ export class UiRoot extends TypeRoot {
               },
               attrObj: {
                 name: 'primary-btn',
+                click: 'handleClick'
               }
             },
             config: {
               title: 'Primary',
               type: 'primary',
-            }
+            },
           },
           {
             TypeClass: TdButton,

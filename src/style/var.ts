@@ -123,7 +123,7 @@ export const $colorError = $colors.error.base;
 export const $colorInfo = $colors.info.base;
 
 function blendColors(color1: string, color2: string, mixRatio: number) {
-  console.log('blenderColors . color1 is ', color1, ' color2 is ', color2, ' mixRation is ', mixRatio);
+  // console.log('blenderColors . color1 is ', color1, ' color2 is ', color2, ' mixRation is ', mixRatio);
   // 将颜色转换为RGB格式
   let rgb1 = rgbStringToRgbArray(color1);
   let rgb2 = rgbStringToRgbArray(color2);
@@ -149,7 +149,7 @@ function rgbArrayToColorString(rgbArray: number[]) {
   let redHex = padStart(rgbArray[0].toString(16), 2, '0');
   let greenHex = padStart(rgbArray[1].toString(16), 2, '0');
   let blueHex = padStart(rgbArray[2].toString(16), 2, '0');
-  console.log('rgbArrayToColorString color is ', '#' + redHex + greenHex + blueHex);
+  // console.log('rgbArrayToColorString color is ', '#' + redHex + greenHex + blueHex);
   return '#' + redHex + greenHex + blueHex;
 }
 function padStart(str: string, targetLength: number, padString: string) {

@@ -25,17 +25,24 @@ export class OverlayFooter extends TypeDiv {
     // cancelBtn.hide();
     // this.cancelBtn.setTitle('取消');
     this.confirmBtn = new TdButton(this, {
-      title: '确定'
+      title: '确定',
+      type: 'primary'
+    });
+    this.confirmBtn.addStyleObj({
+      marginLeft: '10px',
     });
     // this.confirmBtn.setTitle('确定');
     this.childNodes = [this.cancelBtn, this.confirmBtn];
+    this.initEvents();
   }
   initEvents() {
     this.events.push(
       fromEvent(this.cancelBtn.dom, 'click').subscribe(() => {
+        console.log('cancelBtn click . ');
         this.parent.parent.hide();
       }),
-      fromEvent(this.dom, 'click').subscribe(() => {
+      fromEvent(this.confirmBtn.dom, 'click').subscribe(() => {
+        console.log('confirmBtn click . ');
         this.parent.parent.hide();
       }),
     );
