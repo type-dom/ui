@@ -1,5 +1,5 @@
 import { fromEvent } from 'rxjs';
-import { TypeButton, TextNode, Span, TypeHtml, Slot, Cursor } from 'type-dom.ts';
+import { TypeButton, TextNode, Span, TypeHtml, Slot, StyleCursor } from 'type-dom.ts';
 // import { Template } from '../../../type-dom/element/html-element/template/template.class';
 import { $buttonPlainColors, $buttonStateColors, sizeOpts, tdButtonBase } from '../../style/td-button.style';
 import { $iconLeft, $iconLoading, $iconRight } from '../../style/td-icon.style';
@@ -99,7 +99,7 @@ export class TdButton extends TypeButton implements ITdButton {
       fromEvent(this.dom, 'mouseover').subscribe(() => {
         if (this.disabled) {
           this.setStyleObj({
-            cursor: Cursor.notAllowed
+            cursor: StyleCursor.notAllowed
           });
         } else {
           if (this.type) {
@@ -116,7 +116,7 @@ export class TdButton extends TypeButton implements ITdButton {
       fromEvent(this.dom, 'mouseout').subscribe(() => {
         if (this.disabled) {
           this.setStyleObj({
-            cursor: Cursor.auto,
+            cursor: StyleCursor.auto,
           });
         } else {
           if (this.type) {

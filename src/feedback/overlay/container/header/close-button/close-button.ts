@@ -1,5 +1,5 @@
 import { fromEvent } from 'rxjs';
-import { TypeButton, Cursor, StylePosition } from 'type-dom.ts';
+import { TypeButton, StyleCursor, StylePosition } from 'type-dom.ts';
 import { TdCloseSvg } from 'type-dom-svgs';
 import { OverlayHeader } from '../header';
 export class CloseButton extends TypeButton {
@@ -11,7 +11,7 @@ export class CloseButton extends TypeButton {
     this.className = 'CloseButton';
     this.propObj = {
       styleObj: {
-        cursor: Cursor.pointer,
+        cursor: StyleCursor.pointer,
         position: StylePosition.absolute,
         top: '20px',
         right: '20px',

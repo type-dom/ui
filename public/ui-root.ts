@@ -1,7 +1,7 @@
+import {fromEvent} from "rxjs";
 import { TypeRoot, TextNode, Division, Br } from 'type-dom.ts';
 import { TdCloseSvg, TdConnectionSvg, TdDateSvg, TdDeleteSvg, TdSelectSvg, TdTimeSvg } from 'type-dom-svgs';
 import { TdButton, Dialog, MessageBox } from '../src';
-import {fromEvent} from "rxjs";
 /**
  * 应用根节点，必须存在。
  * 应用继承 TypeRoot;

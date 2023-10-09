@@ -1,13 +1,14 @@
 import { fromEvent } from 'rxjs';
-import { Button, Division, Label, TextNode, TypeElement } from 'type-dom.ts';
-import { IOption, IOptionConfig } from 'ofd-editor/src/core/controls/web-control.interface';
+import { Division, Label, TypeElement } from 'type-dom.ts';
+import { TdButton } from '../../../basic/td-button/td-button.class';
+import { IOption, IOptionConfig } from '../field-item.interface';
 import { FieldItem } from '../field-item.abstract';
 export abstract class FieldRadio extends FieldItem {
-  childNodes: [Label, Division, Button];
+  childNodes: [Label, Division, TdButton];
   name: string;
   resultValue: string | number | boolean;
   optionDiv: Division;
-  private selectedOpt!: Button;
+  private selectedOpt!: TdButton;
   protected constructor(labelText = '单选', public config: IOptionConfig) {
     super(labelText);
     this.name = config.name;
@@ -22,12 +23,15 @@ export abstract class FieldRadio extends FieldItem {
     options.forEach((option, index) => {
       let button;
       if (!this.optionDiv.childNodes[index]) {
-        button = new Button(this.optionDiv);
-        const label = new TextNode(button, option.label);
-        button.childNodes = [label];
+        button = new TdButton(this.optionDiv, {
+          title: option.label
+        });
+        // const label = new TextNode(button, option.label);
+        // button.childNodes = [label];
+        // button.setTitle(option.label);
         this.optionDiv.addChild(button);
       } else {
-        button = this.optionDiv.childNodes[index] as Button;
+        button = this.optionDiv.childNodes[index] as TdButton;
       }
       button.addStyleObj({
         height: '32px',
@@ -76,7 +80,7 @@ export abstract class FieldRadio extends FieldItem {
             });
             this.selectedOpt.setAttribute('checked', false);
           }
-          this.selectedOpt = btn as Button;
+          this.selectedOpt = btn as TdButton;
           if (btn instanceof TypeElement) {
             btn.setStyleObj({
               backgroundColor: '#00f',

@@ -1,4 +1,4 @@
-import { ITypeButton, ISpan } from 'type-dom.ts';
+import { ITypeButton, ISpan, ITypeSvg } from 'type-dom.ts';
 import { ITdIcon } from '../td-icon/td-icon.interface';
 
 export interface ITdButton extends ITypeButton {
@@ -28,7 +28,7 @@ export interface ITdButtonConfig {
   disabled: boolean,
   title: string,
   type: IButtonType,
-  SvgClass: any,
+  SvgClass: ITypeSvg,
   iconPosition: 'left' | 'right',
   icon: string,
   nativeType: IButtonNativeType,

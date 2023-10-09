@@ -1,12 +1,13 @@
 import { fromEvent } from 'rxjs';
-import { Button, Label, TypeComponent } from 'type-dom.ts';
-import { OfdEditor } from 'ofd-editor/src/ofd-editor';
+import { Label, TypeComponent } from 'type-dom.ts';
+import { TdButton } from '../../../basic/td-button/td-button.class';
 import { Select } from '../../select/select.class';
 import { itemContentStyle, FieldItem } from '../field-item.abstract';
 export abstract class FieldSelect extends FieldItem {
   abstract reset(value?: string): void;
-  childNodes: [Label, Select, Button];
+  childNodes: [Label, Select, TdButton];
   select: Select;
+  mode = 'editor';
   protected constructor(public parent: TypeComponent, labelText = '控件名称') {
     super(labelText);
     this.select = new Select(this);
@@ -18,7 +19,7 @@ export abstract class FieldSelect extends FieldItem {
         // placeholder: placeholder,
       }
     };
-    if (OfdEditor.mode === 'read') {
+    if (this.mode === 'read') {
       this.select.addAttrObj({
         disabled: true,
       });

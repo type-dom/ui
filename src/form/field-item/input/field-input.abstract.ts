@@ -1,11 +1,11 @@
 import { fromEvent } from 'rxjs';
-import { TypeHtml, Button, Input, Label } from 'type-dom.ts';
-// import { OfdEditor } from 'ofd-editor/src/ofd-editor';
+import { TypeHtml, Input, Label } from 'type-dom.ts';
+import { TdButton } from '../../../basic/td-button/td-button.class';
 import { itemContentStyle, FieldItem } from '../field-item.abstract';
 export abstract class FieldInput extends FieldItem {
   mode?: string;
   abstract reset(value?: string): void;
-  childNodes: [Label, Input, Button];
+  childNodes: [Label, Input, TdButton];
   content: Input;
   protected constructor(public parent: TypeHtml, labelText = '控件名称', placeholder = '请输入') {
     super(labelText);
@@ -22,16 +22,16 @@ export abstract class FieldInput extends FieldItem {
         disabled: true,
       });
     }
-    this.button.addStyleObj({
-      // position: 'absolute',
-      // right: '10px',
-      padding: '8px 3px 4px',
-      fontSize: '16px',
-      // border: 'none',
-      display: 'none',
-      border: '1px solid #DCDFE6',
-      borderRadius: '0 4px 4px 0',
-    });
+    // this.button.addStyleObj({
+    //   // position: 'absolute',
+    //   // right: '10px',
+    //   padding: '8px 3px 4px',
+    //   fontSize: '16px',
+    //   // border: 'none',
+    //   display: 'none',
+    //   border: '1px solid #DCDFE6',
+    //   borderRadius: '0 4px 4px 0',
+    // });
     this.button.textNode.setText('');
     this.childNodes = [this.label, this.content, this.button];
     this.initEvents();

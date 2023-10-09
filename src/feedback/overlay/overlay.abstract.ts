@@ -1,5 +1,5 @@
 import { fromEvent } from 'rxjs';
-import { TypeDiv, Display, StylePosition, TextNode, Span } from 'type-dom.ts';
+import { TypeDiv, StyleDisplay, StylePosition, TextNode, Span } from 'type-dom.ts';
 import { OverlayContainer } from './container/container';
 export abstract class Overlay extends TypeDiv {
   abstract className: string;
@@ -19,7 +19,7 @@ export abstract class Overlay extends TypeDiv {
       zIndex: 2000,
       backgroundColor: 'rgba(0, 0, 0, 0.5)',
       overflow: 'auto',
-      display: Display.none,
+      display: StyleDisplay.none,
     });
     // document.body.appendChild(this.dom); // 挂载在 body 上
     this.container = new OverlayContainer(this);

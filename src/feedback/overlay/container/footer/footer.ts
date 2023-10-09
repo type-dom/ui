@@ -1,7 +1,7 @@
 import { TypeDiv } from 'type-dom.ts';
 import { OverlayContainer } from '../container';
 import { TdButton } from '../../../../basic/td-button/td-button.class';
-import {fromEvent} from "rxjs";
+import { fromEvent } from 'rxjs';
 // import { CancelButton } from './cancel-button/cancel-button';
 // import { ConfirmButton } from './confirm-button/confirm-button';
 export class OverlayFooter extends TypeDiv {

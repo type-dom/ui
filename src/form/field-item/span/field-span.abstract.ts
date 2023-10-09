@@ -1,8 +1,9 @@
-import { Button, Display, Label, Span, TextNode } from 'type-dom.ts';
+import { StyleDisplay, Label, Span, TextNode } from 'type-dom.ts';
+import { TdButton } from '../../../basic';
 import { FieldItem } from '../field-item.abstract';
 export abstract class FieldSpan extends FieldItem {
   readonly text: TextNode;
-  childNodes: [Label, Span, Button];
+  childNodes: [Label, Span, TdButton];
   content: Span;
   protected constructor(labelText = '控件名称') {
     super(labelText);
@@ -19,7 +20,7 @@ export abstract class FieldSpan extends FieldItem {
         // -webkit-box-sizing: border-box;
         boxSizing: 'border-box',
         color: '#606266',
-        display: Display.inlineBlock,
+        display: StyleDisplay.inlineBlock,
         outline: '0',
         padding: '0 15px',
         // paddingLeft: '43px',

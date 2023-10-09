@@ -1,8 +1,12 @@
-import { ITypeSelect } from 'type-dom.ts';
-import { IOption } from '../field-item/field-item.interface';
-export interface ISelect extends ITypeSelect {
-  className: 'Select',
+
+export interface IOption {
+  label: string,
+  value: string | number | boolean,
+  checked?: boolean, // radio checkbox
+  selected?: boolean, // select
+  options?: IOption[]
 }
+
 export interface IOptionConfig {
   name: string,
   // selectedOption: string | number | boolean,

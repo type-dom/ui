@@ -1,4 +1,4 @@
-import { Display, TypeComponent } from 'type-dom.ts';
+import { StyleDisplay, TypeComponent } from 'type-dom.ts';
 import { CollapsibleBox } from '../collapsible-box';
 export class CollapsibleBoxContents extends TypeComponent {
   className: 'CollapsibleBoxContents' | string;
@@ -8,7 +8,7 @@ export class CollapsibleBoxContents extends TypeComponent {
     this.className = 'CollapsibleBoxContents';
     this.propObj = {
       styleObj: {
-        display: Display.flex,
+        display: StyleDisplay.flex,
         flexWrap: 'wrap',
         justifyContent: 'flex-start',
         // width: '194px',

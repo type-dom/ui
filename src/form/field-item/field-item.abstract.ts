@@ -1,6 +1,5 @@
 import {
-  Button,
-  Display,
+  StyleDisplay,
   Division,
   Input,
   IStyle,
@@ -8,8 +7,9 @@ import {
   Span,
   Textarea,
   TextNode,
-  TypeComponent
+  TypeComponent,
 } from 'type-dom.ts';
+import { TdButton } from '../../basic/td-button/td-button.class';
 import { Select } from '../select/select.class';
 export const labelStyle: Partial<IStyle> = {
   width: '80px',
@@ -35,7 +35,7 @@ export const itemContentStyle: Partial<IStyle> = {
   // -webkit-box-sizing: border-box;
   boxSizing: 'border-box',
   color: '#606266',
-  display: Display.inlineBlock,
+  display: StyleDisplay.inlineBlock,
   fontSize: 'inherit',
   outline: '0',
   // padding: '0 5px',
@@ -49,9 +49,9 @@ export const itemContentStyle: Partial<IStyle> = {
 export abstract class FieldItem extends TypeComponent {
   abstract className: string;
   // abstract parent: Appearance | DataSetting | Description;
-  abstract childNodes: [Label, ...(Span | Input | Textarea | Select | Division)[], Button];
+  abstract childNodes: [Label, ...(Span | Input | Textarea | Select | Division)[], TdButton];
   label: Label;
-  button: Button;
+  button: TdButton;
   dom: HTMLDivElement;
   protected constructor(labelText: string) {
     super('div');
@@ -69,15 +69,18 @@ export abstract class FieldItem extends TypeComponent {
     const text = new TextNode(this.label, labelText);
     this.label.childNodes.push(text);
     this.label.addStyleObj(Object.assign({}, labelStyle));
-    this.button = new Button(this);
-    this.button.addStyleObj({
-      height: '28px',
-      display: 'none',
+    this.button = new TdButton(this, {
+      type: 'primary',
+      size: 'mini'
     });
+    // this.button.addStyleObj({
+    //   height: '28px',
+    //   display: 'none',
+    // });
   }
   show(): void {
     this.setStyleObj({
-      display: 'flex',
+      display: StyleDisplay.flex,
     });
   }
 }

@@ -1,10 +1,10 @@
 import { fromEvent } from 'rxjs';
 import { Span, TextNode, TypeComponent, TypeElement } from 'type-dom.ts';
-import { TriangleSvg } from 'type-dom-svgs';
+import { ElCaretBottomSvg } from 'type-dom-svgs';
 export class ExpandHeading extends TypeComponent {
   className: 'ExpandHeading';
-  childNodes: [TriangleSvg, Span];
-  svg: TriangleSvg;
+  childNodes: [ElCaretBottomSvg, Span];
+  svg: ElCaretBottomSvg;
   title: TextNode;
   constructor(public parent: TypeComponent, title: string) {
     super('div');
@@ -28,10 +28,10 @@ export class ExpandHeading extends TypeComponent {
       }
     };
 
-    this.svg = new TriangleSvg(this);
+    this.svg = new ElCaretBottomSvg(this);
     this.svg.addAttrObj({
       fill: '#FFF',
-    })
+    });
     this.title = new TextNode(this, title);
     // span.setStyle('verticalAlign', 'middle');
     const span = new Span(this);
@@ -43,7 +43,7 @@ export class ExpandHeading extends TypeComponent {
   setTitle(title: string) {
     this.title.setText(title);
   }
-  initEvents(): ExpandHeading {
+  initEvents(): void {
     this.events.push(
       fromEvent(this.svg.dom, 'click').subscribe((e: Event) => {
         e.stopPropagation();
@@ -56,7 +56,7 @@ export class ExpandHeading extends TypeComponent {
           });
           console.log('style.transform is ', style.transform);
           if (this.parent.lastChild instanceof TypeElement) {
-            this.parent.lastChild.setStyle('display', 'block'); // flex
+            this.parent.lastChild.setStyle('display', 'flex'); // flex
           }
         } else {
           this.svg.setStyleObj({
@@ -69,6 +69,5 @@ export class ExpandHeading extends TypeComponent {
         }
       }),
     );
-    return this;
   }
 }

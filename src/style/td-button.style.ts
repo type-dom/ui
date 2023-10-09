@@ -1,21 +1,17 @@
-import { IStyle, Cursor } from 'type-dom.ts';
+import { IStyle, StyleCursor, StyleDisplay } from 'type-dom.ts';
 import {
-  $borderColors,
-  $colors,
-  $fontSizes,
-  $textColors,
-  $borderRadius,
-  $borderWidth,
   $borderStyle,
-  $colorWhite,
-  $fontWeightPrimary,
-  $buttonTextColor,
-  $buttonBgColor,
-  $buttonBorderColor,
   $button,
+  $buttonBorderRadius,
   $buttonFontSize,
-  $buttonPaddingHorizontal, $buttonPaddingVertical, $buttonBorderRadius, $commonComponentSize, IType
+  $buttonPaddingHorizontal,
+  $buttonPaddingVertical,
+  $colors,
+  $colorWhite,
+  $commonComponentSize,
+  IType
 } from './var';
+
 export const $buttonIconSpanGap = {
   large: '8px',
   default: '6px',
@@ -49,14 +45,14 @@ export const sizeOpts: Record<string, Partial<IStyle>> = {
   }
 };
 export const tdButtonBase: Partial<IStyle> = {
-  display: 'inline-flex',
+  display: StyleDisplay.inlineFlex,
   justifyContent: 'center',
   alignItems: 'center',
   lineHeight: '1',
   // min-height will expand when in flex
   height: '32px',
   whiteSpace: 'nowrap',
-  cursor: Cursor.pointer,
+  cursor: StyleCursor.pointer,
   color: $button.textColor,
   textAlign: 'center',
   boxSizing: 'border-box',

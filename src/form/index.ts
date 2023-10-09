@@ -6,4 +6,4 @@ export { FieldInput } from './field-item/input/field-input.abstract';
 export { FieldRadio } from './field-item/radio/field-radio.abstract';
 export { FieldSelect } from './field-item/select/field-select.abstract';
 export { FieldSpan } from './field-item/span/field-span.abstract';
-export { FieldTextarea} from './field-item/textarea/field-textarea.abstract';
+export { FieldTextarea } from './field-item/textarea/field-textarea.abstract';
