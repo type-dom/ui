@@ -102,7 +102,17 @@ const $maskColor = {
   'extra-light': 'rgba(255, 255, 255, 0.3)',
 };
 
-export const $colors: Record<string, string | Record<string, string>> = {
+export const $colors: {
+  white: string,
+  black: string,
+  default: { base: string, [propName: string]: string },
+  primary: { base: string, [propName: string]: string },
+  success: { base: string, [propName: string]: string },
+  warning: { base: string, [propName: string]: string },
+  danger: { base: string, [propName: string]: string },
+  error: { base: string, [propName: string]: string },
+  info: { base: string, [propName: string]: string },
+} = {
   white: '#ffffff',
   black: '#000000',
   default: { base: $textColors.regular },

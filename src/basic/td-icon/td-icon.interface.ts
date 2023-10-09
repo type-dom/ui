@@ -1,9 +1,9 @@
-import { ITypeI, ITypeSvg } from 'type-dom.ts';
+import { ITypeI, TypeSvg } from 'type-dom.ts';
 export interface ITdIcon extends ITypeI {
   className: 'TdIcon',
 }
 export interface ITdIconConfig {
-  SvgClass: ITypeSvg,
+  SvgClass: any, // todo string to createSvg(svgName)
   size: string,
   color: string,
   loading: boolean,
