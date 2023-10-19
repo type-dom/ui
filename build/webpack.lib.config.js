@@ -12,16 +12,16 @@ console.log('run lib');
 module.exports = {
   entry: {
     // lib: './src/example-lib.ts',
-    'form-editor': './src/form-editor.ts',
+    'type-dom-ui': './src/index.ts',
   },
   output: {
     filename: `[name].js`,
     path: path.resolve(__dirname, '../lib'),
     clean: true,
     library: {
-      name: 'FormEditor',
+      name: 'TypeDomUI',
       type: 'umd',
-      // export: 'FormEditor',
+      // export: 'TypeDomUI',
     },
     // globalObject: 'this'
   },
@@ -76,9 +76,6 @@ module.exports = {
             options: {
               importLoaders: 1
             }
-          },
-          {
-            loader: 'postcss-loader'
           }
         ]
       },
@@ -93,7 +90,6 @@ module.exports = {
             }
           },
           'css-loader',
-          'postcss-loader',   // 处理css兼容性
           'less-loader'
         ]
       },
@@ -111,7 +107,6 @@ module.exports = {
               importLoaders: 2
             }
           },
-          'postcss-loader',   // 处理css兼容性
           {
             loader: 'sass-loader' // 将 Sass 编译成 CSS
           }

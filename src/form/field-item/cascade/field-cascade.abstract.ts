@@ -107,7 +107,7 @@ export abstract class PropertyCascade extends FieldItem {
   }
 
   set fieldConfig(value: IOptionConfig | undefined) {
-    // FormEditor.webDocument.setAttribute('field-config', JSON.stringify(value));
+    // TypeFormDesigner.webDocument.setAttribute('field-config', JSON.stringify(value));
     if (this.configs === undefined) {
       if (value !== undefined) {
         this.configs = {

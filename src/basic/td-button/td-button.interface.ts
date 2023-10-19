@@ -28,7 +28,7 @@ export interface ITdButtonConfig {
   disabled: boolean,
   title: string,
   type: IButtonType,
-  SvgClass: ITypeSvg,
+  SvgClass: any, // todo createSvg(svgName)
   iconPosition: 'left' | 'right',
   icon: string,
   nativeType: IButtonNativeType,

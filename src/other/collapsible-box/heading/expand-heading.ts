@@ -3,6 +3,7 @@ import { Span, TextNode, TypeComponent, TypeElement } from 'type-dom.ts';
 import { ElCaretBottomSvg } from 'type-dom-svgs';
 export class ExpandHeading extends TypeComponent {
   className: 'ExpandHeading';
+  nodeName = 'div';
   childNodes: [ElCaretBottomSvg, Span];
   svg: ElCaretBottomSvg;
   title: TextNode;

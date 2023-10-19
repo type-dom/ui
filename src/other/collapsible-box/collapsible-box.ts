@@ -6,6 +6,7 @@ import { ExpandHeading } from './heading/expand-heading';
  */
 export class CollapsibleBox extends TypeComponent {
   className: 'CollapsibleBox' | string;
+  nodeName = 'div';
   childNodes: [ExpandHeading, CollapsibleBoxContents];
   heading: ExpandHeading;
   contents: CollapsibleBoxContents;
