@@ -1,13 +1,13 @@
 import { fromEvent } from 'rxjs';
-import { TypeButton, TextNode, Span, TypeHtml, Slot, StyleCursor } from 'type-dom.ts';
-// import { Template } from '../../../type-dom/element/html-element/template/template.class';
-import { $buttonPlainColors, $buttonStateColors, sizeOpts, tdButtonBase } from '../../style/td-button.style';
-import { $iconLeft, $iconLoading, $iconRight } from '../../style/td-icon.style';
+import { TypeButton, TextNode, Span, TypeHtml, Slot, StyleCursor, XElement } from 'type-dom.ts';
+import { $iconLeft, $iconLoading, $iconRight } from '../td-icon/td-icon.style';
 import { $borderRadius, $button, $buttonPaddingVertical } from '../../style/var';
 import { TdIcon } from '../td-icon/td-icon.class';
 import { IButtonType, ITdButton, ITdButtonConfig } from './td-button.interface';
+import { $buttonPlainColors, $buttonStateColors, sizeOpts, tdButtonBase } from './td-button.style';
 export class TdButton extends TypeButton implements ITdButton {
   className: 'TdButton';
+  parent?: TypeHtml | XElement;
   childNodes: (Span | TdIcon)[];
   span: Span;
   textNode: TextNode;
@@ -15,7 +15,7 @@ export class TdButton extends TypeButton implements ITdButton {
   private type?: IButtonType;
   private plain?: boolean;
   private disabled?: boolean;
-  constructor(public parent: TypeHtml, config?: Partial<ITdButtonConfig>) {
+  constructor(config?: Partial<ITdButtonConfig>) {
     super();
     this.className = 'TdButton';
     // this.template = new Template(this);
@@ -24,13 +24,12 @@ export class TdButton extends TypeButton implements ITdButton {
       display: 'inline-flex',
       alignItems: 'center',
     });
-    this.textNode = new TextNode(this.span);
+    this.textNode = new TextNode();
     this.span.addChild(this.textNode);
     const slot = new Slot(this.span);
     this.span.addChild(slot);
     this.childNodes = [this.span];
     this.setConfig(config);
-    this.initEvents();
   }
   setConfig(config?: Partial<ITdButtonConfig>): void {
     this.addStyleObj(tdButtonBase);
@@ -38,7 +37,7 @@ export class TdButton extends TypeButton implements ITdButton {
       this.textNode.setText(config.title);
     }
     if (config?.SvgClass) {
-      const icon = new TdIcon(this, {
+      const icon = new TdIcon({
         SvgClass: config.SvgClass,
       });
       if (config.iconPosition === 'right') {

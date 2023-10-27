@@ -1,37 +1,35 @@
 import { fromEvent } from 'rxjs';
-import { Division, Label, TypeElement } from 'type-dom.ts';
-import { TdButton } from '../../../basic/td-button/td-button.class';
+import { Button, Division, Label, TypeElement } from 'type-dom.ts';
+// import { TdButton } from '../../../basic/td-button/td-button.class';
 import { IOption, IOptionConfig } from '../field-item.interface';
 import { FieldItem } from '../field-item.abstract';
 export abstract class FieldRadio extends FieldItem {
-  childNodes: [Label, Division, TdButton];
+  childNodes: [Label, Division, Button];
   name: string;
   resultValue: string | number | boolean;
   optionDiv: Division;
-  private selectedOpt!: TdButton;
+  private selectedOpt!: Button;
   protected constructor(labelText = '单选', public config: IOptionConfig) {
     super(labelText);
     this.name = config.name;
     this.resultValue = config.resultValue;
-    this.optionDiv = new Division(this);
+    this.optionDiv = new Division();
     this.childNodes = [this.label, this.optionDiv, this.button];
     this.setOptions(config.options);
-    this.initEvents();
   }
   abstract reset(value?: string): void;
   setOptions(options: IOption[]): void {
     options.forEach((option, index) => {
       let button;
       if (!this.optionDiv.childNodes[index]) {
-        button = new TdButton(this.optionDiv, {
-          title: option.label
-        });
+        button = new Button(this);
+        button.setTitle(option.label);
         // const label = new TextNode(button, option.label);
         // button.childNodes = [label];
         // button.setTitle(option.label);
         this.optionDiv.addChild(button);
       } else {
-        button = this.optionDiv.childNodes[index] as TdButton;
+        button = this.optionDiv.childNodes[index] as Button;
       }
       button.addStyleObj({
         height: '32px',
@@ -68,6 +66,9 @@ export abstract class FieldRadio extends FieldItem {
   }
   initEvents(): void {
     this.optionDiv.childNodes.forEach((btn) => {
+      if (btn.dom === undefined) {
+        return;
+      }
       this.events.push(
         fromEvent(btn.dom, 'click').subscribe(() => {
           // if (OfdEditor.mode === 'read') {
@@ -80,7 +81,7 @@ export abstract class FieldRadio extends FieldItem {
             });
             this.selectedOpt.setAttribute('checked', false);
           }
-          this.selectedOpt = btn as TdButton;
+          this.selectedOpt = btn as Button;
           if (btn instanceof TypeElement) {
             btn.setStyleObj({
               backgroundColor: '#00f',

@@ -3,8 +3,9 @@ import { TextNode, TypeButton } from 'type-dom.ts';
 import { OverlayFooter } from '../footer';
 export class ConfirmButton extends TypeButton {
   className: 'ConfirmButton';
+  parent?: OverlayFooter;
   childNodes: [TextNode];
-  constructor(public parent: OverlayFooter) {
+  constructor() {
     super();
     this.className = 'ConfirmButton';
     this.propObj = {
@@ -20,12 +21,14 @@ export class ConfirmButton extends TypeButton {
     };
     this.setTitle('确认');
     this.childNodes = [this.textNode];
-    this.initEvents();
   }
   initEvents(): void {
+    if (!this.parent?.parent?.parent) {
+      console.error('this.parent?.parent?.parent is undefined . ');
+    }
     this.events.push(
       fromEvent(this.dom, 'click').subscribe(() => {
-        this.parent.parent.parent.hide();
+        this.parent?.parent?.parent?.hide();
       }),
     );
   }

@@ -1,12 +1,13 @@
-import { StyleDisplay, Label, Textarea, TypeComponent } from 'type-dom.ts';
-import { TdButton } from '../../../basic/td-button/td-button.class';
+import { StyleDisplay, Label, Textarea, TypeComponent, Button } from 'type-dom.ts';
+// import { TdButton } from '../../../basic/td-button/td-button.class';
 import { labelStyle, FieldItem } from '../field-item.abstract';
 export abstract class FieldTextarea extends FieldItem {
   // abstract reset(value?: string): void;
-  childNodes: [Label, Textarea, TdButton];
+  parent?: TypeComponent;
+  childNodes: [Label, Textarea, Button];
   content: Textarea;
   mode = 'edit';
-  protected constructor(public parent: TypeComponent, labelText = '控件名称', placeholder = '请输入') {
+  protected constructor(labelText = '控件名称', placeholder = '请输入') {
     super(labelText);
     this.addStyleObj({
       display: 'block', // 不是 flex
@@ -51,7 +52,6 @@ export abstract class FieldTextarea extends FieldItem {
       display: 'block',
     });
     this.childNodes = [this.label, this.content, this.button];
-    // this.initEvents();
   }
 
   resetInputPlaceholder(placeholder: string): void {

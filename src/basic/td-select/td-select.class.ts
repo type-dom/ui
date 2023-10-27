@@ -5,9 +5,10 @@ import { SelectOption } from './option/option.class';
 import { ITdSelect } from './td-select.interface';
 export class TdSelect extends TypeSelect implements ITdSelect {
   className: 'TdSelect';
+  parent?: TypeHtml;
   childNodes: SelectOption[];
   value?: string | number | boolean;
-  constructor(public parent: TypeHtml) {
+  constructor() {
     super();
     this.className = 'TdSelect';
     this.propObj.attrObj = {
@@ -18,7 +19,7 @@ export class TdSelect extends TypeSelect implements ITdSelect {
   setOptions(options: IOption[], value: string | number | boolean): void {
     this.clearChildNodes();
     this.clearChildDom();
-    const firstOpt = new SelectOption(this);
+    const firstOpt = new SelectOption();
     firstOpt.text.setText('请选择');
     firstOpt.addAttrObj({
       label: '请选择',
@@ -26,7 +27,7 @@ export class TdSelect extends TypeSelect implements ITdSelect {
     });
     this.addChild(firstOpt);
     options.forEach(opt => {
-      const optObj = new SelectOption(this);
+      const optObj = new SelectOption();
       optObj.text.setText(opt.label);
       optObj.addAttrObj({
         label: opt.label,

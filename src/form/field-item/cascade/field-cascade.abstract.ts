@@ -1,5 +1,5 @@
 import { fromEvent } from 'rxjs';
-import { StyleDisplay, Division, Label } from 'type-dom.ts';
+import { StyleDisplay, Division, Label, Button } from 'type-dom.ts';
 import { TdButton } from '../../../basic/td-button/td-button.class';
 import { FieldItem, itemContentStyle } from '../field-item.abstract';
 import { TdSelect } from '../../../basic/td-select/td-select.class';
@@ -9,7 +9,7 @@ import { IOptionConfig } from '../field-item.interface';
  * 目前只有 字段名称属性项用到。 控件属性栏 control-field 字段属性栏 field-name
  */
 export abstract class PropertyCascade extends FieldItem {
-  childNodes: [Label, Division, TdButton];
+  childNodes: [Label, Division, Button];
   cascadeDiv: Division;
   firstStageSelectObj: TdSelect;
   secondStageSelectObj: TdSelect;
@@ -20,7 +20,7 @@ export abstract class PropertyCascade extends FieldItem {
   protected constructor(labelText = '二级级联') {
     super(labelText);
     this.addAttrName('cascade-property');
-    this.cascadeDiv = new Division(this);
+    this.cascadeDiv = new Division();
     this.cascadeDiv.addAttrName('cascade');
     this.cascadeDiv.addStyleObj({
       height: '100%',
@@ -41,7 +41,7 @@ export abstract class PropertyCascade extends FieldItem {
     });
 
     // 单独的方法实现
-    this.firstStageSelectObj = new TdSelect(this.cascadeDiv);
+    this.firstStageSelectObj = new TdSelect();
     this.firstStageSelectObj.addAttrName('first-stage-select');
     this.firstStageSelectObj.setStyleObj(Object.assign({}, itemContentStyle,
       {
@@ -52,14 +52,13 @@ export abstract class PropertyCascade extends FieldItem {
       }
     ));
 
-    this.secondStageSelectObj = new TdSelect(this.cascadeDiv);
+    this.secondStageSelectObj = new TdSelect();
     this.secondStageSelectObj.addAttrName('second-stage-select');
     this.secondStageSelectObj.setStyleObj(Object.assign({}, itemContentStyle, {
       width: '100%',
     }));
     this.cascadeDiv.childNodes = [this.firstStageSelectObj, this.secondStageSelectObj];
     this.childNodes = [this.label, this.cascadeDiv, this.button];
-    this.initEvents();
   }
 
   get fieldConfig(): IOptionConfig | undefined {

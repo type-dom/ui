@@ -4,10 +4,11 @@ import { ISelectOption } from './option.interface';
 export class SelectOption extends TypeOption implements ISelectOption {
   nodeName: 'option';
   className: 'SelectOption';
+  parent?: TdSelect;
   dom: HTMLOptionElement;
   childNodes: TypeNode[];
   text: TextNode;
-  constructor(public parent: TdSelect) {
+  constructor() {
     super();
     this.nodeName = 'option';
     this.dom = document.createElement(this.nodeName);
@@ -15,7 +16,7 @@ export class SelectOption extends TypeOption implements ISelectOption {
     this.propObj.attrObj = {
       name: 'option'
     };
-    this.text = new TextNode(this, '一个选项');
+    this.text = new TextNode('一个选项');
     this.childNodes = [this.text];
   }
   // render(): void {

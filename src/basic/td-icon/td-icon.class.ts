@@ -1,14 +1,19 @@
 import { Slot, TypeHtml, TypeI, TypeSvgSvg } from 'type-dom.ts';
-import { $iconLeft, $iconLoading, $iconRight, $tdIcon } from '../../style/td-icon.style';
+import { $iconLeft, $iconLoading, $iconRight, $tdIcon } from './td-icon.style';
 import { ITdIcon, ITdIconConfig } from './td-icon.interface';
 export class TdIcon extends TypeI implements ITdIcon {
   className: 'TdIcon';
-  constructor(public parent: TypeHtml, config?: Partial<ITdIconConfig>) {
+  parent?: TypeHtml;
+  constructor(config?: Partial<ITdIconConfig>) {
     super();
     this.className = 'TdIcon';
     const slot = new Slot(this);
     this.childNodes = [slot];
     this.setConfig(config);
+  }
+  // todo
+  createSvg(className: string) {
+    return;
   }
   setConfig(config?: Partial<ITdIconConfig>): void {
     this.addStyleObj($tdIcon);

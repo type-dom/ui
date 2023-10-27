@@ -1,16 +1,17 @@
 import { fromEvent } from 'rxjs';
-import { Label, TypeComponent } from 'type-dom.ts';
-import { TdButton } from '../../../basic/td-button/td-button.class';
+import { Button, Label, TypeComponent } from 'type-dom.ts';
+// import { TdButton } from '../../../basic/td-button/td-button.class';
 import { Select } from '../../select/select.class';
 import { itemContentStyle, FieldItem } from '../field-item.abstract';
 export abstract class FieldSelect extends FieldItem {
   abstract reset(value?: string): void;
-  childNodes: [Label, Select, TdButton];
+  parent?: TypeComponent;
+  childNodes: [Label, Select, Button];
   select: Select;
   mode = 'editor';
-  protected constructor(public parent: TypeComponent, labelText = '控件名称') {
+  protected constructor(labelText = '控件名称') {
     super(labelText);
-    this.select = new Select(this);
+    this.select = new Select();
     this.select.propObj = {
       styleObj: Object.assign({}, itemContentStyle),
       attrObj: {
@@ -25,7 +26,6 @@ export abstract class FieldSelect extends FieldItem {
       });
     }
     this.childNodes = [this.label, this.select, this.button];
-    this.initEvents();
   }
   initEvents(): void {
     this.events.push(
