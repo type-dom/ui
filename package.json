@@ -2,7 +2,8 @@
   "name": "type-dom-ui",
   "version": "0.0.8",
   "description": "type dom ui components . ",
-  "main": "src/index.ts",
+  "main": "dist/index.js",
+  "types": "dist/index.d.js",
   "scripts": {
     "serve": "webpack-dev-server --mode=development --config ./build/webpack.config.js",
     "build": "rimraf dist && tsc",
@@ -14,9 +15,11 @@
     "uml": "tsuml2 --glob type-dom/type-node/web-element/*.ts ",
     "docs": "typedoc --entryPointStrategy expand ./src",
     "coverage": "typescript-coverage-report",
-    "git-push": "git add . && git commit -m 'edit' && git push origin main"
+    "git-push": "git add . && git commit -m 'edit' && git push origin main",
+    "git-pull": "git pull"
   },
   "keywords": [
+    "ui compoents",
     "typescript",
     "type-dom",
     "type-dom-ui",
