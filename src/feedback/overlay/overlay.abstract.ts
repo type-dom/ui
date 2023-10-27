@@ -3,7 +3,7 @@ import { TypeDiv, StyleDisplay, StylePosition, TextNode, Span } from 'type-dom.t
 import { OverlayContainer } from './container/container';
 export abstract class Overlay extends TypeDiv {
   abstract className: string;
-  // abstract parent: FormEditor;
+  // abstract parent: TypeFormDesigner;
   childNodes: [OverlayContainer];
   container: OverlayContainer;
 

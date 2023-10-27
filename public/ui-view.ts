@@ -6,7 +6,7 @@ fromEvent(document, 'DOMContentLoaded').subscribe(() => {
   const uiEl = document.querySelector('#ui-components-ref') as HTMLElement;
   console.log('uiEl is ', uiEl);
   if (uiEl) {
-    const view = new UiRoot(uiEl);
+    const view = new UiRoot({ el: uiEl });
     console.log('view is ', view);
   }
 });
