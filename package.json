@@ -13,7 +13,8 @@
     "lint-fix": "eslint 'src/**/*.{ts,js,tsx,jsx}' --fix -o eslint_log.log",
     "uml": "tsuml2 --glob type-dom/type-node/web-element/*.ts ",
     "docs": "typedoc --entryPointStrategy expand ./src",
-    "coverage": "typescript-coverage-report"
+    "coverage": "typescript-coverage-report",
+    "git-push": "git add . && git commit -m 'edit' && git push origin main"
   },
   "keywords": [
     "typescript",
