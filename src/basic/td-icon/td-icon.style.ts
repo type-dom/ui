@@ -1,4 +1,4 @@
-import { IStyle, StyleDisplay, StylePosition } from 'type-dom.ts';
+import { IStyle, StyleDisplay, StylePosition } from 'type-dom.ts/dist';
 export const $tdIcon: Partial<IStyle> = {
   height: '1em',
   width: '1em',

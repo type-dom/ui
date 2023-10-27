@@ -5,9 +5,10 @@ import { IRadioGroup } from './radio-group.interface';
 
 export class RadioGroup extends TypeDiv implements IRadioGroup {
   className: 'RadioGroup';
+  public parent?: TypeHtml;
   childNodes: RadioOption[];
   value: string | number | boolean;
-  constructor(public parent: TypeHtml) {
+  constructor() {
     super();
     this.className = 'RadioGroup';
     this.addAttrName('radio-group');
@@ -19,7 +20,7 @@ export class RadioGroup extends TypeDiv implements IRadioGroup {
     this.clearChildDom();
     const random = Math.random();
     options.forEach((opt) => {
-      const optObj = new RadioOption(this);
+      const optObj = new RadioOption();
       optObj.input.addAttrObj({
         name: 'radio' + random,
         label: opt.label,

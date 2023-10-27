@@ -1,4 +1,4 @@
-import { IStyle, StyleCursor, StyleDisplay } from 'type-dom.ts';
+import { IStyle, StyleCursor, StyleDisplay } from 'type-dom.ts/dist';
 import {
   $borderStyle,
   $button,
@@ -10,7 +10,7 @@ import {
   $colorWhite,
   $commonComponentSize,
   IType
-} from './var';
+} from '../../style/var';
 
 export const $buttonIconSpanGap = {
   large: '8px',

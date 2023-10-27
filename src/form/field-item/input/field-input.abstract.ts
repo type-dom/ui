@@ -1,13 +1,14 @@
 import { fromEvent } from 'rxjs';
-import { TypeHtml, Input, Label } from 'type-dom.ts';
-import { TdButton } from '../../../basic/td-button/td-button.class';
+import { TypeHtml, Input, Label, Button } from 'type-dom.ts';
+// import { TdButton } from '../../../basic/td-button/td-button.class';
 import { itemContentStyle, FieldItem } from '../field-item.abstract';
 export abstract class FieldInput extends FieldItem {
   mode?: string;
+  parent?: TypeHtml;
   abstract reset(value?: string): void;
-  childNodes: [Label, Input, TdButton];
+  childNodes: [Label, Input, Button];
   content: Input;
-  protected constructor(public parent: TypeHtml, labelText = '控件名称', placeholder = '请输入') {
+  protected constructor(labelText = '控件名称', placeholder = '请输入') {
     super(labelText);
     this.content = new Input(this);
     this.content.propObj = {
@@ -34,7 +35,6 @@ export abstract class FieldInput extends FieldItem {
     // });
     this.button.textNode.setText('');
     this.childNodes = [this.label, this.content, this.button];
-    this.initEvents();
   }
   resetInputPlaceholder(placeholder: string): void {
     this.content.setAttribute('placeholder', placeholder);

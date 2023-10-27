@@ -6,11 +6,12 @@ import { OverlayBody } from './body/body';
 import { OverlayFooter } from './footer/footer';
 export class OverlayContainer extends TypeDiv {
   className: 'OverlayContainer';
+  parent?: Overlay;
   childNodes: [OverlayHeader, OverlayBody, OverlayFooter];
   header: OverlayHeader;
   body: OverlayBody;
   footer: OverlayFooter;
-  constructor(public parent: Overlay) {
+  constructor() {
     super();
     this.className = 'OverlayContainer';
     this.propObj = {
@@ -27,11 +28,13 @@ export class OverlayContainer extends TypeDiv {
         name: 'overlay-container'
       }
     };
-    this.header = new OverlayHeader(this);
-    this.body = new OverlayBody(this);
-    this.footer = new OverlayFooter(this);
+    this.header = new OverlayHeader();
+    this.header.parent = this;
+    this.body = new OverlayBody();
+    this.body.parent = this;
+    this.footer = new OverlayFooter();
+    this.footer.parent = this;
     this.childNodes = [this.header, this.body, this.footer];
-    this.initEvents();
   }
 
   initEvents(): void {

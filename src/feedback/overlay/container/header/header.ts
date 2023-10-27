@@ -4,10 +4,11 @@ import { OverlayTitle } from './title/title';
 import { CloseButton } from './close-button/close-button';
 export class OverlayHeader extends TypeDiv {
   className: 'OverlayHeader';
+  parent?: OverlayContainer;
   childNodes: [OverlayTitle, CloseButton];
   title: OverlayTitle;
   closeBtn: CloseButton;
-  constructor(public parent: OverlayContainer) {
+  constructor() {
     super();
     this.className = 'OverlayHeader';
     this.addStyleObj({
@@ -18,8 +19,9 @@ export class OverlayHeader extends TypeDiv {
     this.addAttrObj({
       name: 'overlay-header',
     });
-    this.title = new OverlayTitle(this);
-    this.closeBtn = new CloseButton(this);
+    this.title = new OverlayTitle();
+    this.closeBtn = new CloseButton();
+    this.closeBtn.parent = this;
     this.childNodes = [this.title, this.closeBtn];
   }
 }

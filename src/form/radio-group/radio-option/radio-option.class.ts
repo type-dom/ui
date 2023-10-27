@@ -5,10 +5,11 @@ import { IRadioOption } from './radio-option.interface';
 
 export class RadioOption extends TypeSpan implements IRadioOption {
   className: 'RadioOption';
+  public parent?: RadioGroup;
   childNodes: [Input, TextNode];
   input: Input;
   text: TextNode;
-  constructor(public parent: RadioGroup) {
+  constructor() {
     super();
     this.className = 'RadioOption';
     this.addStyleObj({
@@ -22,16 +23,15 @@ export class RadioOption extends TypeSpan implements IRadioOption {
       // value: opt.value,
       // checked: opt.checked || false
     });
-    this.text = new TextNode(this, '');
+    this.text = new TextNode('');
     this.childNodes = [this.input, this.text];
-    this.initEvents();
   }
   initEvents(): void {
     this.events.push(
       fromEvent(this.input.dom, 'click').subscribe(() => {
         console.log('this.input.dom click . ');
         console.log('this.input.dom.value is ', this.input.dom.value);
-        this.parent.value = this.input.dom.value;
+        if (this.parent) this.parent.value = this.input.dom.value;
       })
     );
   }

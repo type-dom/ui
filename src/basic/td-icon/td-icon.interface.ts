@@ -1,4 +1,4 @@
-import { ITypeI, TypeSvg } from 'type-dom.ts';
+import { ITypeI } from 'type-dom.ts';
 export interface ITdIcon extends ITypeI {
   className: 'TdIcon',
 }

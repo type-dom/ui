@@ -3,10 +3,11 @@ import { Span, TextNode, TypeComponent, TypeElement } from 'type-dom.ts';
 import { ElCaretBottomSvg } from 'type-dom-svgs';
 export class ExpandHeading extends TypeComponent {
   className: 'ExpandHeading';
+  public parent?: TypeComponent;
   childNodes: [ElCaretBottomSvg, Span];
   svg: ElCaretBottomSvg;
   title: TextNode;
-  constructor(public parent: TypeComponent, title: string) {
+  constructor(title: string) {
     super('div');
     this.className = 'ExpandHeading';
     this.propObj = {
@@ -32,13 +33,11 @@ export class ExpandHeading extends TypeComponent {
     this.svg.addAttrObj({
       fill: '#FFF',
     });
-    this.title = new TextNode(this, title);
+    this.title = new TextNode(title);
     // span.setStyle('verticalAlign', 'middle');
     const span = new Span(this);
     span.childNodes = [this.title];
     this.childNodes = [this.svg, span];
-
-    this.initEvents();
   }
   setTitle(title: string) {
     this.title.setText(title);
@@ -55,7 +54,7 @@ export class ExpandHeading extends TypeComponent {
             transition: 'transform 0.3s'
           });
           console.log('style.transform is ', style.transform);
-          if (this.parent.lastChild instanceof TypeElement) {
+          if (this?.parent?.lastChild instanceof TypeElement) {
             this.parent.lastChild.setStyle('display', 'flex'); // flex
           }
         } else {
@@ -63,7 +62,7 @@ export class ExpandHeading extends TypeComponent {
             transform: 'rotate(-90deg)',
             transition: 'transform 0.3s'
           });
-          if (this.parent.lastChild instanceof TypeElement) {
+          if (this.parent?.lastChild instanceof TypeElement) {
             this.parent.lastChild.setStyle('display', 'none');
           }
         }

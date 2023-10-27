@@ -3,9 +3,10 @@ import { Option, TextNode, TypeHtml, TypeSelect } from 'type-dom.ts';
 import { IOptionConfig } from './select.interface';
 export class Select extends TypeSelect {
   className: 'Select';
+  parent?: TypeHtml;
   childNodes: Option[];
   value: string | number | boolean;
-  constructor(public parent: TypeHtml) {
+  constructor() {
     super();
     this.className = 'Select';
     this.childNodes = [];
@@ -24,7 +25,7 @@ export class Select extends TypeSelect {
       if (opt.selected) {
         this.value = opt.value;
       }
-      const text = new TextNode(optionObj, opt.label);
+      const text = new TextNode(opt.label);
       optionObj.childNodes = [text];
       this.addChild(optionObj);
     });

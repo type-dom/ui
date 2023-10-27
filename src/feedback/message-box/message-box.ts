@@ -2,7 +2,8 @@ import { TypeRoot } from 'type-dom.ts';
 import { Overlay } from '../overlay/overlay.abstract';
 export class MessageBox extends Overlay {
   className: 'MessageBox';
-  constructor(public parent: TypeRoot) {
+  parent?: TypeRoot;
+  constructor() {
     super();
     this.className = 'MessageBox';
     this.addAttrObj({

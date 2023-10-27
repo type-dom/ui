@@ -7,9 +7,9 @@ import {
   Span,
   Textarea,
   TextNode,
-  TypeComponent,
+  TypeComponent, Button,
 } from 'type-dom.ts';
-import { TdButton } from '../../basic/td-button/td-button.class';
+// import { TdButton } from '../../basic/td-button/td-button.class';
 import { Select } from '../select/select.class';
 export const labelStyle: Partial<IStyle> = {
   width: '80px',
@@ -49,13 +49,11 @@ export const itemContentStyle: Partial<IStyle> = {
 export abstract class FieldItem extends TypeComponent {
   abstract className: string;
   // abstract parent: Appearance | DataSetting | Description;
-  abstract childNodes: [Label, ...(Span | Input | Textarea | Select | Division)[], TdButton];
+  abstract childNodes: [Label, ...(Span | Input | Textarea | Select | Division)[], Button];
   label: Label;
-  button: TdButton;
-  dom: HTMLDivElement;
+  button: Button;
   protected constructor(labelText: string) {
     super('div');
-    this.dom = document.createElement('div');
     this.propObj.styleObj = {
       // border: '1px solid #1890ff',
       // background: '#f3f9ff',
@@ -66,17 +64,22 @@ export abstract class FieldItem extends TypeComponent {
       fontSize: '14px',
     };
     this.label = new Label(this);
-    const text = new TextNode(this.label, labelText);
-    this.label.childNodes.push(text);
+    this.label.textNode.setText(labelText);
+    this.label.childNodes.push(this.label.textNode);
     this.label.addStyleObj(Object.assign({}, labelStyle));
-    this.button = new TdButton(this, {
-      type: 'primary',
-      size: 'mini'
+    this.button = new Button(this);
+    this.button.addStyleObj({
+      height: '28px',
+      background: '#ffffff',
+      borderWidth: '1px',
+      borderStyle: 'solid',
+      borderLeft: 'none',
+      borderColor: '#dcdfe6',
+      display: 'none',
     });
-    // this.button.addStyleObj({
-    //   height: '28px',
-    //   display: 'none',
-    // });
+  }
+  setLabelTitle(text: string) {
+    this.label.childNodes[0].nodeValue = text;
   }
   show(): void {
     this.setStyleObj({

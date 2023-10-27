@@ -3,7 +3,8 @@ import { TypeButton } from 'type-dom.ts';
 import { OverlayFooter } from '../footer';
 export class CancelButton extends TypeButton {
   className: 'CancelButton';
-  constructor(public parent: OverlayFooter) {
+  parent?: OverlayFooter;
+  constructor() {
     super();
     this.className = 'CancelButton';
     this.addStyleObj({
@@ -15,12 +16,14 @@ export class CancelButton extends TypeButton {
     });
     this.addAttrName('cancel-button');
     this.setTitle('取消');
-    this.initEvents();
   }
   initEvents(): void {
+    if (!this.parent?.parent?.parent) {
+      console.error('this.parent?.parent?.parent is undefined . ');
+    }
     this.events.push(
       fromEvent(this.dom, 'click').subscribe(() => {
-        this.parent.parent.parent.hide();
+        this.parent?.parent?.parent?.hide();
       }),
     );
   }

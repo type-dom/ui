@@ -4,9 +4,10 @@ import { TdCloseSvg } from 'type-dom-svgs';
 import { OverlayHeader } from '../header';
 export class CloseButton extends TypeButton {
   className: 'CloseButton';
+  parent?: OverlayHeader;
   childNodes: [TdCloseSvg];
   private readonly svg: TdCloseSvg;
-  constructor(public parent: OverlayHeader) {
+  constructor() {
     super();
     this.className = 'CloseButton';
     this.propObj = {
@@ -27,12 +28,11 @@ export class CloseButton extends TypeButton {
     };
     this.svg = new TdCloseSvg(this);
     this.childNodes = [this.svg];
-    this.initEvents();
   }
   initEvents(): void {
     this.events.push(
       fromEvent(this.dom, 'click').subscribe(() => {
-        this.parent.parent.parent.hide();
+        this.parent?.parent?.parent?.hide();
       }),
     );
   }

@@ -6,7 +6,6 @@ export abstract class Overlay extends TypeDiv {
   // abstract parent: TypeFormDesigner;
   childNodes: [OverlayContainer];
   container: OverlayContainer;
-
   protected constructor() {
     super();
     this.addStyleObj({
@@ -22,9 +21,9 @@ export abstract class Overlay extends TypeDiv {
       display: StyleDisplay.none,
     });
     // document.body.appendChild(this.dom); // 挂载在 body 上
-    this.container = new OverlayContainer(this);
+    this.container = new OverlayContainer();
+    this.container.parent = this;
     this.childNodes = [this.container];
-    this.initEvents();
   }
 
   setTitle(title: string): void {
@@ -34,7 +33,7 @@ export abstract class Overlay extends TypeDiv {
   // 设置消息
   setMsg(msg: string): void {
     const span = new Span(this.container.body);
-    const textNode = new TextNode(span, msg);
+    const textNode = new TextNode(msg);
     span.addChild(textNode);
     this.container.body.clearChild();
     this.container.body.appendChild(span);

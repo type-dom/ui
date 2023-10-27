@@ -2,7 +2,8 @@ import { TypeDiv } from 'type-dom.ts';
 import { OverlayContainer } from '../container';
 export class OverlayBody extends TypeDiv {
   className: 'OverlayBody';
-  constructor(public parent: OverlayContainer) {
+  parent?: OverlayContainer;
+  constructor() {
     super();
     this.className = 'OverlayBody';
     this.propObj = {

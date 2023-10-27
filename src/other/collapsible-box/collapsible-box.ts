@@ -6,10 +6,11 @@ import { ExpandHeading } from './heading/expand-heading';
  */
 export class CollapsibleBox extends TypeComponent {
   className: 'CollapsibleBox' | string;
+  public parent?: TypeComponent;
   childNodes: [ExpandHeading, CollapsibleBoxContents];
   heading: ExpandHeading;
   contents: CollapsibleBoxContents;
-  constructor(public parent: TypeComponent) {
+  constructor() {
     super('div');
     this.className = 'CollapsibleBox';
     this.propObj = {
@@ -24,8 +25,10 @@ export class CollapsibleBox extends TypeComponent {
         name: 'collapsible-box',
       }
     };
-    this.heading = new ExpandHeading(this, '标题');
-    this.contents = new CollapsibleBoxContents(this);
+    this.heading = new ExpandHeading('标题');
+    this.heading.parent = this;
+    this.contents = new CollapsibleBoxContents();
+    this.contents.parent = this;
     this.childNodes = [this.heading, this.contents];
   }
   // contents重新赋值后，children刷新。render渲染会变。

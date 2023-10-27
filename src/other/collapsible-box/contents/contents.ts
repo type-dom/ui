@@ -2,8 +2,9 @@ import { StyleDisplay, TypeComponent } from 'type-dom.ts';
 import { CollapsibleBox } from '../collapsible-box';
 export class CollapsibleBoxContents extends TypeComponent {
   className: 'CollapsibleBoxContents' | string;
+  public parent?: CollapsibleBox;
   // childNodes: ControlMenu[];
-  constructor(public parent: CollapsibleBox) {
+  constructor() {
     super('div');
     this.className = 'CollapsibleBoxContents';
     this.propObj = {

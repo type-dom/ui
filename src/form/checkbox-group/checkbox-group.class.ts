@@ -6,9 +6,10 @@ import { IOption } from './checkbox-option/checkbox-option.interface';
 
 export class CheckboxGroup extends TypeDiv implements ICheckboxGroup {
   className: 'CheckboxGroup';
+  public parent?: TypeHtml;
   childNodes: CheckboxOption[];
   value: (string | number | boolean)[]; // 应该是个数组
-  constructor(public parent: TypeHtml) {
+  constructor() {
     super();
     this.className = 'CheckboxGroup';
     this.addAttrName('checkbox-group');
@@ -21,7 +22,7 @@ export class CheckboxGroup extends TypeDiv implements ICheckboxGroup {
     this.value = [];
     const random = Math.random();
     options.forEach((opt) => {
-      const optObj = new CheckboxOption(this);
+      const optObj = new CheckboxOption();
       optObj.input.addAttrObj({
         name: 'checkbox' + random,
         label: opt.label,
