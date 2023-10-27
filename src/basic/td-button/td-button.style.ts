@@ -1,4 +1,4 @@
-import { IStyle, StyleCursor, StyleDisplay } from 'type-dom.ts/dist';
+import { IStyle, StyleCursor, StyleDisplay } from 'type-dom.ts';
 import {
   $borderStyle,
   $button,

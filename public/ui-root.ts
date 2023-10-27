@@ -1,4 +1,3 @@
-import {fromEvent} from "rxjs";
 import { TypeRoot, Br, ITypeRootOption, Div } from 'type-dom.ts';
 import { Dialog, MessageBox } from '../src';
 import {TdInputItem} from "../src/form/input-item/td-input-item.class";
