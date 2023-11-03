@@ -1,11 +1,11 @@
 import {Br, Div, TypeComponent} from "type-dom.ts";
 import {TdCloseSvg, TdConnectionSvg, TdDateSvg, TdDeleteSvg, TdSelectSvg, TdTimeSvg} from "type-dom-svgs";
 import {TdButton} from "../src";
-import {UiRoot} from "./ui-root";
+import {AppElement} from "./app-element";
 import {fromEvent} from "rxjs";
 export class ButtonWrapper extends TypeComponent {
   className: 'ButtonWrapper';
-  constructor(public parent: UiRoot) {
+  constructor(public parent: AppElement) {
     super();
     this.className = 'ButtonWrapper';
     this.createNormalButton();

@@ -2,8 +2,7 @@
   "name": "type-dom-ui",
   "version": "0.0.8",
   "description": "type dom ui components . ",
-  "main": "dist/index.js",
-  "types": "dist/index.d.js",
+  "main": "src/index.ts",
   "scripts": {
     "serve": "webpack-dev-server --mode=development --config ./build/webpack.config.js",
     "build": "rimraf dist && tsc",
@@ -103,15 +102,5 @@
     "showRelativePath": true,
     "historyFile": "typecoverage.json",
     "noDetailWhenFailed": true
-  },
-  "nx": {
-    "targets": {
-      "build": {
-        "outputs": [
-          "{projectRoot}/dist",
-          "{projectRoot}/public/dist"
-        ]
-      }
-    }
   }
 }

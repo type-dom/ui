@@ -8,14 +8,14 @@ import {ButtonWrapper} from "./button-wrapper";
  * 因为属性和方法要全局调用，所以全部设置为静态 static; 包括get也设置为静态
  * UI组件显示页面
  */
-export class UiRoot extends TypeRoot {
-  className: 'UIView';
+export class AppElement extends TypeRoot {
+  className: 'AppElement';
   dialog: Dialog;
   messageBox: MessageBox;
   constructor(option: ITypeRootOption) {
     super(option);
     console.log('UIView constructor . ');
-    this.className = 'UIView';
+    this.className = 'AppElement';
     this.addStyleObj({
       padding: '30px'
     });
