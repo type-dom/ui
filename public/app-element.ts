@@ -1,7 +1,6 @@
 import { TypeRoot, Br, ITypeRootOption, Div } from 'type-dom.ts';
-import { Dialog, MessageBox } from '../src';
-import {TdInputItem} from "../src/form/input-item/td-input-item.class";
-import {ButtonWrapper} from "./button-wrapper";
+import { Dialog, MessageBox, TdInputItem } from '../src';
+import { ButtonWrapper } from './button-wrapper';
 /**
  * 应用根节点，必须存在。
  * 应用继承 TypeRoot;

@@ -1,4 +1,4 @@
-import {ITypeSection} from "type-dom.ts";
+import {ITypeSection} from 'type-dom.ts';
 
 export interface ITdContainer extends ITypeSection {
 

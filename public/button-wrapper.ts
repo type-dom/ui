@@ -1,8 +1,8 @@
-import {Br, Div, TypeComponent} from "type-dom.ts";
-import {TdCloseSvg, TdConnectionSvg, TdDateSvg, TdDeleteSvg, TdSelectSvg, TdTimeSvg} from "type-dom-svgs";
-import {TdButton} from "../src";
-import {AppElement} from "./app-element";
-import {fromEvent} from "rxjs";
+import { fromEvent } from 'rxjs';
+import { Br, Div, TypeComponent } from 'type-dom.ts';
+import { TdCloseSvg, TdConnectionSvg, TdDateSvg, TdDeleteSvg, TdSelectSvg, TdTimeSvg } from 'type-dom-svgs';
+import { TdButton } from '../src';
+import { AppElement } from './app-element';
 export class ButtonWrapper extends TypeComponent {
   className: 'ButtonWrapper';
   constructor(public parent: AppElement) {
