@@ -1,4 +1,4 @@
-import { ITypeSelect } from 'type-dom.ts';
+import { ITypeSelect } from '@type-dom/framework';
 import { IOption } from '../field-item/field-item.interface';
 export interface ISelect extends ITypeSelect {
   className: 'Select',

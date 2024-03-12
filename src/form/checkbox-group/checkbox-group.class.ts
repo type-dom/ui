@@ -1,5 +1,5 @@
 
-import { TypeDiv, TypeHtml } from 'type-dom.ts';
+import { TypeDiv, TypeHtml } from '@type-dom/framework';
 import { CheckboxOption } from './checkbox-option/checkbox-option.class';
 import { ICheckboxGroup } from './checkbox-group.interface';
 import { IOption } from './checkbox-option/checkbox-option.interface';
@@ -17,8 +17,7 @@ export class CheckboxGroup extends TypeDiv implements ICheckboxGroup {
     this.value = [];
   }
   setOptions(options: IOption[]): void {
-    this.clearChildNodes();
-    this.clearChildDom();
+    this.clearChildren();
     this.value = [];
     const random = Math.random();
     options.forEach((opt) => {

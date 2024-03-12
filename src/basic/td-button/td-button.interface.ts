@@ -1,4 +1,4 @@
-import { ITypeButton, ISpan, ITypeSvg } from 'type-dom.ts';
+import { ITypeButton, ISpan, ITypeConfig, TypeSvgSvg } from '@type-dom/framework';
 import { ITdIcon } from '../td-icon/td-icon.interface';
 
 export interface ITdButton extends ITypeButton {
@@ -22,20 +22,21 @@ export type IButtonNativeType = 'button' | 'submit' | 'reset';
  *     color 自定义按钮的颜色。
  *     disabled  按钮是否为禁用状态
  */
-export interface ITdButtonConfig {
+export interface ITdButtonConfig extends ITypeConfig {
   // FormItemProps
-  size: IButtonSize,
-  disabled: boolean,
-  title: string,
-  type: IButtonType,
-  SvgClass: any, // todo createSvg(svgName)
-  iconPosition: 'left' | 'right',
-  icon: string,
-  nativeType: IButtonNativeType,
-  loading: boolean,
-  plain: boolean,
-  round: boolean,
-  circle: boolean,
-  loadingIcon: string,
-  color: string,
+  size: IButtonSize;
+  disabled: boolean;
+  title: string;
+  type: IButtonType;
+  SvgClass: any; // todo createSvg(svgName)
+  svgObj: TypeSvgSvg;
+  iconPosition: 'left' | 'right';
+  icon: string;
+  nativeType: IButtonNativeType;
+  loading: boolean;
+  plain: boolean;
+  round: boolean;
+  circle: boolean;
+  loadingIcon: string;
+  color: string;
 }

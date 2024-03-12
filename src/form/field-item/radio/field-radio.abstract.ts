@@ -1,5 +1,5 @@
 import { fromEvent } from 'rxjs';
-import { Button, Division, Label, TypeElement } from 'type-dom.ts';
+import { Button, Division, Label, TypeElement } from '@type-dom/framework';
 // import { TdButton } from '../../../basic/td-button/td-button.class';
 import { IOption, IOptionConfig } from '../field-item.interface';
 import { FieldItem } from '../field-item.abstract';
@@ -22,7 +22,7 @@ export abstract class FieldRadio extends FieldItem {
     options.forEach((option, index) => {
       let button;
       if (!this.optionDiv.childNodes[index]) {
-        button = new Button(this);
+        button = new Button({ parent: this });
         button.setTitle(option.label);
         // const label = new TextNode(button, option.label);
         // button.childNodes = [label];

@@ -1,7 +1,7 @@
 import { fromEvent } from 'rxjs';
-import { StyleDisplay, Division, Label, Button } from 'type-dom.ts';
-import { TdButton } from '../../../basic/td-button/td-button.class';
-import { FieldItem, itemContentStyle } from '../field-item.abstract';
+import { StyleDisplay, Division, Label, Button } from '@type-dom/framework';
+import { FieldItem } from '../field-item.abstract';
+import { itemContentStyle } from "../field-item.style";
 import { TdSelect } from '../../../basic/td-select/td-select.class';
 import { IOptionConfig } from '../field-item.interface';
 /**
@@ -65,7 +65,7 @@ export abstract class PropertyCascade extends FieldItem {
     const fieldConfigStr = this.configs?.fieldConfig;
     if (fieldConfigStr) {
       const configJson = JSON.parse(fieldConfigStr as string) as IOptionConfig;
-      let optionConfig: IOptionConfig = {
+      const optionConfig: IOptionConfig = {
         name: configJson.name,
         resultValue: configJson.resultValue,
         options: []

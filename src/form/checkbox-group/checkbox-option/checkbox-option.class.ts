@@ -1,5 +1,5 @@
 import { fromEvent } from 'rxjs';
-import { Input, TextNode, TypeSpan } from 'type-dom.ts';
+import { Input, TextNode, TypeSpan } from '@type-dom/framework';
 import { CheckboxGroup } from '../checkbox-group.class';
 import { ICheckboxOption } from './checkbox-option.interface';
 export class CheckboxOption extends TypeSpan implements ICheckboxOption {
@@ -11,7 +11,7 @@ export class CheckboxOption extends TypeSpan implements ICheckboxOption {
   constructor() {
     super();
     this.className = 'CheckboxOption';
-    this.input = new Input(this);
+    this.input = new Input({ parent: this });
     this.input.addAttrObj({
       type: 'checkbox',
       // name: optionConfig.name,

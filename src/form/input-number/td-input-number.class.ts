@@ -1,4 +1,4 @@
-import { TypeHtml } from 'type-dom.ts';
+import { TypeHtml } from '@type-dom/framework';
 import { FieldInput } from '../field-item/input/field-input.abstract';
 import { ITdInputNumberConfig } from './td-input-number.interface';
 // 标题属性

@@ -1,4 +1,4 @@
-import { TypeRoot } from 'type-dom.ts';
+import { TypeRoot } from '@type-dom/framework';
 import { Overlay } from '../overlay/overlay.abstract';
 export class Dialog extends Overlay {
   className: 'Dialog';

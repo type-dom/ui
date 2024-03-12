@@ -1,5 +1,5 @@
 import { fromEvent } from 'rxjs';
-import { Input, TextNode, TypeSpan } from 'type-dom.ts';
+import { Input, TextNode, TypeSpan } from '@type-dom/framework';
 import { RadioGroup } from '../radio-group.class';
 import { IRadioOption } from './radio-option.interface';
 
@@ -15,7 +15,7 @@ export class RadioOption extends TypeSpan implements IRadioOption {
     this.addStyleObj({
       padding: '0 5px',
     });
-    this.input = new Input(this);
+    this.input = new Input({ parent: this });
     this.input.addAttrObj({
       type: 'radio',
       // name: optionConfig.name,

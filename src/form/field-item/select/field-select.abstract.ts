@@ -1,8 +1,8 @@
 import { fromEvent } from 'rxjs';
-import { Button, Label, TypeComponent } from 'type-dom.ts';
-// import { TdButton } from '../../../basic/td-button/td-button.class';
+import { Button, Label, TypeComponent } from '@type-dom/framework';
 import { Select } from '../../select/select.class';
-import { itemContentStyle, FieldItem } from '../field-item.abstract';
+import { FieldItem } from '../field-item.abstract';
+import { itemContentStyle } from "../field-item.style";
 export abstract class FieldSelect extends FieldItem {
   abstract reset(value?: string): void;
   parent?: TypeComponent;

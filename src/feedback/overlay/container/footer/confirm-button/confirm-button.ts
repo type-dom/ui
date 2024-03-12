@@ -1,5 +1,5 @@
 import { fromEvent } from 'rxjs';
-import { TextNode, TypeButton } from 'type-dom.ts';
+import { TextNode, TypeButton } from '@type-dom/framework';
 import { OverlayFooter } from '../footer';
 export class ConfirmButton extends TypeButton {
   className: 'ConfirmButton';

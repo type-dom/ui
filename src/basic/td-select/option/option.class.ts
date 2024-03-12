@@ -1,4 +1,4 @@
-import { TextNode, TypeNode, TypeOption } from 'type-dom.ts';
+import { TextNode, TypeNode, TypeOption } from '@type-dom/framework';
 import { TdSelect } from '../td-select.class';
 import { ISelectOption } from './option.interface';
 export class SelectOption extends TypeOption implements ISelectOption {

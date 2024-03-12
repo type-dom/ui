@@ -1,5 +1,5 @@
 import { fromEvent } from 'rxjs';
-import { TypeHtml, TypeSelect } from 'type-dom.ts';
+import { TypeHtml, TypeSelect } from '@type-dom/framework';
 import { IOption } from '../../form/field-item/field-item.interface';
 import { SelectOption } from './option/option.class';
 import { ITdSelect } from './td-select.interface';
@@ -11,14 +11,11 @@ export class TdSelect extends TypeSelect implements ITdSelect {
   constructor() {
     super();
     this.className = 'TdSelect';
-    this.propObj.attrObj = {
-      name: 'td-select'
-    };
+    this.addAttrName('td-select');
     this.childNodes = [];
   }
   setOptions(options: IOption[], value: string | number | boolean): void {
-    this.clearChildNodes();
-    this.clearChildDom();
+    this.clearChildren();
     const firstOpt = new SelectOption();
     firstOpt.text.setText('请选择');
     firstOpt.addAttrObj({

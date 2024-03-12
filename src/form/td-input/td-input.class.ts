@@ -1,24 +1,24 @@
-import { TypeHtml } from 'type-dom.ts';
+import { TypeHtml } from '@type-dom/framework';
 import { FieldInput } from '../field-item/input/field-input.abstract';
-import { ITdInputItemConfig } from './td-input-item.interface';
+import { ITdInput, ITdInputConfig } from './td-input.interface';
 // 标题属性
-export class TdInputItem extends FieldInput {
-  className: 'InputItem';
+export class TdInput extends FieldInput implements ITdInput {
+  className: 'TdInput';
   public parent?: TypeHtml;
-  constructor(config: Partial<ITdInputItemConfig>) {
+  constructor(config: Partial<ITdInputConfig>) {
     super(config.labelTitle, config.placeholder);
     console.log('InputItem constructor . ');
-    this.className = 'InputItem';
+    this.className = 'TdInput';
     this.addStyleObj({
       padding: '2px 10px 2px 0',
     });
     this.addAttrName('input-item');
     this.label.addStyleObj({
       fontSize: '16px',
-      width: '100px',
+      width: config.labelWidth || '150px',
     });
     this.content.addAttrObj({
-      type: 'number',
+      type: config?.type || 'text',
     });
     // todo 有后缀时才需要这样
     // this.content.addStyleObj({

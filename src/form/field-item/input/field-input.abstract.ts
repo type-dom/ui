@@ -1,7 +1,7 @@
 import { fromEvent } from 'rxjs';
-import { TypeHtml, Input, Label, Button } from 'type-dom.ts';
-// import { TdButton } from '../../../basic/td-button/td-button.class';
-import { itemContentStyle, FieldItem } from '../field-item.abstract';
+import { TypeHtml, Input, Label, Button } from '@type-dom/framework';
+import { FieldItem } from '../field-item.abstract';
+import { itemContentStyle } from "../field-item.style";
 export abstract class FieldInput extends FieldItem {
   mode?: string;
   parent?: TypeHtml;
@@ -10,7 +10,7 @@ export abstract class FieldInput extends FieldItem {
   content: Input;
   protected constructor(labelText = '控件名称', placeholder = '请输入') {
     super(labelText);
-    this.content = new Input(this);
+    this.content = new Input({ parent: this });
     this.content.propObj = {
       styleObj: Object.assign({}, itemContentStyle),
       attrObj: {

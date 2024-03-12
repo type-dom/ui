@@ -1,4 +1,4 @@
-import { TypeDiv } from 'type-dom.ts';
+import { TypeDiv } from '@type-dom/framework';
 import { OverlayContainer } from '../container';
 export class OverlayBody extends TypeDiv {
   className: 'OverlayBody';

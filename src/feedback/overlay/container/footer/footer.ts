@@ -1,5 +1,5 @@
 import { fromEvent } from 'rxjs';
-import { TypeDiv } from 'type-dom.ts';
+import { TypeDiv } from '@type-dom/framework';
 import { OverlayContainer } from '../container';
 import { TdButton } from '../../../../basic/td-button/td-button.class';
 // import { CancelButton } from './cancel-button/cancel-button';

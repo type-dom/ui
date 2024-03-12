@@ -1,11 +1,10 @@
 import { fromEvent, Observable } from 'rxjs';
-import { Button, Division, Label, StyleDisplay, TextNode, StylePosition } from 'type-dom.ts';
-import { TdThreeDotsSvg } from 'type-dom-svgs';
-import { TdButton } from '../../../basic/td-button/td-button.class';
+import { Button, Division, Label, StyleDisplay, TextNode, StylePosition } from '@type-dom/framework';
+import { TdThreeDotsSvg } from '@type-dom/svgs';
 import { TdSelect } from '../../../basic/td-select/td-select.class';
-import { FieldItem, itemContentStyle } from '../field-item.abstract';
+import { FieldItem } from '../field-item.abstract';
 import { IOptionConfig, IOption } from '../field-item.interface';
-
+import { itemContentStyle } from "../field-item.style";
 export abstract class PropertyOptions extends FieldItem {
   childNodes: [Label, Division, Button];
   selectConfigDiv: Division;
@@ -17,7 +16,6 @@ export abstract class PropertyOptions extends FieldItem {
   protected btn: Button;
   private readonly dotsSvg: TdThreeDotsSvg;
   optionsConfigObservable: Observable<Event>;
-
   protected constructor(labelText = '选项列表') {
     super(labelText);
     this.addAttrName('option-property');
@@ -55,7 +53,7 @@ export abstract class PropertyOptions extends FieldItem {
         borderRight: 'none',
       }));
 
-    this.btn = new Button(this.selectDiv);
+    this.btn = new Button({ parent: this.selectDiv });
     this.btn.addStyleObj({
       // position: 'absolute',
       // right: '10px',
@@ -141,8 +139,7 @@ export abstract class PropertyOptions extends FieldItem {
     this.selectObj.setOptions(optionConfig.options, optionConfig.resultValue);
     // todo 监听事件
     this.optionConfig = optionConfig;
-    this.optionsContent.clearChildNodes();
-    this.optionsContent.clearChildDom();
+    this.optionsContent.clearChildren();
     const styleObj = {
       display: 'inline-block',
       width: '45%',
@@ -197,8 +194,7 @@ export abstract class PropertyOptions extends FieldItem {
     // this.selectConfigDiv.clearChildNodes();
     // this.selectConfigDiv.clearChildDom();
     // this.selectConfigDiv.appendChild(this.selectObj).appendChild(this.firstDiv);
-    this.optionsContent.clearChildNodes();
-    this.optionsContent.clearChildDom();
+    this.optionsContent.clearChildren();
     const styleObj = {
       display: 'inline-block',
       width: '45%',

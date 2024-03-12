@@ -1,6 +1,6 @@
-import { IStyle, StyleCursor, StyleDisplay } from 'type-dom.ts';
+import { IStyle, StyleCursor, StyleDisplay } from '@type-dom/framework';
 import {
-  $borderStyle,
+  $borderStyle, $borderWidth,
   $button,
   $buttonBorderRadius,
   $buttonFontSize,
@@ -10,7 +10,7 @@ import {
   $colorWhite,
   $commonComponentSize,
   IType
-} from '../../style/var';
+} from '../../styles/var';
 
 export const $buttonIconSpanGap = {
   large: '8px',
@@ -65,6 +65,7 @@ export const tdButtonBase: Partial<IStyle> = {
   // '-webkit-appearance': 'none',
   backgroundColor: $button.bgColor, // getCssVar('button', 'bg-color');
   // border: $border, // getCssVar('border'),
+  borderWidth: $borderWidth,
   borderStyle: $borderStyle,
   borderColor: $button.borderColor, // getCssVar('button', 'border-color');
   padding: '8px 15px',
@@ -76,6 +77,7 @@ export function buttonVariant($type: IType) {
       color: $colorWhite,
       backgroundColor: $colors[$type].base,
       borderColor: $colors[$type].base,
+      borderWidth: $borderWidth,
       outlineColor: $colors[$type]['light-5'],
       // activeColor: $colors[$type]['dark-2'],
     },
@@ -134,6 +136,7 @@ export function buttonPlain($type: IType) {
       color: $colors[$type].base,
       backgroundColor: $colors[$type]['light-9'],
       borderColor: $colors[$type]['light-5'],
+      borderWidth: $borderWidth,
     },
     hover: {
       color: $colorWhite,

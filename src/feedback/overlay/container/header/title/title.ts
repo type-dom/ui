@@ -1,4 +1,4 @@
-import { TextNode, TypeSpan } from 'type-dom.ts';
+import { TextNode, TypeSpan } from '@type-dom/framework';
 import { OverlayHeader } from '../header';
 export class OverlayTitle extends TypeSpan {
   className: 'OverlayTitle';

@@ -7,5 +7,5 @@ export { FieldRadio } from './field-item/radio/field-radio.abstract';
 export { FieldSelect } from './field-item/select/field-select.abstract';
 export { FieldSpan } from './field-item/span/field-span.abstract';
 export { FieldTextarea } from './field-item/textarea/field-textarea.abstract';
-export { TdInputItem } from './input-item/td-input-item.class';
-// export { IInputItemConfig } from './input-item/input-item.interface';
+export { TdInput } from './td-input/td-input.class';
+export type { ITdInputConfig } from './td-input/td-input.interface';

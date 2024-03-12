@@ -1,5 +1,5 @@
 import { fromEvent } from 'rxjs';
-import { Option, TextNode, TypeHtml, TypeSelect } from 'type-dom.ts';
+import { Option, TextNode, TypeHtml, TypeSelect } from '@type-dom/framework';
 import { IOptionConfig } from './select.interface';
 export class Select extends TypeSelect {
   className: 'Select';
@@ -13,10 +13,9 @@ export class Select extends TypeSelect {
     this.value = '';
   }
   setOptionConfig(optionConfig: IOptionConfig): void {
-    this.clearChildNodes();
-    this.clearChildDom();
+    this.clearChildren();
     optionConfig.options.forEach((opt) => {
-      const optionObj = new Option(this);
+      const optionObj = new Option({ parent: this });
       optionObj.setAttrObj({
         // label: opt.label,
         value: opt.value,
@@ -92,7 +91,7 @@ export class Select extends TypeSelect {
 
   // 4.删除select中选中的项
   jsRemoveSelectedItemFromSelect(objSelect: HTMLSelectElement): void {
-    let length = objSelect.options.length - 1;
+    const length = objSelect.options.length - 1;
     for (let i = length; i >= 0; i--) {
       if ((objSelect[i] as HTMLOptionElement).selected === true) {
         // objSelect.options[i] = null;

@@ -1,6 +1,6 @@
 import { fromEvent } from 'rxjs';
-import { TypeButton, StyleCursor, StylePosition } from 'type-dom.ts';
-import { TdCloseSvg } from 'type-dom-svgs';
+import { TypeButton, StyleCursor, StylePosition } from '@type-dom/framework';
+import { TdCloseSvg } from '@type-dom/svgs';
 import { OverlayHeader } from '../header';
 export class CloseButton extends TypeButton {
   className: 'CloseButton';

@@ -1,4 +1,4 @@
-import { TypeComponent } from 'type-dom.ts';
+import { TypeComponent } from '@type-dom/framework';
 
 export interface ITdInputNumber extends TypeComponent {
   className: 'TdInputNumber'

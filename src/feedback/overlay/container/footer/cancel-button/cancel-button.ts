@@ -1,5 +1,5 @@
 import { fromEvent } from 'rxjs';
-import { TypeButton } from 'type-dom.ts';
+import { TypeButton } from '@type-dom/framework';
 import { OverlayFooter } from '../footer';
 export class CancelButton extends TypeButton {
   className: 'CancelButton';

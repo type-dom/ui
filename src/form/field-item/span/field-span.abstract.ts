@@ -1,4 +1,4 @@
-import { StyleDisplay, Label, Span, TextNode, Button } from 'type-dom.ts';
+import { StyleDisplay, Label, Span, TextNode, Button } from '@type-dom/framework';
 // import { TdButton } from '../../../basic';
 import { FieldItem } from '../field-item.abstract';
 export abstract class FieldSpan extends FieldItem {
@@ -7,7 +7,7 @@ export abstract class FieldSpan extends FieldItem {
   content: Span;
   protected constructor(labelText = '控件名称') {
     super(labelText);
-    this.content = new Span(this);
+    this.content = new Span({ parent: this });
     this.content.propObj = {
       styleObj: {
         height: '28px',

@@ -1,4 +1,4 @@
-import { TypeComponent } from 'type-dom.ts';
+import { TypeComponent } from '@type-dom/framework';
 import { CollapsibleBoxContents } from './contents/contents';
 import { ExpandHeading } from './heading/expand-heading';
 /**

@@ -1,4 +1,4 @@
-import { StyleDisplay, TypeComponent } from 'type-dom.ts';
+import { StyleDisplay, TypeComponent } from '@type-dom/framework';
 import { CollapsibleBox } from '../collapsible-box';
 export class CollapsibleBoxContents extends TypeComponent {
   className: 'CollapsibleBoxContents' | string;

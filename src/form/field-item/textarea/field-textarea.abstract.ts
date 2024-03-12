@@ -1,6 +1,6 @@
-import { StyleDisplay, Label, Textarea, TypeComponent, Button } from 'type-dom.ts';
-// import { TdButton } from '../../../basic/td-button/td-button.class';
-import { labelStyle, FieldItem } from '../field-item.abstract';
+import { StyleDisplay, Label, Textarea, TypeComponent, Button } from '@type-dom/framework';
+import { FieldItem } from '../field-item.abstract';
+import { labelStyle } from "../field-item.style";
 export abstract class FieldTextarea extends FieldItem {
   // abstract reset(value?: string): void;
   parent?: TypeComponent;
@@ -13,7 +13,7 @@ export abstract class FieldTextarea extends FieldItem {
       display: 'block', // 不是 flex
       marginBottom: '20px',
     });
-    this.content = new Textarea(this);
+    this.content = new Textarea({ parent: this });
     this.content.propObj = {
       styleObj: {
         height: '100%',

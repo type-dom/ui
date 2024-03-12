@@ -1,5 +1,5 @@
 import { fromEvent } from 'rxjs';
-import { TypeDiv, StylePosition } from 'type-dom.ts';
+import { TypeDiv, StylePosition } from '@type-dom/framework';
 import { Overlay } from '../overlay.abstract';
 import { OverlayHeader } from './header/header';
 import { OverlayBody } from './body/body';

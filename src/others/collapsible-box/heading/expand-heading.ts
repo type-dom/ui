@@ -1,6 +1,6 @@
 import { fromEvent } from 'rxjs';
-import { Span, TextNode, TypeComponent, TypeElement } from 'type-dom.ts';
-import { ElCaretBottomSvg } from 'type-dom-svgs';
+import { Span, TextNode, TypeComponent, TypeElement } from '@type-dom/framework';
+import { ElCaretBottomSvg } from '@type-dom/svgs';
 export class ExpandHeading extends TypeComponent {
   className: 'ExpandHeading';
   public parent?: TypeComponent;
@@ -29,13 +29,13 @@ export class ExpandHeading extends TypeComponent {
       }
     };
 
-    this.svg = new ElCaretBottomSvg(this);
+    this.svg = new ElCaretBottomSvg();
     this.svg.addAttrObj({
       fill: '#FFF',
     });
     this.title = new TextNode(title);
     // span.setStyle('verticalAlign', 'middle');
-    const span = new Span(this);
+    const span = new Span({ parent: this });
     span.childNodes = [this.title];
     this.childNodes = [this.svg, span];
   }

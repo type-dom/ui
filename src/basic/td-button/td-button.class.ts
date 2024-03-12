@@ -1,13 +1,13 @@
 import { fromEvent } from 'rxjs';
-import { TypeButton, TextNode, Span, TypeHtml, Slot, StyleCursor, XElement } from 'type-dom.ts';
+import { TypeButton, TextNode, Span, TypeHtml, Slot, StyleCursor, XElement } from '@type-dom/framework';
 import { $iconLeft, $iconLoading, $iconRight } from '../td-icon/td-icon.style';
-import { $borderRadius, $button, $buttonPaddingVertical } from '../../style/var';
+import { $borderRadius, $button, $buttonPaddingVertical } from '../../styles/var';
 import { TdIcon } from '../td-icon/td-icon.class';
 import { IButtonType, ITdButton, ITdButtonConfig } from './td-button.interface';
 import { $buttonPlainColors, $buttonStateColors, sizeOpts, tdButtonBase } from './td-button.style';
+// import '../../styles/style.css';
 export class TdButton extends TypeButton implements ITdButton {
   className: 'TdButton';
-  parent?: TypeHtml | XElement;
   childNodes: (Span | TdIcon)[];
   span: Span;
   textNode: TextNode;
@@ -19,38 +19,46 @@ export class TdButton extends TypeButton implements ITdButton {
     super();
     this.className = 'TdButton';
     // this.template = new Template(this);
-    this.span = new Span(this);
-    this.span.addStyleObj({
-      display: 'inline-flex',
-      alignItems: 'center',
-    });
     this.textNode = new TextNode();
-    this.span.addChild(this.textNode);
-    const slot = new Slot(this.span);
-    this.span.addChild(slot);
+    this.span = new Span({
+      parent: this,
+      styleObj: {
+        display: 'inline-flex',
+        alignItems: 'center',
+      },
+      childNodes: [
+        this.textNode,
+        new Slot(),
+      ]
+    });
     this.childNodes = [this.span];
     this.setConfig(config);
   }
-  setConfig(config?: Partial<ITdButtonConfig>): void {
+  override setConfig(config?: Partial<ITdButtonConfig>): void {
     this.addStyleObj(tdButtonBase);
+    super.setConfig(config);
     if (config?.title) {
       this.textNode.setText(config.title);
+    } else {
+      this.clearChildren();
     }
-    if (config?.SvgClass) {
+    if (config?.svgObj) {
       const icon = new TdIcon({
-        SvgClass: config.SvgClass,
+        childNodes: [
+          config.svgObj,
+        ]
       });
       if (config.iconPosition === 'right') {
         icon.addStyleObj($iconRight);
         this.addChild(icon);
       } else {
-        if (config.title) {
-          icon.addStyleObj($iconLeft);
-        }
+        // if (config.title) {
+        //   icon.addStyleObj($iconLeft);
+        // }
         // else {
         //   icon.addStyleObj()
         // }
-        this.unshiftChild(icon);
+        this.unshiftChild(icon); // 前面插入
       }
       if (config.loading) {
         icon.addStyleObj($iconLoading);

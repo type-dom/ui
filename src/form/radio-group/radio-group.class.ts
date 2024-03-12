@@ -1,4 +1,4 @@
-import { TypeDiv, TypeHtml } from 'type-dom.ts';
+import { TypeDiv, TypeHtml } from '@type-dom/framework';
 import { IOption } from '../checkbox-group/checkbox-option/checkbox-option.interface';
 import { RadioOption } from './radio-option/radio-option.class';
 import { IRadioGroup } from './radio-group.interface';
@@ -16,8 +16,7 @@ export class RadioGroup extends TypeDiv implements IRadioGroup {
     this.childNodes = [];
   }
   setOptions(options: IOption[]): void {
-    this.clearChildNodes();
-    this.clearChildDom();
+    this.clearChildren();
     const random = Math.random();
     options.forEach((opt) => {
       const optObj = new RadioOption();

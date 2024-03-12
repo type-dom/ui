@@ -1,5 +1,5 @@
 import { fromEvent } from 'rxjs';
-import { TypeDiv, StyleDisplay, StylePosition, TextNode, Span } from 'type-dom.ts';
+import { TypeDiv, StyleDisplay, StylePosition, TextNode, Span } from '@type-dom/framework';
 import { OverlayContainer } from './container/container';
 export abstract class Overlay extends TypeDiv {
   abstract className: string;
@@ -32,10 +32,14 @@ export abstract class Overlay extends TypeDiv {
   }
   // 设置消息
   setMsg(msg: string): void {
-    const span = new Span(this.container.body);
-    const textNode = new TextNode(msg);
-    span.addChild(textNode);
-    this.container.body.clearChild();
+    const span = new Span({
+      parent: this.container.body,
+      childNodes: [
+        new TextNode(msg),
+      ]
+    });
+    // this.container.body.clearChild();
+    this.container.body.clearChildren();
     this.container.body.appendChild(span);
   }
   // 设置复杂的内容
@@ -51,10 +55,8 @@ export abstract class Overlay extends TypeDiv {
 
   clear(): void {
     this.container.header.title.text.setText('标题');
-    this.container.body.clearChildNodes();
-    this.container.body.clearChildDom();
-    this.container.body.clearChildNodes();
-    this.container.footer.clearChildDom();
+    this.container.body.clearChildren();
+    this.container.footer.clearChildrenDom();
   }
   clearBody(): void {
     // this.container.body.clearChildDom();
