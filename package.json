@@ -72,8 +72,8 @@
     "webpack-merge": "^5.9.0"
   },
   "dependencies": {
-    "type-dom-svgs": "*",
-    "type-dom.ts": "*"
+    "@type-dom/framework": "*",
+    "@type-dom/svgs": "*"
   },
   "repository": {
     "type": "git",
