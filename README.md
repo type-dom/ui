@@ -2,10 +2,11 @@
 
 > 这是一个基于自建前端框架TypeDom创建的ui组件库。
 
-
 ## 安装
->  npm install @type-dom/ui
+
+> npm install @type-dom/ui
 >
+
 ## 框架介绍
 
     1、技术栈
@@ -15,8 +16,14 @@
         –	抽象类
         –	实体类
     2、项目结构
-        –	build
-        –	public
         –	src
-            –	
+            –	lib
+                -   basic
+                -   data
+                -   feedback
+                -   form
+                -   navigation
+                -   other
+                -   styles
             –
+        -   test
