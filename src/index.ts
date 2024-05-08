@@ -1,7 +1,7 @@
-// import './lib/styles/index.scss'; // 打包后整合在main.css文件中；
-export * from './lib/styles/index';
-export * from './lib/basic';
-export * from './lib/feedback';
-export * from './lib/form';
-export * from './lib/navigation';
-export * from './lib/others';
+// import './styles/index.scss'; // 打包后整合在main.css文件中；
+export * from './styles/index';
+export * from './components/basic';
+export * from './components/feedback';
+export * from './components/form';
+export * from './components/navigation';
+export * from './components/others';
