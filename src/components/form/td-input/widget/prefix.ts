@@ -14,7 +14,7 @@ export class TdInputPrefix extends TypeSpan {
     super();
     this.parent = parent;
     this.className = 'TdInputPrefix';
-    this.addStyleObj({
+    this.style.addObj({
       display: config?.prefixIcon ? 'inline-flex' : 'none',
       whiteSpace: 'nowrap',
       flexShrink: 0,
@@ -52,7 +52,7 @@ export class TdInputPrefix extends TypeSpan {
         styleObj: {
           display: 'inline-flex',
           fontSize: $inputFontSize[config?.size || 'default']
-          // cursor: StyleCursor.pointer,
+          // cursor: 'pointer',
         },
         events: {
           click: (evt, icon) => {

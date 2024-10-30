@@ -1,9 +1,12 @@
 import {
-  IJsonData, IJsonDataProp,
+  IJsonData,
+  IJsonDataProp,
   InputEnum,
-  IObDataProp, IPrimitive,
+  IObDataProp,
+  IPrimitive,
   Span,
-  TypeSvgSvg, XProxy
+  TypeSvgSvg,
+  XProxy
 } from '@type-dom/framework';
 import { ISize } from '../../../styles/size';
 import { IUI, IUIConfig } from '../../../ui/ui.interface';
@@ -93,7 +96,7 @@ export interface ITdInputConfig extends IUIConfig {
    * @description word count
    *     default: false,
    */
-  showWordLimit?: boolean,
+  showWordLimit?: boolean;
   /**
    * @description suffix icon
    */
@@ -111,7 +114,7 @@ export interface ITdInputConfig extends IUIConfig {
    * @description native input aria-label
    *     default: undefined,
    */
-  label?: string
+  label?: string;
   /**
    * @description input tabindex
    *     default: 0,
@@ -142,6 +145,22 @@ export interface ITdInputConfig extends IUIConfig {
   passwordVisible?: boolean;
   width?: number;
   suffix?: Span;
+
+  emits?: {
+    input?: (value: string) => void,
+    change?: (value: string) => void,
+    focus?: (evt: FocusEvent) => void,
+    blur?: (evt: FocusEvent) => void,
+    clear?: () => true,
+    mouseleave?: (evt: MouseEvent) => void,
+    mouseenter?: (evt: MouseEvent) => void,
+    // NOTE: when autofill by browser, the keydown event is instanceof Event, not KeyboardEvent
+    // relative bug report https://github.com/element-plus/element-plus/issues/6665
+    keydown?: (evt: KeyboardEvent | Event) => void,
+    compositionstart?: (evt: CompositionEvent) => void,
+    compositionupdate?: (evt: CompositionEvent) => void,
+    compositionend?: (evt: CompositionEvent) => void,
+  }
 }
 
-export type TargetElement = HTMLInputElement | HTMLTextAreaElement
+export type TargetElement = HTMLInputElement | HTMLTextAreaElement;

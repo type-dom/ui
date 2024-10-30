@@ -1,4 +1,3 @@
-import { ITypeConfig } from '@type-dom/framework';
 import { IUI, IUIConfig } from '../../../../ui/ui.interface';
 
 export interface ITdHeader extends IUI {

@@ -4,25 +4,26 @@ import type { ITdHeader, ITdHeaderConfig } from './td-header.interface';
 
 export class TdHeader extends UI implements ITdHeader {
   className: 'TdHeader';
+  override props: ITdHeaderConfig;
   override parent?: TdContainer;
 
-  constructor(config?: ITdHeaderConfig) {
-    super({ tag: 'header' });
+  constructor(params: ITdHeaderConfig = {}) {
+    super();
+    this.useTag('header');
     this.className = 'TdHeader';
-    this.addAttrName('td-header');
-    this.addStyleObj({
+    this.attr.addName('td-header');
+    this.style.addObj({
       display: 'flex',
       alignItems: 'center',
       padding: '0 20px',
       boxSizing: 'border-box',
-      flexShrink: 0
+      flexShrink: 0,
+      height: 60,
+      backgroundColor: '#fff'
     });
-    this.setConfig(config);
-  }
-
-  override setConfig(config?: ITdHeaderConfig): void {
-    super.setConfig(config);
-    this.addHeight(config?.height || '60px');
-    this.addBackgroundColor(config?.backgroundColor || 'fff');
+    if (params?.slot) {
+      this.slotChild(params.slot);
+    }
+    this.props = this.useParams(params);
   }
 }

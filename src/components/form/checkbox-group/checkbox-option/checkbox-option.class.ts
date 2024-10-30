@@ -1,4 +1,3 @@
-import { fromEvent } from 'rxjs';
 import { Input, TextNode, TypeSpan } from '@type-dom/framework';
 import { CheckboxGroup } from '../checkbox-group.class';
 import { ICheckboxOption } from './checkbox-option.interface';
@@ -14,7 +13,7 @@ export class CheckboxOption extends TypeSpan implements ICheckboxOption {
     super();
     this.className = 'CheckboxOption';
     this.input = new Input({ parent: this });
-    this.input.addAttrObj({
+    this.input.attr.addObj({
       type: 'checkbox'
       // name: optionSetting.name,
       // label: opt.label,
@@ -25,9 +24,9 @@ export class CheckboxOption extends TypeSpan implements ICheckboxOption {
     this.childNodes = [this.input, this.textNode];
   }
 
-  override initEvents(): void {
-    this.subscriptions.push(
-      fromEvent(this.input.dom, 'click').subscribe(() => {
+  override setup(): void {
+    this.input.addEvents({
+      click: () => {
         console.log('this.input.dom click . ');
         console.log('this.input.dom.value is ', this.input.dom.value);
         const flag = this.parent?.value.findIndex(
@@ -36,17 +35,17 @@ export class CheckboxOption extends TypeSpan implements ICheckboxOption {
         if (this.input.dom.checked) {
           if (flag === -1) {
             this.parent?.value.push(this.input.dom.value);
-            this.input.setAttrObj({
+            this.input.attr.setObj({
               checked: true
             });
           }
         } else {
-          this.input.removeAttribute('checked');
+          this.input.attr.remove('checked');
           if (flag && flag !== -1) {
-            this.parent?.value.splice(flag, 1);
+            this.parent?.value && this.parent?.value.splice(flag, 1);
           }
         }
-      })
-    );
+      }
+    });
   }
 }

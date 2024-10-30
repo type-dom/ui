@@ -1,4 +1,4 @@
-import { ITypeConfig, TextNode, TypeElement } from '@type-dom/framework';
+import { TextNode, TypeElement } from '@type-dom/framework';
 import { IUI, IUIConfig } from '../../../ui/ui.interface';
 import { TdAside } from './td-aside/td-aside.class';
 import { TdHeader } from './td-header/td-header.class';
@@ -13,6 +13,13 @@ export interface ITdContainerConfig extends IUIConfig {
   name?: string;
   // flexDirection: string;
   vertical?: boolean;
-  direction?: 'vertical' | 'horizontal', // 子元素中有 el-header 或 el-footer 时为 vertical，否则为 horizontal
-  childNodes?: (TdAside | TdHeader | TdMain | TdContainer | TypeElement | TextNode)[];
+  direction?: 'vertical' | 'horizontal'; // 子元素中有 el-header 或 el-footer 时为 vertical，否则为 horizontal
+  slot?:
+    | string
+    | TdAside
+    | TdHeader
+    | TdMain
+    | TdContainer
+    | TypeElement
+    | (string | TdAside | TdHeader | TdMain | TdContainer | TypeElement)[];
 }

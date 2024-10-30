@@ -16,5 +16,13 @@ export interface ITdDividerConfig extends IUIConfig {
   /**
    * @description the position of the customized content on the divider line
    */
-  borderStyle?: 'solid' | 'dashed' | 'dotted' | 'double' | 'groove' | 'ridge' | 'inset' | 'outset'; //  default: 'solid',
+  borderStyle?:
+    | 'solid'
+    | 'dashed'
+    | 'dotted'
+    | 'double'
+    | 'groove'
+    | 'ridge'
+    | 'inset'
+    | 'outset'; //  default: 'solid',
 }

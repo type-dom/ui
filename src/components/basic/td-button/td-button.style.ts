@@ -1,17 +1,30 @@
-import { IStyle, StyleCursor, StyleDisplay } from '@type-dom/framework';
+import { IStyle } from '@type-dom/css-type';
 import {
   $borderStyle,
   $borderWidth,
   $button,
-  $borderRadiusMap,
   $fontSizeMap,
-  $paddingHorizontalMap,
-  $paddingVerticalMap,
   $colors,
   $colorWhite,
   $commonComponentSize,
-  IType
+  IType, $borderRadius
 } from '../../../styles/var';
+
+export const $buttonBorderRadius = {
+  large: $borderRadius.base,
+  default: $borderRadius.base,
+  small: parseInt($borderRadius.base, 10) - 1 + 'px',
+};
+export const $buttonPaddingVertical = {
+  large: '13px',
+  default: '9px',
+  small: '6px',
+};
+export const $buttonPaddingHorizontal = {
+  large: '20px',
+  default: '16px',
+  small: '12px',
+};
 
 export const $buttonIconSpanGap = {
   large: '8px',
@@ -19,41 +32,41 @@ export const $buttonIconSpanGap = {
   small: '4px'
 };
 
-export const sizeOpts: Record<string, Partial<IStyle>> = {
+export const $sizeOpts: Record<string, Partial<IStyle>> = {
   // mini: {
   //   height: $commonComponentSize.small,
   //   fontSize: $fontSizeMap.small,
-  //   padding: $paddingVerticalMap.small + ' ' + $paddingHorizontalMap.small,
-  //   borderRadius: $borderRadiusMap.small
+  //   padding: $buttonPaddingVertical.small + ' ' + $buttonPaddingHorizontal.small,
+  //   borderRadius: $buttonBorderRadius.small
   // },
   small: {
     height: $commonComponentSize.small,
     fontSize: $fontSizeMap.small,
-    padding: $paddingVerticalMap.small + ' ' + $paddingHorizontalMap.small,
-    borderRadius: $borderRadiusMap.small
+    padding: $buttonPaddingVertical.small + ' ' + $buttonPaddingHorizontal.small,
+    borderRadius: $buttonBorderRadius.small
   },
   default: {
     height: $commonComponentSize.default,
     fontSize: $fontSizeMap.default,
-    padding: $paddingVerticalMap.default + ' ' + $paddingHorizontalMap.default,
-    borderRadius: $borderRadiusMap.default
+    padding: $buttonPaddingVertical.default + ' ' + $buttonPaddingHorizontal.default,
+    borderRadius: $buttonBorderRadius.default
   },
   large: {
     height: $commonComponentSize.large,
     fontSize: $fontSizeMap.large,
-    padding: $paddingVerticalMap.large + ' ' + $paddingHorizontalMap.large,
-    borderRadius: $borderRadiusMap.large
+    padding: $buttonPaddingVertical.large + ' ' + $buttonPaddingHorizontal.large,
+    borderRadius: $buttonBorderRadius.large
   }
 };
-export const tdButtonBase: Partial<IStyle> = {
-  display: StyleDisplay.inlineFlex,
+export const $tdButtonBase: IStyle = {
+  display: 'inline-flex',
   justifyContent: 'center',
   alignItems: 'center',
   lineHeight: '1',
   // min-height will expand when in flex
   height: '32px',
   whiteSpace: 'nowrap',
-  cursor: StyleCursor.pointer,
+  cursor: 'pointer',
   color: $button.textColor,
   textAlign: 'center',
   boxSizing: 'border-box',
@@ -71,7 +84,10 @@ export const tdButtonBase: Partial<IStyle> = {
   borderColor: $button.borderColor, // getCssVar('button', 'border-color');
   padding: '8px 15px'
 };
-export const $buttonStateColors: Record<string, Record<string, Partial<IStyle>>> = {};
+export const $buttonStateColors: Record<
+  string,
+  Record<string, Partial<IStyle>>
+> = {};
 
 export function buttonVariant($type: IType) {
   $buttonStateColors[$type] = {
@@ -116,21 +132,31 @@ export function buttonVariant($type: IType) {
   //   }
   // }
 
-// &.is-plain,
-// &.is-text,
-// &.is-link {
-//   @include button-plain($type);
-// }
+  // &.is-plain,
+  // &.is-text,
+  // &.is-link {
+  //   @include button-plain($type);
+  // }
 }
 
-for (const $type of ['default', 'primary', 'success', 'warning', 'danger', 'info']) {
-// @include m($type) {
-//   @include button-variant($type);
-//   }
+for (const $type of [
+  'default',
+  'primary',
+  'success',
+  'warning',
+  'danger',
+  'info'
+]) {
+  // @include m($type) {
+  //   @include button-variant($type);
+  //   }
   buttonVariant($type as IType);
 }
 
-export const $buttonPlainColors: Record<string, Record<string, Partial<IStyle>>> = {};
+export const $buttonPlainColors: Record<
+  string,
+  Record<string, Partial<IStyle>>
+> = {};
 
 export function buttonPlain($type: IType) {
   $buttonPlainColors[$type] = {
@@ -156,8 +182,36 @@ export function buttonPlain($type: IType) {
   };
 }
 
-for (const $type of ['default', 'primary', 'success', 'warning', 'danger', 'info']) {
+for (const $type of [
+  'default',
+  'primary',
+  'success',
+  'warning',
+  'danger',
+  'info'
+]) {
   buttonPlain($type as IType);
 }
 
 export const $borderRightColor = 'rgba(255, 255, 255, .5)';
+
+// export const $buttonBorderRadius = {
+//   large: $borderRadius.base,
+//   default: $borderRadius.base,
+//   small: parseInt($borderRadius.base) - 1 + 'px',
+// };
+export function buttonSize(
+  $paddingVertical: string,
+  $paddingHorizontal: string,
+  $fontSize: string,
+  $borderRadius: string | number
+): IStyle {
+  return {
+    padding: $paddingVertical + ' ' + $paddingHorizontal,
+    fontSize: $fontSize,
+    borderRadius: $borderRadius + '',
+//  &.is-round {
+//    padding: $padding-vertical $padding-horizontal;
+//  }
+  }
+}

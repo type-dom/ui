@@ -15,7 +15,7 @@ export interface IFormRule {
   min?: number;
   maxLength?: number;
   minLength?: number;
-//   todo 自定义的验证规则
+  //   todo 自定义的验证规则
 }
 
 export interface IFormRules {
@@ -30,15 +30,15 @@ export interface ITdFormConfig extends IUIConfig {
   /**
    * @description Whether to disable all components in this form. If set to `true`, it will override the `disabled` prop of the inner component.
    */
-  disabled?: boolean,
+  disabled?: boolean;
   /**
    * @description Data of form component.
    */
-  model?: object,
+  model?: object;
   /**
    * @description Validation rules of form.
    */
-  rules?: IFormRules,
+  rules?: IFormRules;
   // rules?: {
   //   type: definePropType<FormRules>(object),
   // },
@@ -97,5 +97,39 @@ export interface ITdFormConfig extends IUIConfig {
    */
   scrollIntoViewOptions?: object | boolean;
 
-  options?: Array<ITdFormItemConfig>
+  options?: Array<ITdFormItemConfig>;
 }
+
+//
+// export type FormContext = FormProps &
+//   UnwrapRef<FormLabelWidthContext> & {
+//   emit: SetupContext<FormEmits>['emit']
+//   getField: (prop: string) => FormItemContext | undefined
+//   addField: (field: FormItemContext) => void
+//   removeField: (field: FormItemContext) => void
+//   resetFields: (props?: Arrayable<FormItemProp>) => void
+//   clearValidate: (props?: Arrayable<FormItemProp>) => void
+//   validateField: (
+//     props?: Arrayable<FormItemProp>,
+//     callback?: FormValidateCallback
+//   ) => FormValidationResult
+// }
+//
+// export interface FormItemContext extends FormItemProps {
+//   $el: HTMLDivElement | undefined
+//   size: ComponentSize
+//   validateState: FormItemValidateState
+//   isGroup: boolean
+//   labelId: string
+//   inputIds: string[]
+//   hasLabel: boolean
+//   fieldValue: any
+//   addInputId: (id: string) => void
+//   removeInputId: (id: string) => void
+//   validate: (
+//     trigger: string,
+//     callback?: FormValidateCallback
+//   ) => FormValidationResult
+//   resetField(): void
+//   clearValidate(): void
+// }

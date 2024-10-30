@@ -1,21 +1,30 @@
-import { Input, Span, Textarea, TypeDiv, TypeElement, useCursor } from '@type-dom/framework';
+import {
+  Span,
+  Textarea,
+  TypeDiv,
+  TypeElement,
+} from '@type-dom/framework';
 import { $fontSizes } from '../../../../styles/var';
 import { ITdInputConfig } from '../td-input.interface';
-import { $input, $inputPaddingHorizontal, $inputTextColor } from '../td-input.style';
+import {
+  $input,
+  $inputPaddingHorizontal,
+  $inputTextColor
+} from '../td-input.style';
 import { TdInput } from '../td-input.class';
 
 export class TdTextareaWrapper extends TypeDiv {
   className: 'TextareaWrapper';
+  override props: ITdInputConfig;
   inner: Textarea;
   countSpan: Span;
-  override config?: ITdInputConfig;
   override parent?: TdInput;
   private isComposing?: boolean;
 
-  constructor(config?: ITdInputConfig) {
+  constructor(params: ITdInputConfig = {}) {
     super();
     this.className = 'TextareaWrapper';
-    this.addStyleObj({
+    this.style.addObj({
       position: 'relative',
       display: 'inline-block',
       width: '100%',
@@ -26,7 +35,7 @@ export class TdTextareaWrapper extends TypeDiv {
     });
     this.inner = new Textarea({
       attrObj: {
-        type: config?.type || 'text'
+        type: params?.type || 'text'
       },
       styleObj: {
         position: 'relative',
@@ -34,7 +43,7 @@ export class TdTextareaWrapper extends TypeDiv {
         resize: 'vertical',
         // padding: 5px map.get($input-padding-horizontal, 'default')-$border-width,
         padding:
-          '5px ' + $inputPaddingHorizontal[config?.size || 'default'] + 'px',
+          '5px ' + $inputPaddingHorizontal[params?.size || 'default'] + 'px',
         lineHeight: '1.5',
         boxSizing: 'border-box',
         width: '100%',
@@ -51,7 +60,7 @@ export class TdTextareaWrapper extends TypeDiv {
         // );
         backgroundColor: $input.bgColor,
         backgroundImage: 'none',
-        '-webkit-appearance': 'none',
+        WebkitAppearance: 'none',
         // @include inset-input-border(
         //   var(
         //     #{getCssVarName('input-border-color')},
@@ -106,7 +115,7 @@ export class TdTextareaWrapper extends TypeDiv {
     });
     this.addChildren(this.inner, this.countSpan);
     // this.childNodes = [this.inner, this.countSpan];
-    this.setConfig(config);
+    this.props = this.useParams(params);
   }
 
   // todo
@@ -115,8 +124,8 @@ export class TdTextareaWrapper extends TypeDiv {
     // should not emit input during composition
     // see: https://github.com/ElemeFE/element/issues/10516
     if (this.isComposing) return;
-    if (this.config?.autosize) {
-      this.inner.setStyleObj({
+    if (this.props.autosize) {
+      this.inner.style.setObj({
         // height: 'auto',
         height: this.inner.dom.scrollHeight + 'px'
       });

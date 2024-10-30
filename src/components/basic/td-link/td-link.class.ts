@@ -1,101 +1,108 @@
-import { fromEvent } from 'rxjs';
-import { StyleCursor } from '@type-dom/framework';
+import { Span } from '@type-dom/framework';
 import { UI } from '../../../ui/ui.abstract';
-import { $baseLink, $linkStateColors } from '../td-link/td-link.style';
-import { TdIcon } from '../td-icon/td-icon.class';
+import {
+  $linkStyle,
+  $linkStateColors,
+  useType,
+  $linkInnerStyle
+} from '../td-link/td-link.style';
 import { ITdLink, ITdLinkConfig } from './td-link.interface';
 
 export class TdLink extends UI implements ITdLink {
   className: 'TdLink';
-  override config?: ITdLinkConfig;
-  icon?: TdIcon;
+  override props: ITdLinkConfig
+  // icon?: TdIcon;
+  private inner?: Span;
 
-  constructor(configs: ITdLinkConfig) {
-    super({ tag: 'a' });
+  constructor(params: ITdLinkConfig) {
+    super();
+    this.useTag('a');
     this.className = 'TdLink';
-    this.addStyleObj($baseLink);
-    this.setConfig(configs);
+    useType(params);
+    this.style.addObj($linkStyle);
+    this.props = this.useParams(params);
   }
 
-  override setConfig(config?: Partial<ITdLinkConfig>) {
-    super.setConfig(config);
-    this.config = config;
-    if (config?.href) {
-      this.addAttrObj({
-        href: config.href
-      });
-    }
-    if (config?.target) {
-      this.addAttrObj({
-        target: config.target
-      });
-    }
-    if (config?.disabled) {
-      this.addAttrObj({
-        disabled: config.disabled
-      });
-    }
-    if (config?.type) {
-      if (config?.disabled) {
-        this.addStyleObj($linkStateColors[config.type].disabled);
+  // override beforeCreate() {
+  //   this.style.addObj($linkStyle);
+  // }
+
+  override setup() {
+    const props = this.props;
+    this.attr.addObj({
+      href: props?.href,
+      target: props?.target,
+      disabled: props?.disabled
+    });
+
+    if (props?.type) {
+      if (props?.disabled) {
+        this.style.addObj($linkStateColors[props.type].disabled);
       } else {
-        this.addStyleObj($linkStateColors[config.type].default);
+        this.style.addObj($linkStateColors[props.type].default);
       }
     } else {
-      this.addStyleObj($linkStateColors.default.default);
+      this.style.addObj($linkStateColors.default.default);
     }
-    if (config?.icon) {
-      if (config?.iconPosition === 'left') {
-        // 插入到前面
-        this.unshiftChild(config.icon);
-      } else {
-        this.addChild(config.icon);
-      }
+    if (props?.icon) {
+      this.unshiftChild(props.icon);
     }
-  }
+    this.inner = new Span({
+      name: 'inner',
+      styleObj: $linkInnerStyle
+    });
+    this.inner.addChild(this.getSlotNode());
+    this.addChild(this.inner);
 
-  override initEvents() {
     this.addEvents({
-      mouseover: () => {
-        if (this.config?.type) {
-          if (this.config?.disabled) {
-            this.setStyleObj({
-              cursor: StyleCursor.notAllowed
+      click: (evt) => {
+        this.handleClick(evt as MouseEvent);
+      },
+      mouseenter: () => {
+        if (this.props.type) {
+          if (this.props.disabled) {
+            this.style.setObj({
+              cursor: 'not-allowed'
             });
           } else {
-            this.setStyleObj($linkStateColors[this.config?.type].hover);
+            this.style.setObj($linkStateColors[this.props.type].hover);
           }
         } else {
-          this.setStyleObj($linkStateColors.default.hover);
+          this.style.setObj($linkStateColors.default.hover);
         }
-        if (this.config?.underline === false) { // 设置 false 的情况下，不显示下划线
-          this.setStyleObj({
+        if (this.props.underline === false) {
+          // 设置 false 的情况下，不显示下划线
+          this.style.setObj({
             textDecoration: 'none'
           });
         } else {
           // 1. 默认显示下划线
           // 2. 默认显示下划线，如果设置了 underline 为 true，则显示下划线
-          this.setStyleObj({
+          this.style.setObj({
             textDecoration: 'underline'
           });
         }
       },
-      mouseout: (evt) => {
-        this.setStyleObj({
+      mouseleave: (evt) => {
+        this.style.setObj({
           textDecoration: 'none'
         });
-        if (this.config?.type) {
-          this.removeStyleObj($linkStateColors[this.config?.type].hover);
-          if (this.config?.disabled) {
+        if (this.props.type) {
+          this.style.removeObj($linkStateColors[this.props.type].hover);
+          if (this.props.disabled) {
             evt?.preventDefault();
-            this.setStyleObj($linkStateColors[this.config?.type].disabled);
+            this.style.setObj($linkStateColors[this.props.type].disabled);
           } else {
-            this.setStyleObj($linkStateColors[this.config?.type].default);
+            this.style.setObj($linkStateColors[this.props.type].default);
           }
         } else {
-          this.removeStyleObj($linkStateColors.default.hover);
+          this.style.removeObj($linkStateColors.default.hover);
         }
       }
     });
+  }
+
+  handleClick(event: MouseEvent) {
+    // this.emit('click', event); // 会死循环的
   }
 }

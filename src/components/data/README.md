@@ -22,3 +22,4 @@
     TreeSelect 树形选择
     Virtualized Tree 虚拟化树形控件
     Statistic 统计组件
+    Segmented 分段控制器

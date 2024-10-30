@@ -1,18 +1,19 @@
 import { IUI, IUIConfig } from '../../../ui/ui.interface';
+import { Router } from '@type-dom/framework';
 
 export interface ITdMenu extends IUI {
   className: 'TdMenu';
 }
 
 export interface ITdMenuConfig extends IUIConfig {
-  mode?: 'horizontal' | 'vertical';  //  default: 'vertical',
-  defaultActive?: string;  // default: '',
+  mode?: 'horizontal' | 'vertical'; //  default: 'vertical',
+  defaultActive?: string; // default: '',
   // defaultOpeneds: {
   //   type: definePropType<string[]>(Array),
   //   default: () => mutable([] as const),
   // },
   uniqueOpened?: boolean;
-  router?: boolean;
+  router?: Router;
   menuTrigger?: 'hover' | 'click'; //  default: 'hover'
   collapse?: boolean;
   backgroundColor?: string;
@@ -27,7 +28,7 @@ export interface ITdMenuConfig extends IUIConfig {
   //   default: () => More,
   // },
   popperEffect?: 'dark' | 'light'; // default: 'dark',
-  popperClass?: string,
+  popperClass?: string;
   showTimeout?: number; // default: 300,
   hideTimeout?: number; //default: 300,
 }

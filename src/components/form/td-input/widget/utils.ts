@@ -31,16 +31,16 @@ const CONTEXT_STYLE = [
 ];
 
 type NodeStyle = {
-  contextStyle: string
-  boxSizing: string
-  paddingSize: number
-  borderSize: number
-}
+  contextStyle: string;
+  boxSizing: string;
+  paddingSize: number;
+  borderSize: number;
+};
 
 type TextAreaHeight = {
-  height: string
-  minHeight?: string
-}
+  height: string;
+  minHeight?: string;
+};
 
 function calculateNodeStyling(targetElement: Element): NodeStyle {
   const style = window.getComputedStyle(targetElement);

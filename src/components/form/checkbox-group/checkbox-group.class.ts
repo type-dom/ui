@@ -2,7 +2,6 @@ import { IOptionConfig, TypeDiv, TypeHtml } from '@type-dom/framework';
 import { CheckboxOption } from './checkbox-option/checkbox-option.class';
 import { ICheckboxGroup } from './checkbox-group.interface';
 
-
 export class CheckboxGroup extends TypeDiv implements ICheckboxGroup {
   className: 'CheckboxGroup';
   public override parent?: TypeHtml;
@@ -11,7 +10,7 @@ export class CheckboxGroup extends TypeDiv implements ICheckboxGroup {
   constructor() {
     super();
     this.className = 'CheckboxGroup';
-    this.addAttrName('checkbox-group');
+    this.attr.addName('checkbox-group');
     this.childNodes = [];
     this.value = [];
   }
@@ -22,7 +21,7 @@ export class CheckboxGroup extends TypeDiv implements ICheckboxGroup {
     const random = Math.random();
     options.forEach((opt) => {
       const optObj = new CheckboxOption();
-      optObj.input.addAttrObj({
+      optObj.input.attr.addObj({
         name: 'checkbox' + random,
         label: opt.label,
         value: opt.value,
@@ -42,19 +41,19 @@ export class CheckboxGroup extends TypeDiv implements ICheckboxGroup {
     if (value.trim()) {
       // console.error('value is ', value);
       this.value = value.split(',');
-      this.childNodes.forEach(optObj => {
-        if (this.value.indexOf(String(optObj.input.attrObj.value)) !== -1) {
-          optObj.input.setAttrObj({
+      this.childNodes.forEach((optObj) => {
+        if (this.value.indexOf(String(optObj.input.attr.get('value'))) !== -1) {
+          optObj.input.attr.setObj({
             checked: true
           });
         } else {
-          optObj.input.removeAttribute('checked');
+          optObj.input.attr.remove('checked');
         }
       });
     } else {
       // console.error('value is ', value);
-      this.childNodes.forEach(optObj => {
-        optObj.input.removeAttribute('checked');
+      this.childNodes.forEach((optObj) => {
+        optObj.input.attr.remove('checked');
       });
     }
   }

@@ -1,12 +1,13 @@
-import { IUI, IUIConfig } from '../../../../ui/ui.interface';
+import { IUI } from '../../../../ui/ui.interface';
+import { IDelayedToggleConfig } from '../../../../hooks/use-delayed-toggle';
 import { ITdPopperContentConfig } from '../../td-popper/content/content.interface';
 
 
 export interface ITdTooltipContent extends IUI {
-  className: 'TdTooltipContent'
+  className: 'TdTooltipContent';
 }
 
-export interface ITdTooltipContentConfig extends ITdPopperContentConfig {
+export interface ITdTooltipContentConfig extends ITdPopperContentConfig, IDelayedToggleConfig  {
   // ...useDelayedToggleProps,
   /**
    * @description which element the tooltip CONTENT appends to
@@ -15,19 +16,19 @@ export interface ITdTooltipContentConfig extends ITdPopperContentConfig {
   /**
    * @description display content, can be overridden by `slot#content`
    */
-  content?: string, // default: '',
+  content?: string; // default: '',
   /**
    * @description whether `content` is treated as HTML string
    */
-  rawContent?: boolean, // default: false,
+  rawContent?: boolean; // default: false,
   /**
    * @description when tooltip inactive and `persistent` is `false` , popconfirm will be destroyed
    */
-  persistent?: boolean,
+  persistent?: boolean;
   /**
    * @description same as `aria-label`
    */
-  ariaLabel?: string,
+  ariaLabel?: string;
   // because model toggle prop is generated dynamically
   // so the typing cannot be evaluated by typescript as type:
   // [name]: { type?: boolean, default: null }
@@ -39,15 +40,13 @@ export interface ITdTooltipContentConfig extends ITdPopperContentConfig {
   /**
    * @description animation name
    */
-  transition?: string,
+  transition?: string;
   /**
    * @description whether tooltip content is teleported, if `true` it will be teleported to where `append-to` sets
    */
-  teleported?: boolean, // default: true,
+  teleported?: boolean; // default: true,
   /**
    * @description whether Tooltip is disabled
    */
-  disabled?: boolean,
-
-
+  disabled?: boolean;
 }

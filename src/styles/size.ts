@@ -1,9 +1,9 @@
 export const componentSizes = ['', 'default', 'small', 'large'] as const;
 
-export const componentSizeMap = {
+const componentSizeMap = {
   large: 40,
   default: 32,
-  small: 24
+  small: 24,
 } as const;
 
-export type ISize = /*'' | */'default' | 'small' | 'large';
+export type ISize = /*'' | */ 'default' | 'small' | 'large';

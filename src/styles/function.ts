@@ -24,9 +24,11 @@ export function containPseudoClass($selector: string): boolean {
 }
 
 export function hitAllSpecialNestRule($selector: string): boolean {
-  return containsModifier($selector)
-    || containWhenFlag($selector)
-    || containPseudoClass($selector);
+  return (
+    containsModifier($selector) ||
+    containWhenFlag($selector) ||
+    containPseudoClass($selector)
+  );
 }
 
 // join var name
@@ -53,7 +55,10 @@ export function getCssVar(...$args: string[]): string {
 }
 
 // getCssVarWithDefault(('button', 'text-color'), red) => var(--el-button-text-color, red)
-export function getCssVarWithDefault($args: string[], $default: string): string {
+export function getCssVarWithDefault(
+  $args: string[],
+  $default: string
+): string {
   // return var(#{joinVarName($args)}, #{$default});
   return joinVarName($args) || $default;
 }

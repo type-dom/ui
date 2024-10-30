@@ -1,5 +1,9 @@
-import { fromEvent } from 'rxjs';
-import { Option, TextNode, TypeSelect, IOptionSetting } from '@type-dom/framework';
+import {
+  Option,
+  TextNode,
+  TypeSelect,
+  IOptionSetting
+} from '@type-dom/framework';
 import { ISelect } from './select.interface';
 
 export class Select extends TypeSelect implements ISelect {
@@ -18,7 +22,7 @@ export class Select extends TypeSelect implements ISelect {
     this.clearChildren();
     optionSetting.options.forEach((opt) => {
       const optionObj = new Option({ parent: this });
-      optionObj.setAttrObj({
+      optionObj.attr.setObj({
         // label: opt.label,
         value: opt.value,
         selected: opt.selected || false
@@ -32,27 +36,30 @@ export class Select extends TypeSelect implements ISelect {
     });
   }
 
-  override initEvents(): void {
-    this.subscriptions.push(
-      fromEvent(this.dom, 'click').subscribe(() => {
+  override setup(): void {
+    this.addEvents({
+      click: () => {
         console.log('this.dom click . ');
         console.log('this.dom.value is ', this.dom.value);
         this.value = this.dom.value; // 对应的opt.label.
-        this.childNodes.forEach(opt => {
+        this.childNodes.forEach((opt) => {
           if (opt.dom.value === this.dom.value) {
-            opt.setAttrObj({
+            opt.attr.setObj({
               selected: true
             });
           } else {
-            opt.removeAttribute('selected');
+            opt.attr.remove('selected');
           }
         });
-      })
-    );
+      }
+    });
   }
 
   // 1.判断select选项中 是否存在Value="paraValue"的Item
-  jsSelectIsExitItem(objSelect: HTMLSelectElement, objItemValue: string): boolean {
+  jsSelectIsExitItem(
+    objSelect: HTMLSelectElement,
+    objItemValue: string
+  ): boolean {
     let isExit = false;
     for (let i = 0; i < objSelect.options.length; i++) {
       if (objSelect.options[i].value === objItemValue) {
@@ -64,7 +71,11 @@ export class Select extends TypeSelect implements ISelect {
   }
 
   // 2.向select选项中 加入一个Item
-  jsAddItemToSelect(objSelect: HTMLSelectElement, objItemText: string | undefined, objItemValue: string): void {
+  jsAddItemToSelect(
+    objSelect: HTMLSelectElement,
+    objItemText: string | undefined,
+    objItemValue: string
+  ): void {
     // 判断是否存在
     if (this.jsSelectIsExitItem(objSelect, objItemValue)) {
       alert('该Item的Value值已经存在');
@@ -76,7 +87,10 @@ export class Select extends TypeSelect implements ISelect {
   }
 
   // 3.从select选项中 删除一个Item
-  jsRemoveItemFromSelect(objSelect: HTMLSelectElement, objItemValue: string): void {
+  jsRemoveItemFromSelect(
+    objSelect: HTMLSelectElement,
+    objItemValue: string
+  ): void {
     // 判断是否存在
     if (this.jsSelectIsExitItem(objSelect, objItemValue)) {
       for (let i = 0; i < objSelect.options.length; i++) {
@@ -91,7 +105,6 @@ export class Select extends TypeSelect implements ISelect {
     }
   }
 
-
   // 4.删除select中选中的项
   jsRemoveSelectedItemFromSelect(objSelect: HTMLSelectElement): void {
     const length = objSelect.options.length - 1;
@@ -103,7 +116,11 @@ export class Select extends TypeSelect implements ISelect {
   }
 
   // 5.修改select选项中 value="paraValue"的text为"paraText"
-  jsUpdateItemToSelect(objSelect: HTMLSelectElement, objItemText: string, objItemValue: string): void {
+  jsUpdateItemToSelect(
+    objSelect: HTMLSelectElement,
+    objItemText: string,
+    objItemValue: string
+  ): void {
     // 判断是否存在
     if (this.jsSelectIsExitItem(objSelect, objItemValue)) {
       for (let i = 0; i < objSelect.options.length; i++) {

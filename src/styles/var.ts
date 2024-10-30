@@ -1,3 +1,5 @@
+import { IStyle, Property } from '@type-dom/css-type';
+
 /**
  * scss/var
  */
@@ -7,15 +9,31 @@ export const $fontLineHeightPrimary = '24px';
  * 样式的通用全局变量
  * scss/common/var
  */
-export type IType = 'primary' | 'success' | 'warning' | 'danger' | 'error' | 'info' | 'default';
-export const $types: IType[] = ['primary', 'success', 'warning', 'danger', 'error', 'info', 'default'];
+export type IType =
+  | 'primary'
+  | 'success'
+  | 'warning'
+  | 'danger'
+  | 'error'
+  | 'info'
+  | 'default';
+
+export const $types: IType[] = [
+  'primary',
+  'success',
+  'warning',
+  'danger',
+  'error',
+  'info',
+  'default',
+];
 
 export const $textColor = {
   primary: '#303133',
   regular: '#606266',
   secondary: '#909399',
   placeholder: '#a8abb2',
-  disabled: '#c0c4cc'
+  disabled: '#c0c4cc',
 };
 export const $borderColor = {
   base: '#dcdfe6',
@@ -23,23 +41,24 @@ export const $borderColor = {
   lighter: '#ebeef5',
   extraLight: '#f2f6fc',
   dark: '#d4d7de',
-  darker: '#cdd0d6'
+  darker: '#cdd0d6',
 };
 export const $fillColor = {
   '': '#f0f2f5',
+  default: '#f0f2f5',
   light: '#f5f7fa',
   lighter: '#fafafa',
   extraLight: '#fafcff',
   dark: '#ebedf0',
   darker: '#e6e8eb',
-  blank: '#ffffff'
+  blank: '#ffffff',
 };
 // Background
 export const $bgColor = {
   '': '#ffffff',
   default: '#ffffff',
   page: '#f2f3f5',
-  overlay: '#ffffff'
+  overlay: '#ffffff',
 };
 // Border
 export const $borderWidth = '1px';
@@ -49,18 +68,22 @@ export const $borderRadius = {
   base: '4px',
   small: '2px',
   round: '20px',
-  circle: '100%'
+  circle: '100%',
 };
 // Box-shadow
 export const $boxShadow = {
   '': `0px 12px 32px 4px rgba(0, 0, 0, 0.04), 0px 8px 20px rgba(0, 0, 0, 0.08)`,
+  default:
+    '0px 12px 32px 4px rgba(0, 0, 0, 0.04), 0px 8px 20px rgba(0, 0, 0, 0.08)',
   light: '0px 0px 12px rgba(0, 0, 0, 0.12)',
   lighter: '0px 0px 6px rgba(0, 0, 0, 0.12)',
-  dark: '0px 16px 48px 16px rgba(0, 0, 0, 0.08),0px 12px 32px rgba(0, 0, 0, 0.12),0px 8px 16px -8px rgba(0, 0, 0, 0.16)'
+  dark: '0px 16px 48px 16px rgba(0, 0, 0, 0.08),0px 12px 32px rgba(0, 0, 0, 0.12),0px 8px 16px -8px rgba(0, 0, 0, 0.16)',
 };
 // Typography （排版）
 export const fontFamily = {
-  '': '\'Helvetica Neue\', Helvetica, \'PingFang SC\', \'Hiragino Sans GB\', \'Microsoft YaHei\', \'微软雅黑\', Arial, sans-serif'
+  '': "'Helvetica Neue', Helvetica, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', '微软雅黑', Arial, sans-serif",
+  default:
+    "'Helvetica Neue', Helvetica, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', '微软雅黑', Arial, sans-serif",
 };
 
 export const $fontSizes = {
@@ -70,60 +93,62 @@ export const $fontSizes = {
   default: '16px',
   base: '14px',
   small: '13px',
-  extraSmall: '12px'
+  extraSmall: '12px',
 };
 // zIndex
 export const $zIndex = {
   normal: 1,
   top: 1000,
-  popper: 2000
+  popper: 2000,
 };
 
 // Disable default
 export const $disabled = {
   bgColor: $fillColor.light,
   textColor: $textColor.placeholder,
-  borderColor: $borderColor.light
+  borderColor: $borderColor.light,
 };
 export const componentSizes = ['', 'default', 'small', 'large'] as const;
 
-export type ComponentSize = typeof componentSizes[number]
+export type ComponentSize = (typeof componentSizes)[number];
 
 export const componentSizeMap = {
   large: 40,
   default: 32,
-  small: 24
+  small: 24,
 } as const;
 
 export const $commonComponentSize = {
   large: '40px',
   default: '32px',
-  small: '24px'
+  small: '24px',
 };
 
 // overlay
 export const $overlayColor = {
   '': 'rgba(0, 0, 0, 0.8)',
+  default: 'rgba(0, 0, 0, 0.8)',
   light: 'rgba(0, 0, 0, 0.7)',
-  lighter: 'rgba(0, 0, 0, 0.5)'
+  lighter: 'rgba(0, 0, 0, 0.5)',
 };
 
 // mask
 const $maskColor = {
   '': 'rgba(255, 255, 255, 0.9)',
-  'extra-light': 'rgba(255, 255, 255, 0.3)'
+  default: 'rgba(255, 255, 255, 0.9)',
+  extraLight: 'rgba(255, 255, 255, 0.3)',
 };
 
 export const $colors: {
-  white: string,
-  black: string,
-  default: { base: string, [propName: string]: string },
-  primary: { base: string, [propName: string]: string },
-  success: { base: string, [propName: string]: string },
-  warning: { base: string, [propName: string]: string },
-  danger: { base: string, [propName: string]: string },
-  error: { base: string, [propName: string]: string },
-  info: { base: string, [propName: string]: string },
+  white: string;
+  black: string;
+  default: { base: string; [propName: string]: string };
+  primary: { base: string; [propName: string]: string };
+  success: { base: string; [propName: string]: string };
+  warning: { base: string; [propName: string]: string };
+  danger: { base: string; [propName: string]: string };
+  error: { base: string; [propName: string]: string };
+  info: { base: string; [propName: string]: string };
 } = {
   white: '#ffffff',
   black: '#000000',
@@ -133,7 +158,7 @@ export const $colors: {
   warning: { base: '#e6a23c' },
   danger: { base: '#f56c6c' },
   error: { base: '#f56c6c' },
-  info: { base: '#909399' }
+  info: { base: '#909399' },
 };
 export const $colorWhite = $colors.white;
 export const $colorBlack = $colors.black;
@@ -180,7 +205,9 @@ function rgbArrayToColorString(rgbArray: number[]) {
 function padStart(str: string, targetLength: number, padString: string) {
   str = str.toString();
   padString = padString ? String(padString) : '0';
-  return (str.length >= targetLength) ? str : str.padStart(targetLength, padString);
+  return str.length >= targetLength
+    ? str
+    : str.padStart(targetLength, padString);
 }
 
 export function setColorMixLevel(
@@ -191,7 +218,11 @@ export function setColorMixLevel(
 ) {
   // $colors[$type][$mode] = {};
   // $colors[$type][$mode + '-' + $number] = mix($mixColor, $colors[$type].base, Math.round($number * 10) / 100);
-  $colors[$type][$mode + '-' + $number] = blendColors($mixColor, $colors[$type].base, Math.round($number * 10) / 100);
+  $colors[$type][$mode + '-' + $number] = blendColors(
+    $mixColor,
+    $colors[$type].base,
+    Math.round($number * 10) / 100
+  );
   // $colors =  map.deepMerge(
   //     $type: (
   //       '#{$mode}-#{$number}':
@@ -227,35 +258,35 @@ console.log('$colors is ', $colors);
 // Button
 // css3 var in packages/theme-chalk/src/button.scss
 export const $button = {
-  fontWeight: $fontWeightPrimary, // getCssVar('font-weight-primary'),
+  fontWeight: $fontWeightPrimary as Property.FontWeight, // getCssVar('font-weight-primary'),
   borderColor: $borderColor.base,
   bgColor: $fillColor.blank,
   textColor: $textColor.regular,
   disabled: {
     textColor: $disabled.textColor,
     bgColor: $fillColor.blank,
-    borderColor: $borderColor.light
+    borderColor: $borderColor.light,
   },
   divide: {
-    borderColor: 'rgba(' + $colorWhite + ', 0.5)'
+    borderColor: 'rgba(' + $colorWhite + ', 0.5)',
   },
   hover: {
     textColor: $colorPrimary,
     bgColor: $colors.primary['light-9'],
     borderColor: $colors.primary['light-7'],
     link: {
-      textColor: $colors.info.base // getCssVar('color-info'),
-    }
+      textColor: $colors.info.base, // getCssVar('color-info'),
+    },
   },
   active: {
     textColor: $colorPrimary,
     borderColor: $colorPrimary, // 'hover-text-color'
     bgColor: $colors.primary['light-9'], //  getCssVar('button', 'hover-bg-color),
-    color: $textColor.primary // getCssVar('text-color', 'primary'),
+    color: $textColor.primary, // getCssVar('text-color', 'primary'),
   },
   outline: {
-    Color: $colors.primary['light-5'] // getCssVar('color-primary', 'light-5'),}
-  }
+    Color: $colors.primary['light-5'], // getCssVar('color-primary', 'light-5'),}
+  },
 };
 
 export const $buttonBorderWidth = $borderWidth;
@@ -272,27 +303,35 @@ for (const $type of $types) {
   $buttonBorderColor[$type] = $colors[$type].base;
   $buttonBgColor[$type] = $colors[$type].base;
 }
+
 export const $fontSizeMap = {
   large: $fontSizes.base,
   default: $fontSizes.base,
-  small: '12px'
+  small: '12px',
 };
-export const $borderRadiusMap = {
-  large: $borderRadius.base,
-  default: $borderRadius.base,
-  small: (parseInt($borderRadius.base, 10) - 1) + 'px'
-};
-export const $paddingVerticalMap = {
-  large: '13px',
-  default: '9px',
-  small: '6px'
-};
-export const $paddingHorizontalMap = {
-  large: '20px',
-  default: '16px',
-  small: '12px'
-};
-export const $transitionDuration = '0.3s';
+
+export const $transitionDurationDefault = '0.3s';
 export const $transitionDurationFast = '0.2s';
 
 export const $colorPrimaryRgb = '64, 158, 255';
+export const $colorDangerRgb = '245, 108, 108';
+// Scrollbar
+// css3 var in packages/theme-chalk/src/scrollbar.scss
+export const $scrollbar = {
+  opacity: 0.3,
+  // 'bg-color': getCssVar('text-color-secondary'),
+  bgColor: $textColor.secondary,
+  hoverOpacity: 0.5,
+  // 'hover-bg-color': getCssVar('text-color-secondary'),
+  hoverBgColor: $textColor.secondary,
+};
+
+export const $ellipsisStyle: IStyle = {
+  overflow: 'hidden',
+  textOverflow: 'ellipsis',
+  whiteSpace: 'nowrap',
+};
+
+export const $border = $borderWidth + ' ' + $borderStyle + ' ' + $borderColor.base;
+// Svg
+export const $svgMonochromeGrey = $borderColor.base;

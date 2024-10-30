@@ -1,4 +1,4 @@
-import { IStyle, StyleDisplay } from '@type-dom/framework';
+import { IStyle } from '@type-dom/css-type';
 
 export const labelStyle: Partial<IStyle> = {
   width: '80px',
@@ -24,7 +24,7 @@ export const itemContentStyle: Partial<IStyle> = {
   // -webkit-box-sizing: border-box;
   boxSizing: 'border-box',
   color: '#606266',
-  display: StyleDisplay.inlineBlock,
+  display: 'inlineBlock',
   fontSize: 'inherit',
   outline: '0',
   // padding: '0 5px',

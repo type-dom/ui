@@ -3,9 +3,11 @@ import { ITdTooltipTriggerConfig } from './trigger.interface';
 
 export class TdTooltipTrigger extends UI {
   className: 'TdTooltipTrigger';
-  constructor(config?: ITdTooltipTriggerConfig) {
+  override props: ITdTooltipTriggerConfig;
+
+  constructor(params: ITdTooltipTriggerConfig = {}) {
     super();
     this.className = 'TdTooltipTrigger';
-    this.setConfig(config);
+    this.props = this.useParams(params);
   }
 }

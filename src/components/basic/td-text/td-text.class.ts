@@ -5,43 +5,50 @@ import { ITdText, ITdTextConfig } from './td-text.interface';
 
 export class TdText extends UI implements ITdText {
   className: 'TdText';
-  override config?: ITdTextConfig;
+  override props: ITdTextConfig;
   icon?: TdIcon;
 
-  constructor(config?: ITdTextConfig) {
-    super({ tag: config?.tag || 'span' });
+  constructor(params: ITdTextConfig = {}) {
+    super();
+    this.useTag(params?.tag || 'span');
     this.className = 'TdText';
-    this.addStyleObj($baseText);
-    this.setConfig(config);
+    this.style.addObj($baseText);
+    this.props = this.useParams(params);
+    // this.addChild(this.getSlotNode());
+    if (params.slot) {
+      this.slotChild(params.slot);
+    }
   }
 
-  override setConfig(config?: Partial<ITdTextConfig>) {
-    super.setConfig(config);
-    if (config?.type) {
-      this.addStyleObj($textStateColors[config.type].default);
+  override setup() {
+    const props = this.props;
+    if (props?.type) {
+      this.style.addObj($textStateColors[props.type].default);
     } else {
-      this.addStyleObj($textStateColors.default.default);
+      this.style.addObj($textStateColors.default.default);
     }
-    if (config?.size) {
-      this.addStyleObj(sizeOpts[config?.size]);
+    if (props?.size) {
+      this.style.addObj(sizeOpts[props?.size]);
     } else {
-      this.addStyleObj(sizeOpts.default);
+      this.style.addObj(sizeOpts.default);
     }
-    if (config?.truncated && config?.width) {
-      this.addStyleObj({
+    if (props?.truncated && props?.width) {
+      this.style.addObj({
         display: 'inline-block',
         maxWidth: '100%',
         textOverflow: 'ellipsis',
         whiteSpace: 'nowrap',
         overflow: 'hidden',
-        width: config?.width
+        width: props?.width
       });
     }
-    if (config?.lineClamp) {
-      this.addStyleObj({
-        '-webkit-line-clamp': config?.lineClamp,
+    if (props?.lineClamp) {
+      this.style.addObj({
+        // '-webkit-line-clamp': props?.lineClamp,
+        WebkitLineClamp: props?.lineClamp,
         display: '-webkit-inline-box',
-        '-webkit-box-orient': 'vertical',
+        // '-webkit-box-orient': 'vertical',
+        WebkitBoxOrient: 'vertical',
         overflow: 'hidden'
       });
     }

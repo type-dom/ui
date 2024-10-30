@@ -5,26 +5,30 @@ import { ITdSwitchConfig } from '../td-switch.interface';
 
 export class TdSwitchLeft extends TypeSpan {
   className: 'TdSwitchLeft';
-  override config?: ITdSwitchConfig;
+  override props: ITdSwitchConfig;
 
-  constructor(config?: ITdSwitchConfig) {
+  constructor(params: ITdSwitchConfig = {}) {
     super();
     this.className = 'TdSwitchLeft';
-    this.config = config;
-    this.addAttrName('switch-label');
-    this.addStyleObj({
+    this.attr.addName('switch-label');
+    this.style.addObj({
       ...$switchLabel,
       marginRight: '10px'
     });
-    if (config?.inactiveIcon) {
-      this.addChild(new TdIcon({
-        svgObj: config.inactiveIcon
-      }));
+    if (params?.inactiveIcon) {
+      this.addChild(
+        new TdIcon({
+          svgObj: params.inactiveIcon
+        })
+      );
     }
-    if (!config?.inactiveIcon && config?.inactiveText) {
-      this.addChild(new Span({
-        text: config.inactiveText
-      }));
+    if (!params?.inactiveIcon && params?.inactiveText) {
+      this.addChild(
+        new Span({
+          text: params.inactiveText
+        })
+      );
     }
+    this.props = this.useParams(params);
   }
 }

@@ -1,62 +1,61 @@
 import { isArray, isNumber } from '@type-dom/utils';
 import { TypeElement } from '@type-dom/framework';
+import { UI } from '../../../ui/ui.abstract';
 import { ITdSpace, ITdSpaceConfig } from './td-space.interface';
 import { SIZE_MAP } from './td-space.const';
-import { UI } from '../../../ui/ui.abstract';
 
 export class TdSpace extends UI implements ITdSpace {
   className: 'TdSpace';
+  override props: ITdSpaceConfig;
   horizontalSize?: number;
   verticalSize?: number;
-  override config?: ITdSpaceConfig;
 
-  constructor(config?: ITdSpaceConfig) {
+  constructor(params: ITdSpaceConfig = {}) {
     super();
     this.className = 'TdSpace';
-    this.config = config;
-    this.addStyleObj({
+    this.style.addObj({
       display: 'inline-flex',
       verticalAlign: 'top'
     });
-    this.setConfig(config);
+    this.addChild(this.getSlotNode());
+    this.props = this.useParams(params);
   }
 
-  override setConfig(config?: Partial<ITdSpaceConfig>) {
-    super.setConfig(config);
-    this.children.forEach(item => {
+  override setup() {
+    this.children.forEach((item) => {
       if (item instanceof TypeElement) {
-        item.addStyleObj({
+        item.style.addObj({
           display: 'flex',
           flexWrap: 'wrap'
         });
       }
     });
+    const props = this.props;
+    this.useSize(props?.size);
 
-    this.initSize(config?.size);
-
-    if (config?.wrap) {
-      this.addStyle('flexWrap', 'wrap');
+    if (props?.wrap) {
+      this.style.add('flexWrap', 'wrap');
     }
-    if (config?.fill) {
-      this.addStyleObj({
+    if (props?.fill) {
+      this.style.addObj({
         flexWrap: 'wrap',
         flexGrow: 1,
-        minWidth: `${config?.fillRatio || 100}%`
+        minWidth: `${props?.fillRatio || 100}%`
       });
     }
-    if (config?.direction === 'horizontal') {
-      this.addStyle('flexDirection', 'row');
+    if (props?.direction === 'horizontal') {
+      this.style.add('flexDirection', 'row');
     }
-    if (config?.direction === 'vertical') {
-      this.addStyle('flexDirection', 'column');
+    if (props?.direction === 'vertical') {
+      this.style.add('flexDirection', 'column');
     }
-    if (config?.alignment) {
-      this.addStyle('alignItems', config.alignment);
+    if (props?.alignment) {
+      this.style.add('alignItems', props.alignment);
     }
   }
 
-  initSize(size?: number | string | [number, number]) {
-    const config = this.config;
+  useSize(size?: number | string | [number, number]) {
+    const props = this.props;
     if (isArray(size)) {
       this.horizontalSize = size[0];
       this.verticalSize = size[1];
@@ -67,19 +66,23 @@ export class TdSpace extends UI implements ITdSpace {
       } else {
         val = SIZE_MAP[size || 'small'] || SIZE_MAP.small;
       }
-      if ((config?.wrap || config?.fill) && config?.direction === 'horizontal') {
+      if (
+        (props?.wrap || props?.fill) &&
+        props?.direction === 'horizontal'
+      ) {
         this.horizontalSize = this.verticalSize = val;
       } else {
-        if (config?.direction === 'vertical') {
+        if (props?.direction === 'vertical') {
           this.verticalSize = val;
           this.horizontalSize = 0;
-        } else { // horizontal 默认
+        } else {
+          // horizontal 默认
           this.horizontalSize = val;
           this.verticalSize = 0;
         }
       }
     }
-    this.addStyleObj({
+    this.style.addObj({
       rowGap: this.verticalSize + 'px',
       columnGap: this.horizontalSize + 'px'
     });
@@ -87,8 +90,8 @@ export class TdSpace extends UI implements ITdSpace {
 
   setSize(size: number | string | [number, number]) {
     console.log('setSize size is ', size);
-    this.initSize(size);
-    this.setStyleObj({
+    this.useSize(size);
+    this.style.setObj({
       rowGap: this.verticalSize + 'px',
       columnGap: this.horizontalSize + 'px'
     });

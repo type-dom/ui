@@ -1,7 +1,11 @@
 import { isBoolean, isPromise } from '@type-dom/utils';
-import { Input, nextTick, StyleCursor } from '@type-dom/framework';
+import { Input, nextTick } from '@type-dom/framework';
 import { UI } from '../../../ui/ui.abstract';
 import { $colors } from '../../../styles/var';
+import { CHANGE_EVENT, UPDATE_MODEL_EVENT, INPUT_EVENT } from '../../../constants/event';
+import { TdSwitchCore } from './widget/td-switch-core';
+import { TdSwitchLeft } from './widget/td-switch-left';
+import { TdSwitchRight } from './widget/td-switch-right';
 import { ITdSwitch, ITdSwitchConfig } from './td-switch.interface';
 import {
   $switchButtonSize,
@@ -11,36 +15,42 @@ import {
   $switchOffColor,
   $switchOnColor
 } from './td-switch.style';
-import { TdSwitchCore } from './widget/td-switch-core';
-import { TdSwitchLeft } from './widget/td-switch-left';
-import { TdSwitchRight } from './widget/td-switch-right';
 
 export class TdSwitch extends UI implements ITdSwitch {
   className: 'TdSwitch';
+  override props: ITdSwitchConfig;
   input: Input;
   private left?: TdSwitchLeft;
   private core: TdSwitchCore;
   private right?: TdSwitchRight;
-  override config?: ITdSwitchConfig;
-  private activeValue: boolean | string | number;
+  private activeValue?: boolean | string | number;
   private inactiveValue: boolean | string | number;
+  private isControlled: boolean;
 
-  constructor(config?: ITdSwitchConfig) {
+  constructor(params: ITdSwitchConfig = {}) {
     super();
     this.className = 'TdSwitch';
-    this.config = config;
-    this.addStyleObj({
+    this.style.addObj({
       display: 'inline-flex',
       alignItems: 'center',
       position: 'relative',
       verticalAlign: 'middle',
-      fontSize: $switchFontSize[config?.size || 'default'],
-      lineHeight: $switchCoreHeight[config?.size || 'default'],
-      height: $switchHeight[config?.size || 'default']
+      fontSize: $switchFontSize[params?.size || 'default'],
+      lineHeight: $switchCoreHeight[params?.size || 'default'],
+      height: $switchHeight[params?.size || 'default']
     });
-    this.modelValue = config?.modelValue ?? false;
-    this.activeValue = config?.activeValue ?? true;
-    this.inactiveValue = config?.inactiveValue ?? false;
+    this.isControlled = params?.modelValue !== false;
+    this.modelValue = params?.modelValue ?? false;
+    this.activeValue = params?.activeValue ?? true;
+    this.inactiveValue = params?.inactiveValue ?? false;
+    if (![params?.activeValue, params?.inactiveValue].includes(this.actualValue)) {
+      // emit(UPDATE_MODEL_EVENT, params?.inactiveValue)
+      params?.emits?.[UPDATE_MODEL_EVENT]?.(params?.inactiveValue);
+      // emit(CHANGE_EVENT, params?.inactiveValue)
+      params?.emits?.[CHANGE_EVENT]?.(params?.inactiveValue);
+      // emit(INPUT_EVENT, params?.inactiveValue)
+      params?.emits?.[INPUT_EVENT]?.(params?.inactiveValue);
+    }
     this.input = new Input({
       attrObj: {
         type: 'checkbox',
@@ -51,35 +61,49 @@ export class TdSwitch extends UI implements ITdSwitch {
       }
     });
     this.addChild(this.input);
-    if (!config?.inlinePrompt && (config?.inactiveIcon || config?.inactiveText)) {
-      this.left = new TdSwitchLeft(config);
+    if (
+      !params?.inlinePrompt &&
+      (params?.inactiveIcon || params?.inactiveText)
+    ) {
+      this.left = new TdSwitchLeft(params);
       this.addChild(this.left);
     }
-    this.core = new TdSwitchCore(Object.assign({}, config, {
-      modelValue: this.modelValue,
-      activeValue: this.activeValue,
-      inactiveValue: this.inactiveValue
-    }));
+    this.core = new TdSwitchCore(
+      Object.assign({}, params, {
+        modelValue: this.modelValue,
+        activeValue: this.activeValue,
+        inactiveValue: this.inactiveValue
+      })
+    );
     this.addChild(this.core);
-    if (!config?.inlinePrompt && (config?.activeIcon || config?.activeText)) {
+    if (!params?.inlinePrompt && (params?.activeIcon || params?.activeText)) {
       console.log('td-switch right .');
-      this.right = new TdSwitchRight(config);
+      this.right = new TdSwitchRight(params);
       this.addChild(this.right);
     }
-    this.setChecked(this.modelValue === this.activeValue);
-    this.setConfig(config);
+    this.props = this.useParams(params);
   }
 
-  override setConfig(config?: ITdSwitchConfig) {
-    super.setConfig(config);
-    // todo
-    console.log('td-switch setConfig . ');
-    if (config?.disabled) {
-      this.setDisabled(config?.disabled);
+  get actualValue() {
+    return this.isControlled ? this.props.modelValue : false
+  }
+
+  get checked() {
+    return this.actualValue === this.props.activeValue;
+  }
+
+  override mounted() {
+    const props = this.props;
+    this.setChecked(this.modelValue === this.activeValue);
+    if (props?.disabled) {
+      this.setDisabled(props.disabled);
+    }
+    if (props.loading) {
+      this.setLoading(props.loading);
     }
   }
 
-  override initEvents() {
+  override setup() {
     this.addEvents({
       click: (evt) => {
         // changeValue
@@ -91,14 +115,17 @@ export class TdSwitch extends UI implements ITdSwitch {
 
   handleChange() {
     console.log('handleChange . ');
-    const config = this.config;
+    const props = this.props;
     const checked = this.modelValue === this.activeValue;
     // this.modelValue = !this.modelValue;
     this.modelValue = checked ? this.inactiveValue : this.activeValue;
     const val = checked ? this.inactiveValue : this.activeValue;
-    // emit(UPDATE_MODEL_EVENT, val)
-    // emit(CHANGE_EVENT, val)
-    // emit(INPUT_EVENT, val)
+    this.emit(UPDATE_MODEL_EVENT, val)
+    // this.props.emits?.[UPDATE_MODEL_EVENT]?.(val);
+    this.emit(CHANGE_EVENT, val)
+    // this.props.emits?.[CHANGE_EVENT]?.(val);
+    this.emit(INPUT_EVENT, val)
+    // this.props.emits?.[INPUT_EVENT]?.(val);
     nextTick(() => {
       this.input.dom.checked = !checked;
       console.log('handleChange . this.input.dom.checked is ', checked);
@@ -109,101 +136,110 @@ export class TdSwitch extends UI implements ITdSwitch {
 
   setDisabled(disabled: boolean) {
     if (disabled) {
-      this.addStyleObj({
+      this.style.setObj({
         opacity: 0.6
       });
-      this.input.addAttrObj({
+      this.input.attr.setObj({
         disabled: true,
         ariaDisabled: true
       });
-      this.left?.setStyleObj({
-        cursor: StyleCursor.notAllowed
+      this.left?.style.setObj({
+        cursor: 'not-allowed'
       });
-      this.core.setStyleObj({
-        cursor: StyleCursor.notAllowed
+      this.core.style.setObj({
+        cursor: 'not-allowed'
       });
     } else {
-      this.addStyleObj({
+      this.style.setObj({
         opacity: 1
       });
-      this.input.addAttrObj({
+      this.input.attr.setObj({
         disabled: false,
         ariaDisabled: false
       });
-      this.left?.setStyleObj({
-        cursor: StyleCursor.auto
+      this.left?.style.setObj({
+        cursor: 'auto'
       });
-      this.core.setStyleObj({
-        cursor: StyleCursor.auto
+      this.core.style.setObj({
+        cursor: 'auto'
       });
     }
   }
 
+  // setStyleObj 应该在渲染后执行。
   setChecked(checked: boolean) {
     if (checked) {
-      this.core.setStyleObj({
-        backgroundColor: this.config?.switchOnColor ?? $switchOnColor
+      this.core.style.setObj({
+        backgroundColor: this.props.switchOnColor ?? $switchOnColor
       });
-      this.core.action.setStyleObj({
+      this.core.action.style.setObj({
         color: $switchOnColor,
         // left: calc(100% - #{map.get($switch-button-size, 'default') + 1px});
-        left: 'calc(100% - ' + $switchButtonSize[this.config?.size || 'default'] + ' - 1px)'
+        left:
+          'calc(100% - ' +
+          $switchButtonSize[this.props.size || 'default'] +
+          ' - 1px)'
       });
       if (this.right) {
-        this.right.setStyleObj({
+        this.right.style.setObj({
           color: $colors.primary.base
         });
       }
       if (this.left) {
-        this.left.setStyleObj({
+        this.left.style.setObj({
           color: $colors.default.base
         });
       }
-      if (this.config?.inlinePrompt) {
+      if (this.props.inlinePrompt) {
         this.core.setInnerChecked(true);
       }
-      if (this.config?.activeActionIcon) {
-        this.core.actionIcon?.replaceSvg(this.config.activeActionIcon);
-      } else if (this.config?.activeActionText) {
-        this.core.actionSpan?.textNode?.setText(this.config.activeActionText);
+      if (this.props.activeActionIcon) {
+        this.core.actionIcon?.replaceSvg(this.props.activeActionIcon);
+      } else if (this.props.activeActionText) {
+        this.core.actionSpan?.textNode?.setText(this.props.activeActionText);
       }
     } else {
-      this.core.setStyleObj({
-        backgroundColor: this.config?.switchOffColor ?? $switchOffColor
+      this.core.style.setObj({
+        backgroundColor: this.props.switchOffColor ?? $switchOffColor
       });
-      this.core.action.setStyleObj({
+      this.core.action.style.setObj({
         left: '1px',
         color: $switchOffColor
       });
       if (this.left) {
-        this.left.setStyleObj({
+        this.left.style.setObj({
           color: $colors.primary.base
         });
       }
       if (this.right) {
-        this.right.setStyleObj({
+        this.right.style.setObj({
           color: $colors.default.base
         });
       }
-      if (this.config?.inlinePrompt) {
+      if (this.props.inlinePrompt) {
         this.core.setInnerChecked(false);
       }
-      if (this.config?.inactiveActionIcon) {
-        this.core.actionIcon?.replaceSvg(this.config.inactiveActionIcon);
-      } else if (this.config?.inactiveActionText) {
-        this.core.actionSpan?.textNode?.setText(this.config.inactiveActionText);
+      if (this.props.inactiveActionIcon) {
+        this.core.actionIcon?.replaceSvg(this.props.inactiveActionIcon);
+      } else if (this.props.inactiveActionText) {
+        this.core.actionSpan?.textNode?.setText(this.props.inactiveActionText);
       }
     }
   }
 
+  setLoading(loading: boolean) {
+    if (loading) {
+      this.setDisabled(true)
+    }
+  }
   switchValue() {
     console.log('switchValue . ');
-    const config = this.config;
+    const props = this.props;
 
-    if (config?.loading || config?.disabled) {
+    if (props?.loading || props?.disabled) {
       return;
     }
-    const beforeChange = config?.beforeChange;
+    const beforeChange = props?.beforeChange;
     if (!beforeChange) {
       this.handleChange();
       return;
@@ -220,7 +256,9 @@ export class TdSwitch extends UI implements ITdSwitch {
       //   COMPONENT_NAME,
       //   'beforeChange must return type `Promise<boolean>` or `boolean`'
       // )
-      console.error('beforeChange must return type `Promise<boolean>` or `boolean`');
+      console.error(
+        'beforeChange must return type `Promise<boolean>` or `boolean`'
+      );
     }
 
     if (isPromise(shouldChange)) {

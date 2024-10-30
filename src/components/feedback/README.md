@@ -2,6 +2,7 @@
 
     Alert 提示
     Dialog 对话框
+    Drawer 抽屉
     Loading 加载
     Message 消息提示
     Message Box 消息弹出框

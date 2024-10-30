@@ -1,17 +1,19 @@
 import { UI } from '../../../ui/ui.abstract';
-import { ITdMenu, ITdMenuConfig } from './td-menu.interface';
 import { $borderColorHover, $borderColor } from '../../../styles/var';
+import { ITdMenu, ITdMenuConfig } from './td-menu.interface';
 
 export class TdMenu extends UI implements ITdMenu {
   className: 'TdMenu';
-
-  constructor(config?: ITdMenuConfig) {
-    super({ tag: 'ul' });
+  override props: ITdMenuConfig
+  constructor(params: ITdMenuConfig = {}) {
+    super();
+    this.useTag('ul');
     this.className = 'TdMenu';
-    this.addAttrObj({
+    this.attr.addObj({
+      name: 'td-menu',
       role: 'menubar'
     });
-    this.addStyleObj({
+    this.style.addObj({
       // border-right: solid 1px var(--el-menu-border-color),
       borderRight: 'solid 1px ' + $borderColor.base,
       listStyle: 'none',
@@ -22,16 +24,16 @@ export class TdMenu extends UI implements ITdMenu {
       backgroundColor: $borderColor.base,
       boxSizing: 'border-box'
     });
-    this.setConfig(config);
+    this.props = this.useParams(params);
   }
 
-  override setConfig(config?: ITdMenuConfig) {
-    super.setConfig(config);
-    const mode = config?.mode || 'vertical';
+  override setup() {
+    const props = this.props;
+    const mode = props.mode || 'vertical';
     if (mode === 'vertical') {
-      this.addStyleObj({});
+      this.style.addObj({});
     } else {
-      this.addStyleObj({
+      this.style.addObj({
         display: 'flex',
         flexWrap: 'nowrap',
         borderRight: 'none'

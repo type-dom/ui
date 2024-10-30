@@ -1,11 +1,10 @@
-import { IStyle } from '@type-dom/framework';
+import { IStyle } from '@type-dom/css-type';
 import {
   $fontSizeMap,
-  $paddingHorizontalMap,
-  $paddingVerticalMap,
   $colors,
   $commonComponentSize,
-  IType, $fontSizes
+  IType,
+  $fontSizes
 } from '../../../styles/var';
 
 export const $baseText: Partial<IStyle> = {
@@ -44,7 +43,10 @@ export function buttonVariant($type: IType) {
       color: $colors[$type].base
     },
     hover: {
-      color: $type === 'default' ? $colors['primary'].base : $colors[$type]['light-3'] // ['color', $type, 'light-3'],
+      color:
+        $type === 'default'
+          ? $colors['primary'].base
+          : $colors[$type]['light-3'] // ['color', $type, 'light-3'],
       // content: '',
       // position: 'absolute',
       // left: 0,
@@ -62,6 +64,13 @@ export function buttonVariant($type: IType) {
   };
 }
 
-for (const $type of ['primary', 'success', 'warning', 'info', 'danger', 'default']) {
+for (const $type of [
+  'primary',
+  'success',
+  'warning',
+  'info',
+  'danger',
+  'default'
+]) {
   buttonVariant($type as IType);
 }

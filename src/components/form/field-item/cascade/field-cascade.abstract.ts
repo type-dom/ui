@@ -1,5 +1,10 @@
-import { fromEvent } from 'rxjs';
-import { StyleDisplay, Div, Label, Button, IOptionSet, IOptionSetting } from '@type-dom/framework';
+import {
+  Div,
+  Label,
+  Button,
+  IOptionSet,
+  IOptionSetting
+} from '@type-dom/framework';
 import { FieldSelect } from '../../../form/field-select/field-select.class';
 import { FieldItem } from '../field-item.abstract';
 import { itemContentStyle } from '../field-item.style';
@@ -21,10 +26,10 @@ export abstract class PropertyCascade extends FieldItem {
 
   protected constructor(labelText = '二级级联') {
     super(labelText);
-    this.addAttrName('cascade-property');
+    this.attr.addName('cascade-property');
     this.cascadeDiv = new Div();
-    this.cascadeDiv.addAttrName('cascade');
-    this.cascadeDiv.addStyleObj({
+    this.cascadeDiv.attr.addName('cascade');
+    this.cascadeDiv.style.addObj({
       height: '100%',
       lineHeight: '32px',
       textAlign: 'center',
@@ -35,7 +40,7 @@ export abstract class PropertyCascade extends FieldItem {
       // -webkit-box-sizing: border-box;
       boxSizing: 'border-box',
       color: '#606266',
-      display: StyleDisplay.inlineBlock,
+      display: 'inlineBlock',
       outline: '0',
       // -webkit-transition: border-color .2s cubic-bezier(.645,.045,.355,1);
       transition: 'border-color .2s cubic-bezier(.645,.045,.355,1)',
@@ -44,34 +49,40 @@ export abstract class PropertyCascade extends FieldItem {
 
     // 单独的方法实现
     this.firstStageSelectObj = new FieldSelect();
-    this.firstStageSelectObj.addAttrName('first-stage-select');
-    this.firstStageSelectObj.setStyleObj(Object.assign({}, itemContentStyle,
-      {
+    this.firstStageSelectObj.attr.addName('first-stage-select');
+    this.firstStageSelectObj.style.setObj(
+      Object.assign({}, itemContentStyle, {
         width: '100%',
         margin: '5px 0'
         // borderRadius: '4px 0 0 4px',
         // borderRight: 'none',
-      }
-    ));
+      })
+    );
 
     this.secondStageSelectObj = new FieldSelect();
-    this.secondStageSelectObj.addAttrName('second-stage-select');
-    this.secondStageSelectObj.setStyleObj(Object.assign({}, itemContentStyle, {
-      width: '100%'
-    }));
-    this.cascadeDiv.childNodes = [this.firstStageSelectObj, this.secondStageSelectObj];
+    this.secondStageSelectObj.attr.addName('second-stage-select');
+    this.secondStageSelectObj.style.setObj(
+      Object.assign({}, itemContentStyle, {
+        width: '100%'
+      })
+    );
+    this.cascadeDiv.childNodes = [
+      this.firstStageSelectObj,
+      this.secondStageSelectObj
+    ];
     this.childNodes = [this.label, this.cascadeDiv, this.button];
   }
 
   get fieldSetting(): IOptionSetting | undefined {
-    const fieldSetting = this.settings?.fieldSetting as IOptionSetting;
+    const fieldSetting = this.props?.fieldSetting as IOptionSetting;
     if (fieldSetting) {
       const optionSetting: IOptionSetting = {
         name: fieldSetting.name,
         resultValue: fieldSetting.resultValue,
         options: []
       };
-      if (fieldSetting.options[0].options === undefined) { // 如果只有一级，应该是老数据，要重新组装
+      if (fieldSetting.options[0].options === undefined) {
+        // 如果只有一级，应该是老数据，要重新组装
         const values: string[] = [];
         fieldSetting.options.forEach((opt) => {
           if ((opt.value as string).indexOf('.') === -1) {
@@ -80,19 +91,26 @@ export abstract class PropertyCascade extends FieldItem {
           }
           const tableValue = (opt.value as string).split('.')[0];
           const tableLabel = (opt.label as string).split('.')[0];
-          values.push(JSON.stringify({
-            label: tableLabel,
-            value: tableValue
-          }));
+          values.push(
+            JSON.stringify({
+              label: tableLabel,
+              value: tableValue
+            })
+          );
         });
         // todo 如何去重
         const firstStageValues = Array.from(new Set(values));
         firstStageValues.forEach((value) => {
-          optionSetting.options.push(Object.assign({}, JSON.parse(value), { options: [] }));
+          optionSetting.options.push(
+            Object.assign({}, JSON.parse(value), { options: [] })
+          );
         });
         fieldSetting.options.forEach((opt2: IOptionSet) => {
-          optionSetting.options.forEach(opt1 => {
-            if (String(opt1.value) === String((opt2.value as string).split('.')[0])) {
+          optionSetting.options.forEach((opt1) => {
+            if (
+              String(opt1.value) ===
+              String((opt2.value as string).split('.')[0])
+            ) {
               opt1.options?.push(opt2);
             }
           });
@@ -110,13 +128,13 @@ export abstract class PropertyCascade extends FieldItem {
     // TypeFormDesigner.webDocument.setAttribute('field-config', JSON.stringify(value));
     if (this.settings === undefined) {
       if (value !== undefined) {
-        this.setSetting('fieldSetting', value);
+        this.setProp('fieldSetting', value);
       }
     } else {
       if (value === undefined) {
         delete this.settings.fieldSetting;
       } else {
-        this.setSetting('fieldSetting', value);
+        this.setProp('fieldSetting', value);
       }
     }
   }
@@ -134,8 +152,12 @@ export abstract class PropertyCascade extends FieldItem {
     // this.cascadeDiv.clearChildNodes();
     // this.cascadeDiv.clearChildDom();
     this.cascadeConfig = optionSetting;
-    if (optionSetting.resultValue === 0) { // 如果第1级还没有选择
-      this.firstStageSelectObj.resetOptions(optionSetting.options, optionSetting.resultValue);
+    if (optionSetting.resultValue === 0) {
+      // 如果第1级还没有选择
+      this.firstStageSelectObj.resetOptions(
+        optionSetting.options,
+        optionSetting.resultValue
+      );
       //  todo 第2级，应该没有可选项。
       this.secondStageSelectObj.resetOptions([], 0);
       return;
@@ -143,27 +165,40 @@ export abstract class PropertyCascade extends FieldItem {
     //  todo config.options设置
     if (String(optionSetting.resultValue).indexOf('.') !== -1) {
       const firstStageValue = String(optionSetting.resultValue).split('.')[0];
-      this.firstStageSelectObj.resetOptions(optionSetting.options, firstStageValue);
+      this.firstStageSelectObj.resetOptions(
+        optionSetting.options,
+        firstStageValue
+      );
 
       // const firstStageValue = optionSetting.resultValue.split('.')[0];
-      const selectedOption = optionSetting.options.find(opt => opt.value === firstStageValue);
-      if (!(selectedOption?.options)) {
+      const selectedOption = optionSetting.options.find(
+        (opt) => opt.value === firstStageValue
+      );
+      if (!selectedOption?.options) {
         // throw Error('选项有问题'); // 会阻塞修改单元格的控件类型
         this.secondStageSelectObj.resetOptions([], 0);
         console.error('选项有问题');
         return;
       }
-      this.secondStageSelectObj.resetOptions(selectedOption.options, optionSetting.resultValue);
+      this.secondStageSelectObj.resetOptions(
+        selectedOption.options,
+        optionSetting.resultValue
+      );
       // this.secondStageSelectObj.setSelectedValue(secondStageValue);
     }
   }
 
-  override initEvents(): void {
-    this.subscriptions.push(
-      fromEvent(this.firstStageSelectObj.dom, 'change').subscribe(() => {
+  override setup(): void {
+    this.firstStageSelectObj.addEvents({
+      change: () => {
         console.log('this.firstStageSelectObj.dom change . ');
-        console.log('this.firstStageSelectObj.dom.value is ', this.firstStageSelectObj.dom.value);
-        const selectedOption = this.cascadeConfig?.options?.find(opt => String(opt.value) === this.firstStageSelectObj.dom.value);
+        console.log(
+          'this.firstStageSelectObj.dom.value is ',
+          this.firstStageSelectObj.dom.value
+        );
+        const selectedOption = this.cascadeConfig?.options?.find(
+          (opt) => String(opt.value) === this.firstStageSelectObj.dom.value
+        );
         if (!this.cascadeConfig) {
           throw Error('无法获取cascadeConfig');
         }
@@ -171,10 +206,15 @@ export abstract class PropertyCascade extends FieldItem {
         if (selectedOption) {
           this.resetCascadeConfigResultValue(selectedOption.value);
         } else {
-          this.secondStageSelectObj.resetOptions([{
-            label: '请先选择上级',
-            value: 0
-          }], 0);
+          this.secondStageSelectObj.resetOptions(
+            [
+              {
+                label: '请先选择上级',
+                value: 0
+              }
+            ],
+            0
+          );
           return;
         }
         if (selectedOption && selectedOption.options) {
@@ -182,15 +222,17 @@ export abstract class PropertyCascade extends FieldItem {
           console.log('selectedOption is ', selectedOption);
           this.secondStageSelectObj.resetOptions(selectedOption.options, 0);
         }
-      }),
-      fromEvent(this.secondStageSelectObj.dom, 'click').subscribe(() => {
+      }
+    });
+    this.secondStageSelectObj.addEvents({
+      click: () => {
         console.log('this.secondStageSelectObj.dom change . ');
         this.reset(this.secondStageSelectObj.dom.value);
-      }),
-      fromEvent(this.secondStageSelectObj.dom, 'change').subscribe(() => {
+      },
+      change: () => {
         console.log('this.secondStageSelectObj.dom change . ');
         this.reset(this.secondStageSelectObj.dom.value);
-      })
-    );
+      }
+    });
   }
 }

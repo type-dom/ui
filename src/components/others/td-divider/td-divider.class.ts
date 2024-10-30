@@ -1,22 +1,27 @@
 import { Div } from '@type-dom/framework';
-import { $bgColor, $borderColor, $borderStyle, $textColor } from '../../../styles/var';
-import { ITdDivider, ITdDividerConfig } from './td-divider.interface';
+import {
+  $bgColor,
+  $borderColor,
+  $borderStyle,
+  $textColor
+} from '../../../styles/var';
 import { UI } from '../../../ui/ui.abstract';
+import { ITdDivider, ITdDividerConfig } from './td-divider.interface';
 
 export class TdDivider extends UI implements ITdDivider {
   className: 'TdDivider';
 
-  constructor(config?: ITdDividerConfig) {
+  constructor(params: ITdDividerConfig = {}) {
     super();
     this.className = 'TdDivider';
-    this.addStyleObj({
+    this.style.addObj({
       position: 'relative'
     });
-    const direction = config?.direction || 'horizontal';
-    const contentPosition = config?.contentPosition || 'center';
-    const borderStyle = config?.borderStyle || 'solid';
+    const direction = params?.direction || 'horizontal';
+    const contentPosition = params?.contentPosition || 'center';
+    const borderStyle = params?.borderStyle || 'solid';
     if (direction === 'horizontal') {
-      this.addStyleObj({
+      this.style.addObj({
         display: 'block',
         height: '1px',
         width: '100%',
@@ -24,10 +29,11 @@ export class TdDivider extends UI implements ITdDivider {
         // border-top: 1px getCssVar('border-color') getCssVar('border-style'),
         borderTop: '1px ' + $borderColor.base + ' ' + borderStyle
       });
-      if (config?.text) { // ToDo config.text setConfig中还会处理一次。
+      if (params?.text) {
+        // ToDo params.text setConfig中还会处理一次。
         const textDiv = new Div({
           name: 'text',
-          text: config?.text,
+          text: params?.text,
           styleObj: {
             position: 'absolute',
             // backgroundColor: getCssVar('bg-color'),
@@ -40,17 +46,17 @@ export class TdDivider extends UI implements ITdDivider {
           }
         });
         if (contentPosition === 'left') {
-          textDiv.addStyleObj({
+          textDiv.style.addObj({
             left: '20px',
             transform: 'translateY(-50%)'
           });
         } else if (contentPosition === 'right') {
-          textDiv.addStyleObj({
+          textDiv.style.addObj({
             right: '20px',
             transform: 'translateY(-50%)'
           });
         } else {
-          textDiv.addStyleObj({
+          textDiv.style.addObj({
             left: '50%',
             transform: 'translateX(-50%) translateY(-50%)'
           });
@@ -58,10 +64,10 @@ export class TdDivider extends UI implements ITdDivider {
         this.addChild(textDiv);
       }
       if (contentPosition === 'left') {
-        this.addStyleObj({});
+        this.style.addObj({});
       }
     } else {
-      this.addStyleObj({
+      this.style.addObj({
         display: 'inline-block',
         width: '1px',
         height: '1em',
@@ -72,6 +78,6 @@ export class TdDivider extends UI implements ITdDivider {
         borderLeft: '1px ' + $borderColor.base + ' ' + borderStyle
       });
     }
-    this.setConfig(config);
+    this.useParams(params);
   }
 }

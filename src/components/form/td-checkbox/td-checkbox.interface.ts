@@ -1,5 +1,6 @@
 import { IUI, IUIConfig } from '../../../ui/ui.interface';
 import { ISize } from '../../../styles/size';
+import { IJsonData, XProxy } from '@type-dom/framework';
 
 export interface ITdCheckbox extends IUI {
   className: 'TdCheckbox';
@@ -13,7 +14,7 @@ export interface ITdCheckboxConfig extends IUIConfig {
   /**
    * @description label of the Checkbox when used inside a `checkbox-group`
    */
-  label?: string | boolean | number | object;
+  label?: string | number; // | XProxy<IJsonData>;
   /**
    * @description value of the Checkbox when used inside a `checkbox-group`
    */
@@ -68,13 +69,15 @@ export interface ITdCheckboxConfig extends IUIConfig {
   /**
    * @description size of the Checkbox
    */
-  size?: ISize,
+  size?: ISize;
   /**
    * @description input tabindex
    */
-  tabindex?: string | number,
+  tabindex?: string | number;
   /**
    * @description whether to trigger form validation
    */
   validateEvent?: boolean;
 }
+
+export type CheckboxValueType = string | number | boolean;

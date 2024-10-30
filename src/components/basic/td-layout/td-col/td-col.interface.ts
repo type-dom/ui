@@ -6,10 +6,6 @@ export interface ITdCol extends IUI {
 
 export interface ITdColConfig extends IUIConfig {
   /**
-   * @description custom element tag
-   */
-  tag?: string; // div
-  /**
    * @description number of column the grid spans
    */
   span?: number; // 24

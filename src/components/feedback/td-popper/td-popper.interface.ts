@@ -1,28 +1,19 @@
 import { IUI, IUIConfig } from '../../../ui/ui.interface';
 
 export interface ITdPopper extends IUI {
-  className: 'TdPopper'
+  className: 'TdPopper';
 }
+
+export type IRoleTypes = 'dialog' | 'grid' | 'group' | 'listbox' | 'menu' | 'navigation' | 'tooltip' | 'tree';
 
 export interface ITdPopperConfig extends IUIConfig {
   /**
-   *
    *     default: 'tooltip',
    */
-  role?: 'dialog' | 'grid' | 'group' | 'listbox' | 'menu' | 'navigation' | 'tooltip' | 'tree';
+  role?: IRoleTypes;
   // role: {
   //   type: String,
   //   values: roleTypes,
+  //   default: 'tooltip',
   // },
 }
-
-export const roleTypes = [
-  'dialog',
-  'grid',
-  'group',
-  'listbox',
-  'menu',
-  'navigation',
-  'tooltip',
-  'tree',
-] as const

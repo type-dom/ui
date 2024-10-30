@@ -1,17 +1,16 @@
-import { StyleDisplay, Label, Textarea, TypeComponent, Button } from '@type-dom/framework';
+import { Label, Textarea, Button } from '@type-dom/framework';
 import { FieldItem } from '../field-item.abstract';
 import { labelStyle } from '../field-item.style';
 
 export abstract class FieldTextarea extends FieldItem {
   // abstract reset(value?: string): void;
-  parent?: TypeComponent;
   childNodes: [Label, Textarea, Button];
   content: Textarea;
   mode = 'edit';
 
   protected constructor(labelText = '控件名称', placeholder = '请输入') {
     super(labelText);
-    this.addStyleObj({
+    this.style.addObj({
       display: 'block', // 不是 flex
       marginBottom: '20px'
     });
@@ -29,7 +28,7 @@ export abstract class FieldTextarea extends FieldItem {
         // -webkit-box-sizing: border-box;
         boxSizing: 'border-box',
         color: '#606266',
-        display: StyleDisplay.inlineBlock,
+        display: 'inlineBlock',
         outline: '0',
         padding: '0 5px',
         // -webkit-transition: border-color .2s cubic-bezier(.645,.045,.355,1);
@@ -43,12 +42,12 @@ export abstract class FieldTextarea extends FieldItem {
     console.log('this.parent is ', this.parent);
     console.log('this.mode is ', this.mode);
     if (this.mode === 'read') {
-      this.content.addAttrObj({
+      this.content.attr.addObj({
         disabled: true
       });
     }
     this.button.textNode.setText('确定');
-    this.button.addStyleObj({
+    this.button.style.addObj({
       height: '24px',
       float: 'right',
       display: 'block'
@@ -57,16 +56,15 @@ export abstract class FieldTextarea extends FieldItem {
   }
 
   resetInputPlaceholder(placeholder: string): void {
-    this.content.setAttribute('placeholder', placeholder);
+    this.content.attr.set('placeholder', placeholder);
   }
 
   resetInputValue(value = ''): void {
-    this.content.setAttribute('value', value);
+    this.content.attr.set('value', value);
     this.content.dom.value = String(value);
   }
 
   // initEvents(): void {
-  //   this.subscriptions.push(
   //     fromEvent(this.content.dom, 'input').subscribe(() => {
   //       // console.log('this.input input, event is ', evt);
   //       // console.log('this.input.dom.value is ', this.input.dom.value);
@@ -74,6 +72,5 @@ export abstract class FieldTextarea extends FieldItem {
   //         this.reset(this.content.dom.value);
   //       }
   //     }),
-  //   );
   // }
 }

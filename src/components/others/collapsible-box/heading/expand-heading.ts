@@ -1,18 +1,21 @@
-import { fromEvent } from 'rxjs';
-import { Span, TextNode, TypeComponent, TypeElement } from '@type-dom/framework';
+import {
+  Span,
+  TextNode,
+  TypeDiv,
+  TypeHtml
+} from '@type-dom/framework';
 import { ElCaretBottomSvg } from '@type-dom/svgs';
 
-export class ExpandHeading extends TypeComponent {
+export class ExpandHeading extends TypeDiv {
   className: 'ExpandHeading';
-  public override parent?: TypeComponent;
   override childNodes: [ElCaretBottomSvg, Span];
   svg: ElCaretBottomSvg;
   title: TextNode;
 
   constructor(title: string) {
-    super('div');
+    super();
     this.className = 'ExpandHeading';
-    this.styleObj = {
+    this.style.addObj({
       margin: '0',
       paddingLeft: '10px',
       boxSizing: 'border-box',
@@ -24,10 +27,8 @@ export class ExpandHeading extends TypeComponent {
       display: 'flex',
       alignItems: 'center',
       height: '36px'
-    };
-    this.attrObj = {
-      name: 'expand-heading'
-    };
+    });
+    this.attr.addName('expand-heading');
     this.svg = new ElCaretBottomSvg({
       attrObj: {
         fill: '#FFF'
@@ -46,32 +47,32 @@ export class ExpandHeading extends TypeComponent {
     this.title.setText(title);
   }
 
-  override initEvents(): void {
-    this.subscriptions.push(
-      fromEvent(this.svg.dom, 'click').subscribe((e: Event) => {
+  override setup(): void {
+    this.svg.addEvents({
+      click: (e) => {
         console.log('expand-heading svg.dom clicked');
-        e.stopPropagation();
+        e?.stopPropagation();
         // const style = getComputedStyle(this.svg.dom);
         // console.log('style.transform is ', style.transform);
-        if (this.svg.styleObj.transform === 'rotate(-90deg)') {
-          this.svg.setStyleObj({
+        if (this.svg.style.get('transform') === 'rotate(-90deg)') {
+          this.svg.style.setObj({
             transform: 'rotate(0deg)',
             transition: 'transform 0.3s'
           });
           // console.log('style.transform is ', style.transform);
-          if (this.parent?.lastChild instanceof TypeElement) {
-            this.parent.lastChild.setStyle('display', 'flex'); // flex
+          if (this.parent?.lastChild instanceof TypeHtml) {
+            this.parent.lastChild.style.set('display', 'flex'); // flex
           }
         } else {
-          this.svg.setStyleObj({
+          this.svg.style.setObj({
             transform: 'rotate(-90deg)',
             transition: 'transform 0.3s'
           });
-          if (this.parent?.lastChild instanceof TypeElement) {
-            this.parent.lastChild.setStyle('display', 'none');
+          if (this.parent?.lastChild instanceof TypeHtml) {
+            this.parent.lastChild.style.set('display', 'none');
           }
         }
-      })
-    );
+      }
+    });
   }
 }

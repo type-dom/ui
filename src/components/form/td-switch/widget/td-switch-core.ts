@@ -1,4 +1,4 @@
-import { Div, Span, StyleCursor, TypeSpan } from '@type-dom/framework';
+import { Div, Span, TypeSpan } from '@type-dom/framework';
 import { ElCheckedSvg, ElLoadingSvg, ElUnlockSvg } from '@type-dom/svgs';
 import {
   $borderColor,
@@ -6,14 +6,17 @@ import {
   $colors,
   $colorWhite,
   $fontSizes,
-  $transitionDuration
+  $transitionDurationDefault
 } from '../../../../styles/var';
 import { TdIcon } from '../../../basic/td-icon/td-icon.class';
 import { ITdSwitchConfig } from '../td-switch.interface';
 import {
   $switchBorderColor,
-  $switchButtonSize, $switchContentPadding, $switchCoreHeight,
-  $switchCoreWidth, $switchFontSize,
+  $switchButtonSize,
+  $switchContentPadding,
+  $switchCoreHeight,
+  $switchCoreWidth,
+  $switchFontSize,
   $switchOffColor,
   $switchOnColor
 } from '../td-switch.style';
@@ -23,21 +26,20 @@ export class TdSwitchCore extends TypeSpan {
   className: 'TdSwitchCore';
   action: Div;
   override parent?: TdSwitch;
-  override config?: ITdSwitchConfig;
+  override props: ITdSwitchConfig;
   inner?: Div;
   private innerText?: Span;
   private innerIcon?: TdIcon;
   actionIcon?: TdIcon;
   actionSpan?: Span;
 
-  constructor(config?: ITdSwitchConfig) {
+  constructor(params: ITdSwitchConfig = {}) {
     super();
-    this.config = config;
     this.className = 'TdSwitchCore';
-    this.addAttrObj({
+    this.attr.addObj({
       name: 'switch-core'
     });
-    this.addStyleObj({
+    this.style.addObj({
       display: 'inline-flex',
       position: 'relative',
       alignItems: 'center',
@@ -48,25 +50,28 @@ export class TdSwitchCore extends TypeSpan {
       boxSizing: 'border-box',
       background: $switchOffColor, // 'var(--el-switch-off-color)',
       // backgroundColor: $switchOnColor,
-      cursor: StyleCursor.pointer,
+      cursor: 'pointer',
       // transition: border-color var(--el-transition-duration), background-color var(--el-transition-duration);
-      transition: $borderColor.base + ' ' + $transitionDuration + ', background-color ' + $transitionDuration,
+      transition:
+        $borderColor.base +
+        ' ' +
+        $transitionDurationDefault +
+        ', background-color ' +
+        $transitionDurationDefault,
       // minWidth: map.get($switch-core-width, 'default');
-      minWidth: $switchCoreWidth[config?.size || 'default'],
+      minWidth: $switchCoreWidth[params?.size || 'default'],
       // height: map.get($switch-core-height, 'default');
-      height: $switchCoreHeight[config?.size || 'default']
+      height: $switchCoreHeight[params?.size || 'default']
     });
-    if (config?.inlinePrompt) {
+    if (params?.inlinePrompt) {
       this.inner = new Div({
-        attrObj: {
-          name: 'switch-inner'
-        },
+        name: 'switch-inner',
         styleObj: {
           width: '100%',
           // transition: all getCssVar('transition-duration'),
-          transition: 'all ' + $transitionDuration,
+          transition: 'all ' + $transitionDurationDefault,
           // height: map.get($switch-button-size, 'default'),
-          height: $switchButtonSize[config?.size || 'default'],
+          height: $switchButtonSize[params?.size || 'default'],
           display: 'flex',
           justifyContent: 'center',
           alignItems: 'center',
@@ -75,16 +80,22 @@ export class TdSwitchCore extends TypeSpan {
           //     $switch-button-size,
           //     'default'
           //   )} + 2px);
-          padding: '0 ' + $switchContentPadding[config?.size || 'default'] + ' 0 calc(' + $switchButtonSize[config?.size || 'default'] + ' + 2px)'
+          padding:
+            '0 ' +
+            $switchContentPadding[params?.size || 'default'] +
+            ' 0 calc(' +
+            $switchButtonSize[params?.size || 'default'] +
+            ' + 2px)'
         }
       });
       this.addChild(this.inner);
-      if (config?.activeIcon || config?.inactiveIcon) {
+      if (params?.activeIcon || params?.inactiveIcon) {
         this.innerIcon = new TdIcon({
-          svgObj: config?.modelValue === config?.activeValue ? config?.activeIcon : config?.inactiveIcon,
-          attrObj: {
-            name: 'switch-inner-icon'
-          },
+          name: 'switch-inner-icon',
+          svgObj:
+            params?.modelValue === params?.activeValue
+              ? params?.activeIcon
+              : params?.inactiveIcon,
           styleObj: {
             fontSize: '12px', // $fontSizes.base,
             // color: var(--el-color-white),
@@ -96,14 +107,15 @@ export class TdSwitchCore extends TypeSpan {
           }
         });
         this.inner.addChild(this.innerIcon);
-      } else if (config?.activeText || config?.inactiveText) {
+      } else if (params?.activeText || params?.inactiveText) {
         this.innerText = new Span({
-          text: config?.modelValue === config?.activeValue ? config?.activeText : config?.inactiveText,
-          attrObj: {
-            name: 'switch-inner-text'
-          },
+          name: 'switch-inner-text',
+          text:
+            params?.modelValue === params?.activeValue
+              ? params?.activeText
+              : params?.inactiveText,
           styleObj: {
-            // fontSize: $switchFontSize[config?.size || 'default'],
+            // fontSize: $switchFontSize[params?.size || 'default'],
             fontSize: '12px', // $fontSizes.base,
             // color: var(--el-color-white),
             color: $colorWhite,
@@ -118,9 +130,7 @@ export class TdSwitchCore extends TypeSpan {
     }
 
     this.action = new Div({
-      attrObj: {
-        name: 'switch-action'
-      },
+      name: 'switch-action',
       styleObj: {
         position: 'absolute',
         left: '1px',
@@ -128,10 +138,10 @@ export class TdSwitchCore extends TypeSpan {
         // borderRadius: var(--el-border-radius-circle),
         borderRadius: $borderRadius.circle,
         // transition: all var(--el-transition-duration),
-        transition: 'all ' + $transitionDuration,
-        width: $switchButtonSize[config?.size || 'default'],
+        transition: 'all ' + $transitionDurationDefault,
+        width: $switchButtonSize[params?.size || 'default'],
         // width: map.get($switch-button-size, 'default');
-        height: $switchButtonSize[config?.size || 'default'],
+        height: $switchButtonSize[params?.size || 'default'],
         // height: map.get($switch-button-size, 'default');
         // backgroundColor: var(--el-color-white),
         backgroundColor: $colorWhite,
@@ -143,85 +153,86 @@ export class TdSwitchCore extends TypeSpan {
       }
     });
 
-    if (config?.loading) {
+    if (params?.loading) {
       const loadingIcon = new TdIcon({
+        name: 'switch-loading-icon',
         svgObj: new ElLoadingSvg(),
-        attrObj: {
-          name: 'switch-loading-icon'
-        },
         loading: true
       });
       this.action.addChild(loadingIcon);
-    } else if (config?.modelValue === config?.activeValue) {
-      this.action.addStyleObj({
+    } else if (params?.modelValue === params?.activeValue) {
+      this.action.style.addObj({
         color: $switchOnColor
       });
-      if (config?.activeActionIcon) {
+      if (params?.activeActionIcon) {
         this.actionIcon = new TdIcon({
-          svgObj: config.activeActionIcon,
-          attrObj: {
-            name: 'switch-action-icon'
-          }
+          name: 'switch-action-icon',
+          svgObj: params.activeActionIcon
         });
         this.action.addChild(this.actionIcon);
-      } else if (config?.activeActionText) {
+      } else if (params?.activeActionText) {
         this.actionSpan = new Span({
-          text: config.activeActionText,
-          attrObj: {
-            name: 'switch-action-text'
-          }
+          name: 'switch-action-text',
+          text: params.activeActionText
         });
         this.action.addChild(this.actionSpan);
       }
-    } else if (config?.modelValue !== config?.activeValue) {
-      if (config?.inactiveActionIcon) {
+    } else if (params?.modelValue !== params?.activeValue) {
+      if (params?.inactiveActionIcon) {
         this.actionIcon = new TdIcon({
-          svgObj: config.inactiveActionIcon,
-          attrObj: {
-            name: 'switch-action-icon'
-          }
+          name: 'switch-action-icon',
+          svgObj: params.inactiveActionIcon
         });
         this.action.addChild(this.actionIcon);
-      } else if (config?.inactiveActionText) {
+      } else if (params?.inactiveActionText) {
         this.actionSpan = new Span({
-          text: config.inactiveActionText,
-          attrObj: {
-            name: 'switch-action-text'
-          }
+          name: 'switch-action-text',
+          text: params.inactiveActionText
         });
         this.action.addChild(this.actionSpan);
       }
     }
     this.addChild(this.action);
+    this.props = this.useParams(params);
   }
 
   setInnerChecked(checked: boolean) {
     if (checked) {
-      this.inner?.setStyleObj({
+      this.inner?.style.setObj({
         // padding: 0 calc(#{map.get($switch-button-size, 'default')} + 2px) 0 #{map.get(
         //   $switch-content-padding,
         //   'default'
         // )};
-        padding: '0 ' + 'calc(' + $switchButtonSize[this.config?.size || 'default'] + ' + 2px)' + '0 ' +
-          $switchContentPadding[this.config?.size || 'default']
+        padding:
+          '0 ' +
+          'calc(' +
+          $switchButtonSize[this.props.size || 'default'] +
+          ' + 2px)' +
+          '0 ' +
+          $switchContentPadding[this.props.size || 'default']
       });
-      if (this.config?.activeIcon || this.config?.inactiveIcon) {
-        this.innerIcon?.replaceSvg(this.config.activeIcon!);
-      } else if (this.config?.activeText || this.config?.inactiveText) {
-        this.innerText?.textNode?.setText(this.config?.activeText || '');
+      if (this.props.activeIcon || this.props.inactiveIcon) {
+        this.innerIcon?.replaceSvg(this.props.activeIcon!);
+      } else if (this.props.activeText || this.props.inactiveText) {
+        this.innerText?.textNode?.setText(this.props.activeText || '');
       }
     } else {
-      this.inner?.setStyleObj({
+      this.inner?.style.setObj({
         // padding: 0 #{map.get($switch-content-padding, 'default')} 0 calc(#{map.get(
         //   $switch-button-size,
         //   'default'
         // )} + 2px);
-        padding: '0 ' + $switchContentPadding[this.config?.size || 'default'] + ' 0 calc(' + $switchButtonSize[this.config?.size || 'default'] + ' + 2px)'
+        padding:
+          '0 ' +
+          $switchContentPadding[this.props.size || 'default'] +
+          ' 0 calc(' +
+          $switchButtonSize[this.props.size || 'default'] +
+          ' + 2px)'
       });
-      if (this.config?.activeIcon || this.config?.inactiveIcon) {
-        this.innerIcon?.replaceSvg(this.config.inactiveIcon!);
-      } else if (this.config?.activeText || this.config?.inactiveText) {
-        this.innerText?.textNode?.setText(this.config?.inactiveText || '');
+      if (this.props.activeIcon || this.props.inactiveIcon) {
+        this.innerIcon?.replaceSvg(this.props.inactiveIcon!);
+      } else if (this.props.activeText || this.props.inactiveText) {
+        this.innerText?.textNode?.setText(this.props.inactiveText || '');
       }
     }
   }

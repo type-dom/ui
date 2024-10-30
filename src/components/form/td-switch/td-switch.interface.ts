@@ -1,5 +1,7 @@
-import { IUI, IUIConfig } from '../../../ui/ui.interface';
 import { TypeSvgSvg } from '@type-dom/framework';
+import { isBoolean, isNumber, isString } from '@type-dom/utils';
+import { IUI, IUIConfig } from '../../../ui/ui.interface';
+import { CHANGE_EVENT, INPUT_EVENT, UPDATE_MODEL_EVENT } from '../../../constants/event';
 
 export interface ITdSwitch extends IUI {
   className: 'TdSwitch';
@@ -46,19 +48,19 @@ export interface ITdSwitchConfig extends IUIConfig {
   /**
    * @description component of the icon displayed when in `on` state, overrides `active-text`
    */
-  activeIcon?: TypeSvgSvg,
+  activeIcon?: TypeSvgSvg;
   /**
    * @description component of the icon displayed when in `off` state, overrides `inactive-text`
    */
-  inactiveIcon?: TypeSvgSvg,
+  inactiveIcon?: TypeSvgSvg;
   /**
    * @description text displayed when in `on` state
    */
-  activeText?: string,
+  activeText?: string;
   /**
    * @description text displayed when in `off` state
    */
-  inactiveText?: string,
+  inactiveText?: string;
   /**
    * @description switch value when in `on` state
    * default true
@@ -95,6 +97,15 @@ export interface ITdSwitchConfig extends IUIConfig {
    * @description native input aria-label
    */
   label?: string;
+
+  emits?: {
+    [UPDATE_MODEL_EVENT]?: (val?: boolean | string | number) => void;
+      // isBoolean(val) || isString(val) || isNumber(val),
+    [CHANGE_EVENT]?: (val?: boolean | string | number) => void;
+      // isBoolean(val) || isString(val) || isNumber(val),
+    [INPUT_EVENT]?: (val?: boolean | string | number) => void;
+      // isBoolean(val) || isString(val) || isNumber(val),
+  },
   switchOnColor?: string;
   switchOffColor?: string;
   activeActionText?: string;

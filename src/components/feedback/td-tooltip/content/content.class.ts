@@ -3,9 +3,11 @@ import { ITdTooltipContentConfig } from './content.interface';
 
 export class TdTooltipContent extends UI {
   className: 'TdTooltipContent';
-  constructor(config?: ITdTooltipContentConfig) {
+  override props: ITdTooltipContentConfig;
+
+  constructor(params: ITdTooltipContentConfig = {}) {
     super();
     this.className = 'TdTooltipContent';
-    this.setConfig(config);
+    this.props = this.useParams(params);
   }
 }

@@ -1,5 +1,4 @@
-import { fromEvent } from 'rxjs';
-import { Button, Label, TypeComponent } from '@type-dom/framework';
+import { Button, Label } from '@type-dom/framework';
 import { Select } from '../../select/select.class';
 import { FieldItem } from '../field-item.abstract';
 import { itemContentStyle } from '../field-item.style';
@@ -7,7 +6,6 @@ import { itemContentStyle } from '../field-item.style';
 export abstract class FieldSelect extends FieldItem {
   abstract reset(value?: string): void;
 
-  parent?: TypeComponent;
   childNodes: [Label, Select, Button];
   select: Select;
   mode = 'editor';
@@ -15,35 +13,34 @@ export abstract class FieldSelect extends FieldItem {
   protected constructor(labelText = '控件名称') {
     super(labelText);
     this.select = new Select();
-    this.select.styleObj = Object.assign({}, itemContentStyle);
-    this.select.attrObj = {
+    this.select.style.addObj(Object.assign({}, itemContentStyle));
+    this.select.attr.addObj({
       name: 'property-select'
       // type: 'text',
       // placeholder: placeholder,
-    };
+    });
     if (this.mode === 'read') {
-      this.select.addAttrObj({
+      this.select.attr.addObj({
         disabled: true
       });
     }
     this.childNodes = [this.label, this.select, this.button];
   }
 
-  override initEvents(): void {
-    this.subscriptions.push(
-      // 如果只有一个选项时，监听change，input有问题。
-      fromEvent(this.select.dom, 'click').subscribe((evt) => {
+  override setup(): void {
+    this.select.addEvents({
+      click: (evt) => {
         console.log('this.select.dom click, event is ', evt);
         console.log('this.select.dom.value is ', this.select.dom.value);
         // console.log(this.reset);
         this.reset(this.select.dom.value);
-      }),
-      fromEvent(this.select.dom, 'change').subscribe((evt) => {
+      },
+      change: (evt) => {
         console.log('this.select.dom change, event is ', evt);
         console.log('this.select.dom.value is ', this.select.dom.value);
         // console.log(this.reset);
         this.reset(this.select.dom.value);
-      })
-    );
+      }
+    });
   }
 }

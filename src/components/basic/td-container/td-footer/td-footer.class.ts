@@ -1,26 +1,29 @@
 import { UI } from '../../../../ui/ui.abstract';
 import type { ITdFooter, ITdFooterConfig } from './td-footer.interface';
-import type { ITdHeaderConfig } from '../td-header/td-header.interface';
 
 export class TdFooter extends UI implements ITdFooter {
   className: 'TdFooter';
+  override props: ITdFooterConfig
 
-  constructor(config?: Partial<ITdFooterConfig>) {
-    super({ tag: 'footer' });
+  constructor(params: ITdFooterConfig = {}) {
+    super();
+    this.useTag('footer');
     this.className = 'TdFooter';
-    this.addStyleObj({
+    this.style.addObj({
       padding: '0 20px',
-      height: config?.height || '60px',
+      height: params?.height || '60px',
       boxSizing: 'border-box',
       flexShrink: 0,
-      backgroundColor: '#a0cfff'
+      backgroundColor: params?.backgroundColor || 'fff' // '#a0cfff'
     });
-    this.setConfig(config);
+    if (params?.slot) {
+      this.slotChild(params.slot);
+    }
+    this.props = this.useParams(params);
   }
 
-  override setConfig(config?: Partial<ITdHeaderConfig>): void {
-    super.setConfig(config);
-    this.addHeight(config?.height || '60px');
-    this.addBackgroundColor(config?.backgroundColor || 'fff');
-  }
+  // override setup(params?: ITdFooterConfig): void {
+  //   // this.addHeight(params?.height || '60px');
+  //   // this.addBackgroundColor(params?.backgroundColor || 'fff');
+  // }
 }

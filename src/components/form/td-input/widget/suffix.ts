@@ -1,8 +1,8 @@
-import { Span, StyleCursor, TypeSpan } from '@type-dom/framework';
-import { ITdInputConfig } from '../td-input.interface';
-import { TdIcon } from '@type-dom/ui';
+import { Span, TypeSpan } from '@type-dom/framework';
 import { ElCircleCloseSvg, ElHideSvg, ElViewSvg } from '@type-dom/svgs';
+import { TdIcon } from '../../../basic/td-icon/td-icon.class';
 import { $input, $inputFontSize } from '../td-input.style';
+import { ITdInputConfig } from '../td-input.interface';
 import { TdInputWrapper } from './td-input-wrapper.class';
 
 export class TdInputSuffix extends TypeSpan {
@@ -17,8 +17,8 @@ export class TdInputSuffix extends TypeSpan {
     super();
     this.parent = parent;
     this.className = 'TdInputSuffix';
-    this.addStyleObj({
-      display: this.parent.suffixVisible ? 'inline-flex' : 'none',
+    this.style.addObj({
+      display: 'inline-flex',
       whiteSpace: 'nowrap',
       flexShrink: 0,
       flexWrap: 'nowrap',
@@ -55,7 +55,7 @@ export class TdInputSuffix extends TypeSpan {
         styleObj: {
           display: 'none',
           fontSize: $inputFontSize[config?.size || 'default'],
-          cursor: StyleCursor.pointer
+          cursor: 'pointer'
         },
         events: {
           click: (evt, icon) => {
@@ -78,7 +78,7 @@ export class TdInputSuffix extends TypeSpan {
         styleObj: {
           display: this.parent.showPwdVisible ? 'inline-flex' : 'none',
           fontSize: $inputFontSize[config?.size || 'default'],
-          cursor: StyleCursor.pointer
+          cursor: 'pointer'
         },
         events: {
           click: () => {
@@ -88,11 +88,11 @@ export class TdInputSuffix extends TypeSpan {
               this.parent.passwordVisible ? new ElViewSvg() : new ElHideSvg()
             );
             if (this.parent.passwordVisible) {
-              this.parent.inner.setAttrObj({
+              this.parent.inner.attr.setObj({
                 type: 'text'
               });
             } else {
-              this.parent.inner.setAttrObj({
+              this.parent.inner.attr.setObj({
                 type: 'password'
               });
             }
@@ -111,7 +111,7 @@ export class TdInputSuffix extends TypeSpan {
         styleObj: {
           display: 'inline-flex',
           fontSize: $inputFontSize[config?.size || 'default']
-          // cursor: StyleCursor.pointer,
+          // cursor: 'pointer',
         },
         events: {
           click: (evt, icon) => {
@@ -122,5 +122,11 @@ export class TdInputSuffix extends TypeSpan {
       });
       this.suffixInner.addChild(this.suffixIcon);
     }
+  }
+
+  override setup() {
+    this.style.addObj({
+      display: this.parent.suffixVisible ? 'inline-flex' : 'none' // constructor 中this.parent.suffixVisible是undefined
+    });
   }
 }

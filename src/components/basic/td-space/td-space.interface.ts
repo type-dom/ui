@@ -14,6 +14,7 @@ export interface ITdSpaceConfig extends IUIConfig {
   direction?: 'horizontal' | 'vertical';
   /**
    * @description Controls the alignment of items	对齐方式
+   * 对应 align-items
    */
   alignment?: StyleAlignItems;
   /**

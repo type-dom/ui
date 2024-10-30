@@ -1,36 +1,38 @@
 import { IUI, IUIConfig } from '../../../../ui/ui.interface';
 
-
 export interface ITdPopperTrigger extends IUI {
-  className: 'TdPopperTrigger'
+  className: 'TdPopperTrigger';
 }
+
+type IEvent = (event: Event) => void;
 
 export interface ITdPopperTriggerConfig extends IUIConfig {
   // virtualRef: {
   //   type: definePropType<Measurable>(Object),
   // },
-  // virtualTriggering: Boolean,
-  // onMouseenter: {
+  virtualRef?: HTMLElement;
+  virtualTriggering?: boolean,
+  onMouseenter?: IEvent;
   //   type: definePropType<(e: Event) => void>(Function),
   // },
-  // onMouseleave: {
+  onMouseleave?: IEvent;
   //   type: definePropType<(e: Event) => void>(Function),
   // },
-  // onClick: {
+  onClick?: IEvent;
   //   type: definePropType<(e: Event) => void>(Function),
   // },
-  // onKeydown: {
+  onKeydown?: IEvent;
   //   type: definePropType<(e: Event) => void>(Function),
   // },
-  // onFocus: {
+  onFocus?: IEvent;
   //   type: definePropType<(e: Event) => void>(Function),
   // },
-  // onBlur: {
+  onBlur?: IEvent;
   //   type: definePropType<(e: Event) => void>(Function),
   // },
-  // onContextmenu: {
+  onContextmenu?: IEvent;
   //   type: definePropType<(e: Event) => void>(Function),
   // },
-  id?: string,
-  open?: boolean,
+  id?: string;
+  open?: boolean;
 }

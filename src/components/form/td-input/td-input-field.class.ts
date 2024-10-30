@@ -5,31 +5,31 @@ import { ITdInputField, ITdInputFieldConfig } from './td-input-field.interface';
 export class TdInputField extends FieldInput implements ITdInputField {
   className: 'TdInputField';
 
-  constructor(config: Partial<ITdInputFieldConfig>) {
-    super(config.labelTitle, config.placeholder);
+  constructor(params: ITdInputFieldConfig) {
+    super(params.labelTitle, params.placeholder);
     console.log('InputItem constructor . ');
     this.className = 'TdInputField';
-    this.addStyleObj({
+    this.style.addObj({
       padding: '2px 10px 2px 0'
     });
-    this.addAttrName('input-item');
-    this.label.addStyleObj({
+    this.attr.addName('input-item');
+    this.label.style.addObj({
       fontSize: '16px',
-      width: config.labelWidth || '150px'
+      width: params.labelWidth || '150px'
     });
-    this.content.addAttrObj({
-      type: config?.type || 'text'
+    this.content.attr.addObj({
+      type: params?.type || 'text'
     });
     // todo 有后缀时才需要这样
-    // this.content.addStyleObj({
+    // this.content.style.addObj({
     //   borderRadius: '4px 0 0 4px',
     // });
-    if (config.readonly) {
-      this.content.addAttrObj({
+    if (params.readonly) {
+      this.content.attr.addObj({
         disabled: true
       });
     }
-    // this.button.setStyleObj({
+    // this.button.style.setObj({
     //   display: 'inline-block',
     //   padding: '4px 3px',
     //   fontSize: '14px',
@@ -46,7 +46,7 @@ export class TdInputField extends FieldInput implements ITdInputField {
     //   OfdEditor.selectedControl?.resetLabelText(this.content.dom.value);
     //   return;
     // }
-    // if (this.styleObj.display === 'none') this.setStyle('display', 'block');
+    // if (this.style.get('display') === 'none') this.setStyle('display', 'block');
     // if (OfdEditor.selectedControl?.formItem.labelText?.text) {
     //   this.resetInputValue(OfdEditor.selectedControl.formItem.labelText.text);
     // } else {

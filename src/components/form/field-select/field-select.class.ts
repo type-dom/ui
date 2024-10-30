@@ -1,4 +1,3 @@
-import { fromEvent } from 'rxjs';
 import { TypeSelect, IOptionSet } from '@type-dom/framework';
 import { SelectOption } from './option/option.class';
 import { IFieldSelect } from './field-select.interface';
@@ -11,7 +10,7 @@ export class FieldSelect extends TypeSelect implements IFieldSelect {
   constructor() {
     super();
     this.className = 'FieldSelect';
-    this.addAttrName('td-select');
+    this.attr.addName('td-select');
     this.childNodes = [];
   }
 
@@ -19,15 +18,15 @@ export class FieldSelect extends TypeSelect implements IFieldSelect {
     this.clearChildren();
     const firstOpt = new SelectOption();
     firstOpt.textNode.setText('请选择');
-    firstOpt.addAttrObj({
+    firstOpt.attr.addObj({
       label: '请选择',
       value: 0
     });
     this.addChild(firstOpt);
-    options.forEach(opt => {
+    options.forEach((opt) => {
       const optObj = new SelectOption();
       optObj.textNode.setText(opt.label);
-      optObj.addAttrObj({
+      optObj.attr.addObj({
         label: opt.label,
         value: opt.value
       });
@@ -35,11 +34,11 @@ export class FieldSelect extends TypeSelect implements IFieldSelect {
       // opt.selected && optObj.addAttribute('selected', true);
       this.addChild(optObj);
     });
-    this.childNodes.forEach(optObj => {
-      if (String(optObj.attrObj.value).trim() === String(value).trim()) {
-        optObj.addAttribute('selected', true);
+    this.childNodes.forEach((optObj) => {
+      if (String(optObj.attr.get('value')).trim() === String(value).trim()) {
+        optObj.attr.add('selected', true);
       } else {
-        // optObj.removeAttribute('selected');
+        // optObj.attr.remove('selected');
       }
     });
     // console.error('this.dom.value is ', this.dom.value);
@@ -47,32 +46,27 @@ export class FieldSelect extends TypeSelect implements IFieldSelect {
 
   resetOptions(options: IOptionSet[], value: string | number | boolean): void {
     this.setOptions(options, value);
-    this.render(); // 需要单独渲染。
+    this.mount(); // 需要单独渲染。
     // console.error('this.dom.value is ', this.dom.value);
   }
 
-  override initEvents(): void {
-    this.subscriptions.push(
-      // 如果只有一个选项时，监听change，input有问题。
-      fromEvent(this.dom, 'click').subscribe((evt) => {
+  override setup(): void {
+    this.addEvents({
+      click: (evt) => {
         console.log('this.select.dom click, event is ', evt);
         console.log('this.select.dom.value is ', this.dom.value);
         // console.log(this.reset);
         // this.setValue(this.dom.value);
         this.value = this.dom.value;
-      }),
-      fromEvent(this.dom, 'change').subscribe((evt) => {
+      },
+      change: (evt) => {
         console.log('this.select.dom change, event is ', evt);
         console.log('this.select.dom.value is ', this.dom.value);
         // console.log(this.reset);
         // this.setValue(this.dom.value);
         this.value = this.dom.value;
-      })
-    );
+      }
+    });
   }
 
-  // render(): void {
-  //   console.error('select element render . ');
-  //   super.render();
-  // }
 }

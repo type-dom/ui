@@ -1,6 +1,7 @@
 # Navigation 导航
 
     Affix 固钉
+    Anchor 锚点
     Backtop 回到顶部
     Breadcrumb 面包屑
     Dropdown 下拉菜单

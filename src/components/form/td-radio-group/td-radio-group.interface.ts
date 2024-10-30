@@ -25,7 +25,7 @@ export interface ITdRadioGroupConfig extends IUIConfig {
   /**
    * @description binding value
    */
-  modelValue?: IPrimitive | XProxy<IJsonData>,
+  modelValue?: IPrimitive | XProxy<IJsonData>;
   // resultValue?: string | number | boolean, // todo 是否应该跟modelValue合并
   /**
    * @description border and background color when button is active
@@ -42,7 +42,7 @@ export interface ITdRadioGroupConfig extends IUIConfig {
   /**
    * @description native `name` attribute
    */
-  name?: string,
+  name?: string;
   /**
    * @description whether to trigger form validation
    */

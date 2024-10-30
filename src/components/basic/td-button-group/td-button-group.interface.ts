@@ -1,5 +1,9 @@
 import { IUI, IUIConfig } from '../../../ui/ui.interface';
-import { IButtonSize, IButtonType, ITdButtonConfig } from '../td-button/td-button.interface';
+import {
+  IButtonSize,
+  IButtonType,
+  ITdButtonConfig
+} from '../td-button/td-button.interface';
 import { TdButton } from '../td-button/td-button.class';
 
 export interface ITdButtonGroup extends IUI {

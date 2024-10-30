@@ -1,4 +1,4 @@
-import { StyleDisplay, Label, Span, TextNode, Button } from '@type-dom/framework';
+import { Label, Span, TextNode, Button } from '@type-dom/framework';
 // import { TdButton } from '../../../basic';
 import { FieldItem } from '../field-item.abstract';
 
@@ -10,7 +10,7 @@ export abstract class FieldSpan extends FieldItem {
   protected constructor(labelText = '控件名称') {
     super(labelText);
     this.content = new Span({ parent: this });
-    this.content.styleObj = {
+    this.content.style.addObj({
       height: '28px',
       lineHeight: '28px',
       textAlign: 'center',
@@ -21,7 +21,7 @@ export abstract class FieldSpan extends FieldItem {
       // -webkit-box-sizing: border-box;
       boxSizing: 'border-box',
       color: '#606266',
-      display: StyleDisplay.inlineBlock,
+      display: 'inlineBlock',
       outline: '0',
       padding: '0 15px',
       // paddingLeft: '43px',
@@ -29,14 +29,14 @@ export abstract class FieldSpan extends FieldItem {
       // -webkit-transition: border-color .2s cubic-bezier(.645,.045,.355,1);
       transition: 'border-color .2s cubic-bezier(.645,.045,.355,1)',
       width: 'calc(100% - 80px)'
-    };
-    this.attrObj = {
+    });
+    this.attr.addObj({
       name: 'field-span'
-    };
+    });
     this.textNode = new TextNode('显示');
     this.content.addChild(this.textNode);
 
-    this.button.setStyleObj({
+    this.button.style.setObj({
       // position: 'absolute',
       // right: '10px',
       padding: '8px 3px 4px',

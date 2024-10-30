@@ -1,5 +1,9 @@
-import { $borderColor, $colors, $textColor, $transitionDuration, $transitionDurationFast } from '../../../styles/var';
-import { StyleCursor } from '@type-dom/framework';
+import {
+  $borderColor,
+  $colors,
+  $textColor,
+  $transitionDurationFast
+} from '../../../styles/var';
 
 export const $switchOnColor = $colors.primary.base;
 // -switch-on-color: var(--el-color-primary);
@@ -54,7 +58,7 @@ export const $switchLabel = {
   display: 'inline-flex',
   // font-size: map.get($switch-font-size, 'default'),
   fontWeight: $switchFontSize['default'],
-  cursor: StyleCursor.pointer,
+  cursor: 'pointer',
   verticalAlign: 'middle',
   // color: getCssVar('text-color', 'primary'),
   color: $textColor.primary

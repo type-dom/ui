@@ -1,27 +1,27 @@
-import { IStyle, StyleDisplay, StylePosition } from '@type-dom/framework';
-import './icon.scss';
+import { vHash } from '@type-dom/framework';
+import { IStyle } from '@type-dom/css-type';
 
-export const $tdIcon: Partial<IStyle> = {
-  // height: '1em',
+export const $tdIcon: IStyle = {
+  height: '1em',
   width: '1em',
   lineHeight: '1em',
-  display: StyleDisplay.inlineFlex,
+  display: 'inline-flex',
   justifyContent: 'center',
   alignItems: 'center',
-  position: StylePosition.relative,
+  position: 'relative',
   fill: 'currentColor',
-  // color: var(--color),
+  // color: 'var(--color)',
   fontSize: 'inherit'
 };
 
-export const $iconLoading = {
-  animation: 'rotating 2s linear infinite'
+export const $iconLoading: IStyle = {
+  animation: `rotating-${vHash} 2s linear infinite`
 };
-export const $iconRight = {
+export const $iconRight: IStyle = {
   marginLeft: '5px',
   float: 'right'
 };
-export const $iconLeft = {
+export const $iconLeft: IStyle = {
   marginRight: '5px',
   float: 'left'
 };

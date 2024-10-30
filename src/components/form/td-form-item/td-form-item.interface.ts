@@ -8,7 +8,7 @@ export const formItemValidateStates = [
   'validating',
   'success'
 ] as const;
-export type IFormItemValidateState = typeof formItemValidateStates[number];
+export type IFormItemValidateState = (typeof formItemValidateStates)[number];
 
 export interface ITdFormItem extends IUI {
   className: 'TdFormItem';
@@ -18,7 +18,7 @@ export interface ITdFormItemConfig extends IUIConfig {
   /**
    * @description Label text.
    */
-  label?: string,
+  label?: string;
   /**
    * @description Width of label, e.g. `'50px'`. `'auto'` is supported.
    */
@@ -42,11 +42,11 @@ export interface ITdFormItemConfig extends IUIConfig {
   /**
    * @description Field error message, set its value and the field will validate error and show this message immediately.
    */
-  error?: string,
+  error?: string;
   /**
    * @description Validation state of formItem.
    */
-  validateStatus?: IFormItemValidateState,
+  validateStatus?: IFormItemValidateState;
   // validateStatus: {
   //   type: string,
   //   values: formItemValidateStates,
@@ -54,7 +54,7 @@ export interface ITdFormItemConfig extends IUIConfig {
   /**
    * @description Same as for in native label.
    */
-  for?: string,
+  for?: string;
   /**
    * @description Inline style validate message.
    */
@@ -69,7 +69,6 @@ export interface ITdFormItemConfig extends IUIConfig {
    */
   size?: ISize;
 
-  contents?: TypeNode[];
   contentAlign?: 'left' | 'right' | 'center';
   labelPosition?: ILabelPosition;
 }

@@ -1,7 +1,11 @@
-import { fromEvent, Observable } from 'rxjs';
+import { IStyle } from '@type-dom/css-type';
 import {
-  Button, Div, Label, StyleDisplay, TextNode, StylePosition,
-  IOptionSetting, IOptionSet
+  Button,
+  Div,
+  Label,
+  TextNode,
+  IOptionSetting,
+  IOptionSet
 } from '@type-dom/framework';
 import { TdThreeDotsSvg } from '@type-dom/svgs';
 import { FieldSelect } from '../../../form/field-select/field-select.class';
@@ -18,14 +22,14 @@ export abstract class PropertyOptions extends FieldItem {
   optionsContent: Div;
   protected btn: Button;
   private readonly dotsSvg: TdThreeDotsSvg;
-  optionsConfigObservable: Observable<Event>;
+  // optionsConfigObservable: Observable<Event>;
 
   protected constructor(labelText = '选项列表') {
     super(labelText);
-    this.addAttrName('option-property');
+    this.attr.addName('option-property');
     this.selectConfigDiv = new Div();
-    this.selectConfigDiv.addAttrName('select-config');
-    this.selectConfigDiv.addStyleObj({
+    this.selectConfigDiv.attr.addName('select-config');
+    this.selectConfigDiv.style.addObj({
       height: '100%',
       lineHeight: '32px',
       textAlign: 'center',
@@ -36,29 +40,30 @@ export abstract class PropertyOptions extends FieldItem {
       // -webkit-box-sizing: border-box;
       boxSizing: 'border-box',
       color: '#606266',
-      display: StyleDisplay.inlineBlock,
+      display: 'inlineBlock',
       outline: '0',
       // -webkit-transition: border-color .2s cubic-bezier(.645,.045,.355,1);
       transition: 'border-color .2s cubic-bezier(.645,.045,.355,1)',
       width: 'calc(100% - 100px)'
     });
     this.selectDiv = new Div();
-    this.selectDiv.addStyleObj({
+    this.selectDiv.style.addObj({
       display: 'flex',
       flexDirection: 'row'
     });
     // 单独的方法实现
     this.selectObj = new FieldSelect();
-    this.selectObj.addAttrName('select');
-    this.selectObj.addStyleObj(Object.assign({}, itemContentStyle,
-      {
+    this.selectObj.attr.addName('select');
+    this.selectObj.style.addObj(
+      Object.assign({}, itemContentStyle, {
         width: '100%',
         borderRadius: '4px 0 0 4px',
         borderRight: 'none'
-      }));
+      })
+    );
 
     this.btn = new Button({ parent: this.selectDiv });
-    this.btn.addStyleObj({
+    this.btn.style.addObj({
       // position: 'absolute',
       // right: '10px',
       padding: '8px 3px 4px',
@@ -73,23 +78,27 @@ export abstract class PropertyOptions extends FieldItem {
     this.selectDiv.childNodes = [this.selectObj, this.btn];
     this.firstDiv = new Div();
     const labelDiv = new Div();
-    labelDiv.addStyleObj({
+    labelDiv.style.addObj({
       display: 'inline-block',
       width: '50%'
     });
     labelDiv.addChild(new TextNode('标签'));
     const valueDiv = new Div();
-    valueDiv.addStyleObj({
+    valueDiv.style.addObj({
       display: 'inline-block',
       width: '50%'
     });
     valueDiv.addChild(new TextNode('值'));
     this.firstDiv.childNodes = [labelDiv, valueDiv];
     this.optionsContent = new Div();
-    this.selectConfigDiv.childNodes = [this.selectDiv, this.firstDiv, this.optionsContent];
+    this.selectConfigDiv.childNodes = [
+      this.selectDiv,
+      this.firstDiv,
+      this.optionsContent
+    ];
 
-    this.button.addStyleObj({
-      position: StylePosition.absolute,
+    this.button.style.addObj({
+      position: 'absolute',
       right: '10px',
       padding: '8px 3px 4px',
       fontSize: '16px',
@@ -101,7 +110,7 @@ export abstract class PropertyOptions extends FieldItem {
     this.childNodes = [this.label, this.selectConfigDiv, this.button];
     // 创建添加按钮
     // this.addDiv = new Div(this.selectConfigDiv);
-    // this.addDiv.setStyleObj({
+    // this.addDiv.style.setObj({
     //   textAlign: 'center',
     //   marginTop: '-10px',
     //   display: 'none', // 现在不需要动态添加选项。
@@ -109,7 +118,7 @@ export abstract class PropertyOptions extends FieldItem {
     // const svg = new AddSvg({ parent: this.addDiv });
     // svg.addAttribute('width', '24px');
     // this.addDiv.addChild(svg);
-    this.optionsConfigObservable = fromEvent(this.btn.dom, 'click');
+    // this.optionsConfigObservable = fromEvent(this.btn.dom, 'click');
   }
 
   get optionSetting(): IOptionSetting | undefined {
@@ -133,9 +142,11 @@ export abstract class PropertyOptions extends FieldItem {
   }
 
   resetOptionSettingResultValue(value: string | number | boolean): void {
-    // AppRoot.selectedControl?.attrObj.optionSetting''
+    // AppRoot.selectedControl?.attr.get('optionSetting')''
     // this.optionSetting = Object.assign(this.optionSetting, { resultValue: value });
-    if (this.optionSetting) this.optionSetting.resultValue = value;
+    if (this.optionSetting) {
+      this.optionSetting.resultValue = value;
+    }
   }
 
   // vue项目中返回的是选中的项目。只有一层，没有两层。
@@ -148,7 +159,7 @@ export abstract class PropertyOptions extends FieldItem {
     // todo 监听事件
     this.optionSetting = optionSetting;
     this.optionsContent.clearChildren();
-    const styleObj = {
+    const styleObj: IStyle = {
       display: 'inline-block',
       width: '45%',
       border: '1px solid #ccc',
@@ -156,23 +167,26 @@ export abstract class PropertyOptions extends FieldItem {
     };
     // let optIndex = 0;
     // config.options设置
-    const selectedOption = optionSetting.options.find(opt => String(opt.value) === String(optionSetting.resultValue).split('.')[0]);
+    const selectedOption = optionSetting.options.find(
+      (opt) =>
+        String(opt.value) === String(optionSetting.resultValue).split('.')[0]
+    );
     if (!selectedOption?.options) {
       throw Error('选项有问题');
     }
     selectedOption.options.forEach((opt, optIndex) => {
       const optDiv = new Div();
       const labelDiv = new Div();
-      labelDiv.addStyleObj(styleObj);
-      labelDiv.setAttrObj({
+      labelDiv.style.addObj(styleObj);
+      labelDiv.attr.setObj({
         // contenteditable: 'true', // 现在选项不需要编辑
         optIndex,
         optType: 'label'
       });
       labelDiv.addChild(new TextNode(opt.label));
       const valueDiv = new Div();
-      valueDiv.addStyleObj(styleObj);
-      valueDiv.addAttrObj({
+      valueDiv.style.addObj(styleObj);
+      valueDiv.attr.addObj({
         // contenteditable: 'true', // 现在选项不需要编辑
         optIndex,
         optType: 'value'
@@ -180,7 +194,7 @@ export abstract class PropertyOptions extends FieldItem {
       valueDiv.addChild(new TextNode(String(opt.value)));
 
       // const deleteDiv = new Div(optDiv);
-      // deleteDiv.setStyleObj({
+      // deleteDiv.style.setObj({
       //   display: 'none',
       //   // display: 'inline-block', // 现在不需要动态删除选项
       //   width: '10%',
@@ -190,7 +204,7 @@ export abstract class PropertyOptions extends FieldItem {
       //   // marginTop: '10px',
       // });
       // const svg = new DeleteSvg(deleteDiv);
-      // svg.setStyleObj({
+      // svg.style.setObj({
       //   width: '20',
       // });
       // deleteDiv.appendChild(svg);
@@ -204,7 +218,7 @@ export abstract class PropertyOptions extends FieldItem {
     // this.selectConfigDiv.clearChildDom();
     // this.selectConfigDiv.appendChild(this.selectObj).appendChild(this.firstDiv);
     this.optionsContent.clearChildren();
-    const styleObj = {
+    const styleObj: IStyle = {
       display: 'inline-block',
       width: '45%',
       border: '1px solid #ccc',
@@ -214,18 +228,18 @@ export abstract class PropertyOptions extends FieldItem {
     // config.options设置
     options.forEach((opt, optIndex) => {
       const optDiv = new Div();
-      optDiv.setAttrName('option');
+      optDiv.attr.setName('option');
       const labelDiv = new Div();
-      labelDiv.addStyleObj(styleObj);
-      labelDiv.setAttrObj({
+      labelDiv.style.addObj(styleObj);
+      labelDiv.attr.setObj({
         // contenteditable: 'true', // 现在选项不需要编辑
         optIndex,
         optType: 'label'
       });
       labelDiv.addChild(new TextNode(opt.label));
       const valueDiv = new Div();
-      valueDiv.addStyleObj(styleObj);
-      valueDiv.addAttrObj({
+      valueDiv.style.addObj(styleObj);
+      valueDiv.attr.addObj({
         optIndex,
         optType: 'value'
       });
@@ -235,17 +249,19 @@ export abstract class PropertyOptions extends FieldItem {
     });
   }
 
-  override initEvents(): void {
-    this.subscriptions.push(
-      this.optionsConfigObservable.subscribe(() => {
+  override setup(): void {
+    this.btn.addEvents({
+      click: () => {
         console.log('this.btn click . ');
-        console.log('this.optionsConfigObservable is ', this.optionsConfigObservable);
-      }),
-      // todo 没有改变值 ？？？？？ 是否要加click监听
-      fromEvent(this.selectObj.dom, 'change').subscribe(() => {
+      }
+    });
+    this.selectObj.addEvents({
+      change: () => {
         console.log('this.selectObj.dom change . ');
         console.log('this.selectObj.dom.value is ', this.selectObj.dom.value);
-        const selectedOption = this.optionSetting?.options?.find(opt => String(opt.value) === this.selectObj.dom.value);
+        const selectedOption = this.optionSetting?.options && this.optionSetting?.options.find(
+          (opt) => String(opt.value) === this.selectObj.dom.value
+        );
         if (!this.optionSetting) {
           throw Error('无法获取optionSetting');
         }
@@ -256,7 +272,7 @@ export abstract class PropertyOptions extends FieldItem {
           this.resetOptions(selectedOption.options);
           // this.resetControl();
         }
-      })
-    );
+      }
+    });
   }
 }

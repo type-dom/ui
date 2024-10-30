@@ -1,15 +1,32 @@
-import { ITypeButton, ISpan, ITypeConfig, TypeSvgSvg } from '@type-dom/framework';
-import { ITdIcon } from '../td-icon/td-icon.interface';
+import { ISpan, TypeElement, TypeSvgSvg } from '@type-dom/framework';
 import { IUI, IUIConfig } from '../../../ui/ui.interface';
+import { ITdIcon } from '../td-icon/td-icon.interface';
+import { TdButton } from './td-button.class';
 
-export interface ITdButton extends IUI {
+export interface ITdButtonAbstract extends IUI {
   // nodeName: 'button',
-  className: 'TdButton',
-  childNodes: (ISpan | ITdIcon)[],
+  className: 'TdButton' | string;
+  childNodes: (ISpan | ITdIcon)[];
+}
+
+export interface ITdButton extends ITdButtonAbstract {
+  className: 'TdButton';
 }
 
 export type IButtonSize = 'small' | 'default' | 'large';
-export type IButtonType = 'default' | 'primary' | 'success' | 'warning' | 'info' | 'danger' | 'text' | '';
+export type IButtonType =
+  | 'default'
+  | 'primary'
+  | 'success'
+  | 'warning'
+  | 'info'
+  | 'danger'
+  /**
+   * @deprecated
+   * Text type will be deprecated in the next major version (3.0.0)
+   */
+  | 'text'
+  | '';
 export type IButtonNativeType = 'button' | 'submit' | 'reset';
 
 /**
@@ -29,17 +46,23 @@ export interface ITdButtonConfig extends IUIConfig {
   // FormItemProps
   size?: IButtonSize;
   disabled?: boolean;
-  title?: string;
   type?: IButtonType;
-  // SvgClass: any; // todo createSvg(svgName)
   svgObj?: TypeSvgSvg;
-  iconPosition?: 'left' | 'right';
   icon?: string;
   nativeType?: IButtonNativeType;
   loading?: boolean;
+  loadingIcon?: TypeSvgSvg;
   plain?: boolean;
+  text?: boolean; // text type
+  link?: boolean;
   round?: boolean;
+  bg?: boolean;
   circle?: boolean;
-  loadingIcon?: string;
   color?: string;
+  // slots?: ITdButtonSlots;
 }
+
+// export interface ITdButtonSlots extends IUISlots {
+//   loading?: SlotNode;
+//   icon?: SlotNode; // 这里不是 TdIcon, 而是 svg
+// }

@@ -1,25 +1,25 @@
-import { TdButton } from '@type-dom/ui';
 import { UI } from '../../../ui/ui.abstract';
 import { $borderRightColor } from '../td-button/td-button.style';
-import {
-  ITdButtonGroup,
-  ITdButtonGroupConfig,
-} from './td-button-group.interface';
+import { TdButton } from '../td-button/td-button.class';
+import { ITdButtonGroup, ITdButtonGroupConfig } from './td-button-group.interface';
 
 export class TdButtonGroup extends UI implements ITdButtonGroup {
   className: 'TdButtonGroup';
 
-  constructor(config: ITdButtonGroupConfig) {
+  constructor(params: ITdButtonGroupConfig) {
     super();
     this.className = 'TdButtonGroup';
-    this.addStyleObj({
+    this.style.addObj({
       display: 'inline-block',
-      verticalAlign: 'middle',
+      verticalAlign: 'middle'
     });
-    this.setConfig(config);
+    if (params?.slot) {
+      this.slotChild(params.slot);
+    }
+    this.useParams(params);
   }
 
-  override created() {
+  override setup() {
     this.children.forEach((btn, index) => {
       if (btn instanceof TdButton) {
         if (this.children.length > 1) {
@@ -27,28 +27,26 @@ export class TdButtonGroup extends UI implements ITdButtonGroup {
         }
       }
     });
-  }
 
-  override mounted() {
     this.children.forEach((btn, index) => {
       if (btn instanceof TdButton) {
         btn.addEvents({
-          mouseover: () => {
-            btn.setStyleObj({
-              zIndex: 1,
+          mouseenter: () => {
+            btn.style.setObj({
+              zIndex: 1
             });
             if (this.children.length > 1) {
               this.setBtnStyle(btn, index);
             }
           },
-          mouseout: () => {
-            btn.setStyleObj({
-              zIndex: 1,
+          mouseleave: () => {
+            btn.style.setObj({
+              zIndex: 1
             });
             if (this.children.length > 1) {
               this.setBtnStyle(btn, index);
             }
-          },
+          }
         });
       }
     });
@@ -56,52 +54,52 @@ export class TdButtonGroup extends UI implements ITdButtonGroup {
 
   addBtnStyle(btn: TdButton, index: number) {
     if (index === 0) {
-      btn.addStyleObj({
+      btn.style.addObj({
         borderTopRightRadius: 0,
         borderBottomRightRadius: 0,
         marginRight: '-1px',
-        borderRightColor: $borderRightColor,
+        borderRightColor: $borderRightColor
       });
     } else if (index === this.children.length - 1) {
-      btn.addStyleObj({
+      btn.style.addObj({
         borderTopLeftRadius: 0,
         borderBottomLeftRadius: 0,
-        borderLeftColor: $borderRightColor,
+        borderLeftColor: $borderRightColor
       });
     } else {
-      btn.addStyleObj({
+      btn.style.addObj({
         borderTopRightRadius: 0,
         borderTopLeftRadius: 0,
         borderBottomRightRadius: 0,
         borderBottomLeftRadius: 0,
         borderLeftColor: $borderRightColor,
-        borderRightColor: $borderRightColor,
+        borderRightColor: $borderRightColor
       });
     }
   }
 
   setBtnStyle(btn: TdButton, index: number) {
     if (index === 0) {
-      btn.setStyleObj({
+      btn.style.setObj({
         borderTopRightRadius: 0,
         borderBottomRightRadius: 0,
         marginRight: '-1px',
-        borderRightColor: $borderRightColor,
+        borderRightColor: $borderRightColor
       });
     } else if (index === this.children.length - 1) {
-      btn.setStyleObj({
+      btn.style.setObj({
         borderTopLeftRadius: 0,
         borderBottomLeftRadius: 0,
-        borderLeftColor: $borderRightColor,
+        borderLeftColor: $borderRightColor
       });
     } else {
-      btn.setStyleObj({
+      btn.style.setObj({
         borderTopRightRadius: 0,
         borderTopLeftRadius: 0,
         borderBottomRightRadius: 0,
         borderBottomLeftRadius: 0,
         borderLeftColor: $borderRightColor,
-        borderRightColor: $borderRightColor,
+        borderRightColor: $borderRightColor
       });
     }
   }

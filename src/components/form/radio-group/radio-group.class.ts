@@ -4,22 +4,23 @@ import { IRadioGroup, IRadioGroupConfig } from './radio-group.interface';
 
 export class RadioGroup extends TypeDiv implements IRadioGroup {
   className: 'RadioGroup';
+  override props: IRadioGroupConfig
   override childNodes: RadioOption[];
   value: string | number | boolean;
 
-  constructor(config?: IRadioGroupConfig) {
+  constructor(params: IRadioGroupConfig = {}) {
     super();
     this.className = 'RadioGroup';
-    this.addAttrName('radio-group');
+    this.attr.addName('radio-group');
     this.value = '';
     this.childNodes = [];
-    this.setConfig(config);
+    this.props = this.useParams(params);
   }
 
-  override setConfig(config?: Partial<IRadioGroupConfig>) {
-    super.setConfig(config);
-    if (config?.options) {
-      this.setOptions(config.options);
+  override setup() {
+    const props = this.props;
+    if (props?.options) {
+      this.setOptions(props.options);
     }
   }
 
@@ -28,7 +29,7 @@ export class RadioGroup extends TypeDiv implements IRadioGroup {
     const random = Math.random();
     options.forEach((opt) => {
       const optObj = new RadioOption({ parent: this });
-      optObj.input.addAttrObj({
+      optObj.input.attr.addObj({
         name: 'radio' + random,
         label: opt.label,
         value: opt.value,
@@ -45,13 +46,13 @@ export class RadioGroup extends TypeDiv implements IRadioGroup {
   setValue(value: string | number | boolean): void {
     this.value = value;
     // console.error('value is ', value);
-    this.childNodes.forEach(opt => {
-      if (String(opt.input.attrObj.value) === String(value)) {
-        opt.input.setAttrObj({
+    this.childNodes.forEach((opt) => {
+      if (String(opt.input.attr.get('value')) === String(value)) {
+        opt.input.attr.setObj({
           checked: true
         });
       } else {
-        opt.input.removeAttribute('checked');
+        opt.input.attr.remove('checked');
       }
     });
   }

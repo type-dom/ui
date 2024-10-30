@@ -1,11 +1,9 @@
-import { fromEvent } from 'rxjs';
-import { TypeHtml, Input, Label, Button } from '@type-dom/framework';
+import { Input, Label, Button } from '@type-dom/framework';
 import { FieldItem } from '../field-item.abstract';
 import { itemContentStyle } from '../field-item.style';
 
 export abstract class FieldInput extends FieldItem {
   mode?: string;
-  parent?: TypeHtml;
 
   abstract reset(value?: string): void;
 
@@ -15,17 +13,17 @@ export abstract class FieldInput extends FieldItem {
   protected constructor(labelText = '控件名称', placeholder = '请输入') {
     super(labelText);
     this.content = new Input({ parent: this });
-    this.content.styleObj = Object.assign({}, itemContentStyle);
-    this.content.attrObj = {
+    this.content.style.addObj(itemContentStyle);
+    this.content.attr.addObj({
       type: 'text',
       placeholder: placeholder
-    };
+    });
     if (this.mode === 'read') {
-      this.content.addAttrObj({
+      this.content.attr.addObj({
         disabled: true
       });
     }
-    // this.button.addStyleObj({
+    // this.button.style.addObj({
     //   // position: 'absolute',
     //   // right: '10px',
     //   padding: '8px 3px 4px',
@@ -40,21 +38,21 @@ export abstract class FieldInput extends FieldItem {
   }
 
   resetInputPlaceholder(placeholder: string): void {
-    this.content.setAttribute('placeholder', placeholder);
+    this.content.attr.set('placeholder', placeholder);
   }
 
   resetInputValue(value: string | number = ''): void {
-    this.content.setAttribute('value', value);
+    this.content.attr.set('value', value);
     this.content.dom.value = String(value);
   }
 
-  override initEvents(): void {
-    this.subscriptions.push(
-      fromEvent(this.content.dom, 'input').subscribe(() => {
+  override setup(): void {
+    this.content.addEvents({
+      input: () => {
         // console.log('this.input input, event is ', evt);
         // console.log('this.input.dom.value is ', this.input.dom.value);
         this.reset(this.content.dom.value);
-      })
-    );
+      }
+    });
   }
 }

@@ -1,30 +1,42 @@
-import { fromEvent } from 'rxjs';
-import { Input, Span, StyleCursor, TypeLabel } from '@type-dom/framework';
+import { Input, Span } from '@type-dom/framework';
 import {
-  $borderColor, $borderRadiusMap,
+  $borderColor,
   $borderStyle,
   $borderWidth,
   $buttonBgColor,
-  $colors, $colorWhite,
-  $commonComponentSize, $fillColor, $fontSizes,
-  $fontWeightPrimary, $paddingHorizontalMap, $paddingVerticalMap, $textColor
+  $colors,
+  $colorWhite,
+  $commonComponentSize,
+  $fillColor,
+  $fontSizes,
+  $fontWeightPrimary,
+  $textColor
 } from '../../../styles/var';
 import { UI } from '../../../ui/ui.abstract';
+import {
+  $buttonBorderRadius,
+  $buttonPaddingHorizontal,
+  $buttonPaddingVertical
+} from '../../basic/td-button/td-button.style';
 import { TdRadioGroup } from '../td-radio-group/td-radio-group.class';
-import { ITdRadioButton, ITdRadioButtonConfig } from './td-radio-button.interface';
+import {
+  ITdRadioButton,
+  ITdRadioButtonConfig
+} from './td-radio-button.interface';
 
 export class TdRadioButton extends UI implements ITdRadioButton {
   className: 'TdRadioButton';
   inputOriginal: Input;
   radioLabel: Span;
-  override config?: ITdRadioButtonConfig;
+  override props: ITdRadioButtonConfig;
   private disabled?: boolean;
 
-  constructor(config?: ITdRadioButtonConfig) {
-    super({ tag: 'label' });
+  constructor(params: ITdRadioButtonConfig = {}) {
+    super();
+    this.useTag('label');
     this.className = 'TdRadioButton';
-    this.addAttrName('radio-button');
-    this.addStyleObj({
+    this.attr.addName('radio-button');
+    this.style.addObj({
       position: 'relative',
       display: 'inline-block',
       outline: 'none'
@@ -50,20 +62,20 @@ export class TdRadioButton extends UI implements ITdRadioButton {
     });
     this.radioLabel = new Span({
       name: 'radio-label',
-      text: config?.label || 'option',
+      text: params?.label || 'option',
       styleObj: {
         display: 'inline-block',
         lineHeight: '1',
         whiteSpace: 'nowrap',
         verticalAlign: 'middle',
         // borderLeft: '0',
-        '-webkit-appearance': 'none',
+        WebkitAppearance: 'none',
         textAlign: 'center',
         boxSizing: 'border-box',
         outline: 'none',
         margin: '0',
         position: 'relative',
-        cursor: StyleCursor.pointer,
+        cursor: 'pointer',
         userSelect: 'none',
         // 下面是会变化的样式；
         color: $textColor.regular,
@@ -75,116 +87,72 @@ export class TdRadioButton extends UI implements ITdRadioButton {
         // color: $buttonTextColor.default,
         // transition: getCssVar('transition-all'),
         fontSize: $fontSizes.base,
-        padding: $paddingVerticalMap.default + ' ' + $paddingHorizontalMap.default
+        padding:
+          $buttonPaddingVertical.default + ' ' + $buttonPaddingHorizontal.default
       }
     });
     this.addChildren(this.inputOriginal, this.radioLabel);
-    this.setConfig(config);
+    this.props = this.useParams(params);
   }
 
-  override setConfig(config?: ITdRadioButtonConfig): void {
-    super.setConfig(config);
-    if (config?.name) {
-      console.log('setConfig config?.name', config?.name);
-      this.inputOriginal.addAttrName(config.name);
+  override setup(): void {
+    const props = this.props;
+    if (props.name) {
+      console.log('setConfig props.name', props.name);
+      this.inputOriginal.attr.addName(props.name);
     }
-    if (config?.value) {
-      this.inputOriginal.addAttrObj({ value: config.value });
+    if (props.value) {
+      this.inputOriginal.attr.addObj({ value: props.value });
     }
-    if (config?.checked) {
-      this.inputOriginal.addAttrObj({ checked: config.checked || false });
+    if (props.checked) {
+      this.inputOriginal.attr.addObj({ checked: props.checked || false });
     }
-    if (config?.label) {
-      this.radioLabel.textNode?.setText(config.label);
+    if (props?.label) {
+      this.radioLabel.textNode?.setText(props.label);
     }
-    if (config?.disabled) {
-      this.inputOriginal.addAttrObj({ disabled: config.disabled });
+    if (props?.disabled) {
+      this.inputOriginal.attr.addObj({ disabled: props.disabled });
       //   todo 样式
     }
     // size 默认值是 default
-    const size = config?.size || 'default';
-    this.addStyleObj({
+    const size = props?.size || 'default';
+    this.style.addObj({
       height: $commonComponentSize[size]
     });
-    this.radioLabel.addStyleObj({
-      padding: $paddingVerticalMap[size] + ' ' + $paddingHorizontalMap[size],
+    this.radioLabel.style.addObj({
+      padding: $buttonPaddingVertical[size] + ' ' + $buttonPaddingHorizontal[size],
       fontSize: $fontSizes[size]
     });
-    if (config?.isFirst) {
-      const radius = $borderRadiusMap[size];
-      this.radioLabel.addStyleObj({
+    if (props?.isFirst) {
+      const radius = $buttonBorderRadius[size];
+      this.radioLabel.style.addObj({
         borderRadius: radius + ' 0 0 ' + radius
       });
     } else {
-      this.radioLabel.addStyleObj({
+      this.radioLabel.style.addObj({
         borderLeft: '0'
       });
     }
-    if (config?.isLast) {
-      const radius = $borderRadiusMap[size];
-      this.radioLabel.addStyleObj({
+    if (props?.isLast) {
+      const radius = $buttonBorderRadius[size];
+      this.radioLabel.style.addObj({
         borderRadius: '0 ' + radius + ' ' + radius + ' 0'
       });
     }
-    if (config?.checked) {
-      this.setChecked(config?.checked);
+    if (props?.checked) {
+      this.setChecked(!!props?.checked);
     }
-    if (config?.disabled) {
-      this.setDisabled(config?.disabled);
+    if (props?.disabled) {
+      this.setDisabled(props?.disabled);
     }
-  }
-
-  setDisabled(disabled?: boolean): void {
-    this.disabled = disabled;
-    if (disabled) {
-      this.setStyleObj({
-        cursor: StyleCursor.notAllowed,
-        opacity: 0.5
-        //   禁用事件
-        //   pointerEvents: 'none',
-      });
-      this.radioLabel.setStyleObj({
-        color: $colors.default.base
-      });
-      this.inputOriginal.setAttrObj({ disabled: true });
-    } else {
-      this.setStyleObj({
-        cursor: StyleCursor.pointer,
-        opacity: 1,
-        pointerEvents: 'auto'
-      });
-      this.inputOriginal.removeAttribute('disabled');
-    }
-  }
-
-  setChecked(checked: boolean): void {
-    if (checked) {
-      this.inputOriginal.setAttrObj({
-        checked: true
-      });
-      //  设置选中样式
-      this.radioLabel.setStyleObj({
-        color: $colorWhite,
-        backgroundColor: $colors.primary.base
-      });
-    } else {
-      this.inputOriginal.removeAttribute('checked');
-      // 设置非选中样式
-      this.radioLabel.setStyleObj({
-        borderColor: $borderColor.base,
-        background: $fillColor.blank,
-        color: $colors.default.base
-      });
-    }
-  }
-
-  override initEvents(): void {
     this.addEvents({
       // 点击事件 todo 会触发两次，先不管。
       click: (evt) => {
-        console.log('radio-button this.subscriptions is ', this.subscriptions);
         console.log('radio-button this.inputOriginal.dom click . ');
-        console.log('radio-button this.inputOriginal.dom.value is ', this.inputOriginal.dom.value);
+        console.log(
+          'radio-button this.inputOriginal.dom.value is ',
+          this.inputOriginal.dom.value
+        );
         if (this.disabled) {
           evt?.preventDefault();
           return;
@@ -195,13 +163,60 @@ export class TdRadioButton extends UI implements ITdRadioButton {
         }
         this.setChecked(true);
         this.parent?.childNodes.forEach((node) => {
-          if (node instanceof TdRadioButton &&
-            node.inputOriginal.attrObj.name === this.inputOriginal.attrObj.name &&
-            node !== this) {
+          if (
+            node instanceof TdRadioButton &&
+            node.inputOriginal.attr.get('name') ===
+            this.inputOriginal.attr.get('name') &&
+            node !== this
+          ) {
             node.setChecked(false);
           }
         });
       }
     });
+  }
+
+  setDisabled(disabled?: boolean): void {
+    this.disabled = disabled;
+    if (disabled) {
+      this.style.setObj({
+        cursor: 'not-allowed',
+        opacity: 0.5
+        //   禁用事件
+        //   pointerEvents: 'none',
+      });
+      this.radioLabel.style.setObj({
+        color: $colors.default.base
+      });
+      this.inputOriginal.attr.setObj({ disabled: true });
+    } else {
+      this.style.setObj({
+        cursor: 'pointer',
+        opacity: 1,
+        pointerEvents: 'auto'
+      });
+      this.inputOriginal.attr.remove('disabled');
+    }
+  }
+
+  setChecked(checked: boolean): void {
+    if (checked) {
+      this.inputOriginal.attr.setObj({
+        checked: true
+      });
+      //  设置选中样式
+      this.radioLabel.style.setObj({
+        color: $colorWhite,
+        backgroundColor: $colors.primary.base
+      });
+    } else {
+      this.inputOriginal.attr.remove('checked');
+      // 设置非选中样式
+      this.radioLabel.style.setObj({
+        borderColor: $borderColor.base,
+        background: $fillColor.blank,
+        color: $colors.default.base
+      });
+    }
   }
 }

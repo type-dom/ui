@@ -1,5 +1,6 @@
 import {
-  $bgColor, $borderColorHover,
+  $bgColor,
+  $borderColorHover,
   $borderColor,
   $fillColor,
   $textColor,
@@ -7,7 +8,7 @@ import {
   $borderWidth,
   $colors,
   $commonComponentSize,
-  $disabled,
+  $disabled
 } from '../../../styles/var';
 
 // Input
@@ -59,17 +60,20 @@ export const $inputPaddingHorizontal = {
 };
 
 export const $wrapperPadding = {
-  large: $borderWidth +
+  large:
+    $borderWidth +
     ' ' +
     (parseFloat($inputPaddingHorizontal.large.slice(0, -2)) -
       parseFloat($borderWidth.slice(0, -2))) +
     'px',
-  default: $borderWidth +
+  default:
+    $borderWidth +
     ' ' +
     (parseFloat($inputPaddingHorizontal.default.slice(0, -2)) -
       parseFloat($borderWidth.slice(0, -2))) +
     'px',
-  small: $borderWidth +
+  small:
+    $borderWidth +
     ' ' +
     (parseFloat($inputPaddingHorizontal.small.slice(0, -2)) -
       parseFloat($borderWidth.slice(0, -2))) +

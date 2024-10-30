@@ -1,7 +1,7 @@
 import { IUI, IUIConfig } from '../../../../ui/ui.interface';
 
 export interface ITdRow extends IUI {
-  className: 'TdRow',
+  className: 'TdRow';
 }
 
 /**
@@ -15,7 +15,6 @@ export interface ITdRowConfig extends IUIConfig {
   gutter?: number;
   justify?: string;
   align?: string;
-  tag?: string;
 }
 
 export const RowJustify = [

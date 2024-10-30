@@ -11,15 +11,9 @@ export class SelectOption extends TypeOption implements ISelectOption {
   constructor() {
     super();
     this.className = 'SelectOption';
-    this.attrObj = {
-      name: 'option'
-    };
+    this.attr.addName('option');
     this.textNode = new TextNode('一个选项');
     this.childNodes = [this.textNode];
   }
 
-  // render(): void {
-  //   console.error('option render . ');
-  //   super.render();
-  // }
 }

@@ -1,6 +1,6 @@
-import { ITypeSpan, IInput, ITextNode, ITypeConfig } from '@type-dom/framework';
+import { ITypeSpan, IInput, ITextNode } from '@type-dom/framework';
 
 export interface ICheckboxOption extends ITypeSpan {
-  className: 'CheckboxOption',
-  childNodes: [IInput, ITextNode],
+  className: 'CheckboxOption';
+  childNodes: [IInput, ITextNode];
 }
