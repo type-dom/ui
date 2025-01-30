@@ -1,5 +1,12 @@
 import { IStyle } from '@type-dom/css-type';
-import { $bgColor, $borderRadius, $boxShadow, $fontLineHeightPrimary, $fontSizes, $textColor } from '../../../styles/var';
+import {
+  $bgColor,
+  $borderRadius,
+  $boxShadow,
+  $fontLineHeightPrimary,
+  $fontSizes,
+  $textColor,
+} from '../../../styles/var';
 import { $message } from '../td-message/td-message.style';
 
 export const $dialog = {
@@ -42,7 +49,8 @@ export const $dialogHeaderStyle: IStyle = {
 };
 
 export const $dialogHeaderCloseStyle: IStyle = {
-  paddingRight: 'calc(' + $dialog.paddingPrimary + ' + ' + $message.closeSize + ')',
+  paddingRight:
+    'calc(' + $dialog.paddingPrimary + ' + ' + $message.closeSize + ')',
 };
 
 export const $dialogHeaderBtn: IStyle = {
@@ -56,10 +64,10 @@ export const $dialogHeaderBtn: IStyle = {
   border: 'none',
   outline: 'none',
   cursor: 'pointer',
-//   font-size: var(
-//   #{getCssVarName('message-close-size')},
-//   map.get($message, 'close-size')
-// );
+  //   font-size: var(
+  //   #{getCssVarName('message-close-size')},
+  //   map.get($message, 'close-size')
+  // );
   fontSize: $message.closeSize,
 };
 
@@ -94,7 +102,3 @@ export const $dialogOverlayStyle: IStyle = {
   left: 0,
   overflow: 'auto',
 };
-
-
-
-

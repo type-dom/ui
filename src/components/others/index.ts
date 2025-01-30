@@ -3,10 +3,7 @@ export { ExpandHeading } from './collapsible-box/heading/expand-heading';
 export { CollapsibleBoxContents } from './collapsible-box/contents/contents';
 
 export { TdDivider } from './td-divider/td-divider.class';
-export type {
-  ITdDivider,
-  ITdDividerConfig
-} from './td-divider/td-divider.interface';
+export type * from './td-divider/td-divider.interface';
 
 export * from './example';
 

@@ -1,13 +1,19 @@
-import { TypeElement } from '@type-dom/framework';
-import { IUI, IUIConfig } from '../../../ui/ui.interface';
-import { ISize } from '../../../styles/size';
+import {
+  TypeProps,
+  ITypeDiv,
+  TypeDivProps,
+  TypeElement,
+} from '@type-dom/framework';
+import { ComponentSize } from '../../../constants/size';
 import { TdDescriptionsItem } from '../td-descriptions-item/td-descriptions-item.class';
+import { MaybeRef, Signal } from '@type-dom/signals';
 
-export interface ITdDescriptions extends IUI {
+export interface ITdDescriptions extends ITypeDiv {
   className: 'TdDescriptions';
+  props: DescriptionsProps;
 }
 
-export interface ITdDescriptionsConfig extends IUIConfig {
+export interface DescriptionsProps extends TypeDivProps {
   /**
    * @description with or without border
    *     default: false,
@@ -26,7 +32,7 @@ export interface ITdDescriptionsConfig extends IUIConfig {
   /**
    * @description size of list
    */
-  size?: ISize;
+  size?: MaybeRef<ComponentSize>; // ISize | Signal<ISize>;
   /**
    * @description title text, display on the top left
    *     default: '',
@@ -37,11 +43,38 @@ export interface ITdDescriptionsConfig extends IUIConfig {
    *     default: '',
    */
   extra?: string;
+  /**
+   * @description width of every label column
+   *     default: '',
+   */
+  labelWidth?: string | number;
 
+  slot?: TdDescriptionsItem[];
   slots?: {
     title?: TypeElement;
     extra?: TypeElement;
   };
+}
 
-  slot: TdDescriptionsItem[];
+export interface IDescriptionsInject extends TypeProps {
+  border?: boolean;
+  column?: number;
+  direction?: 'horizontal' | 'vertical';
+  size?: ComponentSize;
+  title?: string;
+  extra?: string;
+  labelWidth?: string | number;
+}
+
+export interface IDescriptionsItemInject {
+  label: string;
+  span: number;
+  rowspan: number;
+  width: string | number;
+  minWidth: string | number;
+  labelWidth: string | number;
+  align: string;
+  labelAlign: string;
+  className: string;
+  labelClassName: string;
 }

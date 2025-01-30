@@ -1,10 +1,10 @@
-import { IUI, IUIConfig } from '../../../ui/ui.interface';
+import type { TransitionProps, ITypeElement } from '@type-dom/framework';
 
-export interface ITdBackTop extends IUI {
+export interface ITdBackTop extends ITypeElement {
   className: 'TdBackTop';
 }
 
-export interface ITdBackTopConfig extends IUIConfig {
+export interface BacktopProps extends TransitionProps {
   /**
    * @description the button will not show until the scroll height reaches this value.
    *     default: 200,
@@ -14,7 +14,7 @@ export interface ITdBackTopConfig extends IUIConfig {
    * @description the target to trigger scroll.
    *     default: '',
    */
-  target?: HTMLElement; // string;
+  target?: string;
   /**
    * @description right distance.
    *     default: 40,

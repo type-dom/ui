@@ -8,7 +8,7 @@ export const $opIcon: IStyle = {
   color: '#fff',
   // background-color: getCssVar('text-color', 'regular'),
   backgroundColor: $textColor.regular,
-  borderColor: '#fff'
+  borderColor: '#fff',
 };
 export const $btn: IStyle = {
   position: 'absolute',
@@ -20,7 +20,7 @@ export const $btn: IStyle = {
   opacity: 0.8,
   cursor: 'pointer',
   boxSizing: 'border-box',
-  userSelect: 'none'
+  userSelect: 'none',
 };
 
 export const $canvas: IStyle = {
@@ -30,7 +30,7 @@ export const $canvas: IStyle = {
   display: 'flex',
   justifyContent: 'center',
   alignItems: 'center',
-  userSelect: 'none'
+  userSelect: 'none',
 };
 
 export const $actions: IStyle = {
@@ -43,7 +43,7 @@ export const $actions: IStyle = {
   // background-color: getCssVar('text-color', 'regular'),
   backgroundColor: $textColor.regular,
   borderColor: '#fff',
-  borderRadius: '22px'
+  borderRadius: '22px',
 };
 
 export const $actionsInner: IStyle = {
@@ -54,14 +54,14 @@ export const $actionsInner: IStyle = {
   color: '#fff',
   display: 'flex',
   alignItems: 'center',
-  justifyContent: 'space-around'
+  justifyContent: 'space-around',
 };
 
 export const $prev: IStyle = {
   top: '50%',
   transform: 'translateY(-50%)',
   left: '40px',
-  ...$opIcon
+  ...$opIcon,
 };
 
 export const $next: IStyle = {
@@ -69,7 +69,7 @@ export const $next: IStyle = {
   transform: 'translateY(-50%)',
   right: '40px',
   textIndent: '2px',
-  ...$opIcon
+  ...$opIcon,
 };
 
 export const $mask: IStyle = {
@@ -79,5 +79,5 @@ export const $mask: IStyle = {
   top: 0,
   left: 0,
   opacity: 0.5,
-  background: '#000'
+  background: '#000',
 };

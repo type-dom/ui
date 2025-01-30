@@ -1,16 +1,16 @@
-import { IUI, IUIConfig } from '../../../ui/ui.interface';
+import { ITypeDiv, TypeDivProps } from '@type-dom/framework';
 import {
   IButtonSize,
   IButtonType,
-  ITdButtonConfig
+  TdButtonProps,
 } from '../td-button/td-button.interface';
-import { TdButton } from '../td-button/td-button.class';
 
-export interface ITdButtonGroup extends IUI {
+export interface ITdButtonGroup extends ITypeDiv {
   className: 'TdButtonGroup';
+  props: ITdButtonGroupConfig;
 }
 
-export interface ITdButtonGroupConfig extends IUIConfig {
+export interface ITdButtonGroupConfig extends TypeDivProps {
   /**
    * @description control the size of buttons in this button-group
    */
@@ -20,5 +20,5 @@ export interface ITdButtonGroupConfig extends IUIConfig {
    */
   type?: IButtonType;
 
-  options?: ITdButtonConfig[];
+  options?: TdButtonProps[];
 }

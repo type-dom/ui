@@ -1,21 +1,36 @@
-import { addUnit } from '@type-dom/utils';
-import { UI } from '../../../../ui/ui.abstract';
-import { ITdAside, ITdAsideConfig } from './td-aside.interface';
+import { computed } from '@type-dom/signals';
+import { IStyle } from '@type-dom/css-type';
+import { TypeAside, TypeDiv } from '@type-dom/framework';
+import { useNamespace } from '../../../../hooks/use-namespace';
+import { ITdAside, TdAsideProps } from './td-aside.interface';
 
-export class TdAside extends UI implements ITdAside {
+export class TdAside extends TypeAside implements ITdAside {
   className: 'TdAside';
-  override props: ITdAsideConfig;
+  override props: TdAsideProps;
 
-  constructor(params: ITdAsideConfig = {}) {
+  constructor(params: TdAsideProps = {}) {
     super();
     this.className = 'TdAside';
-    this.style.addObj({
-      overflow: 'auto',
-      boxSizing: 'border-box',
-      flexShrink: 0,
-      width: params?.width ? addUnit(params.width) : '300px'
-    });
-    this.addChild(this.getSlotNode());
+    this.attr.addName('td-aside');
     this.props = this.useParams(params);
+  }
+
+  override setup() {
+    const props = this.props;
+    const ns = useNamespace('aside');
+    const style = computed(
+      () =>
+        (props.width
+          ? ns.cssVarBlock({ width: props.width.toString() })
+          : {}) as IStyle
+    );
+    this.assignProps({
+      attrObj: {
+        class: ns.b(),
+      },
+      // styleObj: style,
+    });
+    this.style.addObj(style);
+    this.slotChildren(props.slot || props.slots?.default);
   }
 }

@@ -1,186 +1,169 @@
-import { Input, Span, TextNode } from '@type-dom/framework';
-import { UI } from '../../../ui/ui.abstract';
-import { ITdCheckboxConfig } from '../td-checkbox/td-checkbox.interface';
+import { computed } from '@type-dom/signals';
+import { IStyle } from '@type-dom/css-type';
+import {
+  Input,
+  TypeProps,
+  TypeLabelProps,
+  Span,
+  TextNode,
+  TypeLabel,
+  useSlots,
+} from '@type-dom/framework';
+import { useNamespace } from '../../../hooks/use-namespace';
+import {
+  checkboxEmits,
+  checkboxGroupContextKey,
+  checkboxProps,
+} from '../td-checkbox/td-checkbox.const';
+import { useCheckbox } from '../td-checkbox/composables/use-checkbox';
+import { CheckboxProps } from '../td-checkbox/td-checkbox.interface';
 import { ITdCheckboxButton } from './td-checkbox-button.interface';
-import {
-  $checkboxButton,
-  $checkboxButtonInnerStyle,
-  $checkboxButtonOriginalStyle,
-  $checkboxButtonStyle,
-  useCheckboxButtonStyle,
-} from './td-checkbox-button.style';
-import {
-  $border,
-  $borderColor, $borderRadius,
-  $button,
-  $colors,
-  $disabled,
-  $fontSizes,
-  ISize
-} from '../../../styles';
-import {
-  $buttonPaddingHorizontal,
-  $buttonPaddingVertical,
-  buttonSize,
-} from '../../basic/td-button/td-button.style';
-import { $checkbox } from '../td-checkbox/td-checkbox.style';
+import './style/index';
+import { isArray } from '@type-dom/utils';
 
-export class TdCheckboxButton extends UI implements ITdCheckboxButton {
+export class TdCheckboxButton extends TypeLabel implements ITdCheckboxButton {
   className: 'TdCheckboxButton';
-  override props: ITdCheckboxConfig;
-  private isFocused?: boolean;
-  private isLimitExceeded?: boolean;
-  private actualValue?: string | number | boolean;
-  private intermediate?: string | number | boolean;
+  override props: CheckboxProps & TypeLabelProps;
 
-  constructor(params: ITdCheckboxConfig = {}) {
+  constructor(params: CheckboxProps = {}) {
     super(); // label | span
     this.className = 'TdCheckboxButton';
-    this.useTag('label');
     this.attr.addObj({
       name: 'td-checkbox-button',
     });
-    useCheckboxButtonStyle(params);
-    this.style.addObj($checkboxButtonStyle);
-    const original = new Input({
-      name: 'original',
-      attrObj: {
-        type: 'checkbox',
-        disabled: params?.disabled, // todo group or form disabled
-        value: this.actualValue,
-        intermediate: this.intermediate,
-      },
-      styleObj: $checkboxButtonOriginalStyle,
-      events: {
-        click: (ev) => {
-          ev?.stopPropagation();
-        },
-        change: (ev) => {
-          this.handleChange(ev);
-        },
-        focus: (evt) => {
-          this.isFocused = true;
-        },
-        blur: (evt) => {
-          this.isFocused = false;
-        },
-      },
+    this.assignProps(checkboxProps);
+    this.addEmits(checkboxEmits);
+    this.props = this.useParams(params) as CheckboxProps & TypeLabelProps;
+  }
+
+  override setup() {
+    const props = this.props;
+    const slots = useSlots();
+
+    const {
+      isFocused,
+      isChecked,
+      isDisabled,
+      checkboxButtonSize,
+      model,
+      actualValue,
+      handleChange,
+    } = useCheckbox(props, slots);
+    const checkboxGroup = this.inject(checkboxGroupContextKey, undefined);
+    const ns = useNamespace('checkbox');
+
+    const activeStyle = computed<IStyle>(() => {
+      const fillValue = checkboxGroup?.fill?.get() ?? '';
+      return {
+        backgroundColor: fillValue,
+        borderColor: fillValue,
+        color: checkboxGroup?.textColor?.get() ?? '',
+        boxShadow: fillValue ? `-1px 0 0 0 ${fillValue}` : undefined,
+      };
     });
-    this.addChild(original);
-    const labelSpan = new Span({
-      name: 'inner',
-      styleObj: $checkboxButtonInnerStyle,
+
+    const labelKls = computed(() => {
+      return [
+        ns.b('button'),
+        ns.bm('button', checkboxButtonSize.get()),
+        ns.is('disabled', isDisabled.get()),
+        ns.is('checked', isChecked.get()),
+        ns.is('focus', isFocused.get()),
+      ];
     });
-    if (params?.slot) {
-      labelSpan.slotChild(params.slot);
-    } else if (params?.label) {
-      labelSpan.addChild(new TextNode(params?.label));
+
+    this.attr.addClass(labelKls);
+    if (
+      props.trueValue ||
+      props.falseValue ||
+      props.trueLabel ||
+      props.falseLabel
+    ) {
+      this.addChild(
+        new Input({
+          vModel: model,
+          class: ns.be('button', 'original'),
+          name: props.name,
+          disabled: isDisabled,
+          trueValue: props.trueValue ?? this.props.trueValue ?? true,
+          falseValue: props.falseValue ?? this.props.falseValue ?? false,
+          attrObj: {
+            type: 'checkbox',
+            tabindex: props.tabindex,
+          },
+          events: {
+            change: (ev) => {
+              handleChange(ev);
+              ev?.stopPropagation();
+            },
+            focus: () => {
+              isFocused.set(true);
+            },
+            blur: () => {
+              isFocused.set(false);
+            },
+            click: (evt) => {
+              evt?.stopPropagation();
+            },
+          },
+        })
+      );
+    } else {
+      this.addChild(
+        new Input({
+          vModel: model,
+          class: ns.be('button', 'original'),
+          name: props.name,
+          disabled: isDisabled,
+          value: actualValue,
+          attrObj: {
+            type: 'checkbox',
+            // checked: isChecked.get(),
+            tabindex: props.tabindex,
+          },
+          events: {
+            change: (evt) => {
+              handleChange(evt);
+              evt?.stopPropagation(); // 必须加这个，否则会再触发一次上层的 change todo ????
+            },
+            focus: () => {
+              isFocused.set(true);
+            },
+            blur: () => {
+              isFocused.set(false);
+            },
+            click: (evt) => {
+              evt?.stopPropagation();
+            },
+          },
+        })
+      );
     }
-    this.addChild(labelSpan);
-    this.addEvents({
-      click: (evt?: MouseEvent) => {
-        // todo
-        console.log('click . ');
-        if (this.props.disabled) {
-          return;
+    if (props.slot || slots?.default || props.label) {
+      this.addChild(
+        new Span({
+          class: ns.be('button', 'inner'),
+          styleObj: isChecked ? activeStyle : undefined,
+          slot: this.props.slot || slots?.default || props.label,
+        })
+      );
+    }
+    // add by me
+    this.addEmits({
+      change: (newValue) => {
+        console.warn('change emit , newValue is ', newValue);
+        const selected = model.get();
+        // todo 数组 还时 值
+        if (isArray(selected)) {
+          model?.set(
+            selected.includes(actualValue.get())
+              ? selected.filter((item) => item !== actualValue.get())
+              : [...selected, actualValue.get()]
+          );
+        } else {
+          model.set(newValue);
         }
-        // const input = this.down<Input>('name', 'original')!;
-        // const checked = (input.dom.checked = !input.dom.checked);
-        const checked = !this.props.checked;
-        this.setChecked(checked);
       },
     });
-    this.props = this.useParams(params);
-  }
-
-  get checkedValue() {
-    return this.down<Input>('name', 'original')?.dom.checked;
-  }
-
-  handleChange(ev?: Event) {
-    if (this.isLimitExceeded) return;
-
-    const target = ev?.target as HTMLInputElement;
-    // emit('change', getLabeledValue(target.checked), e)
-  }
-
-  setChecked(checked?: number | string | boolean) {
-    //   todo 待实现 选中、不选中
-    console.log('setChecked . checked is ', checked);
-    const inner = this.down('name', 'inner');
-    const input = this.down<Input>('name', 'original')!;
-    input.dom.checked = !!checked;
-    this.props.checked = !!checked;
-    if (checked) {
-      inner?.style?.setObj({
-        color: $checkboxButton.checkedTextColor,
-        backgroundColor: $checkboxButton.checkedBgColor,
-        borderColor: $checkboxButton.checkedBorderColor,
-        boxShadow: '-1px 0 0 0 ' + $colors.primary['light-7'],
-      });
-    } else {
-      inner?.style?.setObj({
-        color: $button.textColor,
-        backgroundColor: $button.bgColor,
-        borderColor: $button.borderColor,
-        boxShadow: undefined,
-      });
-    }
-    if (this.props.disabled) {
-      this.setDisabled(true);
-    }
-  }
-
-  setDisabled(disabled: boolean) {
-    const label = this.down('name', 'label');
-    const inner = this.down('name', 'inner');
-    this.props.disabled = disabled;
-    if (disabled) {
-      inner?.style?.setObj({
-        color: $disabled.textColor,
-        cursor: 'not-allowed',
-        backgroundColor: $button.disabled.bgColor,
-        borderColor: $button.disabled.borderColor,
-        boxShadow: 'none',
-      });
-    } else {
-      inner?.style?.setObj({
-        color: $button.textColor,
-        cursor: 'pointer',
-        background: $button.bgColor,
-        border: $border,
-      });
-    }
-  }
-
-  setSize(size: ISize) {
-    const paddingVertical = $buttonPaddingVertical[size];
-    const paddingHorizontal = $buttonPaddingHorizontal[size];
-    const sizeStyle = buttonSize(
-      paddingVertical,
-      paddingHorizontal,
-      $fontSizes[size],
-      0
-    );
-    const inner = this.down<Span>('name', 'inner');
-    inner?.style.setObj(sizeStyle);
-  }
-  // 在CheckboxGroup中位于首位时
-  setFirstStyle() {
-    const inner = this.down<Span>('name', 'inner');
-    inner?.style.setObj({
-      borderLeft: $border,
-      borderTopLeftRadius: $borderRadius.base,
-      borderBottomLeftRadius: $borderRadius.base,
-      boxShadow: 'none !important'
-    })
-  }
-
-  setLastStyle() {
-    const inner = this.down<Span>('name', 'inner');
-    inner?.style.setObj({
-      borderTopRightRadius: $borderRadius.base,
-      borderBottomRightRadius: $borderRadius.base
-    })
   }
 }

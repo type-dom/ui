@@ -1,11 +1,14 @@
-import { IUI, IUIConfig } from '../../../ui/ui.interface';
-import { TdIcon } from '../../basic/td-icon/td-icon.class';
+import {
+  ITypeFragment,
+  TypeFragmentProps,
+  TypeSvgSvg,
+} from '@type-dom/framework';
 
-export interface ITdImageViewer extends IUI {
+export interface ITdImageViewer extends ITypeFragment {
   className: 'TdImageViewer';
 }
 
-export interface ITdImageViewerConfig extends IUIConfig {
+export interface ImageViewerProps extends TypeFragmentProps {
   /**
    * @description preview link list.
    *     default: () => mutable([] as const),
@@ -59,13 +62,13 @@ export interface ITdImageViewerConfig extends IUIConfig {
   crossorigin?: 'anonymous' | 'use-credentials' | '';
 }
 
-export type TdImageViewerAction =
+export type ImageViewerAction =
   | 'zoomIn'
   | 'zoomOut'
   | 'clockwise'
   | 'anticlockwise';
 
-export interface TdImageViewerMode {
+export interface ImageViewerMode {
   name: string;
-  icon: TdIcon;
+  icon: TypeSvgSvg; // typeof SvgSvg 是不行的；
 }

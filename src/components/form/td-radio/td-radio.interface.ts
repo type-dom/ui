@@ -1,11 +1,11 @@
-import { ISize } from '../../../styles/size';
-import { IUI, IUIConfig } from '../../../ui/ui.interface';
+import { ITypeLabel, TypeLabelProps } from '@type-dom/framework';
+import { ComponentSize } from '../../../constants/size';
 
-export interface ITdRadio extends IUI {
+export interface ITdRadio extends ITypeLabel {
   className: 'TdRadio';
 }
 
-export interface ITdRadioConfig extends IUIConfig {
+export interface RadioProps extends TypeLabelProps {
   /**
    * @description binding value
    */
@@ -13,7 +13,7 @@ export interface ITdRadioConfig extends IUIConfig {
   /**
    * @description size of the Radio
    */
-  size?: ISize;
+  size?: ComponentSize;
   /**
    * @description whether Radio is disabled
    */

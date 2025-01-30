@@ -12,7 +12,7 @@ export abstract class FieldTextarea extends FieldItem {
     super(labelText);
     this.style.addObj({
       display: 'block', // 不是 flex
-      marginBottom: '20px'
+      marginBottom: '20px',
     });
     this.content = new Textarea({
       parent: this,
@@ -33,24 +33,24 @@ export abstract class FieldTextarea extends FieldItem {
         padding: '0 5px',
         // -webkit-transition: border-color .2s cubic-bezier(.645,.045,.355,1);
         transition: 'border-color .2s cubic-bezier(.645,.045,.355,1)',
-        width: 'calc(100% - ' + labelStyle.width + ')'
+        width: 'calc(100% - ' + labelStyle.width + ')',
       },
       attrObj: {
-        placeholder: placeholder
-      }
+        placeholder: placeholder,
+      },
     });
     console.log('this.parent is ', this.parent);
     console.log('this.mode is ', this.mode);
     if (this.mode === 'read') {
       this.content.attr.addObj({
-        disabled: true
+        disabled: true,
       });
     }
-    this.button.textNode.setText('确定');
+    this.button.textNode?.setText('确定');
     this.button.style.addObj({
       height: '24px',
       float: 'right',
-      display: 'block'
+      display: 'block',
     });
     this.childNodes = [this.label, this.content, this.button];
   }
@@ -61,7 +61,7 @@ export abstract class FieldTextarea extends FieldItem {
 
   resetInputValue(value = ''): void {
     this.content.attr.set('value', value);
-    this.content.dom.value = String(value);
+    this.content.dom!.value = String(value);
   }
 
   // initEvents(): void {

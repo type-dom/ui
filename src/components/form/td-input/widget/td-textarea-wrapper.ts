@@ -1,27 +1,22 @@
-import {
-  Span,
-  Textarea,
-  TypeDiv,
-  TypeElement,
-} from '@type-dom/framework';
+import { Span, Textarea, TypeDiv, TypeElement } from '@type-dom/framework';
 import { $fontSizes } from '../../../../styles/var';
-import { ITdInputConfig } from '../td-input.interface';
+import { TdInputProps } from '../td-input.interface';
 import {
   $input,
   $inputPaddingHorizontal,
-  $inputTextColor
+  $inputTextColor,
 } from '../td-input.style';
 import { TdInput } from '../td-input.class';
 
 export class TdTextareaWrapper extends TypeDiv {
   className: 'TextareaWrapper';
-  override props: ITdInputConfig;
+  override props: TdInputProps;
   inner: Textarea;
   countSpan: Span;
   override parent?: TdInput;
   private isComposing?: boolean;
 
-  constructor(params: ITdInputConfig = {}) {
+  constructor(params: TdInputProps = {}) {
     super();
     this.className = 'TextareaWrapper';
     this.style.addObj({
@@ -31,11 +26,11 @@ export class TdTextareaWrapper extends TypeDiv {
       verticalAlign: 'bottom',
       // font-size: getCssVar('font-size', 'base'),
       fontSize: $fontSizes.base,
-      borderRadius: $input.borderRadius
+      borderRadius: $input.borderRadius,
     });
     this.inner = new Textarea({
       attrObj: {
-        type: params?.type || 'text'
+        type: params?.type || 'text',
       },
       styleObj: {
         position: 'relative',
@@ -75,7 +70,7 @@ export class TdTextareaWrapper extends TypeDiv {
         borderRadius: $input.borderRadius,
         //   transition: getCssVar('transition-box-shadow')
         border: 'none',
-        outline: 'none' // add by me 2024-4-6
+        outline: 'none', // add by me 2024-4-6
       },
       events: {
         compositionstart: () => {
@@ -96,22 +91,22 @@ export class TdTextareaWrapper extends TypeDiv {
         input: (event, element) => this.handleInput(event, element),
         focus: (i) => {
           console.log('td-input focus . this.parent is ', this.parent);
-          this.parent?.setFocus(true);
+          // this.parent?.setFocus(true);
         },
         blur: () => {
           console.log('blur . ');
-          this.parent?.setFocus(false);
+          // this.parent?.setFocus(false);
         },
         change: () => {
           console.log('change . ');
         },
         keydown: () => {
           console.log('keydown . ');
-        }
-      }
+        },
+      },
     });
     this.countSpan = new Span({
-      styleObj: {}
+      styleObj: {},
     });
     this.addChildren(this.inner, this.countSpan);
     // this.childNodes = [this.inner, this.countSpan];
@@ -127,7 +122,7 @@ export class TdTextareaWrapper extends TypeDiv {
     if (this.props.autosize) {
       this.inner.style.setObj({
         // height: 'auto',
-        height: this.inner.dom.scrollHeight + 'px'
+        height: this.inner.dom!.scrollHeight + 'px',
       });
       // this.style.height = "auto";
       // this.style.height = this.scrollHeight + "px"; // 自动调整高度至内容所需的最小高度

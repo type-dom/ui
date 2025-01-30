@@ -15,13 +15,13 @@ export abstract class FieldSelect extends FieldItem {
     this.select = new Select();
     this.select.style.addObj(Object.assign({}, itemContentStyle));
     this.select.attr.addObj({
-      name: 'property-select'
+      name: 'property-select',
       // type: 'text',
       // placeholder: placeholder,
     });
     if (this.mode === 'read') {
       this.select.attr.addObj({
-        disabled: true
+        disabled: true,
       });
     }
     this.childNodes = [this.label, this.select, this.button];
@@ -31,16 +31,16 @@ export abstract class FieldSelect extends FieldItem {
     this.select.addEvents({
       click: (evt) => {
         console.log('this.select.dom click, event is ', evt);
-        console.log('this.select.dom.value is ', this.select.dom.value);
+        console.log('this.select.dom.value is ', this.select.dom?.value);
         // console.log(this.reset);
-        this.reset(this.select.dom.value);
+        this.reset(this.select.dom?.value);
       },
       change: (evt) => {
         console.log('this.select.dom change, event is ', evt);
-        console.log('this.select.dom.value is ', this.select.dom.value);
+        console.log('this.select.dom.value is ', this.select.dom?.value);
         // console.log(this.reset);
-        this.reset(this.select.dom.value);
-      }
+        this.reset(this.select.dom?.value);
+      },
     });
   }
 }

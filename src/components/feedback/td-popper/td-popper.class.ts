@@ -1,27 +1,42 @@
-import { createProxy, IJsonData, XProxy } from '@type-dom/framework';
-import { UI } from '../../../ui/ui.abstract';
-import { ITdPopper, ITdPopperConfig } from './td-popper.interface';
-import { POPPER_INJECTION_KEY } from './td-popper.const';
+import { defineExpose, provide, TypeFragment } from '@type-dom/framework';
+import { Computed, computed, Signal, signal } from '@type-dom/signals';
+import { Instance as PopperInstance } from '@type-dom/popper';
+import { POPPER_INJECTION_KEY } from './constants';
+import {
+  ITdPopper,
+  PopperProps,
+  Measurable,
+  RoleTypes,
+  TdPopperInjectionContext,
+} from './td-popper.interface';
+import { popperProps } from './td-popper.const';
+import './style/index';
 
-export class TdPopper extends UI<undefined> implements ITdPopper {
+export class TdPopper extends TypeFragment implements ITdPopper {
   className: 'TdPopper';
-  override props: ITdPopperConfig;
+  override props: PopperProps;
+  triggerRef?: Signal<Measurable | undefined>;
+  popperInstanceRef?: Signal<PopperInstance | undefined>;
+  contentRef?: Signal<HTMLElement | undefined>;
+  referenceRef?: Signal<HTMLElement | undefined>;
+  role?: Computed<RoleTypes | undefined>;
 
-  constructor(params: ITdPopperConfig) {
+  constructor(params: PopperProps) {
     super();
-    this.useTag('fragment');
     this.className = 'TdPopper';
-    const triggerRef = createProxy(null);
-    const popperInstanceRef = createProxy(null);
-    const contentRef = createProxy(null);
-    const referenceRef = createProxy(null);
-    if (!params.role) {
-      params.role = 'tooltip';
-    }
+    this.assignProps(popperProps);
     this.props = this.useParams(params);
+  }
 
-    const role = this.props.role;
-    const popperProviders = {
+  override setup() {
+    const props = this.props;
+    const triggerRef = signal<HTMLElement>();
+    const popperInstanceRef = signal<PopperInstance>();
+    const contentRef = signal<HTMLElement>();
+    const referenceRef = signal<HTMLElement>();
+    const role = computed(() => props.role);
+
+    const popperProviders: TdPopperInjectionContext = {
       /**
        * @description trigger element
        */
@@ -43,6 +58,10 @@ export class TdPopper extends UI<undefined> implements ITdPopper {
        */
       role,
     };
-    this.provide(POPPER_INJECTION_KEY, popperProviders);
+
+    defineExpose(popperProviders);
+    provide(POPPER_INJECTION_KEY, popperProviders);
+
+    this.slotChildren(props.slot || props.slots?.default);
   }
 }

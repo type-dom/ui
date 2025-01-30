@@ -1,15 +1,17 @@
-import { ISize } from '../../../styles/size';
-import { IUI, IUIConfig } from '../../../ui/ui.interface';
-import { ITdRadioConfig } from '../td-radio/td-radio.interface';
-import { IJsonData, IPrimitive, XProxy } from '@type-dom/framework';
+import { ITypeDiv, TypeDivProps } from '@type-dom/framework';
+import { Computed, MaybeRef, Signal } from '@type-dom/signals';
 
-export interface ITdRadioGroup extends IUI {
+import { ComponentSize } from '../../../constants/size';
+import { RadioProps } from '../td-radio/td-radio.interface';
+import { IPrimitive } from '@type-dom/utils';
+
+export interface ITdRadioGroup extends ITypeDiv {
   className: 'TdRadioGroup';
 }
 
-export interface ITdRadioGroupConfig extends IUIConfig {
+export interface RadioGroupProps extends TypeDivProps {
   isButton?: boolean; // 是否为按钮组
-  options?: ITdRadioConfig[];
+  options?: RadioProps[];
   /**
    * @description native `id` attribute
    */
@@ -17,7 +19,7 @@ export interface ITdRadioGroupConfig extends IUIConfig {
   /**
    * @description the size of radio buttons or bordered radios
    */
-  size?: ISize;
+  size?: ComponentSize;
   /**
    * @description whether the nesting radios are disabled
    */
@@ -25,7 +27,7 @@ export interface ITdRadioGroupConfig extends IUIConfig {
   /**
    * @description binding value
    */
-  modelValue?: IPrimitive | XProxy<IJsonData>;
+  modelValue?: MaybeRef<IPrimitive>;
   // resultValue?: string | number | boolean, // todo 是否应该跟modelValue合并
   /**
    * @description border and background color when button is active

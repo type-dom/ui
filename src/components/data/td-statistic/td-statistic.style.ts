@@ -11,5 +11,5 @@ export const $statistic = {
   // contentFontSize: getCssVar('font-size', 'extra-large'),
   contentFontSize: $fontSizes.extraLarge,
   // contentColor: getCssVar('text-color', 'primary'),
-  contentColor: $textColor.primary
+  contentColor: $textColor.primary,
 };

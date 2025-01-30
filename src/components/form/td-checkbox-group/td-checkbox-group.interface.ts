@@ -1,19 +1,21 @@
-import { IUI, IUIConfig } from '../../../ui/ui.interface';
-import { ISize } from '../../../styles/size';
+import { TypeProps, ITypeHtml } from '@type-dom/framework';
+
+import { ComponentSize } from '../../../constants/size';
 import { TdCheckbox } from '../td-checkbox/td-checkbox.class';
 import { CheckboxValueType } from '../td-checkbox/td-checkbox.interface';
+import { TdCheckboxButton } from '../td-checkbox-button/td-checkbox-button.class';
 
-export interface ITdCheckboxGroup extends IUI {
+export interface ITdCheckboxGroup extends ITypeHtml {
   className: 'TdCheckboxGroup';
 }
 
-export type CheckboxGroupValueType = Exclude<CheckboxValueType, boolean>[]
+export type CheckboxGroupValueType = Exclude<CheckboxValueType, boolean>[];
 
-export interface ITdCheckboxGroupConfig extends IUIConfig {
+export interface ITdCheckboxGroupConfig extends TypeProps {
   /**
    * @description binding value
    */
-  modelValue: (string | boolean | number | undefined | object)[];
+  modelValue?: (string | boolean | number | undefined | object)[];
   // modelValue: { // todo 选项的值的集合类型
   //   type: definePropType<CheckboxGroupValueType>(Array),
   //   default: () => [],
@@ -33,7 +35,7 @@ export interface ITdCheckboxGroupConfig extends IUIConfig {
   /**
    * @description size of checkbox
    */
-  size?: ISize;
+  size?: ComponentSize;
   /**
    * @description label for screen reader
    */
@@ -57,5 +59,5 @@ export interface ITdCheckboxGroupConfig extends IUIConfig {
    */
   validateEvent?: boolean;
 
-  slot?: TdCheckbox[];
+  slot?: (TdCheckbox | TdCheckboxButton)[];
 }

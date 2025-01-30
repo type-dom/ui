@@ -3,9 +3,9 @@
 // import type { Arrayable } from '@element-plus/utils'
 // import type { Ref } from 'vue'
 import { isArray } from '@type-dom/utils';
+import { Arrayable } from '../../../../../utils/src/ui/typescript';
 import type { TooltipTriggerType } from './trigger/trigger.interface';
 
-export type Arrayable<T> = T | T[];
 export const isTriggerType = (
   trigger: Arrayable<TooltipTriggerType>,
   type: TooltipTriggerType
@@ -23,6 +23,7 @@ export const whenTrigger = (
   handler: (e: Event) => void
 ) => {
   return (e: Event) => {
+    console.log('whenTrigger', trigger, type, e);
     isTriggerType(trigger, type) && handler(e);
   };
 };

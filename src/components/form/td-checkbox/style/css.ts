@@ -1,0 +1,2 @@
+import '../../../base/style/css';
+import '../../../../theme-chalk/el-checkbox.css';

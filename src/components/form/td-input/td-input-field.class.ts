@@ -10,15 +10,15 @@ export class TdInputField extends FieldInput implements ITdInputField {
     console.log('InputItem constructor . ');
     this.className = 'TdInputField';
     this.style.addObj({
-      padding: '2px 10px 2px 0'
+      padding: '2px 10px 2px 0',
     });
     this.attr.addName('input-item');
     this.label.style.addObj({
       fontSize: '16px',
-      width: params.labelWidth || '150px'
+      width: params.labelWidth || '150px',
     });
     this.content.attr.addObj({
-      type: params?.type || 'text'
+      type: params?.type || 'text',
     });
     // todo 有后缀时才需要这样
     // this.content.style.addObj({
@@ -26,7 +26,7 @@ export class TdInputField extends FieldInput implements ITdInputField {
     // });
     if (params.readonly) {
       this.content.attr.addObj({
-        disabled: true
+        disabled: true,
       });
     }
     // this.button.style.setObj({

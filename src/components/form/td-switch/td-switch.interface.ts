@@ -1,18 +1,22 @@
-import { TypeSvgSvg } from '@type-dom/framework';
-import { isBoolean, isNumber, isString } from '@type-dom/utils';
-import { IUI, IUIConfig } from '../../../ui/ui.interface';
-import { CHANGE_EVENT, INPUT_EVENT, UPDATE_MODEL_EVENT } from '../../../constants/event';
+import { ITypeDiv, TypeDivProps, TypeSvgSvg } from '@type-dom/framework';
+import {
+  CHANGE_EVENT,
+  INPUT_EVENT,
+  UPDATE_MODEL_EVENT,
+} from '../../../constants/event';
+import { MaybeRef, Signal } from '@type-dom/signals';
 
-export interface ITdSwitch extends IUI {
+export interface ITdSwitch extends ITypeDiv {
   className: 'TdSwitch';
 }
 
-export interface ITdSwitchConfig extends IUIConfig {
+export interface SwitchProps extends TypeDivProps {
   /**
    * @description binding value, it should be equivalent to either `active-value` or `inactive-value`, by default it's `boolean` type
    * default: false
    */
   modelValue?: boolean | number | string;
+  vModel?: Signal<boolean | number | string>;
   /**
    * @description whether Switch is disabled
    * default false
@@ -22,7 +26,7 @@ export interface ITdSwitchConfig extends IUIConfig {
    * @description whether Switch is in loading state
    * default false
    */
-  loading?: boolean;
+  loading?: MaybeRef<boolean>;
   /**
    * @description size of Switch
    */
@@ -82,7 +86,7 @@ export interface ITdSwitchConfig extends IUIConfig {
   /**
    * @description before-change hook before the switch state changes. If `false` is returned or a `Promise` is returned and then is rejected, will stop switching
    */
-  // beforeChange: {
+  beforeChange?: () => Promise<boolean> | boolean;
   //   type: definePropType<() => Promise<boolean> | boolean>(Function),
   // },
   /**
@@ -98,17 +102,22 @@ export interface ITdSwitchConfig extends IUIConfig {
    */
   label?: string;
 
-  emits?: {
-    [UPDATE_MODEL_EVENT]?: (val?: boolean | string | number) => void;
-      // isBoolean(val) || isString(val) || isNumber(val),
-    [CHANGE_EVENT]?: (val?: boolean | string | number) => void;
-      // isBoolean(val) || isString(val) || isNumber(val),
-    [INPUT_EVENT]?: (val?: boolean | string | number) => void;
-      // isBoolean(val) || isString(val) || isNumber(val),
-  },
+  // add by me
+  // emits?: {
+  //   [UPDATE_MODEL_EVENT]?: (val?: boolean | string | number) => void;
+  //   // isBoolean(val) || isString(val) || isNumber(val),
+  //   [CHANGE_EVENT]?: (val?: boolean | string | number) => void;
+  //   // isBoolean(val) || isString(val) || isNumber(val),
+  //   [INPUT_EVENT]?: (val?: boolean | string | number) => void;
+  //   // isBoolean(val) || isString(val) || isNumber(val),
+  // },
   switchOnColor?: string;
   switchOffColor?: string;
   activeActionText?: string;
   inactiveActionText?: string;
-  beforeChange?: () => boolean;
+  // beforeChange?: () => Promise<unknown>;
+}
+
+export interface SwitchContext {
+  checked: MaybeRef<boolean>;
 }

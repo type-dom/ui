@@ -11,7 +11,7 @@ export const labelStyle: Partial<IStyle> = {
   paddingRight: '2px',
   // padding: '0 12px 0 0',
   // '-webkit-box-sizing': 'border-box',
-  boxSizing: 'border-box'
+  boxSizing: 'border-box',
 };
 export const itemContentStyle: Partial<IStyle> = {
   height: '28px',
@@ -33,5 +33,5 @@ export const itemContentStyle: Partial<IStyle> = {
   margin: '0',
   // -webkit-transition: border-color .2s cubic-bezier(.645,.045,.355,1);
   transition: 'border-color .2s cubic-bezier(.645,.045,.355,1)',
-  width: 'calc(100% - ' + labelStyle.width + ')'
+  width: 'calc(100% - ' + labelStyle.width + ')',
 };

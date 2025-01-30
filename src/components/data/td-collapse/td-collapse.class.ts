@@ -1,87 +1,48 @@
-import { isArray } from '@type-dom/utils';
-import { UI } from '../../../ui/ui.abstract';
+import { defineExpose, TypeDiv } from '@type-dom/framework';
+import { Signal } from '@type-dom/signals';
 import { TdCollapseItem } from '../td-collapse-item/td-collapse-item.class';
 import type {
-  ICollapseActiveName,
+  CollapseActiveName,
   ITdCollapse,
-  ITdCollapseConfig
+  CollapseProps,
 } from './td-collapse.interface';
-import { $collapse } from './td-collapse.style';
+import { useCollapse, useCollapseDOM } from './use-collapse';
+import { collapseEmits } from './td-collapse.const';
+import './style/index';
 
-export class TdCollapse extends UI implements ITdCollapse {
+export class TdCollapse extends TypeDiv implements ITdCollapse {
   className: 'TdCollapse';
-  override props: ITdCollapseConfig
+  override props: CollapseProps;
   override childNodes: TdCollapseItem[];
-  private activeNames: ICollapseActiveName[];
+  activeNames?: Signal<(string | number | undefined)[]>;
+  setActiveNames?: (_activeNames: CollapseActiveName[]) => void;
 
-  constructor(params: ITdCollapseConfig = {}) {
+  constructor(params: CollapseProps = {}) {
     super();
     this.className = 'TdCollapse';
     this.childNodes = [];
-    this.style.addObj({
-      //   border-top: 1px solid getCssVar('collapse-border-color');
-      borderTop: '1px solid ' + $collapse.borderColor,
-      // border-bottom: 1px solid getCssVar('collapse-border-color');
-      borderBottom: '1px solid ' + $collapse.borderColor
-    });
-    this.activeNames = isArray(params?.modelValue)
-      ? params!.modelValue as ICollapseActiveName[]
-      : [params?.modelValue ?? ''];
 
+    this.addEmits(collapseEmits);
     this.props = this.useParams(params);
   }
 
-  override mounted() {
-    this.setActiveNames(this.activeNames);
-  }
+  override setup() {
+    console.log('TdCollapse setup . ');
+    const props = this.props;
+    const emit = this.emit;
 
-  // get name() {
-  //   return this.props.name ??
-  // }
-  setActiveNames(activeNames: ICollapseActiveName[]) {
-    // this.activeNames = activeNames;
-    // if (this.props.accordion) {
-    //   this.activeNames = activeNames[0];
-    // }
-    this.activeNames = activeNames;
-    console.log('this.activeNames is ', this.activeNames);
-    if (activeNames) {
-      if (this.props.accordion) {
-        this.childNodes.forEach((item) => {
-          if (item.props.nameId === activeNames[0]) {
-            item.setActive(true);
-          } else {
-            item.setActive(false);
-          }
-        });
-      } else {
-        this.childNodes.forEach((item) => {
-          if (activeNames && item.props?.nameId) {
-            if (activeNames.includes(item.props.nameId)) {
-              item.setActive(true);
-            } else {
-              item.setActive(false);
-            }
-          }
-        });
-      }
-    }
-  }
+    const { activeNames, setActiveNames } = useCollapse(props, emit);
 
-  handleItemClick(name: ICollapseActiveName) {
-    console.log('handleItemClick, name is ', name);
-    if (this.props?.accordion) {
-      this.setActiveNames([this.activeNames[0] === name ? '' : name]);
-    } else {
-      const _activeNames = [...this.activeNames];
-      const index = _activeNames.indexOf(name);
+    const { rootKls } = useCollapseDOM();
 
-      if (index > -1) {
-        _activeNames.splice(index, 1);
-      } else {
-        _activeNames.push(name);
-      }
-      this.setActiveNames(_activeNames);
-    }
+    defineExpose({
+      /** @description active names */
+      activeNames,
+      /** @description set active names */
+      setActiveNames,
+    });
+
+    this.attr.addClass(rootKls);
+    this.slotChildren(props.slot || props.slots?.default);
   }
 }

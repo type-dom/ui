@@ -1,15 +1,15 @@
-import { IUI, IUIConfig } from '../../../ui/ui.interface';
-import { ITdTabPaneConfig } from './td-tab-pane.interface';
-import { TdTabs } from './td-tabs.class';
+import { ITypeDiv, TypeDivProps } from '@type-dom/framework';
 
-export interface ITdTabBar extends IUI {
+import { TabsPaneContext } from './constants';
+
+export interface ITdTabBar extends ITypeDiv {
   className: 'TdTabBar';
 }
 
-export interface ITdTabBarConfig extends IUIConfig {
-  tabs?: ITdTabPaneConfig[];
+export interface TabBarProps extends TypeDivProps {
+  tabs?: TabsPaneContext[];
   // type: definePropType<TabsPaneContext[]>(Array),
   // default: () => mutable([] as const),
 
-  rootTabs?: TdTabs;
+  // rootTabs?: TdTabs;
 }

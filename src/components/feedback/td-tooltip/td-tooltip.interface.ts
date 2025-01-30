@@ -1,21 +1,67 @@
-import { IUI, IUIConfig } from '../../../ui/ui.interface';
-import { ITdPopperConfig } from '../td-popper/td-popper.interface';
-import { ITdTooltipTriggerConfig } from './trigger/trigger.interface';
-import { ITdPopperArrowConfig } from '../td-popper/arrow/arrow.interface';
-import { ITdTooltipContentConfig } from './content/content.interface';
+import {
+  ISlot,
+  ISlotItem,
+  ITypeFragment,
+  TypeElement,
+  TypeFragmentProps,
+  TypeNode,
+} from '@type-dom/framework';
+import { Computed, Ref, Signal } from '@type-dom/signals';
+import { Arrayable } from '@type-dom/utils';
+import { PopperProps } from '../td-popper/td-popper.interface';
+import {
+  TooltipTriggerProps,
+  TooltipTriggerType,
+} from './trigger/trigger.interface';
+import { TooltipContentProps } from './content/content.interface';
+import { PopperArrowProps } from '../td-popper/arrow/arrow.interface';
 
-export interface ITdTooltip extends IUI {
+export interface ITdTooltip extends ITypeFragment {
   className: 'TdTooltip';
 }
 
-export interface ITdTooltipConfig extends ITdPopperConfig, ITdTooltipContentConfig, ITdTooltipTriggerConfig, ITdPopperArrowConfig {
+export interface TooltipProps
+  extends PopperProps,
+    Omit<TooltipTriggerProps, 'open' | 'nodeName'>,
+    Omit<PopperArrowProps, 'nodeName'>,
+    Omit<TooltipContentProps, 'slot' | 'nodeName'> {
   // ...popperProps,
   // ...useTooltipModelToggleProps,
   // ...useTooltipContentProps,
   // ...useTooltipTriggerProps,
   // ...popperArrowProps,
+  // open?: any; // todo
+  // nodeName?: 'fragment';
+  /**
+   *     default: 5,
+   */
+  // arrowOffset?: number;
   /**
    * @description whether the tooltip content has an arrow
+   *  default: true,
    */
-  showArrow?: boolean; // default: true,
+  showArrow?: boolean;
+
+  slot?: TypeElement;
+  slots?: {
+    // default?: TypeElement;
+    default?: ISlotItem;
+    reference?: ISlotItem;
+    content?: ISlotItem;
+  };
 }
+
+export type TooltipContext = {
+  controlled: Computed<boolean>;
+  id: Computed<string>;
+  open: Signal<boolean>;
+  trigger?: Signal<Arrayable<TooltipTriggerType | undefined>>;
+  onOpen: (e?: Event) => void;
+  onClose: (e?: Event) => void;
+  onToggle: (e?: Event) => void;
+  onShow: () => void;
+  onHide: () => void;
+  onBeforeShow: () => void;
+  onBeforeHide: () => void;
+  updatePopper?: () => void; // todo add by me ??
+};

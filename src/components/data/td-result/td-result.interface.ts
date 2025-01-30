@@ -1,11 +1,10 @@
-import { IUI, IUIConfig } from '../../../ui/ui.interface';
-import { TypeElement } from '@type-dom/framework';
+import { ITypeDiv, TypeDivProps, TypeElement } from '@type-dom/framework';
 
-export interface ITdResult extends IUI {
+export interface ITdResult extends ITypeDiv {
   className: 'TdResult';
 }
 
-export interface ITdResultConfig extends IUIConfig {
+export interface ResultProps extends TypeDivProps {
   /**
    * @description title of result
    *     default: '',

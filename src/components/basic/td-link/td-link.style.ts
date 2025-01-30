@@ -4,9 +4,9 @@ import {
   $fontSizes,
   $fontWeightPrimary,
   $textColor,
-  IType
+  IType,
 } from '../../../styles/var';
-import { ITdLinkConfig } from './td-link.interface';
+import { LinkProps } from './td-link.interface';
 
 // Link
 // css3 var in packages/theme-chalk/src/link.scss
@@ -20,12 +20,12 @@ export const $link = {
   // 'hover-text-color': getCssVar('color-primary'),
   hoverTextColor: $colors.primary.base,
   // 'disabled-text-color': getCssVar('text-color-placeholder'),
-  disabledTextColor: $textColor.placeholder
+  disabledTextColor: $textColor.placeholder,
 };
 
 export let $linkTextColor: string;
 
-export function useType(config?: ITdLinkConfig) {
+export function useType(config?: LinkProps) {
   $link.textColor = $colors[config?.type || 'default'].base;
   $link.hoverTextColor = $colors[config?.type || 'default']['light-3'];
   $link.disabledTextColor = $colors[config?.type || 'default']['light-5'];
@@ -48,13 +48,13 @@ export const $linkStyle: IStyle = {
   // font-weight: getCssVar('link', 'font-weight'),
   fontWeight: $link.fontWeight,
   // color: getCssVar('link', 'text-color'),
-  color: $link.textColor
+  color: $link.textColor,
 };
 
 export const $linkInnerStyle: IStyle = {
   display: 'inline-flex',
   justifyContent: 'center',
-  alignItems: 'center'
+  alignItems: 'center',
 };
 
 export const $linkStateColors = {} as Record<IType, Record<string, IStyle>>;
@@ -62,13 +62,13 @@ export const $linkStateColors = {} as Record<IType, Record<string, IStyle>>;
 export function buttonVariant($type: IType) {
   $linkStateColors[$type] = {
     default: {
-      color: $colors[$type].base
+      color: $colors[$type].base,
     },
     hover: {
       color:
         $type === 'default'
           ? $colors['primary'].base
-          : $colors[$type]['light-3'] // ['color', $type, 'light-3'],
+          : $colors[$type]['light-3'], // ['color', $type, 'light-3'],
       // content: '',
       // position: 'absolute',
       // left: 0,
@@ -78,10 +78,10 @@ export function buttonVariant($type: IType) {
       // borderBottom: '1px solid ' + ($type === 'default' ? $colors['primary'].base : $colors[$type]['light-3']),
     },
     active: {
-      color: $colors[$type]['dark-2'] // ['color', $type, 'dark-2'],
+      color: $colors[$type]['dark-2'], // ['color', $type, 'dark-2'],
     },
     disabled: {
-      color: $colors[$type]['light-5'] // ['color', $type, 'light-5'],
-    }
+      color: $colors[$type]['light-5'], // ['color', $type, 'light-5'],
+    },
   };
 }

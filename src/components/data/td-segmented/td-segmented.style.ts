@@ -1,25 +1,31 @@
 import { IStyle } from '@type-dom/css-type';
-import { $colors, $colorWhite, $fillColor, $textColor } from '../../../styles/var';
+import { unref } from '@type-dom/signals';
+import {
+  $colors,
+  $colorWhite,
+  $fillColor,
+  $textColor,
+} from '../../../styles/var';
 import { $buttonBorderRadius } from '../../basic/td-button/td-button.style';
 import { $inputHeight } from '../../form/td-input/td-input.style';
-import { ITdSegmentedConfig } from './td-segmented.interface';
+import { SegmentedProps } from './td-segmented.interface';
 
 export const $segmentedBorderRadius = {
   large: $buttonBorderRadius.large, // map.get($button-border-radius, 'large'),
   default: $buttonBorderRadius.default, // map.get($button-border-radius, 'default'),
-  small: $buttonBorderRadius.small // map.get($button-border-radius, 'small'),
+  small: $buttonBorderRadius.small, // map.get($button-border-radius, 'small'),
 };
 
 export const $segmentedFontSize = {
   large: '16px',
   default: '14px',
-  small: '14px'
+  small: '14px',
 };
 
 export const $segmentedItemPadding = {
   large: '0 11px',
   default: '0 11px',
-  small: '0 7px'
+  small: '0 7px',
 };
 
 export const $segmented = {
@@ -41,25 +47,25 @@ export const $segmented = {
   // 'item-active-bg-color': getCssVar('fill-color', 'darker'),
   itemActiveBgColor: $fillColor.darker,
   // 'item-disabled-color': getCssVar('text-color', 'placeholder'),
-  itemDisabledColor: $textColor.placeholder
+  itemDisabledColor: $textColor.placeholder,
 };
 
 export const $segmentedStyle: IStyle = {
   display: 'inline-flex',
   alignItems: 'stretch',
-// minHeight: map.get($input-height, 'default'),
+  // minHeight: map.get($input-height, 'default'),
   minHeight: $inputHeight.default,
-// background: getCssVar('segmented-bg-color'),
+  // background: getCssVar('segmented-bg-color'),
   background: $segmented.bgColor,
-// padding: getCssVar('segmented-padding'),
+  // padding: getCssVar('segmented-padding'),
   padding: $segmented.padding,
-// border-radius: map.get($segmented-border-radius, 'default'),
+  // border-radius: map.get($segmented-border-radius, 'default'),
   borderRadius: $segmentedBorderRadius.default,
-// font-size: map.get($segmented-font-size, 'default'),
+  // font-size: map.get($segmented-font-size, 'default'),
   fontSize: $segmentedFontSize.default,
-// color: getCssVar('segmented-color'),
+  // color: getCssVar('segmented-color'),
   color: $segmented.color,
-  boxSizing: 'border-box'
+  boxSizing: 'border-box',
 };
 
 export const $segmentedGroupStyle: IStyle = {
@@ -74,10 +80,10 @@ export const $segmentedItemStyle: IStyle = {
   alignItems: 'center',
   flex: 1,
   cursor: 'pointer',
-// borderRadius: calc(#{map.get($segmented-border-radius, 'default')} - 2px),
+  // borderRadius: calc(#{map.get($segmented-border-radius, 'default')} - 2px),
   borderRadius: parseInt($segmentedBorderRadius.default, 10) - 2 + 'px',
-// padding: map.get($segmented-item-padding, 'default'),
-  padding: $segmentedItemPadding.default
+  // padding: map.get($segmented-item-padding, 'default'),
+  padding: $segmentedItemPadding.default,
 };
 
 export const $segmentedItemSelectedStyle: IStyle = {
@@ -91,7 +97,7 @@ export const $segmentedItemSelectedStyle: IStyle = {
   // border-radius: calc(#{map.get($segmented-border-radius, 'default')} - 2px),
   borderRadius: parseInt($segmentedBorderRadius.default, 10) - 2 + 'px',
   transition: 'all 0.3s',
-  pointerEvents: 'none'
+  pointerEvents: 'none',
 };
 
 export const $segmentedItemInputStyle: IStyle = {
@@ -100,23 +106,23 @@ export const $segmentedItemInputStyle: IStyle = {
   width: 0,
   height: 0,
   opacity: 0,
-  pointerEvents: 'none'
+  pointerEvents: 'none',
 };
 
 export const $segmentedItemLabelStyle: IStyle = {
   flex: 1,
   textAlign: 'center',
   lineHeight: 'normal',
-// @include utils-ellipsis,
+  // @include utils-ellipsis,
   overflow: 'hidden',
   textOverflow: 'ellipsis',
   whiteSpace: 'nowrap',
 
   transition: 'color 0.3s',
-  zIndex: 1
+  zIndex: 1,
 };
 
-export function useStyle(config?: ITdSegmentedConfig) {
+export function useStyle(config?: SegmentedProps) {
   useSize(config);
   if (config?.block) {
     $segmentedStyle.display = 'flex';
@@ -126,7 +132,8 @@ export function useStyle(config?: ITdSegmentedConfig) {
     delete $segmentedItemStyle.minWidth;
   }
   if (config?.disabled) {
-    $segmentedItemSelectedStyle.background = $segmented.itemSelectedDisabledBgColor;
+    $segmentedItemSelectedStyle.background =
+      $segmented.itemSelectedDisabledBgColor;
     $segmentedItemStyle.cursor = 'not-allowed';
     $segmentedItemStyle.color = $segmented.itemDisabledColor;
   } else {
@@ -139,12 +146,14 @@ export function useStyle(config?: ITdSegmentedConfig) {
   // }
 }
 
-export function useSize(config?: ITdSegmentedConfig) {
-  const size = config?.size || 'default';
+export function useSize(config?: SegmentedProps) {
+  const size = unref(config?.size) || 'default';
   $segmentedStyle.minHeight = $inputHeight[size];
   $segmentedStyle.borderRadius = $segmentedBorderRadius[size];
   $segmentedStyle.fontSize = $segmentedFontSize[size];
-  $segmentedItemSelectedStyle.borderRadius = parseInt($segmentedBorderRadius[size], 10) - 2 + 'px';
-  $segmentedItemStyle.borderRadius = parseInt($segmentedBorderRadius[size]) - 2 + 'px';
+  $segmentedItemSelectedStyle.borderRadius =
+    parseInt($segmentedBorderRadius[size], 10) - 2 + 'px';
+  $segmentedItemStyle.borderRadius =
+    parseInt($segmentedBorderRadius[size]) - 2 + 'px';
   $segmentedItemStyle.padding = $segmentedItemPadding[size];
 }

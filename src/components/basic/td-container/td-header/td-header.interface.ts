@@ -1,10 +1,10 @@
-import { IUI, IUIConfig } from '../../../../ui/ui.interface';
+import { ITypeHeader, TypeHeaderProps } from '@type-dom/framework';
 
-export interface ITdHeader extends IUI {
+export interface ITdHeader extends ITypeHeader {
   className: 'TdHeader';
 }
 
-export interface ITdHeaderConfig extends IUIConfig {
+export interface TdHeaderProps extends TypeHeaderProps {
   height?: string | number; // default 60px
   backgroundColor?: string; // default #fff
 }

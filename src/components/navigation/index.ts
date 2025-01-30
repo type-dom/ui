@@ -4,8 +4,8 @@ export { TdAffix } from './td-affix/td-affix.class';
 export type { ITdAffix } from './td-affix/td-affix.interface';
 export { TdAnchor } from './td-anchor/td-anchor.class';
 export type { ITdAnchor } from './td-anchor/td-anchor.interface';
-export { TdAnchorLink } from './td-anchor/td-anchor-link/td-anchor-link.class';
-export type { ITdAnchorLink } from './td-anchor/td-anchor-link/td-anchor-link.interface';
+export { TdAnchorLink } from './td-anchor-link/td-anchor-link.class';
+export type { ITdAnchorLink } from './td-anchor-link/td-anchor-link.interface';
 export { TdBackTop } from './td-backtop/td-backtop.class';
 export type { ITdBackTop } from './td-backtop/td-backtop.interface';
 export { TdBreadcrumb } from './td-breadcrumb/td-breadcrumb.class';
@@ -14,6 +14,5 @@ export { TdBreadcrumbItem } from './td-breadcrumb-item/td-breadcrumb-item.class'
 export type { ITdBreadcrumbItem } from './td-breadcrumb-item/td-breadcrumb-item.interface';
 export { TdTabs } from './td-tabs/td-tabs.class';
 export type * from './td-tabs/td-tabs.interface';
-export { TdTabPane } from './td-tabs/td-tab-pane.class';
-export type * from './td-tabs/td-tab-pane.interface';
-
+export { TdTabPane } from './td-tab-pane/td-tab-pane.class';
+export type * from './td-tab-pane/td-tab-pane.interface';

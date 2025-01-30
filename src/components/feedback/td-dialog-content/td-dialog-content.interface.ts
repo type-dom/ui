@@ -1,20 +1,19 @@
-import { TypeHtml } from '@type-dom/framework';
-import { IUI, IUIConfig } from '../../../ui/ui.interface';
+import { ITypeDiv, TypeDivProps, TypeHtml } from '@type-dom/framework';
 import { TdIcon } from '../../basic/td-icon/td-icon.class';
 
-export interface ITdDialogContent extends IUI {
+export interface ITdDialogContent extends ITypeDiv {
   className: 'TdDialogContent';
 }
 
-export interface ITdDialogContentConfig extends IUIConfig {
+export interface DialogContentProps extends TypeDivProps {
   /**
    * @description whether to align the header and footer in center
    */
-  center?: boolean,
+  center?: boolean;
   /**
    * @description whether to align the dialog both horizontally and vertically
    */
-  alignCenter?: boolean,
+  alignCenter?: boolean;
   /**
    * @description custom close icon, default is Close
    */
@@ -32,6 +31,18 @@ export interface ITdDialogContentConfig extends IUIConfig {
    */
   fullscreen?: boolean;
   /**
+   * @description custom class names for header wrapper
+   */
+  headerClass?: string;
+  /**
+   * @description custom class names for body wrapper
+   */
+  bodyClass?: string;
+  /**
+   * @description custom class names for footer wrapper
+   */
+  footerClass?: string;
+  /**
    * @description whether to show a close button
    *     default: true,
    */
@@ -47,8 +58,8 @@ export interface ITdDialogContentConfig extends IUIConfig {
    */
   ariaLevel?: string;
 
-  slots?: {
-    header?: TypeHtml;
-    footer?: TypeHtml;
-  }
+  // slots?: {
+  //   // header?: TypeHtml;
+  //   footer?: TypeHtml;
+  // }
 }

@@ -1,124 +1,248 @@
-import { Div, I, TypeElement, TypeNode, TypeHtml } from '@type-dom/framework';
-import { UI } from '../../../ui/ui.abstract';
-import { ITdAnchor, ITdAnchorConfig } from './td-anchor.interface';
-import { $anchor } from './td-anchor.style';
+import {
+  defineExpose,
+  Div,
+  I,
+  onMounted,
+  provide,
+  TypeDiv,
+  TypeHtml,
+  useEventListener,
+} from '@type-dom/framework';
+import { ITdAnchor, AnchorProps, AnchorLinkState } from './td-anchor.interface';
 import { scrollTo } from './td-anchor.function';
+import { anchorEmits, anchorProps } from './td-anchor.const';
+import { computed, signal, watch } from '@type-dom/signals';
+import { useNamespace } from 'libs/ui/src/hooks/use-namespace';
+import {
+  animateScrollTo,
+  getElement,
+  getOffsetTopDistance,
+  getScrollElement,
+  getScrollTop,
+  isUndefined,
+  isWindow,
+  throttleByRaf,
+} from '@type-dom/utils';
+import { anchorKey } from './constants';
 
-export class TdAnchor extends UI implements ITdAnchor {
+export class TdAnchor extends TypeDiv implements ITdAnchor {
   className: 'TdAnchor';
-  override props: ITdAnchorConfig;
-  private marker?: Div;
-  private list?: Div;
+  override props: AnchorProps;
+  scrollTo?: (href?: string) => void;
 
-  constructor(params: ITdAnchorConfig = {}) {
+  constructor(params: AnchorProps = {}) {
     super();
     this.className = 'TdAnchor';
-    this.style.addObj({
-      position: 'relative',
-      // background-color: getCssVar('anchor-bg-color')
-      backgroundColor: $anchor.bgColor.default
+    this.attr.addObj({
+      name: 'td-anchor',
     });
 
-    if (params?.marker) {
-      this.marker = new Div({
-        styleObj: {
-          position: 'absolute',
-          // background-color: getCssVar('anchor-marker-bg-color'),
-          backgroundColor: $anchor.markerBgColor,
-          borderRadius: '4px',
-          opacity: 0,
-          zIndex: 0
-        }
-      });
-      this.addChild(this.marker);
-    }
-    this.list = new Div({
-      name: 'list'
-    });
-    this.addChild(this.list);
-    if (params?.slot) {
-      this.list.slotChild(params.slot);
-    }
-    const type = params?.type || 'default';
-    const direction = params?.direction || 'vertical';
-    if (direction === 'vertical') {
-      this.marker?.style.addObj({
-        width: '4px',
-        height: '14px',
-        top: '8px',
-        left: '0',
-        transition: 'top 0.25s ease-in-out, opacity 0.25s'
-      });
-      this.list.style.addObj({
-        // paddingLeft: getCssVar('anchor-padding-indent'),
-        paddingLeft: $anchor.paddingIndent
-      });
-      if (type === 'underline') {
-        this.unshiftChild(
-          new I({
-            styleObj: {
-              position: 'absolute',
-              left: '0',
-              width: '2px',
-              height: '100%',
-              backgroundColor: 'rgba(5, 5, 5, 0.06)',
-              content: ''
-            }
-          })
-        );
-        this.marker?.style.addObj({
-          width: '2px',
-          borderRadius: 'unset'
-        });
-      }
-    } else {
-      this.marker?.style.addObj({
-        height: '2px',
-        width: '20px',
-        bottom: '0',
-        transition: 'left 0.25s ease-in-out, opacity 0.25s, width 0.25s'
-      });
-      this.list.style.addObj({
-        display: 'flex',
-        paddingBottom: '4px'
-      });
-      this.list.childNodes.forEach((item, index) => {
-        if (item instanceof TypeHtml) {
-          if (index === 0) {
-            item.style.addObj({
-              paddingLeft: '0'
-            });
-          } else {
-            item.style.addObj({
-              paddingLeft: '16px'
-            });
-          }
-        }
-      });
-      if (type === 'underline') {
-        this.unshiftChild(
-          new I({
-            styleObj: {
-              position: 'absolute',
-              bottom: '0',
-              width: '100%',
-              height: '2px',
-              backgroundColor: 'rgba(5, 5, 5, 0.06)',
-              content: ''
-            }
-          })
-        );
-        this.marker?.style.addObj({
-          height: '2px',
-          borderRadius: 'unset'
-        });
-      }
-    }
+    this.addEmits(anchorEmits);
+    this.assignProps(anchorProps);
     this.props = this.useParams(params);
   }
 
-  handleClick(e: MouseEvent, href?: string) {
-    // emit('click', e, href)
-    scrollTo(href, this.props);
+  override setup() {
+    const props = this.props;
+    const emit = this.emit;
+
+    const currentAnchor = signal('');
+    const anchorRef = signal<HTMLElement | undefined>(undefined);
+    const markerRef = signal<HTMLElement | undefined>(undefined);
+    const containerEl = signal<HTMLElement | Window>();
+
+    const links: Record<string, HTMLElement> = {};
+    let isScrolling = false;
+    let currentScrollTop = 0;
+
+    const ns = useNamespace('anchor');
+
+    const cls = computed(() => [
+      ns.b(),
+      props.type === 'underline' ? ns.m('underline') : '',
+      ns.m(props.direction),
+    ]);
+
+    const addLink = (state: AnchorLinkState) => {
+      links[state.href] = state.el;
+    };
+
+    const removeLink = (href: string) => {
+      delete links[href];
+    };
+
+    const setCurrentAnchor = (href: string) => {
+      const activeHref = currentAnchor.get();
+      if (activeHref !== href) {
+        currentAnchor.set(href);
+        emit('change', href);
+      }
+    };
+
+    let clearAnimate: (() => void) | null = null;
+
+    const scrollToAnchor = (href: string) => {
+      if (!containerEl.get()) return;
+      const target = getElement(href);
+      if (!target) return;
+      if (clearAnimate) clearAnimate();
+      isScrolling = true;
+      const scrollEle = getScrollElement(target, containerEl.get()!);
+      const distance = getOffsetTopDistance(target, scrollEle);
+      const max = scrollEle.scrollHeight - scrollEle.clientHeight;
+      const to = Math.min(distance - props.offset!, max);
+      clearAnimate = animateScrollTo(
+        containerEl.get()!,
+        currentScrollTop,
+        to,
+        props.duration!,
+        () => {
+          // make sure it is executed after throttleByRaf's handleScroll
+          setTimeout(() => {
+            isScrolling = false;
+          }, 20);
+        }
+      );
+    };
+
+    const scrollTo = (href?: string) => {
+      if (href) {
+        setCurrentAnchor(href);
+        scrollToAnchor(href);
+      }
+    };
+
+    const handleClick = (e: MouseEvent, href?: string) => {
+      emit('click', e, href);
+      scrollTo(href);
+    };
+
+    const handleScroll = throttleByRaf(() => {
+      if (containerEl.get()) {
+        currentScrollTop = getScrollTop(containerEl.get()!);
+      }
+      const currentHref = getCurrentHref();
+      if (isScrolling || isUndefined(currentHref)) return;
+      setCurrentAnchor(currentHref);
+    });
+
+    const getCurrentHref = () => {
+      if (!containerEl.get()) return;
+      const scrollTop = getScrollTop(containerEl.get()!);
+      const anchorTopList: { top: number; href: string }[] = [];
+
+      for (const href of Object.keys(links)) {
+        const target = getElement(href);
+        if (!target) continue;
+        const scrollEle = getScrollElement(target, containerEl.get()!);
+        const distance = getOffsetTopDistance(target, scrollEle);
+        anchorTopList.push({
+          top: distance - props.offset! - props.bound!,
+          href,
+        });
+      }
+      anchorTopList.sort((prev, next) => prev.top - next.top);
+      for (let i = 0; i < anchorTopList.length; i++) {
+        const item = anchorTopList[i];
+        const next = anchorTopList[i + 1];
+
+        if (i === 0 && scrollTop === 0) {
+          return props.scrollTop ? item.href : '';
+        }
+        if (item.top <= scrollTop && (!next || next.top > scrollTop)) {
+          return item.href;
+        }
+      }
+      return;
+    };
+
+    const getContainer = () => {
+      const el = getElement(props.container);
+      if (!el || isWindow(el)) {
+        containerEl.set(window);
+      } else {
+        containerEl.set(el);
+      }
+    };
+
+    useEventListener(containerEl, 'scroll', handleScroll);
+
+    const markerStyle = computed(() => {
+      if (!anchorRef.get() || !markerRef.get() || !currentAnchor.get())
+        return {};
+      const currentLinkEl = links[currentAnchor.get()];
+      if (!currentLinkEl) return {};
+      const anchorRect = anchorRef.get()?.getBoundingClientRect();
+      const markerRect = markerRef.get()?.getBoundingClientRect();
+      const linkRect = currentLinkEl.getBoundingClientRect();
+
+      if (props.direction === 'horizontal') {
+        const left = linkRect.left - anchorRect!.left;
+        return {
+          left: `${left}px`,
+          width: `${linkRect.width}px`,
+          opacity: 1,
+        };
+      } else {
+        const top =
+          linkRect.top -
+          anchorRect!.top +
+          (linkRect.height - markerRect!.height) / 2;
+        return {
+          top: `${top}px`,
+          opacity: 1,
+        };
+      }
+    });
+
+    onMounted(() => {
+      getContainer();
+      const hash = decodeURIComponent(window.location.hash);
+      const target = getElement(hash);
+      if (target) {
+        scrollTo(hash);
+      } else {
+        handleScroll();
+      }
+    });
+
+    watch(
+      () => props.container,
+      () => {
+        getContainer();
+      }
+    );
+
+    provide(anchorKey, {
+      ns,
+      direction: props.direction!,
+      currentAnchor,
+      addLink,
+      removeLink,
+      handleClick,
+    });
+
+    defineExpose({
+      scrollTo,
+    });
+
+    this.assignProps({
+      refDom: anchorRef,
+    });
+    this.attr.addClass(cls);
+    this.addChild(
+      new Div({
+        vIf: props.marker,
+        refDom: markerRef,
+        class: ns.e('marker'),
+        styleObj: markerStyle,
+      })
+    );
+    this.addChild(
+      new Div({
+        class: ns.e('list'),
+        slot: this.props.slot || props.slots?.default,
+      })
+    );
   }
 }

@@ -1,10 +1,10 @@
-import { IUI, IUIConfig } from '../../../ui/ui.interface';
+import { ITypeDiv, TypeDivProps } from '@type-dom/framework';
 
-export interface ITdImage extends IUI {
+export interface ITdImage extends ITypeDiv {
   className: 'TdImage';
 }
 
-export interface ITdImageConfig extends IUIConfig {
+export interface ImageProps extends TypeDivProps {
   /**
    * @description when enabling preview, use this flag to control whether clicking on backdrop can exit preview mode.
    */

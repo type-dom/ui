@@ -1,172 +1,162 @@
-import { addUnit, getScrollContainer } from '@type-dom/utils';
-import {
-  Div,
-  nextTick, TypeNode,
-  useElementBounding,
-  useWindowSize
-} from '@type-dom/framework';
-import { UI } from '../../../ui/ui.abstract';
-import { ITdAffix, ITdAffixConfig } from './td-affix.interface';
+import { addUnit, getScrollContainer, throwError } from '@type-dom/utils';
 import { IStyle } from '@type-dom/css-type';
+import { computed, effect, signal, watch } from '@type-dom/signals';
+import {
+  defineExpose,
+  Div,
+  onMounted,
+  TypeDiv,
+  useElementBounding,
+  useEventListener,
+  useWindowSize,
+} from '@type-dom/framework';
+import { useNamespace } from '../../../hooks/use-namespace';
+import { ITdAffix, AffixProps } from './td-affix.interface';
+import { affixEmits, affixProps } from './td-affix.const';
 
-export class TdAffix extends UI implements ITdAffix {
+export class TdAffix extends TypeDiv implements ITdAffix {
   className: 'TdAffix';
-  // override dom: HTMLElement;
-  override props: ITdAffixConfig;
-  private affix: Div;
-  private target?: HTMLElement | Window;
-  private rootHeight: number;
-  private rootWidth: number;
-  private rootTop: number;
-  private rootBottom: number;
-  private updateRoot: () => void;
-  private transform: string | number;
-  private targetRect?: {
-    top: number;
-    left: number;
-    bottom: number;
-    width: number;
-    x: number;
-    y: number;
-    update: () => void;
-    right: number;
-    height: number;
-  };
-  private fixed: boolean;
-  private scrollTop: number;
-  private scrollContainer?: HTMLElement | Window;
-  private windowHeight?: number;
+  override props: AffixProps;
+  updateAffix?: () => void; // todo 与框架的 update 方法重复了
+  updateRoot?: () => void;
 
-  constructor(params: ITdAffixConfig = {}) {
+  constructor(params: AffixProps = {}) {
     super();
     console.log('TdAffix constructor . ');
     this.className = 'TdAffix';
     this.attr.addName('td-affix');
-    this.windowHeight = useWindowSize().height;
-    const { height, width, top, bottom, update } = useElementBounding(this, {
-      windowScroll: false,
-    });
-    this.rootHeight = height;
-    this.rootWidth = width;
-    this.rootTop = top;
-    this.rootBottom = bottom;
-    this.updateRoot = update;
-    // const rect = this.dom.getBoundingClientRect();
-    // console.log('rect is ', rect);
-    this.targetRect = params?.target
-      ? useElementBounding(params.target.value)
-      : undefined;
 
-    this.fixed = false;
-    this.scrollTop = 0;
-    this.transform = 0;
-    // todo rootStyle
-    this.style.addObj(this.rootStyle);
-
-    this.affix = new Div({
-      name: 'fix',
-      styleObj: this.affixStyle,
-    });
-    if (params?.slot) {
-      this.affix.slotChild(params.slot);
-    }
-    this.addChild(this.affix);
+    this.addEmits(affixEmits);
+    this.assignProps(affixProps);
     this.props = this.useParams(params);
   }
 
-  get rootStyle() {
-    return {
-      height: this.fixed ? this.rootHeight : '',
-      width: this.fixed ? this.rootWidth : '',
-    } as IStyle;
-  }
+  override setup(): void {
+    const COMPONENT_NAME = 'TdAffix';
 
-  get affixStyle() {
     const props = this.props;
-    const offset = props?.offset ? addUnit(props.offset) : 0;
-    const position = props?.position || 'top';
-    return {
-      position: this.fixed ? 'fixed' : '',
-      // height: this.rootHeight + 'px',
-      // width: this.rootWidth + 'px',
-      top: position === 'top' ? offset : '',
-      bottom: position === 'bottom' ? offset : '',
-      transform: this.transform ? `translateY(${this.transform}px)` : '',
-      zIndex: props?.zIndex || 100,
-    } as IStyle;
-  }
+    const emit = this.emit;
 
-  override mounted() {
-    console.log('TdAffix mounted . ');
-    if (this.props?.target) {
-      if (!this.props?.target.value) {
-        throw Error(`Target is not existed: ${this.props?.target}`);
-      }
-      this.target = this.props.target.value;
-    } else {
-      this.target = document.documentElement;
-    }
-    nextTick(() => {
-      console.log('nextTick . ');
-      this.scrollContainer = getScrollContainer(this.dom, true);
-      console.log('this.scrollContainer is ', this.scrollContainer);
-      this.updateRoot();
-      // todo destroy
-      this.scrollContainer &&
-        this.scrollContainer.addEventListener('scroll', this.onScroll);
+    const ns = useNamespace('affix');
+
+    const target = signal<HTMLElement>();
+    const root = signal<HTMLDivElement | undefined>();
+    const scrollContainer = signal<HTMLElement | Window>();
+    const { height: windowHeight } = useWindowSize();
+    const {
+      height: rootHeight,
+      width: rootWidth,
+      top: rootTop,
+      bottom: rootBottom,
+      update: updateRoot,
+    } = useElementBounding(root, { windowScroll: false });
+    const targetRect = useElementBounding(target);
+
+    const fixed = signal(false);
+    const scrollTop = signal(0);
+    const transform = signal(0);
+
+    const rootStyle = computed<IStyle>(() => {
+      return {
+        height: fixed.get() ? `${rootHeight.get()}px` : '',
+        width: fixed.get() ? `${rootWidth.get()}px` : '',
+      };
     });
-  }
 
-  override destroy(root?: TypeNode) {
-    this.scrollContainer &&
-      this.scrollContainer.removeEventListener('scroll', this.onScroll);
-    super.destroy(root);
-  }
+    const affixStyle = computed<IStyle>(() => {
+      if (!fixed.get()) return {};
 
-  onScroll = () => {
-    console.log('this.scrollContainer scroll . ');
-    // if (this.fixed) {
-    this.style.setObj(this.rootStyle);
-    this.affix.style.setObj(this.affixStyle);
-    // }
-    this.updateRoot();
-  };
+      const offset = props.offset ? addUnit(props.offset) : 0;
+      return {
+        height: `${rootHeight.get()}px`,
+        width: `${rootWidth.get()}px`,
+        top: props.position === 'top' ? offset : '',
+        bottom: props.position === 'bottom' ? offset : '',
+        transform: transform.get() ? `translateY(${transform.get()}px)` : '',
+        zIndex: props.zIndex,
+      };
+    });
 
-  change() {
-    if (!this.scrollContainer) return;
+    const updateAffix = () => {
+      if (!scrollContainer.get()) return;
 
-    this.scrollTop =
-      this.scrollContainer instanceof Window
-        ? document.documentElement.scrollTop
-        : this.scrollContainer.scrollTop || 0;
+      scrollTop.set(
+        scrollContainer.get() instanceof Window
+          ? document.documentElement.scrollTop
+          : (scrollContainer?.get() as HTMLElement)?.scrollTop || 0
+      );
 
-    if (this.props?.position === 'top') {
-      if (this.props?.target) {
+      const { position, target } = props;
+      const offset = props.offset!;
+      const rootHeightOffset = offset! + rootHeight.get();
+
+      if (position === 'top') {
+        if (target) {
+          const difference = targetRect.bottom.get() - rootHeightOffset;
+          fixed.set(offset > rootTop.get() && targetRect.bottom.get() > 0);
+          transform.set(difference < 0 ? difference : 0);
+        } else {
+          fixed.set(offset > rootTop.get());
+        }
+      } else if (target) {
         const difference =
-          (this.targetRect?.bottom ?? 0) -
-          (this.props?.offset ?? 0) -
-          this.rootHeight;
-        this.fixed =
-          (this.props?.offset ?? 0) > this.rootTop &&
-          (this.targetRect?.bottom ?? 0) > 0;
-        this.transform = difference < 0 ? difference : 0;
+          windowHeight.get() - targetRect.top.get() - rootHeightOffset;
+        fixed.set(
+          windowHeight.get() - offset < rootBottom.get() &&
+            windowHeight.get() > targetRect.top.get()
+        );
+        transform.set(difference < 0 ? -difference : 0);
       } else {
-        this.fixed = (this.props?.offset ?? 0) > this.rootTop;
+        fixed.set(windowHeight.get() - offset < rootBottom.get());
       }
-    } else if (this.props?.target) {
-      const difference =
-        (this.windowHeight ?? 0) -
-        (this.targetRect?.top ?? 0) -
-        (this.props?.offset ?? 0) -
-        this.rootHeight;
-      this.fixed =
-        (this.windowHeight ?? 0) - (this.props?.offset ?? 0) <
-          this.rootBottom &&
-        (this.windowHeight ?? 0) > (this.targetRect?.top ?? 0);
-      this.transform = difference < 0 ? -difference : 0;
-    } else {
-      this.fixed =
-        (this.windowHeight ?? 0) - (this.props?.offset ?? 0) < this.rootBottom;
-    }
+    };
+
+    const handleScroll = () => {
+      updateRoot();
+      emit('scroll', {
+        scrollTop: scrollTop.get(),
+        fixed: fixed.get(),
+      });
+    };
+
+    watch(fixed, (val) => emit('change', val));
+
+    onMounted(() => {
+      if (props.target) {
+        target.set(
+          document.querySelector<HTMLElement>(props.target) ?? undefined
+        );
+
+        if (!target.get())
+          throwError(COMPONENT_NAME, `Target does not exist: ${props.target}`);
+      } else {
+        target.set(document.documentElement);
+      }
+      scrollContainer.set(getScrollContainer(root.get()!, true));
+      updateRoot();
+    });
+
+    useEventListener(scrollContainer, 'scroll', handleScroll);
+    effect(updateAffix);
+
+    defineExpose({
+      /** @description update affix status */
+      updateAffix,
+      /** @description update rootRect info */
+      updateRoot,
+    });
+
+    this.assignProps({
+      refDom: root,
+      class: ns.b(),
+      styleObj: rootStyle,
+    });
+
+    this.addChild(
+      new Div({
+        class: computed(() => [{ [ns.m('fixed')]: fixed.get() }]),
+        slot: props.slot || props.slots?.default,
+      })
+    );
   }
 }

@@ -1,4 +1,4 @@
-import { IOptionConfig, TypeDiv, TypeHtml } from '@type-dom/framework';
+import { OptionProps, TypeDiv, TypeHtml } from '@type-dom/framework';
 import { CheckboxOption } from './checkbox-option/checkbox-option.class';
 import { ICheckboxGroup } from './checkbox-group.interface';
 
@@ -15,7 +15,7 @@ export class CheckboxGroup extends TypeDiv implements ICheckboxGroup {
     this.value = [];
   }
 
-  setOptions(options: IOptionConfig[]): void {
+  setOptions(options: OptionProps[]): void {
     this.clearChildren();
     this.value = [];
     const random = Math.random();
@@ -25,12 +25,12 @@ export class CheckboxGroup extends TypeDiv implements ICheckboxGroup {
         name: 'checkbox' + random,
         label: opt.label,
         value: opt.value,
-        checked: opt.checked || false
+        checked: opt.checked || false,
       });
       if (opt.checked) {
         this.value.push(opt.value);
       }
-      optObj.textNode.setText(opt.label);
+      optObj.textNode?.setText(opt.label);
       this.addChild(optObj);
     });
   }
@@ -44,7 +44,7 @@ export class CheckboxGroup extends TypeDiv implements ICheckboxGroup {
       this.childNodes.forEach((optObj) => {
         if (this.value.indexOf(String(optObj.input.attr.get('value'))) !== -1) {
           optObj.input.attr.setObj({
-            checked: true
+            checked: true,
           });
         } else {
           optObj.input.attr.remove('checked');

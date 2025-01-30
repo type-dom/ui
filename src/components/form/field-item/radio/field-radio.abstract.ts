@@ -4,7 +4,8 @@ import {
   Label,
   IOptionSet,
   IOptionSetting,
-  TypeHtml, TypeElement
+  TypeHtml,
+  TypeElement,
 } from '@type-dom/framework';
 import { FieldItem } from '../field-item.abstract';
 
@@ -44,12 +45,12 @@ export abstract class FieldRadio extends FieldItem {
       button.style.addObj({
         height: '32px',
         borderRadius: '0',
-        border: '1px solid #000'
+        border: '1px solid #000',
       });
       button.attr.addObj({
         type: 'radio',
         value: option.value,
-        checked: option.checked
+        checked: option.checked,
       });
       if (option.checked) {
         button.style.addObj({
@@ -60,7 +61,7 @@ export abstract class FieldRadio extends FieldItem {
       } else {
         button.style.addObj({
           backgroundColor: '#fff',
-          color: '#000'
+          color: '#000',
         });
       }
       // span.childNodes.push(label, inputRadio);
@@ -93,7 +94,7 @@ export abstract class FieldRadio extends FieldItem {
           if (this.selectedOpt) {
             this.selectedOpt.style.setObj({
               backgroundColor: '#fff',
-              color: '#000'
+              color: '#000',
             });
             this.selectedOpt.attr.set('checked', false);
           }
@@ -101,7 +102,7 @@ export abstract class FieldRadio extends FieldItem {
           if (btn instanceof TypeHtml) {
             btn.style.setObj({
               backgroundColor: '#00f',
-              color: '#fff'
+              color: '#fff',
             });
             btn.attr.set('checked', true);
             this.resultValue = btn.attr.get('value') as string;

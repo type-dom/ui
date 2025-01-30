@@ -1,12 +1,16 @@
-import { IUI, IUIConfig } from '../../../ui/ui.interface';
-import { TypeElement, TypeHtml } from '@type-dom/framework';
+import {
+  ITypeFragment,
+  TypeFragmentProps,
+  TypeHtml,
+} from '@type-dom/framework';
 import { IStyle } from '@type-dom/css-type';
 
-export interface ITdDescriptionsItem extends IUI {
+export interface ITdDescriptionsItem extends ITypeFragment {
   className: 'TdDescriptionsItem';
+  props: DescriptionsItemProps;
 }
 
-export interface ITdDescriptionsItemConfig extends IUIConfig {
+export interface DescriptionsItemProps extends TypeFragmentProps {
   /**
    * @description label text
    *     default: '',

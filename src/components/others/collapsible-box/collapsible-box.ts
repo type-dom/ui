@@ -19,7 +19,7 @@ export class CollapsibleBox extends TypeDiv {
       // borderBottom: '1px solid #dddddd',
       listStyle: 'none',
       padding: '3px',
-      marginBottom: '5px'
+      marginBottom: '5px',
     });
     this.attr.addName('collapsible-box');
     this.heading = new ExpandHeading('标题');

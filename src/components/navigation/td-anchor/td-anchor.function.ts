@@ -1,21 +1,28 @@
-import { AnchorLinkState, ITdAnchorConfig } from './td-anchor.interface';
+import { AnchorLinkState, AnchorProps } from './td-anchor.interface';
 import { createProxy } from '@type-dom/framework';
+import { signal } from '@type-dom/signals';
 import {
   animateScrollTo,
   getElement,
   getOffsetTopDistance,
   getScrollElement,
-  getScrollTop,
-  isUndefined,
-  throttleByRaf
-} from '@type-dom/utils';
+} from '../../../../../utils/src/ui/dom';
+// import {
+//   animateScrollTo,
+//   getElement,
+//   getOffsetTopDistance,
+//   getScrollElement,
+//   getScrollTop,
+//   isUndefined,
+//   throttleByRaf
+// } from '@type-dom/utils';
 
-const currentAnchor = createProxy(null);
-const containerEl = createProxy(null); // ref<HTMLElement | Window>()
+const currentAnchor = signal<string | null>(null);
+const containerEl = signal<HTMLElement | Window | null>(null); // ref<HTMLElement | Window>()
 const links: Record<string, HTMLElement> = {};
 
 let isScrolling = false;
-let currentScrollTop = 0;
+const currentScrollTop = 0;
 
 const addLink = (state: AnchorLinkState) => {
   links[state.href] = state.el;
@@ -26,27 +33,27 @@ const removeLink = (href: string) => {
 };
 
 const setCurrentAnchor = (href: string) => {
-  const activeHref = currentAnchor.value;
+  const activeHref = currentAnchor.get();
   if (activeHref !== href) {
-    currentAnchor.value = href;
+    currentAnchor.set(href);
     // emit('change', href)
   }
 };
 
 let clearAnimate: (() => void) | null = null;
 
-const scrollToAnchor = (href: string, props?: ITdAnchorConfig) => {
-  if (!containerEl.value) return;
+const scrollToAnchor = (href: string, props?: AnchorProps) => {
+  if (!containerEl.get()) return;
   const target = getElement(href);
   if (!target) return;
   if (clearAnimate) clearAnimate();
   isScrolling = true;
-  const scrollEle = getScrollElement(target, containerEl.value);
+  const scrollEle = getScrollElement(target, containerEl.get()!);
   const distance = getOffsetTopDistance(target, scrollEle);
   const max = scrollEle.scrollHeight - scrollEle.clientHeight;
   const to = Math.min(distance - (props?.offset || 0), max);
   clearAnimate = animateScrollTo(
-    containerEl.value,
+    containerEl.get()!,
     currentScrollTop,
     to,
     props?.duration || 300,
@@ -59,7 +66,7 @@ const scrollToAnchor = (href: string, props?: ITdAnchorConfig) => {
   );
 };
 
-export const scrollTo = (href?: string, config?: ITdAnchorConfig) => {
+export const scrollTo = (href?: string, config?: AnchorProps) => {
   if (href) {
     setCurrentAnchor(href);
     scrollToAnchor(href, config);
@@ -77,7 +84,7 @@ export const scrollTo = (href?: string, config?: ITdAnchorConfig) => {
 // });
 //
 //
-// const getCurrentHref = (props?: ITdAnchorConfig) => {
+// const getCurrentHref = (props?: AnchorProps) => {
 //   if (!containerEl.value) return;
 //   const scrollTop = getScrollTop(containerEl.value);
 //   const anchorTopList: { top: number; href: string }[] = [];

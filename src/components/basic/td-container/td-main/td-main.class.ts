@@ -1,24 +1,22 @@
-import { UI } from '../../../../ui/ui.abstract';
-import { ITdMain, ITdMainConfig } from './td-main.interface';
+import { TypeMain } from '@type-dom/framework';
+import { useNamespace } from '../../../../hooks/use-namespace';
+import { ITdMain, TdMainProps } from './td-main.interface';
 
-export class TdMain extends UI implements ITdMain {
+export class TdMain extends TypeMain implements ITdMain {
   className: 'TdMain';
-  override props: ITdMainConfig;
+  override props: TdMainProps;
 
-  constructor(params: ITdMainConfig = {}) {
+  constructor(params: TdMainProps = {}) {
     super();
-    this.useTag(params?.tag || 'main');
     this.className = 'TdMain';
-    this.style.addObj({
-      display: 'block',
-      flex: 1,
-      flexBasis: 'auto',
-      overflow: 'auto',
-      boxSizing: 'border-box'
-      // padding: '20px',
-    });
-    this.addChild(this.getSlotNode());
-    console.warn('TdMain slotNodes.default is ', this.getSlotNode());
+    this.attr.addName('td-main');
     this.props = this.useParams(params);
+  }
+
+  override setup() {
+    const props = this.props;
+    const ns = useNamespace('main');
+    this.attr.addClass(ns.b());
+    this.slotChildren(props.slot || props.slots?.default);
   }
 }

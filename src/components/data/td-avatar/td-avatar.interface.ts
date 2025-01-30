@@ -1,18 +1,19 @@
 import { Globals } from '@type-dom/css-type';
-import { IUI, IUIConfig } from '../../../ui/ui.interface';
-import { ISize } from '../../../styles/size';
+import { ITypeSpan, TypeSpanProps } from '@type-dom/framework';
+import { ComponentSize } from '../../../constants/size';
 import { TdIcon } from '../../basic/td-icon/td-icon.class';
 
-export interface ITdAvatar extends IUI {
+export interface ITdAvatar extends ITypeSpan {
   className: 'TdAvatar';
+  props: ITdAvatarConfig;
 }
 
-export interface ITdAvatarConfig extends IUIConfig {
+export interface ITdAvatarConfig extends TypeSpanProps {
   /**
    * @description avatar size.
    *     default: '',
    */
-  size?: number | ISize;
+  size?: number | ComponentSize;
   //   {
   //   type: [Number, String],
   //   values: componentSizes,

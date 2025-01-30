@@ -1,272 +1,214 @@
-import { EVENT_CODE } from '@type-dom/utils';
 import {
   Div,
-  IEvent,
   P,
-  Parser,
-  SlotNode,
+  SvgSvg,
   Transition,
-  TypeElement,
-  TypeNode,
+  TypeFragment,
+  XElement,
+  arraySlot,
+  defineExpose,
+  onMounted,
+  useEventListener,
+  useResizeObserver,
   useTimeoutFn,
-  XElement
 } from '@type-dom/framework';
 import { IStyle } from '@type-dom/css-type';
 import { ElCloseSvg, TypeComponentsMap } from '@type-dom/svgs';
-import { UI } from '../../../ui/ui.abstract';
+import {
+  computed,
+  signal,
+  watch,
+  Signal,
+  Computed,
+  unref,
+} from '@type-dom/signals';
+import { EVENT_CODE } from '../../../constants/aria';
 import { TdBadge } from '../../data/td-badge/td-badge.class';
 import { TdIcon } from '../../basic/td-icon/td-icon.class';
-import { ITdMessage, ITdMessageConfig, messageDefaults } from './td-message.interface';
-import {
-  $messageBadgeStyle, $messageCloseBtnStyle,
-  $messageContentStyle,
-  $messageIconStyle,
-  $messageStyle,
-  useStyle
-} from './td-message.style';
+import { BadgeProps } from '../../data/td-badge/td-badge.interface';
+import { useGlobalComponentSettings } from '../../configuration/td-config-provider/hooks/use-global-config';
+import { getLastOffset, getOffsetOrSpace } from './instance';
+import { messageDefaults, messageEmits } from './td-message.const';
+import { ITdMessage, MessageProps } from './td-message.interface';
+import './style/index';
 
-export class TdMessage extends UI<undefined> implements ITdMessage {
+export class MessageClass extends TypeFragment implements ITdMessage {
   className: 'TdMessage';
-  private transition: Transition;
-  private message: Div;
-  override props: ITdMessageConfig;
-  private visible?: boolean;
-  private stopTimer: (() => void) | undefined;
-  static msgId = 0;
-  static msgList: TdMessage[] = [];
-  private repeatNum?: number;
-  private badge?: TdBadge;
+  override props: MessageProps;
+  visible?: Signal<boolean>;
+  bottom?: Computed<number>;
+  close?: () => void;
 
-  constructor(option?: string | ITdMessageConfig) {
+  constructor(option?: string | MessageProps) {
     super();
-    this.useTag('fragment');
-    let params: ITdMessageConfig = {};
+    this.className = 'TdMessage';
+    let params: MessageProps = {};
     if (typeof option === 'string') {
       params.message = option;
     } else {
       params = option || {};
     }
-    this.className = 'TdMessage';
-    this.visible = false;
-    this.stopTimer = undefined;
-
-    useStyle(params);
-    this.to = params?.appendTo || document.body;
-    this.transition = new Transition({
-      name: 'td-message-fade',
-      emits: {
-        beforeLeave: () => {
-          console.log('beforeLeave');
-          params.onClose?.();
-        },
-        afterLeave: () => {
-          console.log('afterLeave');
-          params.emits?.destroy?.(); // destroy ???
-          this.message.dom.remove();
-        }
-      }
-    });
-    this.addChild(this.transition);
-
-    this.message = new Div({
-      attrObj: {
-        role: 'alert'
-      },
-      styleObj: $messageStyle,
-      events: {
-        mouseenter: () => {
-          console.log('mouseenter');
-          this.clearTimer();
-        },
-        mouseleave: () => {
-          console.log('mouseleave');
-          this.startTimer();
-        }
-      }
-    });
-    // this.message.style.hide();
-    // this.transition.setSlot(this.message);
-    this.transition.addChild(this.message);
-    const type = params?.type || 'info';
-    const iconComponent = params?.icon || (new TypeComponentsMap[type]()) || '';
-    console.log('iconComponent', iconComponent);
-    if (iconComponent) {
-      this.message.addChild(new TdIcon({
-        name: 'icon',
-        styleObj: $messageIconStyle,
-        svgObj: iconComponent
-      }));
-    }
-    const defaultSlot = new SlotNode('default');
-    this.message.addChild(defaultSlot);
-    if (params?.slot) {
-      defaultSlot.addSlot(params.slot);
-    } else {
-      if (params?.dangerouslyUseHTMLString) {
-        // todo params.message 是否是html字符串
-        const parser = new Parser();
-        if (typeof params.message === 'string') {
-          const item = parser.parseFromString(params.message) as XElement;
-          defaultSlot.addSlot(new P({
-            name: 'content',
-            styleObj: $messageContentStyle,
-            childNodes: [item]
-          }));
-        } else {
-          console.error('params.message is not a string . ');
-        }
-      } else {
-        console.log('params.message', params.message);
-        if (params.message instanceof TypeElement) {
-          defaultSlot.addSlot(new P({
-            name: 'content',
-            styleObj: $messageContentStyle,
-            childNodes: [params.message as TypeElement]
-          }));
-        } else {
-          defaultSlot.addSlot(new P({
-            name: 'content',
-            styleObj: $messageContentStyle,
-            text: params?.message as string || ''
-          }));
-        }
-      }
-    }
-    if (params?.showClose) {
-      this.message.addChild(new TdIcon({
-        name: 'close-btn',
-        svgObj: new ElCloseSvg(),
-        styleObj: $messageCloseBtnStyle,
-        events: {
-          click: (evt) => {
-            console.log('close');
-            evt?.stopPropagation();
-            this.close();
-          }
-        }
-      }));
-    }
-
+    this.addEmits(messageEmits);
+    this.assignProps(messageDefaults);
     this.props = this.useParams(params);
+  }
 
-    const offset = (TdMessage.msgId * 60 + 20) + 'px';
-    this.message.style.addObj({
-      top: offset
+  override setup() {
+    const props = this.props;
+    const emit = this.emit;
+
+    const { ns, zIndex } = useGlobalComponentSettings('message');
+    const { currentZIndex, nextZIndex } = zIndex;
+
+    const messageRef = signal<HTMLDivElement>();
+    const visible = signal(false);
+    const height = signal(0);
+
+    let stopTimer: (() => void) | undefined = undefined;
+
+    const badgeType = computed<BadgeProps['type']>(() =>
+      props.type ? (props.type === 'error' ? 'danger' : props.type) : 'info'
+    );
+    const typeClass = computed(() => {
+      const type = props.type;
+      return { [ns.bm('icon', type)]: type && !!TypeComponentsMap[type] };
     });
+    const iconComponent = computed(
+      () => props.icon || TypeComponentsMap[props.type!] || ''
+    );
 
-    if (params.grouping) {
-      if (TdMessage.msgList.length === 0) {
-        TdMessage.msgId = TdMessage.msgId + 1;
-        TdMessage.msgList.push(this);
-        // 特殊类，需要直接渲染。事件触发的类。
-        this.mount(this.to);
-      } else {
-        const msg = TdMessage.msgList[0];
-        msg.repeatNum = (msg.repeatNum || 1) + 1;
-        console.log('msg.repeatNum is ', msg.repeatNum);
-        if (msg.repeatNum > 1) {
-          if (msg.repeatNum === 2) {
-            const badgeType = msg.props.type ? (msg.props.type === 'error' ? 'danger' : msg.props.type) : 'info';
-            msg.badge = new TdBadge({
-              value: msg.repeatNum,
-              type: badgeType,
-              styleObj: $messageBadgeStyle
-            })
-            msg.message.addChild(msg.badge);
-          } else {
-            // msg.badge!.props.value = msg.repeatNum;
-            msg.badge?.changeValue(msg.repeatNum);
-          }
-        }
-        this.clearTimer();
-        msg.clearTimer();
-        msg.startTimer();
-        msg.mount(msg.to);
+    const lastOffset = computed(() => getLastOffset(props.id!));
+    const offset = computed(
+      () => getOffsetOrSpace(props.id!, props.offset!) + lastOffset.get()
+    );
+    const bottom = computed((): number => height.get() + offset.get());
+    const customStyle = computed<IStyle>(() => ({
+      top: `${offset.get()}px`,
+      zIndex: currentZIndex.get(),
+    }));
+
+    function startTimer() {
+      if (props.duration === 0) return;
+      ({ stop: stopTimer } = useTimeoutFn(() => {
+        close();
+      }, props.duration!));
+    }
+
+    function clearTimer() {
+      stopTimer?.();
+    }
+
+    // const self = this;
+    function close() {
+      visible.set(false);
+      // self.unmount(); // todo add by me;
+      // closeMessage(this) // add by me   emits listener has some wrong , not trigger.
+    }
+
+    function keydown({ code }: KeyboardEvent) {
+      if (code === EVENT_CODE.esc) {
+        // press esc to close the message
+        close();
       }
-    } else {
-      TdMessage.msgId = TdMessage.msgId + 1;
-      TdMessage.msgList.push(this);
-      // 特殊类，需要直接渲染。事件触发的类。
-      this.mount(this.to);
     }
-  }
 
-  override mounted() {
-    if (this?.repeatNum && this?.repeatNum > 1) {
-      return;
-    }
-    this.startTimer();
-    // nextZIndex()
-    this.visible = true;
-    this.message.style.show('flex');
-    document.addEventListener('keydown', this.keydown);
-  }
-
-  override destroy(root?: TypeNode ) {
-    document.removeEventListener('keydown', this.keydown);
-    super.destroy(root);
-  }
-  static success(message: string) {
-    new TdMessage({
-      message,
-      type: 'success'
-    })
-  }
-
-  static warning(message: string) {
-    new TdMessage({
-      message,
-      type: 'warning'
-    })
-  }
-
-  static error(message: string) {
-    new TdMessage({
-      message,
-      type: 'error'
-    })
-  }
-
-  static info(message: string) {
-    new TdMessage({
-      message,
-      type: 'info'
-    })
-  }
-
-  startTimer() {
-    if (this.props.duration === 0) return;
-    ({ stop: this.stopTimer } = useTimeoutFn(() => {
-      this.close();
-    }, this.props.duration || messageDefaults.duration));
-  }
-
-  clearTimer() {
-    this.stopTimer?.();
-  }
-
-  close() {
-    console.log('close . ');
-    this.visible = false;
-    this.message.style.hide();
-    this.clearTimer();
-    TdMessage.msgId = (TdMessage.msgId || 1) - 1;
-    TdMessage.msgList = TdMessage.msgList.filter(item => item !== this);
-    console.log('TdMessage.msgList is ', TdMessage.msgList, TdMessage.msgList.length);
-    TdMessage.msgList.forEach((msg, index) => {
-      const offset = (index * 60 + 20) + 'px';
-      const customStyle: IStyle = {
-        top: offset
-      };
-      msg.message.style.setObj(customStyle);
+    onMounted(() => {
+      startTimer();
+      nextZIndex();
+      visible.set(true);
     });
-    this.destroy();
-  }
 
-  keydown = ({ code }: KeyboardEvent) => {
-    if (code === EVENT_CODE.esc) {
-      // press esc to close the message
-      this.close();
-    }
+    watch(
+      () => unref(props.repeatNum),
+      () => {
+        clearTimer();
+        startTimer();
+      }
+    );
+
+    useEventListener(document, 'keydown', keydown);
+
+    useResizeObserver(messageRef, () => {
+      height.set(messageRef.get()!.getBoundingClientRect().height);
+    });
+
+    defineExpose({
+      visible,
+      bottom,
+      close,
+    });
+
+    this.addChild(
+      new Transition({
+        name: ns.b('fade'),
+        // onBeforeLeave: props.onClose, // todo 会提前消除 instance
+        onAfterLeave: () => {
+          console.error('TdMessage Transition afterLeave');
+          props.onClose?.();
+          emit('destroy');
+        },
+        slot: new Div({
+          vShow: visible,
+          refDom: messageRef,
+          attrObj: {
+            class: [
+              ns.b(),
+              { [ns.m(props.type)]: props.type },
+              ns.is('center', props.center),
+              ns.is('closable', props.showClose),
+              ns.is('plain', props.plain),
+              props.customClass,
+            ],
+            role: 'alert',
+          },
+          styleObj: customStyle,
+          events: {
+            mouseenter: clearTimer,
+            mouseleave: startTimer,
+          },
+          slot: [
+            new TdBadge({
+              vIf: computed(() => props.repeatNum && props.repeatNum.get() > 1),
+              value: props.repeatNum,
+              type: badgeType.get(),
+              class: ns.e('badge'),
+            }),
+            new TdIcon({
+              vIf: iconComponent.get(),
+              class: [ns.e('icon'), typeClass],
+              slot: new (iconComponent.get() as typeof SvgSvg)(),
+            }),
+            ...arraySlot(
+              props.slot ??
+                (!props.dangerouslyUseHTMLString
+                  ? new P({
+                      // vIf: ,
+                      class: ns.e('content'),
+                      slot: props.message,
+                    })
+                  : // <!-- Caution here, message could've been compromised, never use user's input as message -->
+                    new P({
+                      // vIf: props.dangerouslyUseHTMLString,
+                      class: ns.e('content'),
+                      slot: new XElement({
+                        template: props.message as string,
+                      }),
+                    }))
+            ),
+            new TdIcon({
+              vIf: props.showClose,
+              class: ns.e('closeBtn'),
+              slot: new ElCloseSvg(),
+              events: {
+                click: (evt) => {
+                  close();
+                  evt?.stopPropagation();
+                },
+              },
+            }),
+          ],
+        }),
+      })
+    );
   }
 }

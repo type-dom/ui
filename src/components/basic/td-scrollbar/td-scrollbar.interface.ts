@@ -1,12 +1,12 @@
-import { TypeElement } from '@type-dom/framework';
 import { IStyle } from '@type-dom/css-type';
-import { IUI, IUIConfig } from '../../../ui/ui.interface';
+import { ITypeDiv, TypeDivProps, TypeDiv } from '@type-dom/framework';
+import { TdScrollbar } from './td-scrollbar.class';
 
-export interface ITdScrollbar extends IUI {
+export interface ITdScrollbar extends ITypeDiv {
   className: 'TdScrollbar';
 }
 
-export interface ITdScrollbarConfig extends IUIConfig {
+export interface ITdScrollbarConfig extends TypeDivProps {
   /**
    * @description height of scrollbar
    */
@@ -17,6 +17,7 @@ export interface ITdScrollbarConfig extends IUIConfig {
   maxHeight?: number | string;
   /**
    * @description whether to use the native scrollbar
+   *     default: false,
    */
   native?: boolean;
   /**
@@ -26,7 +27,7 @@ export interface ITdScrollbarConfig extends IUIConfig {
   /**
    * @description class of view
    */
-  // viewClass: {
+  viewClass?: string;
   //   type: [String, Array],
   //   default: '',
   // },
@@ -42,7 +43,7 @@ export interface ITdScrollbarConfig extends IUIConfig {
    * @description element tag of the view
    * default: div
    */
-  // tag: string; // 简化处理，不改了
+  tag?: string;
   /**
    * @description do not respond to container size changes, if the container size does not change, it is better to set it to optimize performance
    */
@@ -72,10 +73,10 @@ export interface ITdScrollbarConfig extends IUIConfig {
    */
   ariaOrientation?: 'horizontal' | 'vertical';
 
-  contents?: TypeElement[];
+  // slot?: TypeElement[];
 }
 
-// export const scrollbarProps = buildProps({
-//
-
-// } as const)
+export interface ScrollbarContext {
+  scrollbarElement: TdScrollbar;
+  wrapElement: TypeDiv;
+}

@@ -1,4 +1,4 @@
-import { IOptionConfig, ITypeConfig, ITypeDiv } from '@type-dom/framework';
+import { OptionProps, ITypeDiv, TypeDivProps } from '@type-dom/framework';
 import { IRadioOption } from './radio-option/radio-option.interface';
 
 export interface IRadioGroup extends ITypeDiv {
@@ -6,8 +6,8 @@ export interface IRadioGroup extends ITypeDiv {
   childNodes: IRadioOption[];
 }
 
-export interface IRadioGroupConfig extends ITypeConfig {
+export interface RadioGroupProps extends TypeDivProps {
   name?: string;
-  options?: IOptionConfig[];
+  options?: OptionProps[];
   value?: string | number;
 }

@@ -1,10 +1,11 @@
-import { IUI, IUIConfig } from '../../../../ui/ui.interface';
+import { ITypeFooter, TypeFooterProps } from '@type-dom/framework';
 
-export interface ITdFooter extends IUI {
+export interface ITdFooter extends ITypeFooter {
   className: 'TdFooter';
+  props: FooterProps;
 }
 
-export interface ITdFooterConfig extends IUIConfig {
+export interface FooterProps extends TypeFooterProps {
   height?: string | number;
   backgroundColor?: string;
 }

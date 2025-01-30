@@ -1,16 +1,16 @@
-import { ISpan, TypeElement, TypeSvgSvg } from '@type-dom/framework';
-import { IUI, IUIConfig } from '../../../ui/ui.interface';
-import { ITdIcon } from '../td-icon/td-icon.interface';
-import { TdButton } from './td-button.class';
+import { TypeProps, ITypeHtml, TypeSvgSvg } from '@type-dom/framework';
+import { MaybeRef } from '@type-dom/signals';
+import { ComponentSize } from '../../../constants';
 
-export interface ITdButtonAbstract extends IUI {
+export interface ITdButtonAbstract extends ITypeHtml {
   // nodeName: 'button',
   className: 'TdButton' | string;
-  childNodes: (ISpan | ITdIcon)[];
+  // childNodes: IXElement[];
 }
 
 export interface ITdButton extends ITdButtonAbstract {
   className: 'TdButton';
+  props: TdButtonProps;
 }
 
 export type IButtonSize = 'small' | 'default' | 'large';
@@ -42,27 +42,82 @@ export type IButtonNativeType = 'button' | 'submit' | 'reset';
  *     color 自定义按钮的颜色。
  *     disabled  按钮是否为禁用状态
  */
-export interface ITdButtonConfig extends IUIConfig {
+export interface TdButtonProps extends TypeProps {
   // FormItemProps
-  size?: IButtonSize;
-  disabled?: boolean;
-  type?: IButtonType;
   svgObj?: TypeSvgSvg;
-  icon?: string;
-  nativeType?: IButtonNativeType;
-  loading?: boolean;
-  loadingIcon?: TypeSvgSvg;
-  plain?: boolean;
-  text?: boolean; // text type
-  link?: boolean;
-  round?: boolean;
-  bg?: boolean;
-  circle?: boolean;
-  color?: string;
+  // loadingIcon?: TypeSvgSvg;
   // slots?: ITdButtonSlots;
+  /**
+   * @description button size
+   */
+  size?: ComponentSize;
+  /**
+   * @description disable the button
+   */
+  disabled?: boolean;
+  /**
+   * @description button type
+   */
+  type?: IButtonType;
+  /**
+   * @description icon component
+   */
+  icon?: TypeSvgSvg;
+  /**
+   * @description native button type
+   */
+  nativeType?: IButtonNativeType;
+  /**
+   * @description determine whether it's loading
+   */
+  loading?: boolean;
+  /**
+   * @description customize loading icon component
+   *     default?: () => Loading;
+   */
+  loadingIcon?: TypeSvgSvg;
+  /**
+   * @description determine whether it's a plain button
+   */
+  plain?: boolean;
+  /**
+   * @description determine whether it's a text button
+   */
+  text?: boolean;
+  /**
+   * @description determine whether it's a link button
+   */
+  link?: boolean;
+  /**
+   * @description determine whether the text button background color is always on
+   */
+  bg?: boolean;
+  /**
+   * @description native button autofocus
+   */
+  autofocus?: boolean;
+  /**
+   * @description determine whether it's a round button
+   */
+  round?: boolean;
+  /**
+   * @description determine whether it's a circle button
+   */
+  circle?: boolean;
+  /**
+   * @description custom button color; automatically calculate `hover` and `active` color
+   */
+  color?: string;
+  /**
+   * @description dark mode; which automatically converts `color` to dark mode colors
+   */
+  dark?: boolean;
+  /**
+   * @description automatically insert a space between two chinese characters
+   */
+  autoInsertSpace?: boolean;
+  /**
+   * @description custom element tag
+   */
+  tag?: string;
 }
-
-// export interface ITdButtonSlots extends IUISlots {
-//   loading?: SlotNode;
-//   icon?: SlotNode; // 这里不是 TdIcon, 而是 svg
-// }

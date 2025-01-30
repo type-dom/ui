@@ -1,7 +1,7 @@
 import { vHash } from '@type-dom/framework';
 import { IStyle } from '@type-dom/css-type';
 
-export const $tdIcon: IStyle = {
+export const $iconStyle: IStyle = {
   height: '1em',
   width: '1em',
   lineHeight: '1em',
@@ -11,17 +11,17 @@ export const $tdIcon: IStyle = {
   position: 'relative',
   fill: 'currentColor',
   // color: 'var(--color)',
-  fontSize: 'inherit'
+  fontSize: 'inherit',
 };
 
-export const $iconLoading: IStyle = {
-  animation: `rotating-${vHash} 2s linear infinite`
+export const $iconLoadingStyle: IStyle = {
+  animation: `rotating-${vHash} 2s linear infinite`,
 };
-export const $iconRight: IStyle = {
+export const $iconRightStyle: IStyle = {
   marginLeft: '5px',
-  float: 'right'
+  float: 'right',
 };
-export const $iconLeft: IStyle = {
+export const $iconLeftStyle: IStyle = {
   marginRight: '5px',
-  float: 'left'
+  float: 'left',
 };

@@ -1,10 +1,12 @@
 // import { onBeforeUnmount, onMounted, ref } from 'vue'
 import { FOCUSOUT_PREVENTED, FOCUSOUT_PREVENTED_OPTS } from './tokens';
+import { signal } from '@type-dom/signals';
+import { onBeforeUnmount, onMounted } from '@type-dom/framework';
 
-let focusReason: 'pointer' | 'keyboard';
-let lastUserFocusTimestamp = 0;
-let lastAutomatedFocusTimestamp = 0;
-// let focusReasonUserCount = 0;
+const focusReason = signal<'pointer' | 'keyboard'>();
+const lastUserFocusTimestamp = signal<number>(0);
+const lastAutomatedFocusTimestamp = signal<number>(0);
+let focusReasonUserCount = 0;
 
 export type FocusLayer = {
   paused: boolean;
@@ -33,15 +35,13 @@ export const obtainAllFocusableElements = (
       return node.tabIndex >= 0 || node === document.activeElement
         ? NodeFilter.FILTER_ACCEPT
         : NodeFilter.FILTER_SKIP;
-    }
+    },
   });
   while (walker.nextNode()) nodes.push(walker.currentNode as HTMLElement);
 
   return nodes;
 };
 
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-expect-error
 export const getVisibleElement = (
   elements: HTMLElement[],
   container: HTMLElement
@@ -49,6 +49,7 @@ export const getVisibleElement = (
   for (const element of elements) {
     if (!isHidden(element, container)) return element;
   }
+  return;
 };
 
 export const isHidden = (element: HTMLElement, container: HTMLElement) => {
@@ -84,7 +85,7 @@ export const tryFocus = (
   if (element && element.focus) {
     const prevFocusedElement = document.activeElement;
     element.focus({ preventScroll: true });
-    lastAutomatedFocusTimestamp = window.performance.now();
+    lastAutomatedFocusTimestamp.set(window.performance.now());
     if (
       element !== prevFocusedElement &&
       isSelectable(element) &&
@@ -127,7 +128,7 @@ const createFocusableStack = () => {
 
   return {
     push,
-    remove
+    remove,
   };
 };
 
@@ -145,46 +146,46 @@ export const focusFirstDescendant = (
 export const focusableStack = createFocusableStack();
 
 export const isFocusCausedByUserEvent = (): boolean => {
-  return lastUserFocusTimestamp > lastAutomatedFocusTimestamp;
+  return lastUserFocusTimestamp.get() > lastAutomatedFocusTimestamp.get();
 };
 
 const notifyFocusReasonPointer = () => {
-  focusReason = 'pointer';
-  lastUserFocusTimestamp = window.performance.now();
+  focusReason.set('pointer');
+  lastUserFocusTimestamp.set(window.performance.now());
 };
 
 const notifyFocusReasonKeydown = () => {
-  focusReason = 'keyboard';
-  lastUserFocusTimestamp = window.performance.now();
+  focusReason.set('keyboard');
+  lastUserFocusTimestamp.set(window.performance.now());
 };
 
 export const useFocusReason = (): {
   focusReason: typeof focusReason;
-  // lastUserFocusTimestamp: typeof lastUserFocusTimestamp
-  // lastAutomatedFocusTimestamp: typeof lastAutomatedFocusTimestamp
+  lastUserFocusTimestamp: typeof lastUserFocusTimestamp;
+  lastAutomatedFocusTimestamp: typeof lastAutomatedFocusTimestamp;
 } => {
-  // onMounted(() => {
-  //   if (focusReasonUserCount === 0) {
-  //     document.addEventListener('mousedown', notifyFocusReasonPointer)
-  //     document.addEventListener('touchstart', notifyFocusReasonPointer)
-  //     document.addEventListener('keydown', notifyFocusReasonKeydown)
-  //   }
-  //   focusReasonUserCount++
-  // })
-  //
-  // onBeforeUnmount(() => {
-  //   focusReasonUserCount--
-  //   if (focusReasonUserCount <= 0) {
-  //     document.removeEventListener('mousedown', notifyFocusReasonPointer)
-  //     document.removeEventListener('touchstart', notifyFocusReasonPointer)
-  //     document.removeEventListener('keydown', notifyFocusReasonKeydown)
-  //   }
-  // })
+  onMounted(() => {
+    if (focusReasonUserCount === 0) {
+      document.addEventListener('mousedown', notifyFocusReasonPointer);
+      document.addEventListener('touchstart', notifyFocusReasonPointer);
+      document.addEventListener('keydown', notifyFocusReasonKeydown);
+    }
+    focusReasonUserCount++;
+  });
+
+  onBeforeUnmount(() => {
+    focusReasonUserCount--;
+    if (focusReasonUserCount <= 0) {
+      document.removeEventListener('mousedown', notifyFocusReasonPointer);
+      document.removeEventListener('touchstart', notifyFocusReasonPointer);
+      document.removeEventListener('keydown', notifyFocusReasonKeydown);
+    }
+  });
 
   return {
-    focusReason
-    // lastUserFocusTimestamp,
-    // lastAutomatedFocusTimestamp,
+    focusReason,
+    lastUserFocusTimestamp,
+    lastAutomatedFocusTimestamp,
   };
 };
 
@@ -193,6 +194,6 @@ export const createFocusOutPreventedEvent = (
 ) => {
   return new CustomEvent(FOCUSOUT_PREVENTED, {
     ...FOCUSOUT_PREVENTED_OPTS,
-    detail
+    detail,
   });
 };

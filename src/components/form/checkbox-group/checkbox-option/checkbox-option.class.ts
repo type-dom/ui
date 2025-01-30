@@ -7,36 +7,34 @@ export class CheckboxOption extends TypeSpan implements ICheckboxOption {
   input: Input;
   override parent?: CheckboxGroup;
   override childNodes: [Input, TextNode];
-  override textNode: TextNode;
 
   constructor() {
     super();
     this.className = 'CheckboxOption';
     this.input = new Input({ parent: this });
     this.input.attr.addObj({
-      type: 'checkbox'
+      type: 'checkbox',
       // name: optionSetting.name,
       // label: opt.label,
       // value: opt.value,
       // checked: opt.checked || false
     });
-    this.textNode = new TextNode();
-    this.childNodes = [this.input, this.textNode];
+    this.childNodes = [this.input, new TextNode()];
   }
 
   override setup(): void {
     this.input.addEvents({
       click: () => {
         console.log('this.input.dom click . ');
-        console.log('this.input.dom.value is ', this.input.dom.value);
+        console.log('this.input.dom.value is ', this.input.dom?.value);
         const flag = this.parent?.value.findIndex(
-          (item) => item === this.input.dom.value
+          (item) => item === this.input.dom?.value
         );
-        if (this.input.dom.checked) {
+        if (this.input.dom?.checked) {
           if (flag === -1) {
-            this.parent?.value.push(this.input.dom.value);
+            this.parent?.value.push(this.input.dom?.value);
             this.input.attr.setObj({
-              checked: true
+              checked: true,
             });
           }
         } else {
@@ -45,7 +43,7 @@ export class CheckboxOption extends TypeSpan implements ICheckboxOption {
             this.parent?.value && this.parent?.value.splice(flag, 1);
           }
         }
-      }
+      },
     });
   }
 }

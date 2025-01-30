@@ -1,4 +1,4 @@
-import { ITypeConfig, TypeDiv } from '@type-dom/framework';
+import { TypeProps, TypeDiv } from '@type-dom/framework';
 import { $bgColor } from '../../../styles/var';
 import { Example } from './example';
 
@@ -6,7 +6,7 @@ export class ExampleShowcase extends TypeDiv {
   className: 'ExampleShowcase';
   override parent!: Example;
 
-  constructor(params: ITypeConfig) {
+  constructor(params: TypeProps) {
     super();
     this.className = 'ExampleShowcase';
     this.attr.addName('example-showcase');
@@ -14,7 +14,7 @@ export class ExampleShowcase extends TypeDiv {
       padding: '1.5rem',
       margin: '.5px',
       // background-color: var(--bg-color),
-      backgroundColor: $bgColor.default
+      backgroundColor: $bgColor.default,
     });
     this.useParams(params);
   }

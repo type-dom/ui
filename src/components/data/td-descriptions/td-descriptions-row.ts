@@ -1,14 +1,21 @@
-import { TableRow, TypeFragment } from '@type-dom/framework';
-import { IUI, IUIConfig } from '../../../ui/ui.interface';
+import {
+  ITypeFragment,
+  TypeFragmentProps,
+  TableRow,
+  TypeFragment,
+} from '@type-dom/framework';
 import { TdDescriptionsItem } from '../td-descriptions-item/td-descriptions-item.class';
 import { TdDescriptions } from './td-descriptions.class';
 import { TdDescriptionsCell } from './td-descritions-cell';
+import { descriptionsKey } from './token';
+import { IDescriptionsInject } from './td-descriptions.interface';
 
-export interface ITdDescriptionsRow extends IUI {
+export interface ITdDescriptionsRow extends ITypeFragment {
   className: 'TdDescriptionsRow';
+  props: DescriptionsRowProps;
 }
 
-export interface ITdDescriptionsRowConfig extends IUIConfig {
+export interface DescriptionsRowProps extends TypeFragmentProps {
   row?: TdDescriptionsItem[];
   //   type: definePropType<DescriptionItemVNode[]>(Array),
   //   default: () => [],
@@ -20,27 +27,30 @@ export interface ITdDescriptionsRowConfig extends IUIConfig {
  * @description
  * @author darcrand
  */
-export class TdDescriptionsRow extends TypeFragment implements ITdDescriptionsRow {
+export class TdDescriptionsRow
+  extends TypeFragment
+  implements ITdDescriptionsRow
+{
   className: 'TdDescriptionsRow';
-  override props: ITdDescriptionsRowConfig
+  override props: DescriptionsRowProps;
   override childNodes: TableRow[];
 
-  constructor(params: ITdDescriptionsRowConfig = {}) {
+  constructor(params: DescriptionsRowProps = {}) {
     super();
     this.className = 'TdDescriptionsRow';
     this.childNodes = [];
     this.props = this.useParams(params);
   }
 
-  override created() {
+  override setup() {
     // todo  descriptions.direction === 'vertical'
     //     descriptions.border 根据这两个条件判断，创建cell.
-    const descriptions = this.up<TdDescriptions>('TdDescriptions');
-    console.log('descriptions is ', descriptions);
-    if (!descriptions) {
+    console.log('TdDescriptionsRow setup . ');
+    const descriptionsConfig =
+      this.inject<IDescriptionsInject>(descriptionsKey);
+    if (!descriptionsConfig) {
       throw Error('TdDescriptionsRow need TdDescriptions as parent. ');
     }
-    const descriptionsConfig = descriptions.props;
     // useSize(descriptionsConfig);
     // useBordered(descriptionsConfig);
     if (descriptionsConfig?.direction === 'vertical') {
@@ -54,7 +64,7 @@ export class TdDescriptionsRow extends TypeFragment implements ITdDescriptionsRo
           new TdDescriptionsCell({
             cell: item.props,
             tag: 'th',
-            type: 'label'
+            type: 'label',
           })
         );
       });
@@ -63,26 +73,27 @@ export class TdDescriptionsRow extends TypeFragment implements ITdDescriptionsRo
           new TdDescriptionsCell({
             cell: item.props,
             tag: 'td',
-            type: 'content'
+            type: 'content',
           })
         );
       });
       this.addChildren(labelTr, contentTr);
     } else {
+      console.warn('horizontal . ');
       const tr = new TableRow();
       const row = this.props.row || [];
-      row.forEach((item, index) => {
+      row.forEach((item) => {
         if (descriptionsConfig.border) {
           tr.addChildren(
             new TdDescriptionsCell({
               cell: item.props,
               tag: 'td',
-              type: 'label'
+              type: 'label',
             }),
             new TdDescriptionsCell({
               cell: item.props,
               tag: 'td',
-              type: 'content'
+              type: 'content',
             })
           );
         } else {
@@ -90,13 +101,12 @@ export class TdDescriptionsRow extends TypeFragment implements ITdDescriptionsRo
             new TdDescriptionsCell({
               cell: item.props,
               tag: 'td',
-              type: 'both'
+              type: 'both',
             })
           );
         }
       });
       this.addChild(tr);
     }
-    // this.useParams(this.config);
   }
 }

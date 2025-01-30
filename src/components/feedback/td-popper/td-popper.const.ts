@@ -1,27 +1,29 @@
-import { InjectionKey } from '@type-dom/framework';
-import { IRoleTypes } from './td-popper.interface';
+import { PopperProps } from './td-popper.interface';
 
+const effects = ['light', 'dark'] as const;
+const triggers = ['click', 'contextmenu', 'hover', 'focus'] as const;
 
-/**
- * triggerRef indicates the element that triggers popper
- * contentRef indicates the element of popper content
- * referenceRef indicates the element that popper content relative with
- */
-export type TdPopperInjectionContext = {
-  triggerRef:any;
-  contentRef: any;
-  popperInstanceRef: any;
-  referenceRef: any;
-  role: IRoleTypes;
-}
+export const Effect = {
+  LIGHT: 'light',
+  DARK: 'dark',
+};
 
-export const POPPER_INJECTION_KEY: InjectionKey<TdPopperInjectionContext> = Symbol('popper');
+export const roleTypes = [
+  'dialog',
+  'grid',
+  'group',
+  'listbox',
+  'menu',
+  'navigation',
+  'tooltip',
+  'tree',
+] as const;
 
+export type PopperEffect =
+  | (typeof effects)[number]
+  | (string & NonNullable<unknown>);
+export type PopperTrigger = (typeof triggers)[number];
 
-export type TdPopperContentInjectionContext = {
-  arrowRef: any;
-  arrowOffset: any;
-  arrowStyle: any;
-}
-
-export const POPPER_CONTENT_INJECTION_KEY: InjectionKey<TdPopperContentInjectionContext> = Symbol('popperContent')
+export const popperProps: PopperProps = {
+  role: 'tooltip',
+};

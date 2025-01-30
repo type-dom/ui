@@ -2,14 +2,14 @@ import {
   Option,
   TextNode,
   TypeSelect,
-  IOptionSetting
+  IOptionSetting,
 } from '@type-dom/framework';
 import { ISelect } from './select.interface';
 
 export class Select extends TypeSelect implements ISelect {
   className: 'Select';
   override childNodes: Option[];
-  value: string | number | boolean;
+  value?: string | number | boolean;
 
   constructor() {
     super();
@@ -25,7 +25,7 @@ export class Select extends TypeSelect implements ISelect {
       optionObj.attr.setObj({
         // label: opt.label,
         value: opt.value,
-        selected: opt.selected || false
+        selected: opt.selected || false,
       });
       if (opt.selected) {
         this.value = opt.value;
@@ -40,18 +40,18 @@ export class Select extends TypeSelect implements ISelect {
     this.addEvents({
       click: () => {
         console.log('this.dom click . ');
-        console.log('this.dom.value is ', this.dom.value);
-        this.value = this.dom.value; // 对应的opt.label.
+        console.log('this.dom.value is ', this.dom?.value);
+        this.value = this.dom?.value; // 对应的opt.label.
         this.childNodes.forEach((opt) => {
-          if (opt.dom.value === this.dom.value) {
+          if (opt.dom?.value === this.dom?.value) {
             opt.attr.setObj({
-              selected: true
+              selected: true,
             });
           } else {
             opt.attr.remove('selected');
           }
         });
-      }
+      },
     });
   }
 

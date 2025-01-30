@@ -3,7 +3,7 @@ import {
   Label,
   Button,
   IOptionSet,
-  IOptionSetting
+  IOptionSetting,
 } from '@type-dom/framework';
 import { FieldSelect } from '../../../form/field-select/field-select.class';
 import { FieldItem } from '../field-item.abstract';
@@ -44,7 +44,7 @@ export abstract class PropertyCascade extends FieldItem {
       outline: '0',
       // -webkit-transition: border-color .2s cubic-bezier(.645,.045,.355,1);
       transition: 'border-color .2s cubic-bezier(.645,.045,.355,1)',
-      width: 'calc(100% - 100px)'
+      width: 'calc(100% - 100px)',
     });
 
     // 单独的方法实现
@@ -53,7 +53,7 @@ export abstract class PropertyCascade extends FieldItem {
     this.firstStageSelectObj.style.setObj(
       Object.assign({}, itemContentStyle, {
         width: '100%',
-        margin: '5px 0'
+        margin: '5px 0',
         // borderRadius: '4px 0 0 4px',
         // borderRight: 'none',
       })
@@ -63,12 +63,12 @@ export abstract class PropertyCascade extends FieldItem {
     this.secondStageSelectObj.attr.addName('second-stage-select');
     this.secondStageSelectObj.style.setObj(
       Object.assign({}, itemContentStyle, {
-        width: '100%'
+        width: '100%',
       })
     );
     this.cascadeDiv.childNodes = [
       this.firstStageSelectObj,
-      this.secondStageSelectObj
+      this.secondStageSelectObj,
     ];
     this.childNodes = [this.label, this.cascadeDiv, this.button];
   }
@@ -79,7 +79,7 @@ export abstract class PropertyCascade extends FieldItem {
       const optionSetting: IOptionSetting = {
         name: fieldSetting.name,
         resultValue: fieldSetting.resultValue,
-        options: []
+        options: [],
       };
       if (fieldSetting.options[0].options === undefined) {
         // 如果只有一级，应该是老数据，要重新组装
@@ -94,7 +94,7 @@ export abstract class PropertyCascade extends FieldItem {
           values.push(
             JSON.stringify({
               label: tableLabel,
-              value: tableValue
+              value: tableValue,
             })
           );
         });
@@ -194,10 +194,10 @@ export abstract class PropertyCascade extends FieldItem {
         console.log('this.firstStageSelectObj.dom change . ');
         console.log(
           'this.firstStageSelectObj.dom.value is ',
-          this.firstStageSelectObj.dom.value
+          this.firstStageSelectObj.dom?.value
         );
         const selectedOption = this.cascadeConfig?.options?.find(
-          (opt) => String(opt.value) === this.firstStageSelectObj.dom.value
+          (opt) => String(opt.value) === this.firstStageSelectObj.dom?.value
         );
         if (!this.cascadeConfig) {
           throw Error('无法获取cascadeConfig');
@@ -210,8 +210,8 @@ export abstract class PropertyCascade extends FieldItem {
             [
               {
                 label: '请先选择上级',
-                value: 0
-              }
+                value: 0,
+              },
             ],
             0
           );
@@ -222,17 +222,17 @@ export abstract class PropertyCascade extends FieldItem {
           console.log('selectedOption is ', selectedOption);
           this.secondStageSelectObj.resetOptions(selectedOption.options, 0);
         }
-      }
+      },
     });
     this.secondStageSelectObj.addEvents({
       click: () => {
         console.log('this.secondStageSelectObj.dom change . ');
-        this.reset(this.secondStageSelectObj.dom.value);
+        this.reset(this.secondStageSelectObj.dom?.value);
       },
       change: () => {
         console.log('this.secondStageSelectObj.dom change . ');
-        this.reset(this.secondStageSelectObj.dom.value);
-      }
+        this.reset(this.secondStageSelectObj.dom?.value);
+      },
     });
   }
 }

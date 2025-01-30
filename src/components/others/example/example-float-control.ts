@@ -1,4 +1,4 @@
-import { ITypeConfig, Span, TypeDiv } from '@type-dom/framework';
+import { TypeProps, Span, TypeDiv } from '@type-dom/framework';
 import { ElCaretTopSvg } from '@type-dom/svgs';
 import { $bgColor, $borderColor, $textColor } from '../../../styles/var';
 import { TdIcon } from '../../basic/td-icon/td-icon.class';
@@ -8,13 +8,13 @@ export class ExampleFloatControl extends TypeDiv {
   className: 'ExampleFloatControl';
   override parent!: Example;
 
-  constructor(params: ITypeConfig) {
+  constructor(params: TypeProps) {
     super();
     this.className = 'ExampleFloatControl';
     this.attr.addName('example-float-control');
     this.attr.addObj({
       role: 'button',
-      tabIndex: 0
+      tabIndex: 0,
     });
     this.style.addObj({
       display: 'flex',
@@ -36,21 +36,21 @@ export class ExampleFloatControl extends TypeDiv {
       left: '0',
       right: '0',
       bottom: '0',
-      zIndex: 10
+      zIndex: 10,
     });
     this.addChildren(
       new TdIcon({
-        svgObj: new ElCaretTopSvg(),
+        slot: new ElCaretTopSvg(),
         styleObj: {
-          fontSize: '16px'
-        }
+          fontSize: '16px',
+        },
       }),
       new Span({
-        text: '隐藏源代码',
+        slot: '隐藏源代码',
         styleObj: {
           fontSize: '14px',
-          marginLeft: '10px'
-        }
+          marginLeft: '10px',
+        },
       })
     );
     this.useParams(params);
@@ -62,7 +62,7 @@ export class ExampleFloatControl extends TypeDiv {
         // 隐藏 代码
         this.style.hide();
         this.parent.sourceWrapper.style.hide();
-      }
+      },
     });
   }
 }

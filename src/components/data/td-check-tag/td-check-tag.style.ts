@@ -8,7 +8,7 @@ import {
 } from '../../../styles/var';
 import { $transition } from '../../../styles/transition';
 
-export const $checkTag: IStyle = {
+export const $checkTagStyle: IStyle = {
   // background-color: getCssVar('color', 'info', 'light-9'),
   backgroundColor: $colors.info['light-9'],
   // border-radius: getCssVar('border-radius', 'base'),
@@ -28,11 +28,12 @@ export const $checkTag: IStyle = {
 
   userSelect: 'none', // 禁止用户选中文本
 };
-export const $checkTagHover: IStyle = {
+export const $checkTagHoverStyle: IStyle = {
   backgroundColor: $colors.info['light-7'],
 };
 export const $checkTagChecked = {} as Record<IType, IStyle>;
 export const $checkTagCheckedHover = {} as Record<IType, string>;
+
 export function useType() {
   for (const type of $types) {
     $checkTagChecked[type] = {
@@ -42,4 +43,3 @@ export function useType() {
     $checkTagCheckedHover[type] = $colors[type]['light-7'];
   }
 }
-

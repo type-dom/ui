@@ -1,13 +1,13 @@
-import { IUI, IUIConfig } from '../../../../ui/ui.interface';
+import { ITypeSpan, TypeSpanProps } from '@type-dom/framework';
+import { Signal } from '@type-dom/signals';
 
-export interface ITdPopperArrow extends IUI {
+export interface ITdPopperArrow extends ITypeSpan {
   className: 'TdPopperArrow';
 }
 
-export interface ITdPopperArrowConfig extends IUIConfig {
+export interface PopperArrowProps extends TypeSpanProps {
   /**
-   *
    *     default: 5,
    */
-  arrowOffset?: number;
+  arrowOffset?: Signal<number>;
 }

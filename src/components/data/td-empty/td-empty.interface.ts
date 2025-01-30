@@ -1,11 +1,10 @@
-import { IUI, IUIConfig } from '../../../ui/ui.interface';
-import { TypeElement } from '@type-dom/framework';
+import { ITypeDiv, TypeDivProps, TypeElement } from '@type-dom/framework';
 
-export interface ITdEmpty extends IUI {
+export interface ITdEmpty extends ITypeDiv {
   className: 'TdEmpty';
 }
 
-export interface ITdEmptyConfig extends IUIConfig {
+export interface EmptyProps extends TypeDivProps {
   /**
    * @description image URL of empty
    *     default: ''
@@ -22,7 +21,8 @@ export interface ITdEmptyConfig extends IUIConfig {
   description?: string;
 
   slots?: {
+    default?: TypeElement | TypeElement[];
     image?: TypeElement | TypeElement[];
     description?: TypeElement | TypeElement[];
-  }
+  };
 }

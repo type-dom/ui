@@ -1,9 +1,4 @@
-import {
-  Span,
-  TextNode,
-  TypeDiv,
-  TypeHtml
-} from '@type-dom/framework';
+import { Span, TextNode, TypeDiv, TypeHtml } from '@type-dom/framework';
 import { ElCaretBottomSvg } from '@type-dom/svgs';
 
 export class ExpandHeading extends TypeDiv {
@@ -26,19 +21,19 @@ export class ExpandHeading extends TypeDiv {
       width: '100%',
       display: 'flex',
       alignItems: 'center',
-      height: '36px'
+      height: '36px',
     });
     this.attr.addName('expand-heading');
     this.svg = new ElCaretBottomSvg({
       attrObj: {
-        fill: '#FFF'
-      }
+        fill: '#FFF',
+      },
     });
     this.title = new TextNode(title);
     // span.setStyle('verticalAlign', 'middle');
     const span = new Span({
       parent: this,
-      childNodes: [this.title]
+      slot: [this.title],
     });
     this.childNodes = [this.svg, span];
   }
@@ -57,7 +52,7 @@ export class ExpandHeading extends TypeDiv {
         if (this.svg.style.get('transform') === 'rotate(-90deg)') {
           this.svg.style.setObj({
             transform: 'rotate(0deg)',
-            transition: 'transform 0.3s'
+            transition: 'transform 0.3s',
           });
           // console.log('style.transform is ', style.transform);
           if (this.parent?.lastChild instanceof TypeHtml) {
@@ -66,13 +61,13 @@ export class ExpandHeading extends TypeDiv {
         } else {
           this.svg.style.setObj({
             transform: 'rotate(-90deg)',
-            transition: 'transform 0.3s'
+            transition: 'transform 0.3s',
           });
           if (this.parent?.lastChild instanceof TypeHtml) {
             this.parent.lastChild.style.set('display', 'none');
           }
         }
-      }
+      },
     });
   }
 }

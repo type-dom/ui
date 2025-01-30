@@ -3,13 +3,14 @@ import { IStyle } from '@type-dom/css-type';
 import {
   $bgColor,
   $borderColor,
-  $boxShadow, $colors,
+  $boxShadow,
+  $colors,
   $fontSizes,
   $textColor,
-  $transitionDurationDefault
+  $transitionDurationDefault,
 } from '../../../styles/var';
 import { $message } from '../td-message/td-message.style';
-import { ITdNotificationConfig } from './td-notification.interface';
+import { NotificationProps } from './td-notification.interface';
 
 export const $messageCloseSize = $message.closeSize;
 
@@ -89,22 +90,22 @@ export const $notificationStyle: IStyle = {
 };
 
 export const $notificationGroupStyle: IStyle = {
-//   margin-left: getCssVar('notification-group-margin-left');
+  //   margin-left: getCssVar('notification-group-margin-left');
   marginLeft: $notification.groupMarginLeft,
-// margin-right: getCssVar('notification-group-margin-right');
+  // margin-right: getCssVar('notification-group-margin-right');
   marginRight: $notification.groupMarginRight,
 };
 
 export const $notificationTitleStyle: IStyle = {
   fontWeight: 'bold',
-// font-size: getCssVar('notification-title-font-size'),
+  // font-size: getCssVar('notification-title-font-size'),
   fontSize: $notification.titleFontSize,
-// line-height: getCssVar('notification-icon-size'),
+  // line-height: getCssVar('notification-icon-size'),
   lineHeight: $notification.iconSize,
-// color: getCssVar('notification-title-color'),
+  // color: getCssVar('notification-title-color'),
   color: $notification.titleColor,
   margin: 0,
-}
+};
 
 export const $notificationContentStyle: IStyle = {
   // font-size: getCssVar('notification-content-font-size'),
@@ -113,7 +114,7 @@ export const $notificationContentStyle: IStyle = {
   margin: '6px 0 0',
   // color: getCssVar('notification-content-color'),
   color: $notification.contentColor,
-}
+};
 
 export const $notificationIconStyle: IStyle = {
   // height: getCssVar('notification-icon-size'),
@@ -122,7 +123,7 @@ export const $notificationIconStyle: IStyle = {
   width: $notification.iconSize,
   // font-size: getCssVar('notification-icon-size'),
   fontSize: $notification.iconSize,
-}
+};
 
 export const $notificationCloseBtnStyle: IStyle = {
   position: 'absolute',
@@ -133,21 +134,22 @@ export const $notificationCloseBtnStyle: IStyle = {
   color: $notification.closeColor,
   // font-size: getCssVar('notification-close-font-size'),
   fontSize: $notification.closeFontSize,
-}
+};
 
-export function useStyle(config?: ITdNotificationConfig) {
+export function useStyle(config?: NotificationProps) {
   useType(config);
 }
-export function useType(config?: ITdNotificationConfig) {
-// @each $type in (success, info, warning, error) {
-//   & .#{$namespace}-notification--#{$type} {
-//     @include css-var-from-global(
-//         ('notification', 'icon-color'),
-//         ('color', $type)
-//       );
-//       color: getCssVar('notification-icon-color');
-//     }
-//   }
+
+export function useType(config?: NotificationProps) {
+  // @each $type in (success, info, warning, error) {
+  //   & .#{$namespace}-notification--#{$type} {
+  //     @include css-var-from-global(
+  //         ('notification', 'icon-color'),
+  //         ('color', $type)
+  //       );
+  //       color: getCssVar('notification-icon-color');
+  //     }
+  //   }
   const $notificationIconColor = $colors[config?.type || 'info'].base;
-  $notificationStyle.color = $notificationIconColor
+  $notificationStyle.color = $notificationIconColor;
 }

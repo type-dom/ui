@@ -1,39 +1,43 @@
-import { Div, Table, TableBody } from '@type-dom/framework';
-import { UI } from '../../../ui/ui.abstract';
-import { ISize } from '../../../styles/size';
+import { Div, Table, TableBody, TypeDiv } from '@type-dom/framework';
+import { ComponentSize } from '../../../constants/size';
 import { TdDescriptionsItem } from '../td-descriptions-item/td-descriptions-item.class';
-import { ITdDescriptionsItemConfig } from '../td-descriptions-item/td-descriptions-item.interface';
+import { DescriptionsItemProps } from '../td-descriptions-item/td-descriptions-item.interface';
 import {
+  IDescriptionsInject,
   ITdDescriptions,
-  ITdDescriptionsConfig
+  DescriptionsProps,
 } from './td-descriptions.interface';
 import { TdDescriptionsRow } from './td-descriptions-row';
 import {
-  $descriptionsBodyStyle, $descriptionsBodyTableCellStyle,
+  $descriptionsBodyStyle,
+  $descriptionsBodyTableCellStyle,
   $descriptionsBodyTableStyle,
   $descriptionsHeaderStyle,
   $descriptionsHeaderTitleStyle,
   $descriptionsStyle,
   useBordered,
-  useSize
+  useSize,
 } from './td-descriptions.style';
+import { descriptionProps, descriptionsKey } from './token';
 
-export class TdDescriptions extends UI implements ITdDescriptions {
+export class TdDescriptions extends TypeDiv implements ITdDescriptions {
   className: 'TdDescriptions';
+  override props: DescriptionsProps;
   private header?: Div;
   private body?: Div;
   private rows?: TdDescriptionsRow[];
   private headerTitle?: Div;
   private bodyTable?: Table;
-  override props: ITdDescriptionsConfig;
 
-  constructor(params: ITdDescriptionsConfig) {
+  constructor(params: DescriptionsProps) {
     super();
     this.className = 'TdDescriptions';
+    this.assignProps(descriptionProps);
     this.props = this.useParams(params);
+    this.provide(descriptionsKey, this.props as IDescriptionsInject);
   }
 
-  override created() {
+  override setup() {
     const props = this.props;
     useSize(props);
     useBordered(props);
@@ -56,12 +60,12 @@ export class TdDescriptions extends UI implements ITdDescriptions {
         this.headerTitle = new Div({
           name: 'title',
           styleObj: $descriptionsHeaderTitleStyle,
-          childNodes: [props.slots.title],
+          slot: [props.slots.title],
         });
       } else {
         this.headerTitle = new Div({
           name: 'title',
-          text: props.title,
+          slot: props.title,
           styleObj: $descriptionsHeaderTitleStyle,
         });
       }
@@ -70,14 +74,14 @@ export class TdDescriptions extends UI implements ITdDescriptions {
         this.header.addChild(
           new Div({
             name: 'extra',
-            childNodes: [props.slots.extra],
+            slot: [props.slots.extra],
           })
         );
       } else {
         this.header.addChild(
           new Div({
             name: 'extra',
-            text: props.extra,
+            slot: props.extra,
           })
         );
       }
@@ -85,29 +89,25 @@ export class TdDescriptions extends UI implements ITdDescriptions {
     if (!props?.slot) {
       throw Error('slot is required . ');
     }
-    const items = this.getRows();
-    console.log('items is ', items);
-    const rows: TdDescriptionsRow[] = [];
-    for (const item of items) {
-      rows.push(new TdDescriptionsRow({ row: item }));
-    }
+    const rows = this.getRows(); // 获取数据排列的行数；
     console.log('rows is ', rows);
-    this.rows = rows;
-    this.body = new Div({
-      name: 'body',
-      styleObj: $descriptionsBodyStyle,
-    });
+    this.rows = rows.map((row) => new TdDescriptionsRow({ row: row }));
+    console.log('TdDescriptionsRow rows is ', this.rows);
     this.bodyTable = new Table({
       name: 'table',
       styleObj: $descriptionsBodyTableStyle,
-      childNodes: [
+      slot: [
         new TableBody({
           name: 'table-body',
-          childNodes: rows,
+          slot: this.rows,
         }),
       ],
     });
-    this.body.addChild(this.bodyTable);
+    this.body = new Div({
+      name: 'body',
+      styleObj: $descriptionsBodyStyle,
+      slot: this.bodyTable,
+    });
     this.addChild(this.body);
     this.useParams(props); // todo ????
   }
@@ -119,7 +119,7 @@ export class TdDescriptions extends UI implements ITdDescriptions {
     isLast = false
   ) {
     if (!node.props) {
-      node.props = {} as ITdDescriptionsItemConfig;
+      node.props = {} as DescriptionsItemProps;
     }
     if (span > count) {
       node.props.span = count;
@@ -133,7 +133,7 @@ export class TdDescriptions extends UI implements ITdDescriptions {
 
   getRows() {
     const props = this.props;
-    const children = props.slot.filter(
+    const children = props.slot?.filter(
       (item) => item instanceof TdDescriptionsItem
     ) as TdDescriptionsItem[];
     const rows: TdDescriptionsItem[][] = [];
@@ -171,7 +171,7 @@ export class TdDescriptions extends UI implements ITdDescriptions {
     return rows;
   }
 
-  setSize(size: ISize) {
+  setSize(size: ComponentSize) {
     this.props.size = size;
     useSize(this.props);
     useBordered(this.props);

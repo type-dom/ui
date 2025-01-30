@@ -1,17 +1,19 @@
+import { ITypeSpan, TypeSpanProps } from '@type-dom/framework';
+import { MaybeRef } from '@type-dom/signals';
 import { IType } from '../../../styles/var';
-import { IUI, IUIConfig } from '../../../ui/ui.interface';
 import { CHANGE_EVENT } from '../../../constants/event';
 
-export interface ITdCheckTag extends IUI {
+export interface ITdCheckTag extends ITypeSpan {
   className: 'TdCheckTag';
+  props: CheckTagProps;
 }
 
-export interface ITdCheckTagConfig extends IUIConfig {
+export interface CheckTagProps extends TypeSpanProps {
   /**
    * @description is checked
    *     default: false,
    */
-  checked?: boolean;
+  checked?: MaybeRef<boolean>;
   /**
    * @description type of Tag
    *     default: 'primary',
@@ -21,5 +23,5 @@ export interface ITdCheckTagConfig extends IUIConfig {
   emits?: {
     'update:checked'?: (value: boolean) => void;
     [CHANGE_EVENT]?: (value: boolean) => void;
-  }
+  };
 }

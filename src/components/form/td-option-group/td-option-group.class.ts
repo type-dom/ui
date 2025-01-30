@@ -1,55 +1,79 @@
-import { LI, UL } from '@type-dom/framework';
-import { UI } from '../../../ui/ui.abstract';
+import {
+  getCurrentInstance,
+  LI,
+  onMounted,
+  provide,
+  TypeNode,
+  TypeUL,
+  UL,
+  useMutationObserver,
+} from '@type-dom/framework';
 import { $selectGroup } from '../td-select/td-select.style';
-import { ITdOptionGroup, ITdOptionGroupConfig } from './td-option-group.interface';
+import { ITdOptionGroup, OptionGroupProps } from './td-option-group.interface';
+import { ensureArray } from '@type-dom/utils';
+import { computed, Signal, signal, toRefs } from '@type-dom/signals';
+import { selectGroupKey } from '../td-select/token';
+import { useNamespace } from '../../../hooks/use-namespace';
+import { TdOption } from '../td-option/td-option.class';
 
-export class TdOptionGroup extends UI implements ITdOptionGroup {
+export class TdOptionGroup extends TypeUL implements ITdOptionGroup {
   className: 'TdOptionGroup';
-  override props: ITdOptionGroupConfig;
+  override props: OptionGroupProps;
 
-  constructor(params: ITdOptionGroupConfig = {}) {
+  constructor(params = {} as OptionGroupProps) {
     super();
-    this.useTag('ul');
     this.className = 'TdOptionGroup';
     this.attr.addObj({
-      name: 'option-group-wrap'
+      name: 'option-group',
     });
-    this.style.addObj({
-      margin: '0',
-      padding: '0',
-      position: 'relative',
-      listStyle: 'none'
-    });
-    const $gap = '20px';
-    this.addChildren(
-      new LI({
-        text: params?.label || '选项组',
-        attrObj: {
-          name: 'option-group-title'
-        },
-        styleObj: {
-          paddingLeft: $gap,
-          // fontSize: map.get($select-group, 'font-size'),
-          fontSize: $selectGroup.fontSize,
-          // color: map.get($select-group, 'text-color'),
-          color: $selectGroup.textColor,
-          // line-height: map.get($select-group, 'height'),
-          lineHeight: $selectGroup.height
-        }
-      }),
-      new LI({
-        childNodes: [
-          new UL({
-            styleObj: {
-              margin: '0',
-              padding: '0',
-              position: 'relative',
-              listStyle: 'none'
-            }
-          })
-        ]
-      })
-    );
+
     this.props = this.useParams(params);
+  }
+
+  override setup() {
+    const props = this.props;
+    const ns = useNamespace('select');
+    const groupRef = signal(null);
+    const instance = getCurrentInstance();
+    const children: Signal<TdOption[]> = signal([]);
+
+    provide(selectGroupKey, props);
+
+    const visible = computed(() =>
+      children.get().some((option) => option.visible?.get() === true)
+    );
+
+    const isOption = (node: TypeNode) => node.className === 'TdOption';
+
+    // get all instances of options
+    const flattedChildren = (node?: TypeNode | TypeNode[]): TdOption[] => {
+      if (!node) return [];
+      const Nodes = ensureArray(node);
+      const children: TypeNode[] = [];
+
+      Nodes.forEach((child) => {
+        if (isOption(child)) {
+          children.push(child);
+        } else if (child.children?.length) {
+          children.push(...flattedChildren(child.children));
+        }
+      });
+
+      return children as TdOption[];
+    };
+
+    const updateChildren = () => {
+      children.set(flattedChildren(instance));
+    };
+
+    onMounted(() => {
+      updateChildren();
+    });
+
+    useMutationObserver(groupRef, updateChildren, {
+      attributes: true,
+      subtree: true,
+      childList: true,
+    });
   }
 }

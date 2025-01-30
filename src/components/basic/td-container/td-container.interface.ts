@@ -1,15 +1,18 @@
-import { TextNode, TypeElement } from '@type-dom/framework';
-import { IUI, IUIConfig } from '../../../ui/ui.interface';
+import {
+  ITypeSection,
+  TypeSectionProps,
+  TypeElement,
+} from '@type-dom/framework';
 import { TdAside } from './td-aside/td-aside.class';
 import { TdHeader } from './td-header/td-header.class';
 import { TdMain } from './td-main/td-main.class';
 import { TdContainer } from './td-container.class';
 
-export interface ITdContainer extends IUI {
+export interface ITdContainer extends ITypeSection {
   className: 'TdContainer';
 }
 
-export interface ITdContainerConfig extends IUIConfig {
+export interface ContainerProps extends TypeSectionProps {
   name?: string;
   // flexDirection: string;
   vertical?: boolean;

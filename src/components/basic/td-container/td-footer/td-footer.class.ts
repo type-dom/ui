@@ -1,29 +1,36 @@
-import { UI } from '../../../../ui/ui.abstract';
-import type { ITdFooter, ITdFooterConfig } from './td-footer.interface';
+import { TypeFooter } from '@type-dom/framework';
+import type { ITdFooter, FooterProps } from './td-footer.interface';
+import { useNamespace } from '../../../../hooks/use-namespace';
+import { computed } from '@type-dom/signals';
+import { IStyle } from '@type-dom/css-type';
 
-export class TdFooter extends UI implements ITdFooter {
+export class TdFooter extends TypeFooter implements ITdFooter {
   className: 'TdFooter';
-  override props: ITdFooterConfig
+  override props: FooterProps;
 
-  constructor(params: ITdFooterConfig = {}) {
+  constructor(params: FooterProps = {}) {
     super();
-    this.useTag('footer');
     this.className = 'TdFooter';
-    this.style.addObj({
-      padding: '0 20px',
-      height: params?.height || '60px',
-      boxSizing: 'border-box',
-      flexShrink: 0,
-      backgroundColor: params?.backgroundColor || 'fff' // '#a0cfff'
-    });
-    if (params?.slot) {
-      this.slotChild(params.slot);
-    }
+    this.attr.addName('td-footer');
     this.props = this.useParams(params);
   }
 
-  // override setup(params?: ITdFooterConfig): void {
-  //   // this.addHeight(params?.height || '60px');
-  //   // this.addBackgroundColor(params?.backgroundColor || 'fff');
-  // }
+  override setup(): void {
+    const props = this.props;
+    const ns = useNamespace('footer');
+
+    const style = computed(
+      () =>
+        (props.height
+          ? ns.cssVarBlock({ height: props.height.toString() })
+          : {}) as IStyle
+    );
+    this.assignProps({
+      attrObj: {
+        class: ns.b(),
+      },
+      styleObj: style,
+    });
+    this.slotChildren(props.slot || props.slots?.default);
+  }
 }

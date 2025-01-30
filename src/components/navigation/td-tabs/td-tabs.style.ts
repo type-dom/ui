@@ -1,16 +1,24 @@
 import { IStyle } from '@type-dom/css-type';
-import { $borderColor, $colorPrimary, $fontSizes, $textColor } from '../../../styles/var';
-import { $transitionDuration, $transitionFunction } from '../../../styles/transition';
-import { ITdTabsConfig } from './td-tabs.interface';
+import {
+  $borderColor,
+  $colorPrimary,
+  $fontSizes,
+  $textColor,
+} from '../../../styles/var';
+import {
+  $transitionDuration,
+  $transitionFunction,
+} from '../../../styles/transition';
+import { TabsProps } from './td-tabs.interface';
 import { deepClone } from '@type-dom/utils';
 
 export const $tabs = {
-  headerHeight: '40px'
+  headerHeight: '40px',
 };
 
 export const $tabsStyle: IStyle = {
   display: 'flex',
-}
+};
 
 export const $tabsHeaderStyle: IStyle = {
   padding: 0,
@@ -18,11 +26,11 @@ export const $tabsHeaderStyle: IStyle = {
   margin: '0 0 15px',
   display: 'flex',
   alignItems: 'center',
-  justifyContent: 'space-between'
+  justifyContent: 'space-between',
 };
 
 export const $tabsHeaderVerticalStyle: IStyle = {
-  flexDirection: 'column'
+  flexDirection: 'column',
 };
 
 export const $tabsActiveBarStyle: IStyle = {
@@ -37,9 +45,17 @@ export const $tabsActiveBarStyle: IStyle = {
   // getCssVar('transition-function-ease-in-out-bezier'),
   //   transform getCssVar('transition-duration',
   // getCssVar('transition-function-ease-in-out-bezier'),
-  transition: 'width ' + $transitionDuration + ', ' + $transitionFunction.easeInOutBezier + ', '
-    + 'transform ' + $transitionDuration + ', ' + $transitionFunction.easeInOutBezier,
-  listStyle: 'none'
+  transition:
+    'width ' +
+    $transitionDuration +
+    ', ' +
+    $transitionFunction.easeInOutBezier +
+    ', ' +
+    'transform ' +
+    $transitionDuration +
+    ', ' +
+    $transitionFunction.easeInOutBezier,
+  listStyle: 'none',
 };
 
 export const $tabsNewTabStyle: IStyle = {
@@ -58,14 +74,14 @@ export const $tabsNewTabStyle: IStyle = {
   // color: getCssVar('text-color', 'primary'),
   color: $textColor.primary,
   cursor: 'pointer',
-  transition: 'all 0.15s'
+  transition: 'all 0.15s',
 };
 
 export const $tabsNavWrapStyle: IStyle = {
   overflow: 'hidden',
   marginBottom: '-1px',
   position: 'relative',
-  flex: '1 auto'
+  flex: '1 auto',
 };
 
 export const $tabsNavScrollStyle: IStyle = {
@@ -76,8 +92,8 @@ export const $tabsNavScrollStyle: IStyle = {
   // color: getCssVar('text-color', 'secondary'),
   color: $textColor.secondary,
   width: '20px',
-  textAlign: 'center'
-}
+  textAlign: 'center',
+};
 
 export const $tabsNavWrapAfterStyle: IStyle = {
   // content: '',
@@ -89,7 +105,7 @@ export const $tabsNavWrapAfterStyle: IStyle = {
   // background-color: getCssVar('border-color-light'),
   backgroundColor: $borderColor.light,
   // zIndex: getCssVar('index-normal'),
-}
+};
 
 export const $tabNavNextStyle: IStyle = {
   position: 'absolute',
@@ -99,7 +115,7 @@ export const $tabNavNextStyle: IStyle = {
   // color: getCssVar('text-color', 'secondary'),
   color: $textColor.secondary,
   width: '20px',
-  textAlign: 'center'
+  textAlign: 'center',
 };
 
 export const $tabsNavPrevStyle: IStyle = deepClone($tabNavNextStyle);
@@ -108,11 +124,11 @@ export const $tabsNavStyle: IStyle = {
   display: 'flex',
   whiteSpace: 'nowrap',
   position: 'relative',
-// transition: transform getCssVar('transition-duration'),
+  // transition: transform getCssVar('transition-duration'),
   transition: 'transform ' + $transitionDuration,
   float: 'left',
-// zIndex: calc(#{getCssVar('index-normal')} + 1),
-  zIndex: 'calc(index-normal + 1)'
+  // zIndex: calc(#{getCssVar('index-normal')} + 1),
+  zIndex: 'calc(index-normal + 1)',
 };
 
 export const $tabsItemStyle: IStyle = {
@@ -124,12 +140,12 @@ export const $tabsItemStyle: IStyle = {
   alignItems: 'center',
   justifyContent: 'center',
   listStyle: 'none',
-// font-size: getCssVar('font-size-base'),
+  // font-size: getCssVar('font-size-base'),
   fontSize: $fontSizes.base,
   fontWeight: 500,
-// color: getCssVar('text-color', 'primary'),
+  // color: getCssVar('text-color', 'primary'),
   color: $textColor.primary,
-  position: 'relative'
+  position: 'relative',
 };
 
 export const $tabsContentStyle: IStyle = {
@@ -137,7 +153,4 @@ export const $tabsContentStyle: IStyle = {
   position: 'relative',
 };
 
-
-export function useStyle(config?: ITdTabsConfig) {
-
-}
+export function useStyle(config?: TabsProps) {}

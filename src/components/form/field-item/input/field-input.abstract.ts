@@ -16,11 +16,11 @@ export abstract class FieldInput extends FieldItem {
     this.content.style.addObj(itemContentStyle);
     this.content.attr.addObj({
       type: 'text',
-      placeholder: placeholder
+      placeholder: placeholder,
     });
     if (this.mode === 'read') {
       this.content.attr.addObj({
-        disabled: true
+        disabled: true,
       });
     }
     // this.button.style.addObj({
@@ -33,7 +33,7 @@ export abstract class FieldInput extends FieldItem {
     //   border: '1px solid #DCDFE6',
     //   borderRadius: '0 4px 4px 0',
     // });
-    this.button.textNode.setText('');
+    this.button.textNode?.setText('');
     this.childNodes = [this.label, this.content, this.button];
   }
 
@@ -43,7 +43,7 @@ export abstract class FieldInput extends FieldItem {
 
   resetInputValue(value: string | number = ''): void {
     this.content.attr.set('value', value);
-    this.content.dom.value = String(value);
+    this.content.dom!.value = String(value);
   }
 
   override setup(): void {
@@ -51,8 +51,8 @@ export abstract class FieldInput extends FieldItem {
       input: () => {
         // console.log('this.input input, event is ', evt);
         // console.log('this.input.dom.value is ', this.input.dom.value);
-        this.reset(this.content.dom.value);
-      }
+        this.reset(this.content.dom?.value);
+      },
     });
   }
 }

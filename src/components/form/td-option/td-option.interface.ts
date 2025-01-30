@@ -1,10 +1,10 @@
-import { IUI, IUIConfig } from '../../../ui/ui.interface';
+import { ITypeLI, TypeLIProps } from '@type-dom/framework';
 
-export interface ITdOption extends IUI {
+export interface ITdOption extends ITypeLI {
   className: 'TdOption';
 }
 
-export interface ITdOptionConfig extends IUIConfig {
+export interface TdOptionProps extends TypeLIProps {
   /**
    * @description value of option
    *     required: true,

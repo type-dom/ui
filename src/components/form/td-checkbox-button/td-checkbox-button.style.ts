@@ -1,16 +1,22 @@
 import { IStyle } from '@type-dom/css-type';
 import {
   $border,
-  $button, $buttonBorderWidth,
+  $button,
+  $buttonBorderWidth,
   $colorPrimary,
   $colors,
   $colorWhite,
-  $disabled, $fontSizes
+  $disabled,
+  $fontSizes,
 } from '../../../styles/var';
 import { $transition } from '../../../styles/transition';
-import { ITdCheckboxConfig } from '../td-checkbox/td-checkbox.interface';
+import { CheckboxProps } from '../td-checkbox/td-checkbox.interface';
 import { $checkbox } from '../td-checkbox/td-checkbox.style';
-import { $buttonPaddingHorizontal, $buttonPaddingVertical, buttonSize } from '../../basic/td-button/td-button.style';
+import {
+  $buttonPaddingHorizontal,
+  $buttonPaddingVertical,
+  buttonSize,
+} from '../../basic/td-button/td-button.style';
 
 export const $checkboxButton = {
   // 'checked-bg-color': getCssVar('color-primary'),
@@ -70,7 +76,7 @@ export const $checkboxButtonOriginalStyle: IStyle = {
   zIndex: -1,
 };
 
-export function useCheckboxButtonStyle(params: ITdCheckboxConfig) {
+export function useCheckboxButtonStyle(params: CheckboxProps) {
   useCheckedStyle(params);
   useDisabledStyle(params);
   useSize(params);
@@ -80,15 +86,17 @@ export function useCheckboxButtonStyle(params: ITdCheckboxConfig) {
   // const fontSize = $fontSizes.default;
   // $checkboxButtonInnerStyle = Object.assign($checkboxButtonInnerStyle, buttonSize(paddingVertical, paddingHorizontal, fontSize, 0))
 }
-export function useCheckedStyle(params: ITdCheckboxConfig) {
+
+export function useCheckedStyle(params: CheckboxProps) {
   const checked = params.checked;
   if (checked) {
     $checkboxButtonInnerStyle.color = $checkboxButton.checkedTextColor;
     $checkboxButtonInnerStyle.backgroundColor = $checkboxButton.checkedBgColor;
     $checkboxButtonInnerStyle.borderColor = $checkboxButton.checkedBorderColor;
-    $checkboxButtonInnerStyle.boxShadow = '-1px 0 0 0 ' + $colors.primary['light-7'];
-  //   todo 如果是第一个子节点 则添加 border-left-color: getCssVar('checkbox-button-checked-border-color');
-  //   $checkboxButtonInnerStyle.borderLeftColor = $checkboxButton.checkedBorderColor;
+    $checkboxButtonInnerStyle.boxShadow =
+      '-1px 0 0 0 ' + $colors.primary['light-7'];
+    //   todo 如果是第一个子节点 则添加 border-left-color: getCssVar('checkbox-button-checked-border-color');
+    //   $checkboxButtonInnerStyle.borderLeftColor = $checkboxButton.checkedBorderColor;
   } else {
     $checkboxButtonInnerStyle.color = $button.textColor;
     $checkboxButtonInnerStyle.backgroundColor = $button.bgColor;
@@ -97,7 +105,7 @@ export function useCheckedStyle(params: ITdCheckboxConfig) {
   }
 }
 
-export function useDisabledStyle(params: ITdCheckboxConfig) {
+export function useDisabledStyle(params: CheckboxProps) {
   const disabled = params.disabled;
   if (disabled) {
     $checkboxButtonInnerStyle.color = $disabled.textColor;
@@ -116,7 +124,7 @@ export function useDisabledStyle(params: ITdCheckboxConfig) {
   }
 }
 
-export function useFocusStyle(params: ITdCheckboxConfig) {
+export function useFocusStyle(params: CheckboxProps) {
   const focus = false;
   if (focus) {
     $checkboxButtonInnerStyle.borderColor = $checkboxButton.checkedBorderColor;
@@ -125,7 +133,7 @@ export function useFocusStyle(params: ITdCheckboxConfig) {
   }
 }
 
-export function useSize(params: ITdCheckboxConfig) {
+export function useSize(params: CheckboxProps) {
   const size = params.size || 'default';
   //         @include button-size(
   //           map.get($button-padding-vertical, $size) - $button-border-width,
@@ -135,6 +143,14 @@ export function useSize(params: ITdCheckboxConfig) {
   //         );
   const paddingVertical = $buttonPaddingVertical[size];
   const paddingHorizontal = $buttonPaddingHorizontal[size];
-  const sizeStyle = buttonSize(paddingVertical, paddingHorizontal, $fontSizes[size], 0);
-  $checkboxButtonInnerStyle = Object.assign($checkboxButtonInnerStyle, sizeStyle);
+  const sizeStyle = buttonSize(
+    paddingVertical,
+    paddingHorizontal,
+    $fontSizes[size],
+    0
+  );
+  $checkboxButtonInnerStyle = Object.assign(
+    $checkboxButtonInnerStyle,
+    sizeStyle
+  );
 }

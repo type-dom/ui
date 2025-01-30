@@ -1,8 +1,4 @@
-import {
-  ITypeConfig,
-  TypeDiv,
-  XProxy
-} from '@type-dom/framework';
+import { TypeProps, toValue, TypeDiv } from '@type-dom/framework';
 import { ElCopyDocumentSvg, TdViewCodeSvg } from '@type-dom/svgs';
 import { $textColor } from '../../../styles/var';
 import { TdIcon } from '../../basic/td-icon/td-icon.class';
@@ -12,7 +8,7 @@ export class OpBtns extends TypeDiv {
   className: 'OpBtns';
   override parent!: Example;
 
-  constructor(params: ITypeConfig) {
+  constructor(params: TypeProps) {
     super();
     this.className = 'OpBtns';
     this.parent = params.parent as Example;
@@ -23,7 +19,7 @@ export class OpBtns extends TypeDiv {
       alignItems: 'center',
       justifyContent: 'flex-end',
       height: '2.5rem',
-      boxSizing: 'border-box'
+      boxSizing: 'border-box',
     });
     this.addChild(
       new TdIcon({
@@ -33,18 +29,19 @@ export class OpBtns extends TypeDiv {
           lineHeight: '1em',
           display: 'inline-flex',
           justifyContent: 'center',
-          color: $textColor.secondary
+          color: $textColor.secondary,
         },
-        svgObj: new ElCopyDocumentSvg(),
+        slot: new ElCopyDocumentSvg(),
         events: {
           click: async () => {
             // 选取要复制的文本
             let textToCopy = '';
-            if (this.parent.props.sourceWrapper instanceof XProxy) {
-              textToCopy = this.parent.props.sourceWrapper?.value;
-            } else {
-              textToCopy = this.parent.props.sourceWrapper ?? '';
-            }
+            // if (this.parent.props.sourceWrapper instanceof XProxy) {
+            //   textToCopy = this.parent.props.sourceWrapper?.value;
+            // } else {
+            textToCopy =
+              (toValue(this.parent.props.sourceWrapper) as string) ?? '';
+            // }
             // 尝试使用Async Clipboard API
             try {
               await navigator.clipboard.writeText(textToCopy);
@@ -53,13 +50,13 @@ export class OpBtns extends TypeDiv {
               console.error('无法复制文本: ', err);
               alert('复制失败，请手动复制。');
             }
-          }
-        }
+          },
+        },
       })
     );
     this.addChild(
       new TdIcon({
-        // text: '查看代码',
+        // slot: '查看代码',
         styleObj: {
           height: '1em',
           width: '1em',
@@ -78,9 +75,9 @@ export class OpBtns extends TypeDiv {
           margin: '0 .5rem',
           // color: var(--text-color-lighter),
           color: $textColor.secondary,
-          transition: '.2s'
+          transition: '.2s',
         },
-        svgObj: new TdViewCodeSvg(),
+        slot: new TdViewCodeSvg(),
         events: {
           click: () => {
             if (this.parent.sourceWrapper.style.get('display') === 'none') {
@@ -90,8 +87,8 @@ export class OpBtns extends TypeDiv {
               this.parent.sourceWrapper.style.hide();
               this.parent.floatControl.style.hide();
             }
-          }
-        }
+          },
+        },
       })
     );
     this.useParams(params);

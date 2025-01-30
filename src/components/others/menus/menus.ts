@@ -1,8 +1,8 @@
 // 基于router创建的菜单
-import { IRoute, ITypeConfig, Router, TypeDiv } from '@type-dom/framework';
+import { IRoute, TypeProps, Router, TypeDiv } from '@type-dom/framework';
 import { Menu } from './menu';
 
-export interface IMenusConfig extends ITypeConfig {
+export interface IMenusConfig extends TypeProps {
   router?: Router;
 }
 
@@ -22,15 +22,15 @@ export class Menus extends TypeDiv {
       boxSizing: 'border-box',
       flexShrink: 0,
       maxHeight: 'calc(100vh - 60px)',
-      paddingBottom: '40px'
+      paddingBottom: '40px',
     });
     this.useParams(params);
     this.router = params.router;
-    console.log('ui-doc routerUI.routes is ', this.router);
+    // console.log('ui-doc routerUI.routes is ', this.router);
     if (this.router) {
       this.createMenus(this, this.router.routes, this.router);
     }
-    console.log('menus is ', this);
+    // console.log('menus is ', this);
   }
 
   get menuRoot(): Menus {
@@ -38,7 +38,7 @@ export class Menus extends TypeDiv {
   }
 
   override mounted() {
-    console.warn('menus mounted . ');
+    // console.warn('menus mounted . ');
     // hash路由和history路由要分别判断
     let path;
     if (this.router?.mode === 'hash') {
@@ -56,7 +56,7 @@ export class Menus extends TypeDiv {
 
   // /home '' '/' 首页菜单要单独处理
   createMenus(parent: Menus | Menu, routes: IRoute[], router: Router) {
-    console.log('createMenus . ');
+    // console.log('createMenus . ');
     routes.forEach((route) => {
       if (route.hidden) {
         return;
@@ -73,11 +73,14 @@ export class Menus extends TypeDiv {
         width: this.style.get('width'),
         events: {
           mouseenter: (evt) => {
-            if (evt?.target instanceof HTMLElement || evt?.target instanceof SVGElement) {
+            if (
+              evt?.target instanceof HTMLElement ||
+              evt?.target instanceof SVGElement
+            ) {
               evt?.target.style.setProperty('cursor', 'auto');
             }
-          }
-        }
+          },
+        },
       });
       if (parent instanceof Menu) {
         parent.menuItems.push(menuItem);
@@ -93,13 +96,13 @@ export class Menus extends TypeDiv {
     if (menu !== this.selectedMenu) {
       if (this.selectedMenu) {
         this.selectedMenu.style.setObj({
-          backgroundColor: ''
+          backgroundColor: '',
         });
       }
       this.selectedMenu = menu;
       if (menu.route?.redirect === undefined) {
         menu.style.setObj({
-          backgroundColor: '#ccc'
+          backgroundColor: '#ccc',
         });
       }
     }

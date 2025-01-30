@@ -5,7 +5,7 @@ import {
   Span,
   Textarea,
   Button,
-  TypeDiv
+  TypeDiv,
 } from '@type-dom/framework';
 import { Select } from '../select/select.class';
 import { labelStyle } from './field-item.style';
@@ -30,11 +30,11 @@ export abstract class FieldItem extends TypeDiv implements IFieldItem {
       flexDirection: 'row',
       padding: '10px 0',
       // marginBottom: '10px!important',
-      fontSize: '14px'
+      fontSize: '14px',
     });
     this.label = new Label({
       parent: this,
-      text: labelText
+      slot: labelText,
     });
     // if (this.label?.textNode) {
     //   this.label.textNode.setText(labelText);
@@ -49,11 +49,11 @@ export abstract class FieldItem extends TypeDiv implements IFieldItem {
       borderStyle: 'solid',
       borderLeft: 'none',
       borderColor: '#dcdfe6',
-      display: 'none'
+      display: 'none',
     });
   }
 
   setLabelTitle(text: string) {
-    this.label.childNodes[0].nodeValue = text;
+    this.label.childNodes[0].props.nodeValue = text;
   }
 }

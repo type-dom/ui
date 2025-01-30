@@ -1,9 +1,10 @@
-import { IUI, IUIConfig } from '../../../../ui/ui.interface';
+import { ITypeAside, TypeAsideProps } from '@type-dom/framework';
 
-export interface ITdAside extends IUI {
+export interface ITdAside extends ITypeAside {
   className: 'TdAside';
+  props: TdAsideProps;
 }
 
-export interface ITdAsideConfig extends IUIConfig {
+export interface TdAsideProps extends TypeAsideProps {
   width?: string | number;
 }

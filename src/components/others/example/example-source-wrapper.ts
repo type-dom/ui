@@ -1,8 +1,9 @@
-import { Code, IJsonData, ITypeConfig, Pre, TypeDiv, TypeElement, XProxy } from '@type-dom/framework';
+import { Code, TypeDivProps, Pre, TypeDiv } from '@type-dom/framework';
+import { Signal } from '@type-dom/signals';
 import { $fillColor } from '../../../styles';
 
-export interface IExampleSourceWrapperConfig extends ITypeConfig {
-  sourceWrapper: string | XProxy<IJsonData>;
+export interface IExampleSourceWrapperConfig extends TypeDivProps {
+  sourceWrapper: string | Signal<string>;
 }
 
 export class ExampleSourceWrapper extends TypeDiv {
@@ -21,16 +22,13 @@ export class ExampleSourceWrapper extends TypeDiv {
     });
     this.addChild(
       new Pre({
-        childNodes: [
+        slot: [
           new Code({
-            text: params.sourceWrapper ?? ''
-          })
-        ]
+            slot: params.sourceWrapper ?? '',
+          }),
+        ],
       })
     );
-    // if (params?.slot) {
-    //   this.slotChild(params.slot);
-    // }
     this.props = this.useParams(params);
   }
 }

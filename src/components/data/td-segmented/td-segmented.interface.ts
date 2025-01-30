@@ -1,26 +1,27 @@
-import { TypeElement } from '@type-dom/framework';
-import { IUI } from '../../../ui/ui.interface';
-import { IAriaConfig } from '../../../aria';
-import { ISize } from '../../../styles/size';
+import {
+  ITypeFragment,
+  TypeElement,
+  TypeFragmentProps,
+} from '@type-dom/framework';
+import { MaybeRef } from '@type-dom/signals';
+import { ComponentSize } from '../../../constants/size';
 
-export interface ITdSegmented extends IUI {
+export interface ITdSegmented extends ITypeFragment {
   className: 'TdSegmented';
 }
 
-export type Option =
-  | {
-  label: string
-  value: string | number | boolean
-  disabled?: boolean
+export type OptionObject = {
+  label: string;
+  value: string | number | boolean;
+  disabled?: boolean;
   slot?: TypeElement;
-  [key: string]: any
-}
-  | string
-  | number
-  | boolean
-  | undefined
+  [key: string]: any;
+};
+export type Option = OptionObject | string | number | boolean | undefined;
 
-export interface ITdSegmentedConfig extends IAriaConfig {
+export interface SegmentedProps extends TypeFragmentProps {
+  // default: 'horizontal',
+  direction?: MaybeRef<'vertical' | 'horizontal'>;
   /**
    * @description options of segmented
    *     default: () => [],
@@ -30,19 +31,19 @@ export interface ITdSegmentedConfig extends IAriaConfig {
    * @description binding value
    *     default: undefined,
    */
-  modelValue?: string | number | boolean;
+  modelValue?: string | number | boolean; // todo Ref
   /**
    * @description fit width of parent content
    */
-  block?: boolean,
+  block?: boolean;
   /**
    * @description size of component
    */
-  size?: ISize,
+  size?: MaybeRef<ComponentSize>;
   /**
    * @description whether segmented is disabled
    */
-  disabled?: boolean,
+  disabled?: boolean;
   /**
    * @description whether to trigger form validation
    *     default: true,
@@ -51,9 +52,9 @@ export interface ITdSegmentedConfig extends IAriaConfig {
   /**
    * @description native input id
    */
-  id?: string,
+  id?: string;
   /**
    * @description native `name` attribute
    */
-  name?: string,
+  name?: string;
 }

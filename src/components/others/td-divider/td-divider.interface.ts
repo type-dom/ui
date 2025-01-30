@@ -1,10 +1,10 @@
-import { IUI, IUIConfig } from '../../../ui/ui.interface';
+import { ITypeDiv, TypeDivProps } from '@type-dom/framework';
 
-export interface ITdDivider extends IUI {
+export interface ITdDivider extends ITypeDiv {
   className: 'TdDivider';
 }
 
-export interface ITdDividerConfig extends IUIConfig {
+export interface DividerProps extends TypeDivProps {
   /**
    * @description Set divider's direction
    */
@@ -15,6 +15,7 @@ export interface ITdDividerConfig extends IUIConfig {
   contentPosition?: 'left' | 'center' | 'right'; // default: 'center',
   /**
    * @description the position of the customized content on the divider line
+   *  default: 'solid',
    */
   borderStyle?:
     | 'solid'
@@ -24,5 +25,5 @@ export interface ITdDividerConfig extends IUIConfig {
     | 'groove'
     | 'ridge'
     | 'inset'
-    | 'outset'; //  default: 'solid',
+    | 'outset';
 }

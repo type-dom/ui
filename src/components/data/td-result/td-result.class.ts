@@ -1,104 +1,80 @@
-import { Div, P, SlotNode } from '@type-dom/framework';
-import { UI } from '../../../ui/ui.abstract';
-import { ITdResult, ITdResultConfig } from './td-result.interface';
-import {
-  $icon,
-  $result,
-  $extraStyle,
-  $subTitleStyle,
-  $subTitlePStyle,
-  $titlePStyle,
-  $titleStyle
-} from './td-result.style';
-import { IconComponentMap, IconMap } from './td-result.constant';
+import { Div, P, TypeDiv } from '@type-dom/framework';
+import { computed } from '@type-dom/signals';
+import { useNamespace } from '../../../hooks/use-namespace';
+import { ITdResult, ResultProps } from './td-result.interface';
+import { IconComponentMap, IconMap, resultProps } from './td-result.const';
+import './style/index';
 
-export class TdResult extends UI implements ITdResult {
+export class TdResult extends TypeDiv implements ITdResult {
   className: 'TdResult';
-  override props: ITdResultConfig;
-  // private iconSlot?: SlotNode;
-  // private titleSlot?: SlotNode;
+  override props: ResultProps;
 
-  constructor(params: ITdResultConfig = {}) {
+  constructor(params: ResultProps = {}) {
     super();
     this.className = 'TdResult';
     this.attr.addName('td-result');
-    this.style.addObj({
-      display: 'flex',
-      justifyContent: 'center',
-      alignItems: 'center',
-      flexDirection: 'column',
-      textAlign: 'center',
-      boxSizing: 'border-box',
-      // padding: getCssVar('result-padding'),
-      padding: $result.padding
-    });
-    // this.iconSlot = new SlotNode('icon');
-    this.addChild(
-      new Div({
-        name: 'icon',
-        childNodes: [this.getSlotNode('icon')]
-      })
-    );
-    if (!params?.slots?.icon) {
-      const resultIcon = this.resultIcon(params);
-      this.getSlotNode('icon').addSlot(resultIcon);
-    }
-    if (params?.slots?.title || params?.title) {
-      // this.titleSlot = new SlotNode('title');
-      this.addChild(
-        new Div({
-          name: 'title',
-          styleObj: $titleStyle,
-          childNodes: [this.getSlotNode('title')]
-        })
-      );
-      if (!params.slots?.title) {
-        this.getSlotNode('title').addSlot(
-          new P({
-            name: 'title',
-            text: params.title,
-            styleObj: $titlePStyle
-          })
-        );
-      }
-    }
-    if (params?.slots?.subTitle || params?.subTitle) {
-      // const subTitleSlot = new SlotNode('sub-title');
-      this.addChild(
-        new Div({
-          name: 'sub-title',
-          styleObj: $subTitleStyle,
-          childNodes: [this.getSlotNode('subTitle')],
-        })
-      );
-      if (params.slots?.subTitle) {
-
-      } else {
-        this.getSlotNode('subTitle').addSlot(
-          new P({
-            name: 'sub-title',
-            text: params.subTitle,
-            styleObj: $subTitlePStyle
-          })
-        );
-      }
-    }
-    if (params?.slots?.extra) {
-      // const extraSlot = new SlotNode('extra');
-      this.addChild(
-        new Div({
-          styleObj: $extraStyle,
-          childNodes: [this.getSlotNode('extra')]
-        })
-      );
-      // this.getSlotNode('extra').addSlot(params.slots.extra);
-    }
+    this.assignProps(resultProps);
     this.props = this.useParams(params);
   }
 
-  resultIcon(params?: ITdResultConfig) {
-    const icon = params?.icon;
-    const iconClass = icon && IconMap[icon] ? IconMap[icon] : 'icon-info';
-    return IconComponentMap[iconClass] || IconComponentMap['icon-info'];
+  override setup() {
+    const props = this.props;
+
+    const ns = useNamespace('result');
+
+    const resultIcon = computed(() => {
+      const icon = props.icon;
+      const iconClass = icon && IconMap[icon] ? IconMap[icon] : 'icon-info';
+      const iconComponent =
+        IconComponentMap[iconClass] || IconComponentMap['icon-info'];
+
+      return {
+        class: iconClass,
+        component: iconComponent,
+      };
+    });
+
+    this.attr.addClass(ns.b());
+    this.addChild(
+      new Div({
+        attrObj: {
+          class: ns.e('icon'),
+        },
+        slot:
+          props.slots?.icon ??
+          new (resultIcon.get().component as any)({
+            class: resultIcon.get().class,
+          }),
+      })
+    );
+    this.addChild(
+      new Div({
+        vIf: props.title || props.slots?.title,
+        class: ns.e('title'),
+        slot:
+          props.slots?.title ??
+          new P({
+            slot: props.title,
+          }),
+      })
+    );
+    this.addChild(
+      new Div({
+        vIf: props.subTitle || props.slots?.subTitle,
+        class: ns.e('subtitle'),
+        slot:
+          props.slots?.subTitle ??
+          new P({
+            slot: props.subTitle,
+          }),
+      })
+    );
+    this.addChild(
+      new Div({
+        vIf: props.slots?.extra,
+        class: ns.e('extra'),
+        slot: props.slots?.extra,
+      })
+    );
   }
 }

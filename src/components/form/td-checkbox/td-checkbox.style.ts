@@ -1,19 +1,21 @@
 import { IStyle } from '@type-dom/css-type';
-import { ISize } from '../../../styles/size';
 import {
   $bgColor,
   $border,
   $borderColor,
-  $borderRadius, $borderWidth,
+  $borderRadius,
+  $borderWidth,
   $colorPrimary,
   $colorWhite,
-  $commonComponentSize, $disabled,
-  $fillColor, $fontSizes,
+  $commonComponentSize,
+  $disabled,
+  $fillColor,
+  $fontSizes,
   $fontWeightPrimary,
-  $textColor, $zIndex
+  $textColor,
+  $zIndex,
 } from '../../../styles/var';
-import { ITdCheckboxConfig } from './td-checkbox.interface';
-// import { $input } from '../td-input/td-input.style';
+import { CheckboxProps } from './td-checkbox.interface';
 
 export const $checkbox = {
   fontSize: '14px',
@@ -54,15 +56,15 @@ export const $checkbox = {
 };
 
 export const $checkboxBorderedPaddingLeft = {
-  'large': '12px',
-  'default': '10px',
-  'small': '8px',
+  large: '12px',
+  default: '10px',
+  small: '8px',
 };
 
 export const $checkboxBorderedPaddingRight = {
-  'large': '20px',
-  'default': '16px',
-  'small': '12px',
+  large: '20px',
+  default: '16px',
+  small: '12px',
 };
 
 export const $checkboxHeight = $commonComponentSize;
@@ -70,13 +72,13 @@ export const $checkboxHeight = $commonComponentSize;
 export const $checkboxBorderedInputHeight = {
   large: '14px',
   default: '12px',
-  small: '12px'
+  small: '12px',
 };
 
 export const $checkboxFontSize = {
   large: '14px',
   default: '14px',
-  small: '12px'
+  small: '12px',
 };
 
 export const $checkboxBorderedInputWidth = {
@@ -129,9 +131,7 @@ export const $checkboxInnerStyle: IStyle = {
   backgroundColor: $checkbox.bgColor,
   // z-index: getCssVar('index-normal'),
   zIndex: $zIndex.normal,
-  transition: `border-color 0.25s cubic-bezier(0.71, -0.46, 0.29, 1.46),
-      background-color 0.25s cubic-bezier(0.71, -0.46, 0.29, 1.46),
-      outline 0.25s cubic-bezier(0.71, -0.46, 0.29, 1.46)`
+  transition: `border-color 0.25s cubic-bezier(0.71, -0.46, 0.29, 1.46), background-color 0.25s cubic-bezier(0.71, -0.46, 0.29, 1.46), outline 0.25s cubic-bezier(0.71, -0.46, 0.29, 1.46)`,
 };
 
 export const $checkboxInnerAfterStyle: IStyle = {
@@ -148,8 +148,8 @@ export const $checkboxInnerAfterStyle: IStyle = {
   width: '3px',
   transition: 'transform 0.15s ease-in 0.05s',
   transformOrigin: 'center',
-// border-color: var(--el-checkbox-checked-icon-color),
-//   borderColor: $checkbox.checkedIconColor,
+  // border-color: var(--el-checkbox-checked-icon-color),
+  //   borderColor: $checkbox.checkedIconColor,
 };
 
 export const $checkboxInnerBeforeStyle: IStyle = {
@@ -188,7 +188,7 @@ export const $checkboxGroupStyle: IStyle = {
   lineHeight: 0,
 };
 
-export function useCheckboxStyle(params: ITdCheckboxConfig) {
+export function useCheckboxStyle(params: CheckboxProps) {
   useSize(params);
   useBordered(params);
   useIndeterminate(params);
@@ -196,7 +196,7 @@ export function useCheckboxStyle(params: ITdCheckboxConfig) {
   useChecked(params);
 }
 
-export function useSize(params: ITdCheckboxConfig) {
+export function useSize(params: CheckboxProps) {
   const size = params.size || 'default';
   $checkboxStyle.height = $checkboxHeight[size];
   $checkboxLabelStyle.fontSize = $checkboxFontSize[size];
@@ -211,13 +211,20 @@ export function useSize(params: ITdCheckboxConfig) {
   }
 }
 
-export function useBordered(params: ITdCheckboxConfig) {
+export function useBordered(params: CheckboxProps) {
   const bordered = params.border || false;
   const checked = params.checked || params.modelValue || false;
   const disabled = params.disabled || false;
   if (bordered) {
-    $checkboxStyle.padding = '0 ' + (parseInt($checkboxBorderedPaddingRight.default) - parseInt($borderWidth)) + 'px'
-      + ' 0 ' + (parseInt($checkboxBorderedPaddingLeft.default) - parseInt($borderWidth)) + 'px';
+    $checkboxStyle.padding =
+      '0 ' +
+      (parseInt($checkboxBorderedPaddingRight.default) -
+        parseInt($borderWidth)) +
+      'px' +
+      ' 0 ' +
+      (parseInt($checkboxBorderedPaddingLeft.default) -
+        parseInt($borderWidth)) +
+      'px';
     $checkboxStyle.borderRadius = $borderRadius.base;
     $checkboxStyle.border = $border;
     $checkboxStyle.boxSizing = 'border-box';
@@ -231,10 +238,12 @@ export function useBordered(params: ITdCheckboxConfig) {
     } else {
       $checkboxStyle.border = $border;
     }
+  } else {
+    $checkboxStyle.border = undefined;
   }
 }
 
-export function useDisabled(params: ITdCheckboxConfig) {
+export function useDisabled(params: CheckboxProps) {
   const disabled = params.disabled || false;
   const checked = params.checked || false;
   const indeterminate = params.indeterminate || false;
@@ -243,12 +252,14 @@ export function useDisabled(params: ITdCheckboxConfig) {
     $checkboxInnerStyle.cursor = 'not-allowed';
     if (checked) {
       $checkboxInnerStyle.backgroundColor = $checkbox.disabledCheckedInputFill;
-      $checkboxInnerStyle.borderColor = $checkbox.disabledCheckedInputBorderColor;
+      $checkboxInnerStyle.borderColor =
+        $checkbox.disabledCheckedInputBorderColor;
       $checkboxInnerAfterStyle.borderColor = $checkbox.disabledCheckedIconColor;
     }
     if (indeterminate) {
       $checkboxInnerStyle.backgroundColor = $checkbox.disabledCheckedInputFill;
-      $checkboxInnerStyle.borderColor = $checkbox.disabledCheckedInputBorderColor;
+      $checkboxInnerStyle.borderColor =
+        $checkbox.disabledCheckedInputBorderColor;
       $checkboxInnerAfterStyle.borderColor = $checkbox.disabledCheckedIconColor;
     }
     $checkboxLabelStyle.cursor = 'not-allowed';
@@ -261,11 +272,12 @@ export function useDisabled(params: ITdCheckboxConfig) {
   }
 }
 
-export function useChecked(params: ITdCheckboxConfig) {
+export function useChecked(params: CheckboxProps) {
   let checked = params.checked || params.modelValue || false;
   const indeterminate = params.indeterminate || false;
   const bordered = params.border || false;
-  if (params.modelValue !== undefined) { // todo checkbox 的值没有选中
+  if (params.modelValue !== undefined) {
+    // todo checkbox 的值没有选中
     checked = !!params.modelValue;
   }
   if (checked) {
@@ -283,7 +295,7 @@ export function useChecked(params: ITdCheckboxConfig) {
     if (bordered) {
       $checkboxStyle.borderColor = $colorPrimary;
     } else {
-      $checkboxStyle.border = $border;
+      // $checkboxStyle.border = $border;
     }
   } else {
     $checkboxInnerAfterStyle.transform = 'rotate(45deg) scaleY(0)';
@@ -303,10 +315,9 @@ export function useChecked(params: ITdCheckboxConfig) {
     // $checkboxInnerAfterStyle.borderColor = $checkbox.iconColor;
     // $checkboxLabelStyle.color = $checkbox.textColor;
   }
-
 }
 
-export function useIndeterminate(params: ITdCheckboxConfig) {
+export function useIndeterminate(params: CheckboxProps) {
   const indeterminate = params.indeterminate || false;
   if (indeterminate) {
     $checkboxInnerStyle.backgroundColor = $checkbox.checkedBgColor;

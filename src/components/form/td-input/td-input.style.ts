@@ -8,11 +8,11 @@ import {
   $borderWidth,
   $colors,
   $commonComponentSize,
-  $disabled
+  $disabled,
 } from '../../../styles/var';
 
 // Input
-// css3 var in packages/theme-chalk/src/input.scss
+// css3 var in packages/theme-chalk/input.scss
 export const $input = {
   textColor: $textColor.regular,
   // 'border': $border, // getCssVar('border'),
@@ -27,20 +27,20 @@ export const $input = {
   hoverBorderColor: $borderColorHover, // getCssVar('border-color-hover'),
   clearHoverColor: $textColor.secondary, // getCssVar('text-color-secondary'),
   focusBorderColor: $colors.primary.base, // getCssVar('color-primary'),
-  width: '100%'
+  width: '100%',
 };
 
 export const $inputDisabled = {
   fill: $disabled.bgColor,
   border: $disabled.borderColor,
   textColor: $disabled.textColor,
-  placeholderColor: $textColor.placeholder
+  placeholderColor: $textColor.placeholder,
 };
 
 export const $inputFontSize = {
   large: '14px',
   default: '14px',
-  small: '12px'
+  small: '12px',
 };
 
 export const $inputHeight = $commonComponentSize;
@@ -50,13 +50,13 @@ export const $inputLineHeight = $commonComponentSize;
 export const $inputNumberWidth = {
   large: '180px',
   default: '150px',
-  small: '120px'
+  small: '120px',
 };
 
 export const $inputPaddingHorizontal = {
   large: '16px',
   default: '12px',
-  small: '8px'
+  small: '8px',
 };
 
 export const $wrapperPadding = {
@@ -77,7 +77,7 @@ export const $wrapperPadding = {
     ' ' +
     (parseFloat($inputPaddingHorizontal.small.slice(0, -2)) -
       parseFloat($borderWidth.slice(0, -2))) +
-    'px'
+    'px',
 };
 
 export const $inputTextColor = $textColor.primary;

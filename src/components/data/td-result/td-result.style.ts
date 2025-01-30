@@ -4,7 +4,7 @@ import {
   $fontSizes,
   $textColor,
   $types,
-  IType
+  IType,
 } from '../../../styles/var';
 
 export const $result = {
@@ -13,11 +13,11 @@ export const $result = {
   titleFontSize: '20px',
   titleMarginTop: '20px',
   subtitleMarginTop: '10px',
-  extraMarginTop: '30px'
+  extraMarginTop: '30px',
 };
 
 export const $titleStyle: IStyle = {
-  marginTop: $result.titleMarginTop
+  marginTop: $result.titleMarginTop,
 };
 
 export const $titlePStyle: IStyle = {
@@ -26,11 +26,11 @@ export const $titlePStyle: IStyle = {
   fontSize: $result.titleFontSize,
   // color: getCssVar('text-color', 'primary'),
   color: $textColor.primary,
-  lineHeight: 1.3
+  lineHeight: 1.3,
 };
 
 export const $subTitleStyle: IStyle = {
-  marginTop: $result.subtitleMarginTop
+  marginTop: $result.subtitleMarginTop,
 };
 
 export const $subTitlePStyle: IStyle = {
@@ -39,20 +39,20 @@ export const $subTitlePStyle: IStyle = {
   fontSize: $fontSizes.base,
   // color: getCssVar('text-color', 'regular'),
   color: $textColor.regular,
-  lineHeight: 1.3
+  lineHeight: 1.3,
 };
 
 export const $extraStyle: IStyle = {
-  marginTop: $result.extraMarginTop
+  marginTop: $result.extraMarginTop,
 };
 
 export const $icon = {} as Record<IType, IStyle>;
 // export function userIcon() {
-  for (const type of $types) {
-    $icon[type] = {
-      // resultColor: $colors[type],
-      color: $colors[type].base
-    };
-  }
+for (const type of $types) {
+  $icon[type] = {
+    // resultColor: $colors[type],
+    color: $colors[type].base,
+  };
+}
 // }
 

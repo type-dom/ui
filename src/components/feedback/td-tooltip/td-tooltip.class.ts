@@ -1,68 +1,257 @@
-import { Span } from '@type-dom/framework';
-import { UI } from '../../../ui/ui.abstract';
+// import {
+//   arrow,
+//   autoUpdate,
+//   computePosition,
+//   offset,
+//   autoPlacement,
+//   detectOverflow,
+//   flip,
+//   shift,
+//   hide,
+// } from '@type-dom/popper';
+import {
+  defineExpose,
+  provide,
+  Fragment,
+  Span,
+  TypeFragment,
+} from '@type-dom/framework';
+import { isBoolean } from '@type-dom/utils';
+import {
+  computed,
+  readonly,
+  Signal,
+  signal,
+  toRef,
+  unref,
+  watch,
+} from '@type-dom/signals';
+import { useDelayedToggle } from '../../../hooks/use-delayed-toggle';
+import { usePopperContainer } from '../../../hooks/use-popper-container';
+import { useId } from '../../../hooks/use-id';
 import { TdPopper } from '../td-popper/td-popper.class';
 import { TdPopperArrow } from '../td-popper/arrow/arrow.class';
-import { ITdTooltip, ITdTooltipConfig } from './td-tooltip.interface';
-import { TdTooltipTrigger } from './trigger/trigger.class';
+import { ITdTooltip, TooltipProps } from './td-tooltip.interface';
+import {
+  TOOLTIP_INJECTION_KEY,
+  tooltipEmits,
+  tooltipProps,
+  useTooltipModelToggle,
+} from './td-tooltip.const';
 import { TdTooltipContent } from './content/content.class';
-import { ITdTooltipTriggerConfig } from './trigger/trigger.interface';
-import { ITdTooltipContentConfig } from './content/content.interface';
+import { TdTooltipTrigger } from './trigger/trigger.class';
 
-export class TdTooltip extends UI implements ITdTooltip {
+export class TdTooltip extends TypeFragment implements ITdTooltip {
   className: 'TdTooltip';
-  override props: ITdTooltipConfig;
-  private trigger: TdTooltipTrigger;
-  private content: TdTooltipContent;
+  override props: TooltipProps;
+  popperRef?: Signal<TdPopper | undefined>;
+  contentRef?: Signal<TdTooltipContent | undefined>;
+  isFocusInsideContent?: (event?: FocusEvent) => undefined | boolean;
 
-  constructor(params: ITdTooltipConfig = {}) {
+  onOpen?: (event?: Event | undefined) => void;
+  onClose?: (event?: Event | undefined) => void;
+  hide?: (event?: Event | undefined) => void;
+  onBeforeShow?: () => void;
+  onBeforeHide?: () => void;
+  updatePopper?: () => void;
+
+  constructor(params: TooltipProps = {}) {
     super();
     this.className = 'TdTooltip';
-    const triggerParams: ITdTooltipTriggerConfig = {
-      disabled: params.disabled,
-      trigger: params.trigger,
-      triggerKeys: params.triggerKeys,
-      virtualRef: params.virtualRef,
-      virtualTriggering: params.virtualTriggering,
-    }; // as ITdTooltipTriggerConfig;
+    // console.log('TdTooltip . ');
+    // this.addEmits(tooltipEmits)
+    // 要设置默认值，否则使用 创建 TooltipTrigger/TooltipContent 时，会确认默认值。。
+    this.assignProps(tooltipProps);
+    this.props = this.useParams(params);
+  }
 
-    this.trigger = new TdTooltipTrigger(triggerParams);
-    const contentParams: ITdTooltipContentConfig = {
-      ariaLabel: params.ariaLabel,
-      boundariesPadding: params.boundariesPadding,
-      content: params.content,
-      disabled: params.disabled,
-      effect: params.effect,
-      enterable: params.enterable,
-      fallbackPlacements: params.fallbackPlacements,
-      hideAfter: params.hideAfter,
-      gpuAcceleration: params.gpuAcceleration,
-      offset: params.offset,
-      persistent: params.persistent,
-      popperStyle: params.popperStyle,
-      placement: params.placement,
-      popperOptions: params.popperOptions,
-      pure: params.pure,
-      rawContent: params.rawContent,
-      referenceEl: params.referenceEl,
-      triggerTargetEl: params.triggerTargetEl,
-      showAfter: params.showAfter,
-      strategy: params.strategy,
-      teleported: params.teleported,
-      transition: params.transition,
-      virtualTriggering: params.virtualTriggering,
-      zIndex: params.zIndex,
-      appendTo: params.appendTo,
+  override setup() {
+    const props = this.props;
+    console.warn('props.visible is ', props.visible);
+    const emit = this.emit;
+
+    usePopperContainer();
+
+    const id = useId();
+    const popperRef = signal<TdPopper>();
+    const contentRef = signal<TdTooltipContent>();
+
+    const updatePopper = () => {
+      // console.log('updatePopper . ');
+      const popperComponent = unref(popperRef);
+      if (popperComponent) {
+        // popperComponent.popperInstanceRef?.get()？.update()
+        const popperInstance = popperComponent.popperInstanceRef?.get();
+        // console.log('popperInstance is ', popperInstance);
+        popperInstance?.update();
+      }
     };
-    this.content = new TdTooltipContent({
-      ...contentParams,
-      slot: [new Span(), new TdPopperArrow()]
+    const open = signal(false);
+    const toggleReason = signal<Event>();
+
+    const { show, hide, hasUpdateHandler } = useTooltipModelToggle({
+      indicator: open,
+      toggleReason,
     });
+
+    const { onOpen, onClose } = useDelayedToggle({
+      showAfter: props.showAfter,
+      hideAfter: props.hideAfter,
+      autoClose: props.autoClose,
+      open: show,
+      close: hide,
+    });
+
+    const controlled = computed(() => {
+      console.warn('controlled . props.visible is ', props.visible);
+      return isBoolean(unref(props.visible)) && !hasUpdateHandler.get(); // todo
+    });
+
+    provide(TOOLTIP_INJECTION_KEY, {
+      controlled,
+      id,
+      open: open, // readonly(open),
+      trigger: signal(props.trigger),
+      onOpen: (event?: Event) => {
+        console.log('TdTooltip onOpen . ', event);
+        onOpen(event);
+      },
+      onClose: (event?: Event) => {
+        onClose(event);
+      },
+      onToggle: (event?: Event) => {
+        if (unref(open)) {
+          onClose(event);
+        } else {
+          onOpen(event);
+        }
+      },
+      onShow: () => {
+        emit('show', toggleReason.get());
+      },
+      onHide: () => {
+        emit('hide', toggleReason.get());
+      },
+      onBeforeShow: () => {
+        emit('beforeShow', toggleReason.get());
+      },
+      onBeforeHide: () => {
+        emit('beforeHide', toggleReason.get());
+      },
+      updatePopper,
+    });
+
+    watch(
+      () => unref(props.disabled),
+      (disabled) => {
+        if (disabled && open.get()) {
+          open.set(false);
+        }
+      }
+    );
+
+    const isFocusInsideContent = (event?: FocusEvent) => {
+      return contentRef.get()?.isFocusInsideContent?.(event);
+    };
+
+    // onDeactivated(() => open.get() && hide())
+
+    defineExpose({
+      /**
+       * @description el-popper component instance
+       */
+      popperRef,
+      /**
+       * @description el-tooltip-content component instance
+       */
+      contentRef,
+      /**
+       * @description validate current focus event is trigger inside el-tooltip-content
+       */
+      isFocusInsideContent,
+      /**
+       * @description update el-popper component instance
+       */
+      updatePopper,
+      /**
+       * @description expose onOpen function to mange el-tooltip open state
+       */
+      onOpen,
+      /**
+       * @description expose onOpen function to mange el-tooltip open state
+       */
+      onClose,
+      /**
+       * @description expose hide function
+       */
+      hide,
+    });
+
     this.addChild(
       new TdPopper({
-        slot: [this.trigger, this.content]
+        refEl: popperRef,
+        attrObj: {
+          role: props.role,
+        },
+        slot: [
+          new TdTooltipTrigger({
+            disabled: props.disabled,
+            trigger: props.trigger,
+            triggerKeys: props.triggerKeys,
+            virtualRef: props.virtualRef,
+            virtualTriggering: props.virtualTriggering,
+            slot: props.slot ?? props.slots?.default,
+          }),
+          new TdTooltipContent({
+            refEl: contentRef,
+            boundariesPadding: props.boundariesPadding,
+            content: props.content,
+            effect: props.effect,
+            enterable: props.enterable,
+            fallbackPlacements: props.fallbackPlacements,
+            hideAfter: props.hideAfter,
+            gpuAcceleration: props.gpuAcceleration,
+            offset: props.offset,
+            persistent: props.persistent,
+            popperClass: props.popperClass,
+            popperStyle: props.popperStyle,
+            placement: props.placement,
+            popperOptions: props.popperOptions,
+            pure: props.pure,
+            rawContent: props.rawContent,
+            referenceEl: props.referenceEl,
+            triggerTargetEl: props.triggerTargetEl,
+            showAfter: props.showAfter,
+            strategy: props.strategy,
+            teleported: props.teleported,
+            transition: props.transition,
+            virtualTriggering: props.virtualTriggering,
+            appendTo: props.appendTo,
+            attrObj: {
+              disabled: props.disabled,
+              ariaLabel: props.ariaLabel,
+              zIndex: props.zIndex,
+            },
+            slot: () => [
+              new Fragment({
+                slot: props.slots?.content ?? [
+                  props.rawContent
+                    ? new Span({
+                        html: props.content,
+                      })
+                    : new Span({
+                        slot: props.content,
+                      }),
+                ],
+              }),
+              new TdPopperArrow({
+                vIf: props.showArrow,
+                arrowOffset: props.arrowOffset,
+              }),
+            ],
+          }),
+        ],
       })
     );
-    this.buildProps(useTooltipProps);
-    this.props = this.useParams(params);
   }
 }

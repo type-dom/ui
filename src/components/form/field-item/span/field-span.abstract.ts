@@ -3,7 +3,6 @@ import { Label, Span, TextNode, Button } from '@type-dom/framework';
 import { FieldItem } from '../field-item.abstract';
 
 export abstract class FieldSpan extends FieldItem {
-  override textNode: TextNode;
   childNodes: [Label, Span, Button];
   content: Span;
 
@@ -28,13 +27,12 @@ export abstract class FieldSpan extends FieldItem {
       // paddingRight: '43px',
       // -webkit-transition: border-color .2s cubic-bezier(.645,.045,.355,1);
       transition: 'border-color .2s cubic-bezier(.645,.045,.355,1)',
-      width: 'calc(100% - 80px)'
+      width: 'calc(100% - 80px)',
     });
     this.attr.addObj({
-      name: 'field-span'
+      name: 'field-span',
     });
-    this.textNode = new TextNode('显示');
-    this.content.addChild(this.textNode);
+    this.content.addChild(new TextNode('显示'));
 
     this.button.style.setObj({
       // position: 'absolute',
@@ -43,13 +41,13 @@ export abstract class FieldSpan extends FieldItem {
       fontSize: '16px',
       display: 'none',
       border: '1px solid #DCDFE6',
-      borderRadius: '0 4px 4px 0'
+      borderRadius: '0 4px 4px 0',
     });
-    this.button.textNode.setText('');
+    this.button.textNode?.setText('');
     this.childNodes = [this.label, this.content, this.button];
   }
 
   resetText(value = ''): void {
-    this.textNode.setText(value);
+    this.textNode?.setText(value);
   }
 }

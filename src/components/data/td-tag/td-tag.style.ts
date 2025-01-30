@@ -1,4 +1,5 @@
 import { IStyle } from '@type-dom/css-type';
+import { ComponentSize } from '../../../constants/size';
 import {
   $borderWidth,
   $colors,
@@ -6,7 +7,6 @@ import {
   $types,
   IType,
 } from '../../../styles/var';
-import { ISize } from '../../../styles/size';
 
 export const $tag: {
   fontSize: string;
@@ -24,18 +24,21 @@ export const $tag: {
 };
 
 export const $tagHeight = {
+  '': '24px',
   large: '32px',
   default: '24px',
   small: '20px',
 };
 
 export const $tagPadding = {
+  '': '10px',
   large: '12px',
   default: '10px',
   small: '8px',
 };
 
 export const $tagIconSize = {
+  '': '14px',
   large: '16px',
   default: '14px',
   small: '12px',
@@ -44,6 +47,7 @@ export const $tagIconSize = {
 export const $tagBorderWidth = '1px';
 
 export const $tagIconSpanGap = {
+  '': '6px',
   large: '8px',
   default: '6px',
   small: '4px',
@@ -95,18 +99,20 @@ function returnVarList($var: string | false, $type: IType = 'primary') {
   return $list;
 }
 
-export const $tagSizes = {} as Record<ISize, IStyle>;
+export const $tagSizes = {} as Record<ComponentSize, IStyle>;
 
 export function useType() {
-  for (const size of ['large', 'default', 'small']) {
-    $tagSizes[size as ISize] = {
-      padding:'0 ' +
-        (parseFloat($tagPadding[size as ISize]) - parseFloat($tagBorderWidth)) +
+  for (const size of ['', 'large', 'default', 'small']) {
+    $tagSizes[size as ComponentSize] = {
+      padding:
+        '0 ' +
+        (parseFloat($tagPadding[size as ComponentSize]) -
+          parseFloat($tagBorderWidth)) +
         'px',
-      height: $tagHeight[size as ISize],
+      height: $tagHeight[size as ComponentSize],
       // iconSize: $tagIconSize[size as ISize],
       // iconSpanGap: $tagIconSpanGap[size]
-      marginLeft: $tagIconSpanGap[size as ISize],
+      marginLeft: $tagIconSpanGap[size as ComponentSize],
       // paddingRight: parseFloat($tagIconSpanGap[size as ISize]) - parseFloat($borderWidth) + 'px', // closable 时
     };
     if (size === 'small') {

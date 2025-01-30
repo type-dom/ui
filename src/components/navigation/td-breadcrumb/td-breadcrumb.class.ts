@@ -1,44 +1,49 @@
-import { UI } from '../../../ui/ui.abstract';
-import { TdBreadcrumbItem } from '../td-breadcrumb-item/td-breadcrumb-item.class';
-import { ITdBreadcrumb, ITdBreadcrumbConfig } from './td-breadcrumb.interface';
+import { onMounted, provide, TypeDiv } from '@type-dom/framework';
+import { signal } from '@type-dom/signals';
+import { useLocale } from '../../../hooks/use-locale';
+import { useNamespace } from '../../../hooks/use-namespace';
+import { breadcrumbKey } from './constants';
+import { ITdBreadcrumb, BreadcrumbProps } from './td-breadcrumb.interface';
+import { breadcrumbProps } from './td-breadcrumb.const';
+import './style/index';
 
-//  todo link 样式没有添加
-export class TdBreadcrumb extends UI implements ITdBreadcrumb {
+export class TdBreadcrumb extends TypeDiv implements ITdBreadcrumb {
   className: 'TdBreadcrumb';
-  override props: ITdBreadcrumbConfig;
-  override childNodes: TdBreadcrumbItem[];
+  override props: BreadcrumbProps;
 
-  constructor(params: ITdBreadcrumbConfig = {}) {
+  constructor(params: BreadcrumbProps = {}) {
     super();
     this.className = 'TdBreadcrumb';
     this.attr.addName('td-breadcrumb');
-    this.attr.addObj({
-      'aria-label': 'Breadcrumb', // :aria-label="t('el.breadcrumb.label')"
-      role: 'navigation',
-    });
-    this.style.addObj({
-      fontSize: '14px',
-      lineHeight: 1
-    });
-    this.childNodes = [];
-
-    this.slotChild(params.slot);
+    this.assignProps(breadcrumbProps);
     this.props = this.useParams(params);
   }
 
   override setup() {
     console.log('TdBreadcrumb setup . ');
-    this.childNodes.forEach((item, index) => {
-      if (index < this.childNodes.length - 1) {
-        item.addSeparator(this.props);
+    const { t } = useLocale();
+    const props = this.props;
+
+    const ns = useNamespace('breadcrumb');
+    const breadcrumb = signal<HTMLDivElement>();
+
+    provide(breadcrumbKey, props);
+
+    onMounted(() => {
+      const items = breadcrumb.get()!.querySelectorAll(`.${ns.e('item')}`);
+      if (items.length) {
+        items[items.length - 1].setAttribute('aria-current', 'page');
       }
     });
-  }
 
-  override mounted() {
-    const items = this.childNodes;
-    if (items.length) {
-      items[items.length - 1]?.attr.set('aria-current', 'page');
-    }
+    this.assignProps({
+      refDom: breadcrumb,
+    });
+    this.attr.addObj({
+      class: ns.b(),
+      ariaLabel: t('el.breadcrumb.label'),
+      role: 'navigation',
+    });
+    this.slotChildren(props.slot || props.slots?.default);
   }
 }

@@ -2,7 +2,12 @@
 // css3 var in packages/theme-chalk/src/empty.scss
 
 import { IStyle } from '@type-dom/css-type';
-import { $colorWhite, $fontSizes, $svgMonochromeGrey, $textColor } from '../../../styles/var';
+import {
+  $colorWhite,
+  $fontSizes,
+  $svgMonochromeGrey,
+  $textColor,
+} from '../../../styles/var';
 
 export const $empty = {
   padding: '40px 0',
@@ -29,12 +34,12 @@ export const $emptyStyle: IStyle = {
   textAlign: 'center',
   boxSizing: 'border-box',
   padding: $empty.padding,
-}
+};
 
 export const $emptyImageStyle: IStyle = {
   // width: getCssVar('empty-image-width');
   width: $empty.imageWidth,
-}
+};
 
 export const $emptyImageImgStyle: IStyle = {
   userSelect: 'none',
@@ -42,7 +47,7 @@ export const $emptyImageImgStyle: IStyle = {
   height: '100%',
   verticalAlign: 'top',
   objectFit: 'contain',
-}
+};
 
 export const $emptyImageSvgStyle: IStyle = {
   // color: getCssVar('svg-monochrome-grey'),
@@ -51,12 +56,12 @@ export const $emptyImageSvgStyle: IStyle = {
   width: '100%',
   height: '100%',
   verticalAlign: 'top',
-}
+};
 
 export const $emptyDescriptionStyle: IStyle = {
   // marginTop: getCssVar('empty-description-margin-top');
   marginTop: $empty.descriptionMarginTop,
-}
+};
 
 export const $emptyDescriptionPStyle: IStyle = {
   margin: 0,
@@ -64,9 +69,9 @@ export const $emptyDescriptionPStyle: IStyle = {
   fontSize: $fontSizes.base,
   // color: getCssVar('text-color', 'secondary');
   color: $textColor.secondary,
-}
+};
 
 export const $emptyBottomStyle: IStyle = {
   // margin-top: getCssVar('empty-bottom-margin-top');
   marginTop: $empty.bottomMarginTop,
-}
+};

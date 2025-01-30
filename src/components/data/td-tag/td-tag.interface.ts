@@ -1,12 +1,12 @@
-import { IUI, IUIConfig } from '../../../ui/ui.interface';
-import { ISize } from '../../../styles/size';
+import { ITypeFragment, TypeFragmentProps } from '@type-dom/framework';
+import { ComponentSize } from '../../../constants/size';
 import { IType } from '../../../styles';
 
-export interface ITdTag extends IUI {
+export interface ITdTag extends ITypeFragment {
   className: 'TdTag';
 }
 
-export interface ITdTagConfig extends IUIConfig {
+export interface TagProps extends TypeFragmentProps {
   /**
    * @description type of Tag
    *     default: 'primary',
@@ -31,7 +31,7 @@ export interface ITdTagConfig extends IUIConfig {
   /**
    * @description size of Tag
    */
-  size?: ISize;
+  size?: ComponentSize;
   /**
    * @description theme of Tag
    *     default: 'light',

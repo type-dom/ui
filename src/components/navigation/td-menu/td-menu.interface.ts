@@ -1,11 +1,10 @@
-import { IUI, IUIConfig } from '../../../ui/ui.interface';
-import { Router } from '@type-dom/framework';
+import { ITypeUL, TypeULProps, Router } from '@type-dom/framework';
 
-export interface ITdMenu extends IUI {
+export interface ITdMenu extends ITypeUL {
   className: 'TdMenu';
 }
 
-export interface ITdMenuConfig extends IUIConfig {
+export interface MenuProps extends TypeULProps {
   mode?: 'horizontal' | 'vertical'; //  default: 'vertical',
   defaultActive?: string; // default: '',
   // defaultOpeneds: {

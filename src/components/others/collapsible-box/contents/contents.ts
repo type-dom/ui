@@ -14,7 +14,7 @@ export class CollapsibleBoxContents extends TypeDiv {
       flexWrap: 'wrap',
       justifyContent: 'flex-start',
       // width: '194px',
-      border: '1px solid #a0a0a0'
+      border: '1px solid #a0a0a0',
     });
     this.attr.addName('collapsible-box-contents');
     this.childNodes = [];

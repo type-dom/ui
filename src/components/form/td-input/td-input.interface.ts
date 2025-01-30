@@ -1,22 +1,22 @@
 import {
-  IJsonData,
-  IJsonDataProp,
   InputEnum,
-  IObDataProp,
-  IPrimitive,
+  ITypeDiv,
+  TypeDivProps,
   Span,
   TypeSvgSvg,
-  XProxy
 } from '@type-dom/framework';
-import { ISize } from '../../../styles/size';
-import { IUI, IUIConfig } from '../../../ui/ui.interface';
+import { Computed, MaybeRef, Signal } from '@type-dom/signals';
+import { IStyle } from '@type-dom/css-type';
+import { ComponentSize } from '../../../constants/size';
 import { TdInput } from './td-input.class';
 
-export interface ITdInput extends IUI {
+export interface ITdInput extends ITypeDiv {
   className: 'TdInput';
 }
 
-export interface ITdInputConfig extends IUIConfig {
+export type InputAutoSize = { minRows?: number; maxRows?: number } | boolean;
+
+export interface TdInputProps extends TypeDivProps {
   parent?: TdInput;
   /**
    * @description native input id
@@ -25,15 +25,15 @@ export interface ITdInputConfig extends IUIConfig {
   /**
    * @description input box size
    */
-  size?: ISize;
+  size?: ComponentSize;
   /**
    * @description whether to disable
    */
-  disabled?: boolean;
+  disabled?: MaybeRef<boolean>;
   /**
    * @description binding value
    */
-  modelValue?: IJsonDataProp; // IObDataProp;
+  modelValue?: string | number;
   /**
    * @description same as `maxlength` in native input
    */
@@ -55,7 +55,7 @@ export interface ITdInputConfig extends IUIConfig {
    * @description whether textarea has an adaptive height
    *     default: false,
    */
-  autosize?: boolean;
+  autosize?: InputAutoSize;
   /**
    * @description native input autocomplete
    *     default: 'off',
@@ -72,7 +72,7 @@ export interface ITdInputConfig extends IUIConfig {
   /**
    * @description placeholder
    */
-  placeholder?: IObDataProp;
+  placeholder?: string | Signal<string> | Computed<string>;
   /**
    * @description native input form
    */
@@ -128,12 +128,15 @@ export interface ITdInputConfig extends IUIConfig {
   /**
    * @description input or textarea element style
    */
-  // inputStyle?: 'input' | 'textarea'; 不需要
+  inputStyle?: IStyle; // 'input' | 'textarea'; // 不需要
   /**
    * @description native input autofocus
    *     default: false,
    */
   autofocus?: boolean;
+  rows?: number;
+
+  vModel?: Signal<string> | Computed<string>;
   // $slot
   prepend?: boolean;
   append?: boolean;
@@ -146,21 +149,21 @@ export interface ITdInputConfig extends IUIConfig {
   width?: number;
   suffix?: Span;
 
-  emits?: {
-    input?: (value: string) => void,
-    change?: (value: string) => void,
-    focus?: (evt: FocusEvent) => void,
-    blur?: (evt: FocusEvent) => void,
-    clear?: () => true,
-    mouseleave?: (evt: MouseEvent) => void,
-    mouseenter?: (evt: MouseEvent) => void,
-    // NOTE: when autofill by browser, the keydown event is instanceof Event, not KeyboardEvent
-    // relative bug report https://github.com/element-plus/element-plus/issues/6665
-    keydown?: (evt: KeyboardEvent | Event) => void,
-    compositionstart?: (evt: CompositionEvent) => void,
-    compositionupdate?: (evt: CompositionEvent) => void,
-    compositionend?: (evt: CompositionEvent) => void,
-  }
+  // emits?: {
+  //   input?: (value: string) => void,
+  //   change?: (value: string) => void,
+  //   focus?: (evt: FocusEvent) => void,
+  //   blur?: (evt: FocusEvent) => void,
+  //   clear?: () => true,
+  //   mouseleave?: (evt: MouseEvent) => void,
+  //   mouseenter?: (evt: MouseEvent) => void,
+  //   // NOTE: when autofill by browser, the keydown event is instanceof Event, not KeyboardEvent
+  //   // relative bug report https://github.com/element-plus/element-plus/issues/6665
+  //   keydown?: (evt: KeyboardEvent | Event) => void,
+  //   compositionstart?: (evt: CompositionEvent) => void,
+  //   compositionupdate?: (evt: CompositionEvent) => void,
+  //   compositionend?: (evt: CompositionEvent) => void,
+  // };
 }
 
 export type TargetElement = HTMLInputElement | HTMLTextAreaElement;

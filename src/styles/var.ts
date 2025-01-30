@@ -87,6 +87,7 @@ export const fontFamily = {
 };
 
 export const $fontSizes = {
+  '': '16px',
   extraLarge: '20px',
   large: '18px',
   medium: '16px',
@@ -108,15 +109,6 @@ export const $disabled = {
   textColor: $textColor.placeholder,
   borderColor: $borderColor.light,
 };
-export const componentSizes = ['', 'default', 'small', 'large'] as const;
-
-export type ComponentSize = (typeof componentSizes)[number];
-
-export const componentSizeMap = {
-  large: 40,
-  default: 32,
-  small: 24,
-} as const;
 
 export const $commonComponentSize = {
   large: '40px',
@@ -254,9 +246,9 @@ for (const $type of $types) {
   // --el-color-primary-dark-2
   setColorMixLevel($type, 2, 'dark', $colorBlack);
 }
-console.log('$colors is ', $colors);
+// console.log('$colors is ', $colors);
 // Button
-// css3 var in packages/theme-chalk/src/button.scss
+// css3 var in packages/theme-chalk/button.scss
 export const $button = {
   fontWeight: $fontWeightPrimary as Property.FontWeight, // getCssVar('font-weight-primary'),
   borderColor: $borderColor.base,
@@ -332,6 +324,13 @@ export const $ellipsisStyle: IStyle = {
   whiteSpace: 'nowrap',
 };
 
-export const $border = $borderWidth + ' ' + $borderStyle + ' ' + $borderColor.base;
+export const $border =
+  $borderWidth + ' ' + $borderStyle + ' ' + $borderColor.base;
 // Svg
 export const $svgMonochromeGrey = $borderColor.base;
+
+export const $row: IStyle = {
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+};

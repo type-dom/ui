@@ -1,116 +1,93 @@
-import { Div, Span, TypeSpan } from '@type-dom/framework';
-import { ElCheckedSvg, ElLoadingSvg, ElUnlockSvg } from '@type-dom/svgs';
 import {
-  $borderColor,
-  $borderRadius,
-  $colors,
-  $colorWhite,
-  $fontSizes,
-  $transitionDurationDefault
-} from '../../../../styles/var';
+  Div,
+  TypeSpanProps,
+  Span,
+  toValue,
+  TypeSpan,
+  SvgSvg,
+} from '@type-dom/framework';
+import { ElCheckedSvg, ElLoadingSvg, ElUnlockSvg } from '@type-dom/svgs';
+import { unref, watch } from '@type-dom/signals';
+import { utilsEllipsis } from '../../../../styles/utils';
+import { $colorWhite } from '../../../../styles/var';
 import { TdIcon } from '../../../basic/td-icon/td-icon.class';
-import { ITdSwitchConfig } from '../td-switch.interface';
+import { SwitchProps, SwitchContext } from '../td-switch.interface';
 import {
   $switchBorderColor,
   $switchButtonSize,
   $switchContentPadding,
+  $switchCoreActionStyle,
+  $switchCoreBorderRadius,
   $switchCoreHeight,
+  $switchCoreInnerStyle,
+  $switchCoreStyle,
   $switchCoreWidth,
   $switchFontSize,
   $switchOffColor,
-  $switchOnColor
+  $switchOnColor,
 } from '../td-switch.style';
 import { TdSwitch } from '../td-switch.class';
+import { switchKey } from '../td-switch.const';
 
 export class TdSwitchCore extends TypeSpan {
   className: 'TdSwitchCore';
   action: Div;
   override parent?: TdSwitch;
-  override props: ITdSwitchConfig;
-  inner?: Div;
+  override props: SwitchProps & TypeSpanProps;
   private innerText?: Span;
   private innerIcon?: TdIcon;
+  inner?: Div;
   actionIcon?: TdIcon;
   actionSpan?: Span;
 
-  constructor(params: ITdSwitchConfig = {}) {
+  constructor(params: SwitchProps = {}) {
     super();
+    console.log('TdSwitchCore constructor . ');
     this.className = 'TdSwitchCore';
     this.attr.addObj({
-      name: 'switch-core'
+      name: 'switch-core',
     });
     this.style.addObj({
-      display: 'inline-flex',
-      position: 'relative',
-      alignItems: 'center',
-      // border: '1px solid var(--el-switch-border-color, var(--el-switch-off-color))',
-      border: '1px solid ' + $switchBorderColor,
-      outline: 'none',
-      borderRadius: '10px',
-      boxSizing: 'border-box',
-      background: $switchOffColor, // 'var(--el-switch-off-color)',
-      // backgroundColor: $switchOnColor,
-      cursor: 'pointer',
-      // transition: border-color var(--el-transition-duration), background-color var(--el-transition-duration);
-      transition:
-        $borderColor.base +
-        ' ' +
-        $transitionDurationDefault +
-        ', background-color ' +
-        $transitionDurationDefault,
-      // minWidth: map.get($switch-core-width, 'default');
-      minWidth: $switchCoreWidth[params?.size || 'default'],
-      // height: map.get($switch-core-height, 'default');
-      height: $switchCoreHeight[params?.size || 'default']
+      ...$switchCoreStyle,
+      borderRadius: $switchCoreBorderRadius[params?.size || 'default'],
+      minWidth: $switchCoreWidth[unref(params?.size) || 'default'],
+      height: $switchCoreHeight[unref(params?.size) || 'default'],
     });
     if (params?.inlinePrompt) {
       this.inner = new Div({
         name: 'switch-inner',
         styleObj: {
-          width: '100%',
-          // transition: all getCssVar('transition-duration'),
-          transition: 'all ' + $transitionDurationDefault,
-          // height: map.get($switch-button-size, 'default'),
-          height: $switchButtonSize[params?.size || 'default'],
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          overflow: 'hidden',
-          // padding: 0 #{map.get($switch-content-padding, 'default')} 0 calc(#{map.get(
-          //     $switch-button-size,
-          //     'default'
-          //   )} + 2px);
+          ...$switchCoreInnerStyle,
+          height: $switchButtonSize[unref(params?.size) || 'default'],
           padding:
             '0 ' +
-            $switchContentPadding[params?.size || 'default'] +
+            $switchContentPadding[unref(params?.size) || 'default'] +
             ' 0 calc(' +
-            $switchButtonSize[params?.size || 'default'] +
-            ' + 2px)'
-        }
+            $switchButtonSize[unref(params?.size) || 'default'] +
+            ' + 2px)',
+        },
       });
       this.addChild(this.inner);
       if (params?.activeIcon || params?.inactiveIcon) {
         this.innerIcon = new TdIcon({
           name: 'switch-inner-icon',
-          svgObj:
+          slot:
             params?.modelValue === params?.activeValue
-              ? params?.activeIcon
+              ? params.activeIcon
               : params?.inactiveIcon,
           styleObj: {
             fontSize: '12px', // $fontSizes.base,
             // color: var(--el-color-white),
             color: $colorWhite,
             userSelect: 'none',
-            overflow: 'hidden',
-            textOverflow: 'ellipsis',
-            whiteSpace: 'nowrap'
-          }
+            ...utilsEllipsis,
+          },
         });
         this.inner.addChild(this.innerIcon);
       } else if (params?.activeText || params?.inactiveText) {
         this.innerText = new Span({
           name: 'switch-inner-text',
-          text:
+          slot:
             params?.modelValue === params?.activeValue
               ? params?.activeText
               : params?.inactiveText,
@@ -120,10 +97,8 @@ export class TdSwitchCore extends TypeSpan {
             // color: var(--el-color-white),
             color: $colorWhite,
             userSelect: 'none',
-            overflow: 'hidden',
-            textOverflow: 'ellipsis',
-            whiteSpace: 'nowrap'
-          }
+            ...utilsEllipsis,
+          },
         });
         this.inner.addChild(this.innerText);
       }
@@ -132,48 +107,33 @@ export class TdSwitchCore extends TypeSpan {
     this.action = new Div({
       name: 'switch-action',
       styleObj: {
-        position: 'absolute',
-        left: '1px',
-        // left: 'calc(100% - 17px)',
-        // borderRadius: var(--el-border-radius-circle),
-        borderRadius: $borderRadius.circle,
-        // transition: all var(--el-transition-duration),
-        transition: 'all ' + $transitionDurationDefault,
-        width: $switchButtonSize[params?.size || 'default'],
-        // width: map.get($switch-button-size, 'default');
-        height: $switchButtonSize[params?.size || 'default'],
-        // height: map.get($switch-button-size, 'default');
-        // backgroundColor: var(--el-color-white),
-        backgroundColor: $colorWhite,
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        // color: var(--el-switch-off-color),
-        color: $switchOffColor
-      }
+        ...$switchCoreActionStyle,
+        width: $switchButtonSize[params.size || 'default'],
+        height: $switchButtonSize[params.size || 'default'],
+      },
     });
 
     if (params?.loading) {
       const loadingIcon = new TdIcon({
         name: 'switch-loading-icon',
-        svgObj: new ElLoadingSvg(),
-        loading: true
+        slot: new ElLoadingSvg(),
+        // loading: true // todo
       });
       this.action.addChild(loadingIcon);
     } else if (params?.modelValue === params?.activeValue) {
       this.action.style.addObj({
-        color: $switchOnColor
+        color: $switchOnColor,
       });
       if (params?.activeActionIcon) {
         this.actionIcon = new TdIcon({
           name: 'switch-action-icon',
-          svgObj: params.activeActionIcon
+          slot: params.activeActionIcon,
         });
         this.action.addChild(this.actionIcon);
       } else if (params?.activeActionText) {
         this.actionSpan = new Span({
           name: 'switch-action-text',
-          text: params.activeActionText
+          slot: params.activeActionText,
         });
         this.action.addChild(this.actionSpan);
       }
@@ -181,19 +141,73 @@ export class TdSwitchCore extends TypeSpan {
       if (params?.inactiveActionIcon) {
         this.actionIcon = new TdIcon({
           name: 'switch-action-icon',
-          svgObj: params.inactiveActionIcon
+          slot: params.inactiveActionIcon,
         });
         this.action.addChild(this.actionIcon);
       } else if (params?.inactiveActionText) {
         this.actionSpan = new Span({
           name: 'switch-action-text',
-          text: params.inactiveActionText
+          slot: params.inactiveActionText,
         });
         this.action.addChild(this.actionSpan);
       }
     }
     this.addChild(this.action);
-    this.props = this.useParams(params);
+    this.props = this.useParams(params) as SwitchProps & TypeSpanProps;
+  }
+
+  override setup() {
+    console.warn('td-switch-core setup . ');
+    // const props = this.props;
+    const switchContext = this.inject<SwitchContext>(switchKey);
+    watch(
+      () => toValue(switchContext?.checked),
+      (newChecked) => {
+        console.warn('switchContext.checked changed', newChecked);
+        const raw = unref(newChecked);
+        if (raw) {
+          this.style.setObj({
+            backgroundColor: this.props.switchOnColor ?? $switchOnColor,
+          });
+          this.action.style.setObj({
+            color: $switchOnColor,
+            // left: calc(100% - #{map.get($switch-button-size, 'default') + 1px});
+            left:
+              'calc(100% - ' +
+              $switchButtonSize[unref(this.props.size) || 'default'] +
+              ' - 1px)',
+          });
+          if (this.props.inlinePrompt) {
+            this.setInnerChecked(true);
+          }
+          if (this.props.activeActionIcon) {
+            this.actionIcon?.replaceSvg(this.props.activeActionIcon);
+          } else if (this.props.activeActionText) {
+            this.actionSpan?.textNode?.setText(this.props.activeActionText);
+          }
+        } else {
+          // todo false
+          console.warn('raw is false . ');
+          this.style.setObj({
+            backgroundColor: this.props.switchOffColor ?? $switchOffColor,
+          });
+          this.action.style.setObj({
+            color: $switchOffColor,
+            left: '1px',
+          });
+
+          if (this.props.inlinePrompt) {
+            this.setInnerChecked(false);
+          }
+          if (this.props.inactiveActionIcon) {
+            this.actionIcon?.replaceSvg(this.props.inactiveActionIcon);
+          } else if (this.props.inactiveActionText) {
+            this.actionSpan?.textNode?.setText(this.props.inactiveActionText);
+          }
+        }
+      },
+      { immediate: true }
+    );
   }
 
   setInnerChecked(checked: boolean) {
@@ -206,10 +220,10 @@ export class TdSwitchCore extends TypeSpan {
         padding:
           '0 ' +
           'calc(' +
-          $switchButtonSize[this.props.size || 'default'] +
+          $switchButtonSize[unref(this.props.size) || 'default'] +
           ' + 2px)' +
           '0 ' +
-          $switchContentPadding[this.props.size || 'default']
+          $switchContentPadding[unref(this.props.size) || 'default'],
       });
       if (this.props.activeIcon || this.props.inactiveIcon) {
         this.innerIcon?.replaceSvg(this.props.activeIcon!);
@@ -224,10 +238,10 @@ export class TdSwitchCore extends TypeSpan {
         // )} + 2px);
         padding:
           '0 ' +
-          $switchContentPadding[this.props.size || 'default'] +
+          $switchContentPadding[unref(this.props.size) || 'default'] +
           ' 0 calc(' +
-          $switchButtonSize[this.props.size || 'default'] +
-          ' + 2px)'
+          $switchButtonSize[unref(this.props.size) || 'default'] +
+          ' + 2px)',
       });
       if (this.props.activeIcon || this.props.inactiveIcon) {
         this.innerIcon?.replaceSvg(this.props.inactiveIcon!);

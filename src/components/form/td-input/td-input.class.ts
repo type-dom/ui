@@ -1,224 +1,663 @@
-import { isMustache, isString, mustache } from '@type-dom/utils';
+import { isClient, debugWarn, isNil, isObject, NOOP } from '@type-dom/utils';
 import {
-  IJsonData,
-  IJsonDataProp,
+  Div,
+  Fragment,
   Input,
-  IObDataProp,
-  IPrimitive,
+  Span,
   Textarea,
-  XProxy
+  TypeDiv,
+  arraySlot,
+  defineExpose,
+  nextTick,
+  onMounted,
+  useResizeObserver,
+  useSlots,
 } from '@type-dom/framework';
-import { UI } from '../../../ui/ui.abstract';
-import { $fontSizes } from '../../../styles/var';
-import { TdInputWrapper } from './widget/td-input-wrapper.class';
-import { $input, $inputHeight } from './td-input.style';
-import { TdTextareaWrapper } from './widget/td-textarea-wrapper';
-import { ITdInput, ITdInputConfig } from './td-input.interface';
+import {
+  Computed,
+  computed,
+  Ref,
+  signal,
+  toRef,
+  unref,
+  watch,
+} from '@type-dom/signals';
+import { IStyle } from '@type-dom/css-type';
+import {
+  ElCircleCloseSvg,
+  ElHideSvg,
+  ElViewSvg,
+  ValidateComponentsMap,
+} from '@type-dom/svgs';
+import { UPDATE_MODEL_EVENT } from '../../../constants/event';
+import { useFocusController } from '../../../hooks/use-focus-controller/index';
+import { useComposition } from '../../../hooks/use-composition';
+import { useNamespace } from '../../../hooks/use-namespace';
+import { useCursor } from '../../../hooks/use-cursor';
+import { TdIcon } from '../../basic/td-icon/td-icon.class';
+import {
+  useFormItem,
+  useFormItemInputId,
+} from '../td-form/hooks/use-form-item';
+import {
+  useFormDisabled,
+  useFormSize,
+} from '../td-form/hooks/use-form-common-props';
+import { calcTextareaHeight } from './widget/utils';
+import {
+  ITdInput,
+  TdInputProps,
+  TargetElement,
+  InputAutoSize,
+} from './td-input.interface';
+import { inputEmits, inputProps } from './td-input.const';
+import './style/index';
+import { useAttrs } from 'libs/ui/src/hooks/use-attrs';
 
-export class TdInput extends UI implements ITdInput {
+export class TdInput extends TypeDiv implements ITdInput {
   className: 'TdInput';
-  override props: ITdInputConfig;
-  private isWordLimitVisible?: boolean;
-  hovering?: boolean;
-  isFocused?: boolean;
-  panel!: TdInputWrapper | TdTextareaWrapper;
-  // modelValue?: IObDataProp;
-  // override modelValue?: IJsonDataProp;
-  private placeholder?: IObDataProp;
+  override props: TdInputProps;
 
-  constructor(params: ITdInputConfig = {}) {
+  input?: Ref<HTMLInputElement | undefined>;
+  textarea?: Ref<HTMLTextAreaElement | undefined>;
+  ref?: Computed<HTMLInputElement | HTMLTextAreaElement | undefined>;
+  textareaStyle?: Computed<any>;
+  autosize?: Ref<InputAutoSize>;
+  isComposing?: Ref<boolean>;
+  focus?: () => void | undefined;
+  blur?: () => void | undefined;
+  select?: () => void;
+  clear?: () => void;
+  resizeTextarea?: () => void;
+
+  constructor(params: TdInputProps = {}) {
     super();
-    console.log('TdInput constructor . ');
+    // console.log('TdInput constructor . ');
     this.className = 'TdInput';
-    this.attr.addName('td-input');
     this.attr.addObj({
-      tabIndex: 0
+      name: 'td-input',
     });
-    this.style.addObj({
-      position: 'relative',
-      display: 'inline-flex',
-      width: '100%',
-      boxSizing: 'border-box',
-      verticalAlign: 'middle',
-      // fontSize: var(--el-font-size-base),
-      fontSize: $fontSizes.base,
-      // lineHeight: var(--el-input-height),
-      lineHeight: $inputHeight[params?.size || 'default'],
-      userSelect: 'none'
-    });
-    console.log('params.modelValue is ', params?.modelValue);
-    if (params?.modelValue) {
-      this.modelValue = params.modelValue;
-    }
-    this.props = this.useParams(params);
-  }
 
-  get value() {
-    return this.panel.inner.value;
+    this.assignProps(inputProps);
+    this.addEmits(inputEmits);
+    this.props = this.useParams(params);
   }
 
   override setup() {
     const props = this.props;
-    if (props?.width) {
-      this.style.addWidth(props.width);
-    }
+    const emit = this.emit;
+    // const rawAttrs = useRawAttrs()
+    const attrs = useAttrs();
+    const slots = useSlots();
 
-    //   todo
-    if (props?.type === 'textarea') {
-      props.parent = this;
-      this.panel = new TdTextareaWrapper(props);
-      // this.textareaWrapper = new TdTextareaWrapper(props);
-    } else {
-      this.panel = new TdInputWrapper(props);
-    }
-    if (props?.placeholder) {
-      this.placeholder = props.placeholder;
-    }
-    // this.panel.setParent(this);
-    this.addChild(this.panel);
-    if (!props?.formatter && props?.parser) {
-      throw new Error(
-        'If you set the parser, you also need to set the formatter'
-      );
-    }
-    if (this.props.disabled) {
-      // this.panel.setDisabled(true);
-      return;
-    }
-    this.addEvents({
-      mouseleave: (evt) => {
-        if (this.props.disabled) {
-          // 会动态设置的。所以要在监听中判断拦截；
-          evt?.stopPropagation();
-          evt?.preventDefault();
-          return;
-        }
-        this.setHovering(false);
+    const containerKls = computed(() => [
+      props.type === 'textarea' ? nsTextarea.b() : nsInput.b(),
+      nsInput.m(inputSize.get()),
+      nsInput.is('disabled', inputDisabled.get()),
+      nsInput.is('exceed', inputExceed.get()),
+      // todo object type
+      {
+        [nsInput.b('group')]: slots?.prepend || slots?.append,
+        [nsInput.m('prefix')]: slots?.prefix || props.prefixIcon,
+        [nsInput.m('suffix')]:
+          slots?.suffix ||
+          props.suffixIcon ||
+          props.clearable ||
+          props.showPassword,
+        [nsInput.bm('suffix', 'password-clear')]:
+          showClear.get() && showPwdVisible.get(),
+        [nsInput.b('hidden')]: props.type === 'hidden',
       },
-      mouseenter: (evt, element) => {
-        if (this.props.disabled) {
-          evt?.stopPropagation();
-          evt?.preventDefault();
-          return;
-        }
-        this.setHovering(true);
-        console.log('mouseenter then showClear . ');
-        if (this.panel instanceof TdInputWrapper) {
-          if (this.props.clearable) {
-            console.log('this.panel?.showClear is ', this.panel?.showClear);
-            this.panel?.setShowClear(this.panel?.showClear);
-          }
-          if (this.props.showPassword) {
-            this.panel?.setShowPassword(this.panel?.showPwdVisible);
-          }
-        }
-      }
-    });
-    // 传递组件的监听事件到input框上；
-    this.panel.inner.addEvents({
-      focus: (evt, element) => {
-        console.log('td-input focus . ');
-        // if (this.props.emits?.focus) {
-        //   this.props.emits?.focus?.(evt, element);
-        // }
-        this.emit('focus', evt, element);
-      },
-      change: (evt, element) => {
-        console.log('td-input change', evt, element);
-        // if (this.props.emits?.change) {
-        //   this.props.emits.change(evt, element);
-        // }
-        this.emit('change', evt, element);
-      },
-      input: (evt, element) => {
-        console.log('td-input input', evt, element);
-        if (this.modelValue instanceof XProxy) {
-          this.modelValue?.setValue((element as Input | Textarea)?.dom?.value);
-        } else {
-          this.modelValue = (element as Input | Textarea)?.dom?.value;
-        }
-        // if (this.props.emits?.input) {
-        //   this.props.emits.input(evt, element);
-        // }
-        this.emit('input', evt, element);
-      },
-      blur: (evt, element) => {
-        console.log('td-input blur . ');
-        // if (this.props.emits?.blur) {
-        //   this.props.emits?.blur?.(evt, element);
-        // }
-        this.emit('blur', evt, element);
-      },
-      keydown: (evt, element) => {
-        console.log('td-input keydown', evt, element);
-        // if (this.props.emits?.keydown) {
-        //   this.props.emits.keydown(evt, element);
-        // }
-        this.emit('keydown', evt, element);
-      }
-    });
-    if (this.props.type === 'textarea') {
-      return; // ????
-    }
-  }
+      // rawAttrs.class,
+    ]);
 
-  setModelValue(value: IJsonDataProp) {
-    console.log('setModelValue . value is ', value);
-    this.modelValue = value;
-    if (isString(value)) {
-      if (isMustache(value)) {
-        // if (this.itemData) {
-        //   const originalValue = mustache(value, this.itemData);
-        //   this.panel.inner.setValue(originalValue);
-        // } else {
-        this.panel.inner.setValue(value);
-        // }
+    const wrapperKls = computed(() => [
+      nsInput.e('wrapper'),
+      nsInput.is('focus', isFocused.get()),
+    ]);
+
+    const { form: elForm, formItem: elFormItem } = useFormItem();
+    const { inputId } = useFormItemInputId(props, {
+      formItemContext: elFormItem,
+    });
+    const inputSize = useFormSize();
+    const inputDisabled = useFormDisabled();
+    const nsInput = useNamespace('input');
+    const nsTextarea = useNamespace('textarea');
+
+    const input = signal<HTMLInputElement>();
+    const textarea = signal<HTMLTextAreaElement>();
+
+    const hovering = signal(false);
+    const passwordVisible = signal(false);
+    const countStyle = signal<IStyle>();
+    const textareaCalcStyle = signal(props.inputStyle);
+
+    const _ref = computed(() => input.get() || textarea.get());
+
+    // wrapperRef for type="text", handleFocus and handleBlur for type="textarea"
+    const { wrapperRef, isFocused, handleFocus, handleBlur } =
+      useFocusController(_ref, {
+        beforeFocus() {
+          return inputDisabled.get();
+        },
+        afterBlur() {
+          if (props.validateEvent) {
+            elFormItem?.validate?.('blur').catch((err) => debugWarn(err));
+          }
+        },
+      });
+    // console.warn('wrapperRef is ', wrapperRef);
+
+    const needStatusIcon = computed(() => elForm?.statusIcon ?? false);
+    const validateState = computed(
+      () => unref(elFormItem?.validateState) || ''
+    );
+    const validateIcon = computed(
+      () =>
+        validateState.get() &&
+        (ValidateComponentsMap as any)[validateState.get()]
+    );
+    const passwordIcon = computed(() =>
+      passwordVisible.get() ? new ElViewSvg() : new ElHideSvg()
+    );
+    // const containerStyle = computed(() => [
+    //   // rawAttrs.style,
+    // ])
+    const textareaStyle = computed(() =>
+      Object.assign({}, props.inputStyle, textareaCalcStyle.get(), {
+        resize: props.resize,
+      })
+    );
+    const nativeInputValue = computed(() =>
+      isNil(props.vModel?.get()) ? '' : String(props.vModel?.get())
+    );
+    const showClear = computed(
+      () =>
+        props.clearable &&
+        !inputDisabled.get() &&
+        !props.readonly &&
+        !!nativeInputValue.get() &&
+        (isFocused.get() || hovering.get())
+    );
+    const showPwdVisible = computed(
+      () =>
+        props.showPassword &&
+        !inputDisabled.get() &&
+        !!nativeInputValue.get() &&
+        (!!nativeInputValue.get() || isFocused.get())
+    );
+    const isWordLimitVisible = computed(
+      () =>
+        props.showWordLimit &&
+        !!props.maxlength &&
+        (props.type === 'text' || props.type === 'textarea') &&
+        !inputDisabled.get() &&
+        !props.readonly &&
+        !props.showPassword
+    );
+    const textLength = computed(() => nativeInputValue.get().length);
+    const inputExceed = computed(
+      () =>
+        // show exceed style if length of initial value greater then maxlength
+        !!isWordLimitVisible.get() && textLength.get() > Number(props.maxlength)
+    );
+    const suffixVisible = computed(
+      () =>
+        !!slots?.suffix ||
+        !!props.suffixIcon ||
+        showClear.get() ||
+        props.showPassword ||
+        isWordLimitVisible.get() ||
+        (!!validateState.get() && needStatusIcon.get())
+    );
+    // console.log('suffixVisible is ', suffixVisible);
+    const [recordCursor, setCursor] = useCursor(input);
+
+    useResizeObserver(textarea, (entries) => {
+      onceInitSizeTextarea();
+      if (!isWordLimitVisible.get() || props.resize !== 'both') {
+        return;
+      }
+      const entry = entries[0];
+      const { width } = entry.contentRect;
+      countStyle.set({
+        /** right: 100% - width + padding(15) + right(6) */
+        right: `calc(100% - ${width + 15 + 6}px)`,
+      });
+    });
+
+    const resizeTextarea = () => {
+      const { type, autosize } = props;
+
+      if (!isClient || type !== 'textarea' || !textarea.get()) {
+        return;
+      }
+
+      if (autosize) {
+        const minRows = isObject(autosize)
+          ? (autosize as any).minRows
+          : undefined;
+        const maxRows = isObject(autosize)
+          ? (autosize as any).maxRows
+          : undefined;
+        const textareaStyle = calcTextareaHeight(
+          textarea.get()!,
+          minRows,
+          maxRows
+        );
+
+        // If the scrollbar is displayed, the height of the textarea needs more space than the calculated height.
+        // If set textarea height in this case, the scrollbar will not hide.
+        // So we need to hide scrollbar first, and reset it in next tick.
+        // see https://github.com/element-plus/element-plus/issues/8825
+        textareaCalcStyle.set({
+          overflowY: 'hidden',
+          ...textareaStyle,
+        });
+
+        nextTick(() => {
+          // NOTE: Force repaint to make sure the style set above is applied.
+          textarea.get()!.offsetHeight;
+          textareaCalcStyle.set(textareaStyle);
+        });
       } else {
-        this.panel.inner.setValue(value);
-      }
-    } else if (value instanceof XProxy) {
-      this.panel.inner.setValue(value.value);
-    } else {
-      //   todo
-    }
-  }
-
-  setHovering(hovering: boolean) {
-    this.hovering = hovering;
-    if (hovering) {
-      if (!this.isFocused) {
-        this.panel?.style.setObj({
-          boxShadow: '0 0 0 1px ' + $input.hoverBorderColor + ' inset'
+        textareaCalcStyle.set({
+          minHeight: calcTextareaHeight(textarea.get()!).minHeight,
         });
       }
-    } else {
-      if (!this.isFocused) {
-        this.panel?.style.setObj({
-          boxShadow: '0 0 0 1px ' + $input.borderColor + ' inset'
-        });
+    };
+
+    const createOnceInitResize = (resizeTextarea: () => void) => {
+      let isInit = false;
+      return () => {
+        if (isInit || !props.autosize) {
+          return;
+        }
+        const isElHidden = textarea.get()?.offsetParent === null;
+        if (!isElHidden) {
+          resizeTextarea();
+          isInit = true;
+        }
+      };
+    };
+    // fix: https://github.com/element-plus/element-plus/issues/12074
+    const onceInitSizeTextarea = createOnceInitResize(resizeTextarea);
+
+    const setNativeInputValue = () => {
+      const input = _ref.get();
+      const formatterValue = props.formatter
+        ? props.formatter(nativeInputValue.get())
+        : nativeInputValue.get();
+      if (!input || input.value === formatterValue) {
+        return;
       }
-    }
-  }
+      input.value = formatterValue;
+    };
 
-  setFocus(isFocused: boolean) {
-    this.isFocused = isFocused;
-    if (isFocused) {
-      this.panel?.style.setObj({
-        boxShadow: '0 0 0 1px ' + $input.focusBorderColor + ' inset'
-      });
+    const handleInput = async (event?: Event) => {
+      recordCursor();
+
+      let { value } = event?.target as TargetElement;
+
+      if (props.formatter) {
+        value = props.parser ? props.parser(value) : value;
+      }
+
+      // should not emit input during composition
+      // see: https://github.com/ElemeFE/element/issues/10516
+      if (isComposing.get()) {
+        return;
+      }
+
+      // hack for https://github.com/ElemeFE/element/issues/8548
+      // should remove the following line when we don't support IE
+      if (value === nativeInputValue.get()) {
+        setNativeInputValue();
+        return;
+      }
+
+      emit(UPDATE_MODEL_EVENT, value);
+      emit('input', value);
+
+      // ensure native input value is controlled
+      // see: https://github.com/ElemeFE/element/issues/12850
+      await nextTick();
+      setNativeInputValue();
+      setCursor();
+    };
+
+    const handleChange = (event?: Event) => {
+      emit('change', (event?.target as TargetElement).value);
+    };
+
+    const {
+      isComposing,
+      handleCompositionStart,
+      handleCompositionUpdate,
+      handleCompositionEnd,
+    } = useComposition({ emit: this.emit, afterComposition: handleInput });
+
+    const handlePasswordVisible = () => {
+      recordCursor();
+      passwordVisible.set(!passwordVisible.get());
+      // The native input needs a little time to regain focus
+      setTimeout(setCursor);
+    };
+
+    const focus = () => _ref.get()?.focus();
+
+    const blur = () => _ref.get()?.blur();
+
+    const handleMouseLeave = (evt?: MouseEvent) => {
+      hovering.set(false);
+      // this.emit('mouseleave', evt); // todo 循环调用了
+    };
+
+    const handleMouseEnter = (evt?: MouseEvent) => {
+      hovering.set(true);
+      // this.emit('mouseenter', evt); // todo 循环调用了
+    };
+
+    const handleKeydown = (evt?: KeyboardEvent) => {
+      // this.emit('keydown', evt); // todo 循环调用了
+    };
+
+    const select = () => {
+      _ref.get()?.select();
+    };
+
+    const clear = () => {
+      emit(UPDATE_MODEL_EVENT, '');
+      emit('change', '');
+      emit('clear');
+      emit('input', '');
+    };
+
+    watch(
+      () => props.vModel?.get(),
+      () => {
+        nextTick(() => this.resizeTextarea?.());
+        if (props.validateEvent) {
+          elFormItem?.validate?.('change').catch((err) => debugWarn(err));
+        }
+      }
+    );
+
+    // native input value is set explicitly
+    // do not use v-model / :value in template
+    // see: https://github.com/ElemeFE/element/issues/14521
+    watch(nativeInputValue, () => setNativeInputValue());
+
+    // when change between <input> and <textarea>,
+    // update DOM dependent value and styles
+    // https://github.com/ElemeFE/element/issues/14857
+    watch(
+      () => unref(props.type),
+      async () => {
+        await nextTick();
+        setNativeInputValue();
+        this.resizeTextarea?.();
+      }
+    );
+
+    onMounted(() => {
+      if (!props.formatter && props.parser) {
+        debugWarn(
+          'TdInput',
+          'If you set the parser, you also need to set the formatter.'
+        );
+      }
+      setNativeInputValue();
+      nextTick(this.resizeTextarea!);
+    });
+
+    defineExpose({
+      /** @description HTML input element */
+      input,
+      /** @description HTML textarea element */
+      textarea,
+      /** @description HTML element, input or textarea */
+      ref: _ref,
+      /** @description style of textarea. */
+      textareaStyle,
+
+      /** @description from props (used on unit test) */
+      autosize: toRef(props, 'autosize'),
+
+      /** @description is input composing */
+      isComposing,
+
+      /** @description HTML input element native method */
+      focus,
+      /** @description HTML input element native method */
+      blur,
+      /** @description HTML input element native method */
+      select,
+      /** @description clear input value */
+      clear,
+      /** @description resize textarea. */
+      resizeTextarea,
+    });
+
+    this.attr.addClass(
+      computed(() => {
+        const cls = containerKls.get();
+        // console.log('cls is ', cls);
+        if (slots?.append) {
+          cls.push(nsInput.bm('group', 'append'));
+        }
+        if (slots?.prepend) {
+          cls.push(nsInput.bm('group', 'prepend'));
+        }
+        // console.warn('cls is ', cls);
+        return cls;
+      })
+    );
+    // this.style.addObj(containerStyle);
+    this.addEvents({
+      mouseenter: handleMouseEnter,
+      mouseleave: handleMouseLeave,
+    });
+    // input
+    if (props.type !== 'textarea') {
+      if (slots?.prepend) {
+        this.addChild(
+          new Span({
+            class: nsInput.be('group', 'prepend'),
+            slot: slots.prepend,
+          })
+        );
+      }
+      this.addChild(
+        new Div({
+          refDom: wrapperRef,
+          class: wrapperKls,
+          slot: [
+            //  prefix slot
+            new Span({
+              vIf: slots?.prefix || props.prefixIcon,
+              class: nsInput.e('prefix'),
+              slot: [
+                new Span({
+                  class: nsInput.e('prefix-inner'),
+                  slot: [
+                    ...arraySlot(slots?.prefix),
+                    new TdIcon({
+                      vIf: props.prefixIcon,
+                      slot: props.prefixIcon,
+                    }),
+                  ],
+                }),
+              ],
+            }),
+            new Input({
+              id: inputId.get(),
+              refDom: input,
+              class: nsInput.e('inner'),
+              attrObj: {
+                // v-bind="attrs" todo attr 到底对应什么 父组件的所有属性
+                minlength: props.minlength,
+                maxlength: props.maxlength,
+                disabled: inputDisabled,
+                type: computed(() =>
+                  props.showPassword
+                    ? passwordVisible.get()
+                      ? 'text'
+                      : 'password'
+                    : props.type
+                ),
+                readonly: props.readonly,
+                autocomplete: props.autocomplete,
+                tabindex: props.tabindex,
+                ariaLabel: props.ariaLabel,
+                placeholder: props.placeholder,
+                form: props.form,
+                autofocus: props.autofocus,
+                role: props.containerRole,
+              },
+              styleObj: props.inputStyle,
+              events: {
+                compositionstart: handleCompositionStart,
+                compositionupdate: handleCompositionUpdate,
+                compositionend: handleCompositionEnd,
+                input: handleInput,
+                change: handleChange,
+                keydown: handleKeydown,
+              },
+            }),
+            // suffix slot
+            new Span({
+              vIf: suffixVisible,
+              class: nsInput.e('suffix'),
+              slot: new Span({
+                class: nsInput.e('suffix-inner'),
+                slot: [
+                  new Fragment({
+                    vIf: computed(
+                      () =>
+                        !showClear.get() ||
+                        !showPwdVisible.get() ||
+                        !isWordLimitVisible.get()
+                    ),
+                    slot: [
+                      ...arraySlot(slots?.suffix),
+                      new TdIcon({
+                        vIf: props.suffixIcon,
+                        class: nsInput.e('icon'),
+                        slot: props.suffixIcon,
+                      }),
+                    ],
+                  }),
+                  new TdIcon({
+                    vIf: showClear,
+                    class: [nsInput.e('icon'), nsInput.e('clear')],
+                    slot: new ElCircleCloseSvg(),
+                    events: {
+                      click: this.clear,
+                      mousedown: (evt) => {
+                        NOOP();
+                        evt?.preventDefault();
+                      },
+                    },
+                  }),
+                  new TdIcon({
+                    vIf: showPwdVisible,
+                    class: [nsInput.e('icon'), nsInput.e('password')],
+                    // ToDo svg要变化的
+                    slot: passwordIcon,
+                    events: {
+                      click: handlePasswordVisible,
+                    },
+                  }),
+                  new Span({
+                    vIf: isWordLimitVisible,
+                    class: nsInput.e('count'),
+                    slot: new Span({
+                      class: nsInput.e('count-inner'),
+                      slot: computed(
+                        () =>
+                          (textLength.get() + ' / ' + props.maxlength) as string
+                      ), // todo 动态
+                    }),
+                  }),
+                  new TdIcon({
+                    vIf: validateState && validateIcon && needStatusIcon,
+                    class: [
+                      nsInput.e('icon'),
+                      nsInput.e('validateIcon'),
+                      nsInput.is(
+                        'loading',
+                        validateState.get() === 'validating'
+                      ),
+                    ],
+                    slot: validateIcon.get()
+                      ? new (validateIcon.get())()
+                      : undefined,
+                  }),
+                ],
+              }),
+            }),
+          ],
+        })
+      );
+      // append slot
+      if (slots?.append) {
+        this.addChild(
+          new Div({
+            vIf: slots?.append,
+            class: nsInput.be('group', 'append'),
+            slot: slots.append,
+          })
+        );
+      }
     } else {
-      this.panel?.style.setObj({
-        boxShadow: '0 0 0 1px ' + $input.borderColor + ' inset'
-      });
-    }
-  }
-
-  override created() {
-    // 注： 绑定变量要渲染前处理，而不是创建对象时处理
-    if (this.props.modelValue) {
-      console.log('td-input created . ');
-      console.log('setModelValue ', this.props.modelValue);
-      this.setModelValue(this.props.modelValue);
+      // textarea
+      this.addChildren(
+        new Textarea({
+          refDom: textarea,
+          styleObj: textareaStyle,
+          attrObj: {
+            id: inputId.get(),
+            class: computed(() => [
+              nsTextarea.e('inner'),
+              nsInput.is('focus', isFocused.get()),
+            ]),
+            // v-bind="attrs" todo attr 到底对应什么 父组件的所有属性
+            minlength: props.minlength,
+            maxlength: props.maxlength,
+            tabindex: props.tabindex,
+            disabled: inputDisabled,
+            readonly: props.readonly,
+            autocomplete: props.autocomplete,
+            // style: textareaStyle,
+            ariaLabel: props.ariaLabel,
+            placeholder: props.placeholder,
+            form: props.form,
+            autofocus: props.autofocus,
+            rows: props.rows,
+            role: props.containerRole,
+          },
+          events: {
+            compositionstart: handleCompositionStart,
+            compositionupdate: handleCompositionUpdate,
+            compositionend: handleCompositionEnd,
+            input: handleInput,
+            focus: handleFocus,
+            blur: handleBlur,
+            change: handleChange,
+            keydown: handleKeydown,
+          },
+        }),
+        new Span({
+          vIf: isWordLimitVisible,
+          styleObj: countStyle,
+          class: nsInput.e('count'),
+          slot: computed(
+            () => (textLength.get() + ' / ' + props.maxlength) as string
+          ),
+        })
+      );
     }
   }
 }

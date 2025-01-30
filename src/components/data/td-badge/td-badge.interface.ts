@@ -1,16 +1,18 @@
-import type { IUI, IUIConfig } from '../../../ui/ui.interface';
 import { IStyle } from '@type-dom/css-type';
+import { ITypeDiv, TypeDivProps } from '@type-dom/framework';
+import { MaybeRef } from '@type-dom/signals';
 
-export interface ITdBadge extends IUI {
+export interface ITdBadge extends ITypeDiv {
   className: 'TdBadge';
+  props: BadgeProps;
 }
 
-export interface ITdBadgeConfig extends IUIConfig {
+export interface BadgeProps extends TypeDivProps {
   /**
    * @description display value.
    *     default: '',
    */
-  value?: string | number;
+  value?: MaybeRef<string | number>;
   /**
    * @description maximum value, shows `{max}+` when exceeded. Only works if value is a number.
    *     default: 99,
@@ -39,6 +41,10 @@ export interface ITdBadgeConfig extends IUIConfig {
    */
   color?: string;
   /**
+   * @description CSS style of badge
+   */
+  badgeStyle?: IStyle;
+  /**
    * @description CSS style of dot
    */
   dotStyle?: IStyle;
@@ -51,4 +57,8 @@ export interface ITdBadgeConfig extends IUIConfig {
    * @description custom class name of badge dot
    */
   dotClass?: string;
+  /**
+   * @description custom class name of badge
+   */
+  badgeClass?: string;
 }

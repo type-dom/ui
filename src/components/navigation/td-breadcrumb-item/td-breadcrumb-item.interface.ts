@@ -1,16 +1,15 @@
-import { IUI, IUIConfig } from '../../../ui/ui.interface';
-import { Router } from '@type-dom/framework';
+import { IRoute, ITypeSpan, Router, TypeSpanProps } from '@type-dom/framework';
 
-export interface ITdBreadcrumbItem extends IUI {
+export interface ITdBreadcrumbItem extends ITypeSpan {
   className: 'TdBreadcrumbItem';
 }
 
-export interface ITdBreadcrumbItemConfig extends IUIConfig {
+export interface BreadcrumbItemProps extends TypeSpanProps {
   /**
    * @description target route of the link, same as `to` of `vue-router`
    *     default: '',
    */
-  toPath?: string;
+  toPath?: string; // | IRoute; // todo teleport to   Route
   //   type: definePropType<RouteLocationRaw>([String, Object]),
   // },
   /**

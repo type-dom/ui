@@ -1,14 +1,14 @@
-import { IOptionConfig, TypeDiv } from '@type-dom/framework';
+import { OptionProps, TypeDiv } from '@type-dom/framework';
 import { RadioOption } from './radio-option/radio-option.class';
-import { IRadioGroup, IRadioGroupConfig } from './radio-group.interface';
+import { IRadioGroup, RadioGroupProps } from './radio-group.interface';
 
 export class RadioGroup extends TypeDiv implements IRadioGroup {
   className: 'RadioGroup';
-  override props: IRadioGroupConfig
+  override props: RadioGroupProps;
   override childNodes: RadioOption[];
-  value: string | number | boolean;
+  value?: string | number | boolean;
 
-  constructor(params: IRadioGroupConfig = {}) {
+  constructor(params: RadioGroupProps = {}) {
     super();
     this.className = 'RadioGroup';
     this.attr.addName('radio-group');
@@ -24,7 +24,7 @@ export class RadioGroup extends TypeDiv implements IRadioGroup {
     }
   }
 
-  setOptions(options: IOptionConfig[]): void {
+  setOptions(options: OptionProps[]): void {
     this.clearChildren();
     const random = Math.random();
     options.forEach((opt) => {
@@ -33,12 +33,12 @@ export class RadioGroup extends TypeDiv implements IRadioGroup {
         name: 'radio' + random,
         label: opt.label,
         value: opt.value,
-        checked: opt.checked || false
+        checked: opt.checked || false,
       });
       if (opt.checked) {
         this.value = opt.value;
       }
-      optObj.textNode.setText(opt.label);
+      optObj.textNode?.setText(opt.label);
       this.addChild(optObj);
     });
   }
@@ -49,7 +49,7 @@ export class RadioGroup extends TypeDiv implements IRadioGroup {
     this.childNodes.forEach((opt) => {
       if (String(opt.input.attr.get('value')) === String(value)) {
         opt.input.attr.setObj({
-          checked: true
+          checked: true,
         });
       } else {
         opt.input.attr.remove('checked');

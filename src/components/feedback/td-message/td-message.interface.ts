@@ -1,33 +1,22 @@
-import { isClient } from '@type-dom/utils';
-import { IUI, IUIConfig } from '../../../ui/ui.interface';
-import { TypeElement, TypeSvgSvg } from '@type-dom/framework';
+import { isClient, Mutable } from '@type-dom/utils';
+import {
+  ITypeFragment,
+  TypeFragmentProps,
+  TypeElement,
+  TypeSvgSvg,
+  TypeNode,
+} from '@type-dom/framework';
+import { MessageClass } from './td-message.class';
+import { Signal } from '@type-dom/signals';
 
-export interface ITdMessage extends IUI {
+export interface ITdMessage extends ITypeFragment {
   className: 'TdMessage';
+  props: MessageProps;
 }
 
-export const messageDefaults = {
-  customClass: '',
-  center: false,
-  dangerouslyUseHTMLString: false,
-  duration: 3000,
-  icon: undefined,
-  id: '',
-  message: '',
-  onClose: undefined,
-  showClose: false,
-  type: 'info',
-  plain: false,
-  offset: 16,
-  zIndex: 0,
-  grouping: false,
-  repeatNum: 1,
-  appendTo: isClient ? document.body : (undefined as never)
-} as const;
+export type IMessageType = 'success' | 'info' | 'warning' | 'error';
 
-export type IMessageTypes = 'success' | 'info' | 'warning' | 'error';
-
-export interface ITdMessageConfig extends IUIConfig {
+export interface MessageProps extends TypeFragmentProps {
   /**
    * @description custom class name for Message
    *     default: messageDefaults.customClass,
@@ -52,7 +41,7 @@ export interface ITdMessageConfig extends IUIConfig {
    * @description custom icon component, overrides `type`
    *     default: messageDefaults.icon,
    */
-  icon?: TypeSvgSvg,
+  icon?: typeof TypeSvgSvg;
   /**
    * @description message dom id
    *     default: messageDefaults.id,
@@ -62,7 +51,7 @@ export interface ITdMessageConfig extends IUIConfig {
    * @description message text
    *     default: messageDefaults.message,
    */
-  message?: string | TypeElement;
+  message?: string | TypeNode;
   /**
    * @description callback function when closed with the message instance as the parameter
    *     default: messageDefaults.onClose,
@@ -77,7 +66,7 @@ export interface ITdMessageConfig extends IUIConfig {
    * @description message type
    *     default: messageDefaults.type,
    */
-  type?: IMessageTypes;
+  type?: IMessageType;
   /**
    * @description whether message is plain
    *     default: messageDefaults.plain,
@@ -102,11 +91,65 @@ export interface ITdMessageConfig extends IUIConfig {
    * @description The number of repetitions, similar to badge, is used as the initial number when used with `grouping`
    *     default: messageDefaults.repeatNum
    */
-  repeatNum?: number;
+  repeatNum?: Signal<number>;
 
+  appendTo?: HTMLElement;
+  // emits?: {
+  //   unmount?: () => void;
+  // }
+}
 
-  appendTo?: HTMLBodyElement;
-  emits?: {
-    destroy?: () => void;
+export type MessageOptions = Partial<
+  Omit<MessageProps, 'id'> & {
+    appendTo?: HTMLElement | string;
   }
+>;
+export type MessageParams = MessageOptions | MessageOptions['message'];
+export type MessageParamsNormalized = Omit<MessageProps, 'id'> & {
+  /**
+   * @description set the root element for the message, default to `document.body`
+   */
+  appendTo: HTMLElement;
+};
+export type MessageOptionsWithType = Omit<MessageOptions, 'type'>;
+export type MessageParamsWithType =
+  | MessageOptionsWithType
+  | MessageOptions['message'];
+
+export interface MessageHandler {
+  /**
+   * @description close the Message
+   */
+  close: () => void;
+}
+
+export type MessageFn = {
+  (options?: MessageParams): MessageHandler;
+  closeAll(type?: IMessageType): void;
+};
+export type MessageTypedFn = (
+  options?: MessageParamsWithType
+) => MessageHandler;
+
+export interface Message extends MessageFn {
+  success: MessageTypedFn;
+  warning: MessageTypedFn;
+  info: MessageTypedFn;
+  error: MessageTypedFn;
+}
+
+export type MessageContext = {
+  id: string;
+  vnode: MessageClass;
+  handler: MessageHandler;
+  // vm: TypeNode;
+  props: MessageProps;
+};
+
+export interface MessageConfigContext {
+  max?: number;
+  grouping?: boolean;
+  duration?: number;
+  offset?: number;
+  showClose?: boolean;
 }

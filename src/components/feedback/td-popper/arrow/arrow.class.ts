@@ -1,63 +1,63 @@
-import { IStyle } from '@type-dom/css-type';
-import { $textColor } from '../../../../styles/var';
-import { UI } from '../../../../ui/ui.abstract';
-import { TdPopperContentInjectionContext, POPPER_CONTENT_INJECTION_KEY } from '../td-popper.const';
-import { ITdPopperArrow, ITdPopperArrowConfig } from './arrow.interface';
+import {
+  defineExpose,
+  inject,
+  onBeforeUnmount,
+  TypeSpan,
+} from '@type-dom/framework';
+import { Ref, watch } from '@type-dom/signals';
+import { useNamespace } from '../../../../hooks/use-namespace';
+import { POPPER_CONTENT_INJECTION_KEY } from '../constants';
+import { ITdPopperArrow, PopperArrowProps } from './arrow.interface';
+import { popperArrowProps } from './arrow.const';
 
-export class TdPopperArrow extends UI implements ITdPopperArrow {
+export class TdPopperArrow extends TypeSpan implements ITdPopperArrow {
   className: 'TdPopperArrow';
-  override props: ITdPopperArrowConfig;
-  private arrowOffset?: number;
-  arrowRef?: HTMLElement;
-  private arrowStyle?: IStyle;
+  override props: PopperArrowProps;
+  arrowRef?: Ref<HTMLElement>;
 
-  constructor(params: ITdPopperArrowConfig = {}) {
+  constructor(params: PopperArrowProps = {}) {
     super();
-    this.useTag('span');
     this.className = 'TdPopperArrow';
     this.attr.addName('td-popper-arrow');
-    this.style.addObj({
-      position: 'absolute',
-      width: '10px',
-      height: '10px',
-      zIndex: -1,
-      //   todo next is ::before style
-      //   &::before {
-      //   position: absolute;
-      //   width: 10px;
-      //   height: 10px;
-      //   z-index: -1;
-      content: ' ',
-      transform: 'rotate(45deg)',
-      // background: getCssVar('text-color', 'primary'),
-      backgroundColor: $textColor.primary,
-      boxSizing: 'border-box'
-      // }
-    });
-    this.buildProps<ITdPopperArrowConfig>({
-      arrowOffset: 5,
-    });
+
+    // this.assignProps(popperArrowProps);
     this.props = this.useParams(params);
   }
 
   override setup() {
-    const { arrowOffset, arrowRef, arrowStyle } = this.inject<TdPopperContentInjectionContext>(
+    console.log('TdPopperArrow setup . ');
+    const props = this.props;
+    const ns = useNamespace('popper');
+    const { arrowOffset, arrowRef, arrowStyle } = inject(
       POPPER_CONTENT_INJECTION_KEY,
       undefined
     )!;
-    this.arrowOffset = arrowOffset;
-    this.arrowRef = arrowRef;
-    this.arrowStyle = arrowStyle;
-  }
 
-  override beforeDestroy() {
-    this.arrowRef = undefined;
-  }
+    watch(
+      () => props.arrowOffset?.get(),
+      (val) => {
+        console.warn('watch props.arrowOffset is ', val);
+        arrowOffset?.set(val);
+      }
+    );
+    onBeforeUnmount(() => {
+      arrowRef?.set(undefined);
+    });
 
-  setArrowOffset(offset: number) {
-    this.setProp<ITdPopperArrowConfig>('arrowOffset', offset);
-    if (offset) {
-      this.arrowOffset = offset;
-    }
+    defineExpose({
+      /**
+       * @description Arrow element
+       */
+      arrowRef,
+    });
+
+    this.assignProps({
+      refDom: arrowRef,
+    });
+    this.attr.addClass(ns.e('arrow'));
+    this.attr.addObj({
+      'data-popper-arrow': 'data-popper-arrow',
+    });
+    this.style.addObj(arrowStyle);
   }
 }

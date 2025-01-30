@@ -5,7 +5,7 @@ import {
   Label,
   TextNode,
   IOptionSetting,
-  IOptionSet
+  IOptionSet,
 } from '@type-dom/framework';
 import { TdThreeDotsSvg } from '@type-dom/svgs';
 import { FieldSelect } from '../../../form/field-select/field-select.class';
@@ -22,6 +22,7 @@ export abstract class PropertyOptions extends FieldItem {
   optionsContent: Div;
   protected btn: Button;
   private readonly dotsSvg: TdThreeDotsSvg;
+
   // optionsConfigObservable: Observable<Event>;
 
   protected constructor(labelText = '选项列表') {
@@ -44,12 +45,12 @@ export abstract class PropertyOptions extends FieldItem {
       outline: '0',
       // -webkit-transition: border-color .2s cubic-bezier(.645,.045,.355,1);
       transition: 'border-color .2s cubic-bezier(.645,.045,.355,1)',
-      width: 'calc(100% - 100px)'
+      width: 'calc(100% - 100px)',
     });
     this.selectDiv = new Div();
     this.selectDiv.style.addObj({
       display: 'flex',
-      flexDirection: 'row'
+      flexDirection: 'row',
     });
     // 单独的方法实现
     this.selectObj = new FieldSelect();
@@ -58,7 +59,7 @@ export abstract class PropertyOptions extends FieldItem {
       Object.assign({}, itemContentStyle, {
         width: '100%',
         borderRadius: '4px 0 0 4px',
-        borderRight: 'none'
+        borderRight: 'none',
       })
     );
 
@@ -69,24 +70,24 @@ export abstract class PropertyOptions extends FieldItem {
       padding: '8px 3px 4px',
       fontSize: '16px',
       border: '1px solid #DCDFE6',
-      borderRadius: '0 4px 4px 0'
+      borderRadius: '0 4px 4px 0',
     });
     this.dotsSvg = new TdThreeDotsSvg({ parent: this.btn });
     this.dotsSvg.resetSize(16, 16);
-    this.btn.textNode.setText('');
+    this.btn.textNode?.setText('');
     this.btn.addChild(this.dotsSvg);
     this.selectDiv.childNodes = [this.selectObj, this.btn];
     this.firstDiv = new Div();
     const labelDiv = new Div();
     labelDiv.style.addObj({
       display: 'inline-block',
-      width: '50%'
+      width: '50%',
     });
     labelDiv.addChild(new TextNode('标签'));
     const valueDiv = new Div();
     valueDiv.style.addObj({
       display: 'inline-block',
-      width: '50%'
+      width: '50%',
     });
     valueDiv.addChild(new TextNode('值'));
     this.firstDiv.childNodes = [labelDiv, valueDiv];
@@ -94,7 +95,7 @@ export abstract class PropertyOptions extends FieldItem {
     this.selectConfigDiv.childNodes = [
       this.selectDiv,
       this.firstDiv,
-      this.optionsContent
+      this.optionsContent,
     ];
 
     this.button.style.addObj({
@@ -105,7 +106,7 @@ export abstract class PropertyOptions extends FieldItem {
       // border: 'none',
       display: 'none',
       border: '1px solid #DCDFE6',
-      borderRadius: '0 4px 4px 0'
+      borderRadius: '0 4px 4px 0',
     });
     this.childNodes = [this.label, this.selectConfigDiv, this.button];
     // 创建添加按钮
@@ -129,7 +130,7 @@ export abstract class PropertyOptions extends FieldItem {
     if (this.settings === undefined) {
       if (optConfig !== undefined) {
         this.settings = {
-          optionSetting: optConfig
+          optionSetting: optConfig,
         };
       }
     } else {
@@ -163,7 +164,7 @@ export abstract class PropertyOptions extends FieldItem {
       display: 'inline-block',
       width: '45%',
       border: '1px solid #ccc',
-      boxSizing: 'border-box'
+      boxSizing: 'border-box',
     };
     // let optIndex = 0;
     // config.options设置
@@ -181,7 +182,7 @@ export abstract class PropertyOptions extends FieldItem {
       labelDiv.attr.setObj({
         // contenteditable: 'true', // 现在选项不需要编辑
         optIndex,
-        optType: 'label'
+        optType: 'label',
       });
       labelDiv.addChild(new TextNode(opt.label));
       const valueDiv = new Div();
@@ -189,7 +190,7 @@ export abstract class PropertyOptions extends FieldItem {
       valueDiv.attr.addObj({
         // contenteditable: 'true', // 现在选项不需要编辑
         optIndex,
-        optType: 'value'
+        optType: 'value',
       });
       valueDiv.addChild(new TextNode(String(opt.value)));
 
@@ -222,7 +223,7 @@ export abstract class PropertyOptions extends FieldItem {
       display: 'inline-block',
       width: '45%',
       border: '1px solid #ccc',
-      boxSizing: 'border-box'
+      boxSizing: 'border-box',
     };
     // let optIndex = 0;
     // config.options设置
@@ -234,14 +235,14 @@ export abstract class PropertyOptions extends FieldItem {
       labelDiv.attr.setObj({
         // contenteditable: 'true', // 现在选项不需要编辑
         optIndex,
-        optType: 'label'
+        optType: 'label',
       });
       labelDiv.addChild(new TextNode(opt.label));
       const valueDiv = new Div();
       valueDiv.style.addObj(styleObj);
       valueDiv.attr.addObj({
         optIndex,
-        optType: 'value'
+        optType: 'value',
       });
       valueDiv.addChild(new TextNode(String(opt.value)));
       optDiv.childNodes = [labelDiv, valueDiv];
@@ -253,15 +254,17 @@ export abstract class PropertyOptions extends FieldItem {
     this.btn.addEvents({
       click: () => {
         console.log('this.btn click . ');
-      }
+      },
     });
     this.selectObj.addEvents({
       change: () => {
         console.log('this.selectObj.dom change . ');
-        console.log('this.selectObj.dom.value is ', this.selectObj.dom.value);
-        const selectedOption = this.optionSetting?.options && this.optionSetting?.options.find(
-          (opt) => String(opt.value) === this.selectObj.dom.value
-        );
+        console.log('this.selectObj.dom.value is ', this.selectObj.dom?.value);
+        const selectedOption =
+          this.optionSetting?.options &&
+          this.optionSetting?.options.find(
+            (opt) => String(opt.value) === this.selectObj.dom?.value
+          );
         if (!this.optionSetting) {
           throw Error('无法获取optionSetting');
         }
@@ -272,7 +275,7 @@ export abstract class PropertyOptions extends FieldItem {
           this.resetOptions(selectedOption.options);
           // this.resetControl();
         }
-      }
+      },
     });
   }
 }

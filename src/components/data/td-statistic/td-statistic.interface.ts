@@ -1,17 +1,17 @@
-import { TypeElement } from '@type-dom/framework';
-import { IStyle } from '@type-dom/css-type';
+import {
+  ISlotRaw,
+  ITypeDiv,
+  StyleValue,
+  TypeDivProps,
+} from '@type-dom/framework';
+import { Computed, MaybeRef, Signal } from '@type-dom/signals';
 import { Dayjs } from 'dayjs';
-import { IUI, IUIConfig } from '../../../ui/ui.interface';
 
-export interface ITdStatisticAbstract extends IUI {
-  className: 'TdStatistic' | 'TdCountDown';
-}
-
-export interface ITdStatistic extends ITdStatisticAbstract {
+export interface ITdStatistic extends ITypeDiv {
   className: 'TdStatistic';
 }
 
-export interface ITdStatisticConfig extends IUIConfig {
+export interface StatisticProps extends TypeDivProps {
   /**
    * @description Setting the decimal point
    *     default: '.',
@@ -30,12 +30,12 @@ export interface ITdStatisticConfig extends IUIConfig {
   /**
    * @description Custom numerical presentation
    */
-  formatter?: (value: number | Dayjs) => string;
+  formatter?: (value?: MaybeRef<number | number[] | string | Dayjs>) => string;
   /**
    * @description Numerical content
    *     default: 0,
    */
-  value?: number | Dayjs;
+  value?: MaybeRef<number | Dayjs>;
   //   type: definePropType<number | Dayjs>([Number, Object]),
   // },
   /**
@@ -54,14 +54,14 @@ export interface ITdStatisticConfig extends IUIConfig {
   /**
    * @description Styles numeric values
    */
-  valueStyle?: IStyle;
+  valueStyle?: StyleValue;
   // type: definePropType<StyleValue>([String, Object, Array]),
   // },
 
   slots?: {
-    prefix?: TypeElement;
-    suffix?: TypeElement;
-    title?: TypeElement;
-    value?: TypeElement;
+    prefix?: ISlotRaw;
+    suffix?: ISlotRaw;
+    title?: ISlotRaw;
+    value?: ISlotRaw;
   };
 }

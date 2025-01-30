@@ -51,15 +51,15 @@ class FocusTrap {
           this.lastTabbableElement?.focus();
       }
     }
-  }
+  };
 
-  private handleFocusIn = (event: FocusEvent)=> {
+  private handleFocusIn = (event: FocusEvent) => {
     const focusedElement = event.target as HTMLElement;
     if (focusedElement && !this.container.contains(focusedElement)) {
       event.stopPropagation();
       this.firstTabbableElement?.focus();
     }
-  }
+  };
 
   private getTabbableElements(): NodeListOf<Element> {
     return this.container.querySelectorAll(
@@ -77,6 +77,7 @@ class FocusTrap {
     return elements.length > 0 ? elements[elements.length - 1] as HTMLElement : null;
   }
 }
+
 //
 // // 使用示例
 // const modal = document.getElementById('modal');

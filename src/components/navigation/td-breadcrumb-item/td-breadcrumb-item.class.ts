@@ -1,81 +1,68 @@
-import { Span } from '@type-dom/framework';
-import { UI } from '../../../ui/ui.abstract';
-import { $textColor } from '../../../styles/var';
+import { inject, Router, Span, TypeSpan } from '@type-dom/framework';
+import { signal } from '@type-dom/signals';
+import { useNamespace } from '../../../hooks/use-namespace';
 import { TdIcon } from '../../basic/td-icon/td-icon.class';
-import { ITdBreadcrumbConfig } from '../td-breadcrumb/td-breadcrumb.interface';
+import { breadcrumbKey } from '../td-breadcrumb/constants';
 import {
   ITdBreadcrumbItem,
-  ITdBreadcrumbItemConfig
+  BreadcrumbItemProps,
 } from './td-breadcrumb-item.interface';
+import './style/index';
 
-export class TdBreadcrumbItem extends UI implements ITdBreadcrumbItem {
+export class TdBreadcrumbItem extends TypeSpan implements ITdBreadcrumbItem {
   className: 'TdBreadcrumbItem';
+  override props: BreadcrumbItemProps;
 
-  constructor(params: ITdBreadcrumbItemConfig = {}) {
+  constructor(params: BreadcrumbItemProps = {}) {
     super();
-    this.useTag('span');
     this.className = 'TdBreadcrumbItem';
-    this.style.addObj({
-      float: 'left',
-      display: 'inline-flex',
-      alignItems: 'center'
-    });
-    const link = new Span({
-      name: 'link',
-      attrObj: {
-        role: 'link'
-      },
-      styleObj: {
-        // color: getCssVar('text-color', 'regular');
-        color: $textColor.regular
-      },
-      events: {
-        click: (evt) => {
-          if (!params?.toPath || !params?.router) {
-            return;
-          }
-          params?.replace
-            ? params.router.replace(params.toPath)
-            : params.router.push(params.toPath);
-          // params.replace ? params.router.replace(params.toPath) : params.router.push(params.toPath)
-        }
-      }
-    }); // todo slot
-    this.addChild(link);
-
-    if (params?.slot) {
-      this.slotChild(params?.slot);
-    }
-    this.useParams(params);
+    this.attr.addName('td-breadcrumb-item');
+    this.props = this.useParams(params);
   }
 
-  addSeparator(breadcrumbConfig?: ITdBreadcrumbConfig) {
-    if (breadcrumbConfig?.separatorIcon) {
-      breadcrumbConfig.separatorIcon.style.addObj({
-        verticalAlign: 'middle'
-      });
-      this.addChild(
-        new TdIcon({
-          styleObj: {
-            margin: '0 6px',
-            fontWeight: 'normal'
-          },
-          svgObj: breadcrumbConfig.separatorIcon.clone()
-        })
-      );
-    } else {
-      this.addChild(
-        new Span({
-          text: breadcrumbConfig?.separator || '/',
-          attrObj: {
-            role: 'presentation'
-          },
-          styleObj: {
-            margin: '0 6px',
-            fontWeight: 'normal'
-          }
-        })
-      );
-    }
+  override setup() {
+    const props = this.props;
+
+    // const instance = getCurrentInstance()!
+    const breadcrumbContext = inject(breadcrumbKey, undefined);
+    const ns = useNamespace('breadcrumb');
+
+    const router = props.router;
+
+    const link = signal<HTMLSpanElement>();
+
+    const onClick = () => {
+      if (!props.toPath || !router) return;
+      props.replace ? router.replace(props.toPath) : router.push(props.toPath);
+    };
+
+    this.addChildren(
+      new Span({
+        refDom: link,
+        class: [ns.e('inner'), ns.is('link', !!props.toPath)],
+        attrObj: {
+          role: 'link',
+        },
+        events: {
+          click: onClick,
+        },
+        slot: props.slot || props.slots?.default,
+      }),
+      new TdIcon({
+        vIf: breadcrumbContext?.separatorIcon,
+        class: ns.e('separator'),
+        slot:
+          breadcrumbContext.separatorIcon &&
+          new (breadcrumbContext.separatorIcon as any)(),
+      }),
+      new Span({
+        vIf: !breadcrumbContext?.separatorIcon,
+        class: ns.e('separator'),
+        attrObj: {
+          role: 'presentation',
+        },
+        slot: breadcrumbContext?.separator,
+      })
+    );
   }
 }

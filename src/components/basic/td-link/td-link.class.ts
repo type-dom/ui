@@ -1,108 +1,66 @@
-import { Span } from '@type-dom/framework';
-import { UI } from '../../../ui/ui.abstract';
-import {
-  $linkStyle,
-  $linkStateColors,
-  useType,
-  $linkInnerStyle
-} from '../td-link/td-link.style';
-import { ITdLink, ITdLinkConfig } from './td-link.interface';
+import { Span, TypeA } from '@type-dom/framework';
+import { computed } from '@type-dom/signals';
+import { useNamespace } from '../../../hooks/use-namespace';
+import { TdIcon } from '../td-icon/td-icon.class';
+import { ITdLink, LinkProps } from './td-link.interface';
+import { linkEmits, linkProps } from './td-link.const';
+import './style/index';
 
-export class TdLink extends UI implements ITdLink {
+export class TdLink extends TypeA implements ITdLink {
   className: 'TdLink';
-  override props: ITdLinkConfig
-  // icon?: TdIcon;
-  private inner?: Span;
+  override props: LinkProps;
 
-  constructor(params: ITdLinkConfig) {
+  constructor(params: LinkProps) {
     super();
-    this.useTag('a');
     this.className = 'TdLink';
-    useType(params);
-    this.style.addObj($linkStyle);
+    this.assignProps(linkProps);
+    this.addEmits(linkEmits);
     this.props = this.useParams(params);
   }
 
-  // override beforeCreate() {
-  //   this.style.addObj($linkStyle);
-  // }
-
   override setup() {
     const props = this.props;
+    const ns = useNamespace('link');
+
+    const linkKls = computed(() => [
+      ns.b(),
+      ns.m(props.type),
+      ns.is('disabled', props.disabled),
+      ns.is('underline', props.underline && !props.disabled),
+    ]);
+    const emit = this.emit;
+
+    function handleClick(event: MouseEvent) {
+      if (!props.disabled) {
+        // emit('click', event);
+      }
+    }
+
     this.attr.addObj({
-      href: props?.href,
-      target: props?.target,
-      disabled: props?.disabled
+      class: linkKls,
+      href: props.disabled || !props.href ? undefined : props.href,
+      target: props.disabled || !props.href ? undefined : props.target,
     });
-
-    if (props?.type) {
-      if (props?.disabled) {
-        this.style.addObj($linkStateColors[props.type].disabled);
-      } else {
-        this.style.addObj($linkStateColors[props.type].default);
-      }
-    } else {
-      this.style.addObj($linkStateColors.default.default);
+    this.addEmits({
+      click: handleClick,
+    });
+    if (props.icon) {
+      this.addChild(
+        new TdIcon({
+          slot: props.icon,
+        })
+      );
     }
-    if (props?.icon) {
-      this.unshiftChild(props.icon);
+    if (props.slots?.default || props.slot) {
+      this.addChild(
+        new Span({
+          class: ns.e('inner'),
+          slot: props.slot || props.slots?.default,
+        })
+      );
     }
-    this.inner = new Span({
-      name: 'inner',
-      styleObj: $linkInnerStyle
-    });
-    this.inner.addChild(this.getSlotNode());
-    this.addChild(this.inner);
-
-    this.addEvents({
-      click: (evt) => {
-        this.handleClick(evt as MouseEvent);
-      },
-      mouseenter: () => {
-        if (this.props.type) {
-          if (this.props.disabled) {
-            this.style.setObj({
-              cursor: 'not-allowed'
-            });
-          } else {
-            this.style.setObj($linkStateColors[this.props.type].hover);
-          }
-        } else {
-          this.style.setObj($linkStateColors.default.hover);
-        }
-        if (this.props.underline === false) {
-          // 设置 false 的情况下，不显示下划线
-          this.style.setObj({
-            textDecoration: 'none'
-          });
-        } else {
-          // 1. 默认显示下划线
-          // 2. 默认显示下划线，如果设置了 underline 为 true，则显示下划线
-          this.style.setObj({
-            textDecoration: 'underline'
-          });
-        }
-      },
-      mouseleave: (evt) => {
-        this.style.setObj({
-          textDecoration: 'none'
-        });
-        if (this.props.type) {
-          this.style.removeObj($linkStateColors[this.props.type].hover);
-          if (this.props.disabled) {
-            evt?.preventDefault();
-            this.style.setObj($linkStateColors[this.props.type].disabled);
-          } else {
-            this.style.setObj($linkStateColors[this.props.type].default);
-          }
-        } else {
-          this.style.removeObj($linkStateColors.default.hover);
-        }
-      }
-    });
-  }
-
-  handleClick(event: MouseEvent) {
-    // this.emit('click', event); // 会死循环的
+    if (props.slots?.icon) {
+      this.slotChildren(props.slots.icon);
+    }
   }
 }

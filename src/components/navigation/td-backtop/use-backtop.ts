@@ -1,50 +1,57 @@
-import { AnyFn } from '@type-dom/framework';
-import { ITdBackTopConfig } from './td-backtop.interface';
+// import { onMounted, ref, shallowRef } from 'vue'
+// import { useEventListener, useThrottleFn } from '@vueuse/core'
+// import { throwError } from '@element-plus/utils'
+// import type { SetupContext } from 'vue'
+// import type { BacktopEmits, BacktopProps } from './backtop'
+
+import { BacktopEmits } from './td-backtop.const';
+import { BacktopProps } from './td-backtop.interface';
+import { signal } from '@type-dom/signals';
+import {
+  onMounted,
+  useEventListener,
+  useThrottleFn,
+} from '@type-dom/framework';
+import { throwError } from '@type-dom/utils';
 
 export const useBackTop = (
-  props: ITdBackTopConfig,
-  // emit: ITdBacktopEmits,
-  emit: (event: string, fn: AnyFn) => void,
+  props: BacktopProps,
+  emit: any,
   componentName: string
 ) => {
-  let el:HTMLElement;
-  let container: Document | HTMLElement;
-  let visible = false;
+  const el = signal<HTMLElement | undefined>();
+  const container = signal<Document | HTMLElement>();
+  const visible = signal(false);
 
   const handleScroll = () => {
-    if (el) {
-      visible = el.scrollTop >= (props.visibilityHeight ?? 0);
-    }
+    if (el.get()) visible.set(el.get()!.scrollTop >= props.visibilityHeight!);
   };
 
-  const handleClick = (fn: AnyFn) => {
-    el?.scrollTo({ top: 0, behavior: 'smooth' })
-    emit('click', fn)
-  }
+  const handleClick = (event?: MouseEvent) => {
+    el.get()?.scrollTo({ top: 0, behavior: 'smooth' });
+    emit('click', event);
+  };
 
-  // const handleScrollThrottled = useThrottleFn(handleScroll, 300, true)
-  //
-  // useEventListener(container, 'scroll', handleScrollThrottled);
+  const handleScrollThrottled = useThrottleFn(handleScroll, 300, true);
 
-  const mounted = () => {
-    container = document
-    el = document.documentElement
+  useEventListener(container, 'scroll', handleScrollThrottled);
+  onMounted(() => {
+    container.set(document);
+    el.set(document.documentElement);
 
     if (props.target) {
-      // el = document.querySelector<HTMLElement>(props.target) ?? undefined
-      el = props.target ?? undefined;
-      if (!el) {
-        throw Error(componentName + `target does not exist: ${props.target}`)
+      el.set(document.querySelector<HTMLElement>(props.target) ?? undefined);
+      if (!el.get()) {
+        throwError(componentName, `target does not exist: ${props.target}`);
       }
-      container = el;
+      container.set(el.get());
     }
     // Give visible an initial value, fix #13066
-    handleScroll()
-  }
+    handleScroll();
+  });
 
   return {
     visible,
     handleClick,
-    mounted
-  }
-}
+  };
+};

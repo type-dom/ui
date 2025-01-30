@@ -1,38 +1,47 @@
-import { IUI, IUIConfig } from '../../../../ui/ui.interface';
+import {
+  ITypeFragment,
+  TypeFragmentProps,
+  TypeElement,
+  TypeHtml,
+  TypeNode,
+  IEvent,
+} from '@type-dom/framework';
+import { MaybeRef, Ref, Signal } from '@type-dom/signals';
+import { Measurable } from '../td-popper.interface';
 
-export interface ITdPopperTrigger extends IUI {
+export interface ITdPopperTrigger extends ITypeFragment {
   className: 'TdPopperTrigger';
 }
 
-type IEvent = (event: Event) => void;
-
-export interface ITdPopperTriggerConfig extends IUIConfig {
+export interface PopperTriggerProps extends TypeFragmentProps {
   // virtualRef: {
   //   type: definePropType<Measurable>(Object),
   // },
-  virtualRef?: HTMLElement;
-  virtualTriggering?: boolean,
-  onMouseenter?: IEvent;
+  virtualRef?: Ref<Measurable>;
+  virtualTriggering?: boolean;
+  onMouseenter?: (e: Event) => void;
   //   type: definePropType<(e: Event) => void>(Function),
   // },
-  onMouseleave?: IEvent;
+  onMouseleave?: (e: Event) => void;
   //   type: definePropType<(e: Event) => void>(Function),
   // },
-  onClick?: IEvent;
+  onClick?: (e: Event) => void;
   //   type: definePropType<(e: Event) => void>(Function),
   // },
-  onKeydown?: IEvent;
+  onKeydown?: (e: Event) => void;
   //   type: definePropType<(e: Event) => void>(Function),
   // },
-  onFocus?: IEvent;
+  onFocus?: (e: Event) => void;
   //   type: definePropType<(e: Event) => void>(Function),
   // },
-  onBlur?: IEvent;
+  onBlur?: (e: Event) => void;
   //   type: definePropType<(e: Event) => void>(Function),
   // },
-  onContextmenu?: IEvent;
+  onContextmenu?: (e: Event) => void;
   //   type: definePropType<(e: Event) => void>(Function),
   // },
-  id?: string;
-  open?: boolean;
+  id?: MaybeRef<string>;
+  open?: Signal<boolean>;
+
+  // slot?: TypeElement;
 }

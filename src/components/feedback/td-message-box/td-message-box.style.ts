@@ -1,7 +1,17 @@
 import { IStyle } from '@type-dom/css-type';
-import { $bgColor, $boxShadow, $colors, $fontLineHeightPrimary, $fontSizes, $textColor } from '../../../styles/var';
+import {
+  $bgColor,
+  $boxShadow,
+  $colors,
+  $fontLineHeightPrimary,
+  $fontSizes,
+  $textColor,
+} from '../../../styles/var';
 import { $message } from '../td-message/td-message.style';
-import { ITdMessageBoxConfig } from './td-message-box.interface';
+import {
+  MessageBoxProps,
+  TdMessageBoxOptions,
+} from './td-message-box.interface';
 
 export const $messageBox = {
   // 'title-color': getCssVar('text-color-primary'),
@@ -60,26 +70,27 @@ export const $messageBoxOverlayStyle: IStyle = {
 
 export const $messageBoxHeaderStyle: IStyle = {
   // paddingBottom: getCssVar('messagebox-padding-primary');
-  paddingBottom: $messageBox.paddingPrimary
-}
+  paddingBottom: $messageBox.paddingPrimary,
+};
 
 const $messageCloseSize = $message.closeSize;
 export const $messageBoxHeaderCloseStyle: IStyle = {
-//   padding-right: calc(
-//   getCssVar('messagebox-padding-primary') +
-// var(
-//   #{getCssVarName('message-close-size')},
-//   map.get($message, 'close-size')
-// )
-  paddingRight: parseInt($messageBox.paddingPrimary) + parseInt($message.closeSize) + 'px',
+  //   padding-right: calc(
+  //   getCssVar('messagebox-padding-primary') +
+  // var(
+  //   #{getCssVarName('message-close-size')},
+  //   map.get($message, 'close-size')
+  // )
+  paddingRight:
+    parseInt($messageBox.paddingPrimary) + parseInt($message.closeSize) + 'px',
 };
 
 export const $messageBoxTitleStyle: IStyle = {
-//   font-size: getCssVar('messagebox-font-size');
+  //   font-size: getCssVar('messagebox-font-size');
   fontSize: $messageBox.fontSize,
-// line-height: getCssVar('messagebox-font-line-height');
+  // line-height: getCssVar('messagebox-font-line-height');
   lineHeight: $messageBox.fontLineHeight,
-// color: getCssVar('messagebox-title-color');
+  // color: getCssVar('messagebox-title-color');
   color: $messageBox.titleColor,
 };
 
@@ -93,10 +104,10 @@ export const $messageBoxHeaderBtnStyle: IStyle = {
   border: 'none',
   outline: 'none',
   background: 'transparent',
-// font-size: var(
-//   #{getCssVarName('message-close-size')},
-//   map.get($message, 'close-size')
-// );
+  // font-size: var(
+  //   #{getCssVarName('message-close-size')},
+  //   map.get($message, 'close-size')
+  // );
   fontSize: $message.closeSize,
   cursor: 'pointer',
 };
@@ -106,17 +117,17 @@ export const $messageBoxContentStyle: IStyle = {
   color: $messageBox.contentColor,
   // font-size: getCssVar('messagebox-content-font-size');
   fontSize: $messageBox.contentFontSize,
-}
+};
 
 export const $messageBoxContainerStyle: IStyle = {
   display: 'flex',
   alignItems: 'center',
   gap: '12px',
-}
+};
 
 export const $messageBoxInputStyle: IStyle = {
-  paddingTop: '12px'
-}
+  paddingTop: '12px',
+};
 
 export const $messageBoxStatusStyle: IStyle = {
   fontSize: '24px',
@@ -124,22 +135,22 @@ export const $messageBoxStatusStyle: IStyle = {
 
 export const $messageBoxMessageStyle: IStyle = {
   margin: 0,
-}
+};
 
 export const $messageBoxMessagePStyle: IStyle = {
   margin: 0,
   // line-height: getCssVar('messagebox-font-line-height');
   lineHeight: $messageBox.fontLineHeight,
-}
+};
 
 export const $messageBoxErrorMsgStyle: IStyle = {
-//   color: getCssVar('color-error');
+  //   color: getCssVar('color-error');
   color: $colors.error.base,
-//   font-size: getCssVar('messagebox-error-font-size');
+  //   font-size: getCssVar('messagebox-error-font-size');
   fontSize: $messageBox.errorFontSize,
-// line-height: getCssVar('messagebox-font-line-height');
+  // line-height: getCssVar('messagebox-font-line-height');
   lineHeight: $messageBox.fontLineHeight,
-}
+};
 
 export const $messageBoxBtnsStyle: IStyle = {
   display: 'flex',
@@ -150,7 +161,7 @@ export const $messageBoxBtnsStyle: IStyle = {
   paddingTop: $messageBox.paddingPrimary,
 };
 
-export function useStyle(config?: ITdMessageBoxConfig) {
+export function useStyle(config?: TdMessageBoxOptions) {
   useType(config);
   const draggable = config?.draggable || false;
   if (draggable) {
@@ -159,14 +170,15 @@ export function useStyle(config?: ITdMessageBoxConfig) {
   }
   if (config?.showClose !== false) {
     $messageBoxHeaderCloseStyle.display = 'block';
-  //   $messageBoxHeaderStyle.paddingRight =  calc(
-  //     getCssVar('messagebox-padding-primary') +
-  //   var(
-  //     #{getCssVarName('message-close-size')},
-  //     map.get($message, 'close-size')
-  // )
-  // );
-    $messageBoxHeaderStyle.paddingRight = parseInt($messageBox.paddingPrimary) + parseInt($messageCloseSize) + 'px';
+    //   $messageBoxHeaderStyle.paddingRight =  calc(
+    //     getCssVar('messagebox-padding-primary') +
+    //   var(
+    //     #{getCssVarName('message-close-size')},
+    //     map.get($message, 'close-size')
+    // )
+    // );
+    $messageBoxHeaderStyle.paddingRight =
+      parseInt($messageBox.paddingPrimary) + parseInt($messageCloseSize) + 'px';
   }
   if (config?.center) {
     $messageBoxTitleStyle.display = 'flex';
@@ -188,7 +200,7 @@ export function useStyle(config?: ITdMessageBoxConfig) {
   }
 }
 
-export function useType(config?: ITdMessageBoxConfig) {
+export function useType(config?: TdMessageBoxOptions) {
   const type = config?.type || 'info';
   const $messageBoxColor = $colors[type].base;
   // $messageBoxIconStyle.color = $messageBoxColor;

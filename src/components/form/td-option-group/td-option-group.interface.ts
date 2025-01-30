@@ -1,10 +1,10 @@
-import { IUI, IUIConfig } from '../../../ui/ui.interface';
+import { ITypeUL, TypeULProps } from '@type-dom/framework';
 
-export interface ITdOptionGroup extends IUI {
+export interface ITdOptionGroup extends ITypeUL {
   className: 'TdOptionGroup';
 }
 
-export interface ITdOptionGroupConfig extends IUIConfig {
+export interface OptionGroupProps extends TypeULProps {
   /**
    * @description name of the group
    */

@@ -1,10 +1,10 @@
-import { IUI, IUIConfig } from '../../../ui/ui.interface';
+import { ITypeElement, TypeTransitionProps } from '@type-dom/framework';
 
-export interface ITdAlert extends IUI {
+export interface ITdAlert extends ITypeElement {
   className: 'TdAlert';
 }
 
-export interface ITdAlertConfig extends IUIConfig {
+export interface AlertProps extends TypeTransitionProps {
   /**
    * @description alert title.
    *     default: ''
@@ -39,8 +39,8 @@ export interface ITdAlertConfig extends IUIConfig {
   effect?: IAlertEffect;
 
   emits?: {
-    close?(): void
-  }
+    close?(): void;
+  };
 }
 
 export type IAlertEffect = 'dark' | 'light';

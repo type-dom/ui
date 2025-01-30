@@ -1,17 +1,18 @@
-import { UI } from '../../../ui/ui.abstract';
+import { TypeUL, UL } from '@type-dom/framework';
 import { $borderColorHover, $borderColor } from '../../../styles/var';
-import { ITdMenu, ITdMenuConfig } from './td-menu.interface';
+import { ITdMenu, MenuProps } from './td-menu.interface';
 
-export class TdMenu extends UI implements ITdMenu {
+export class TdMenu extends TypeUL implements ITdMenu {
   className: 'TdMenu';
-  override props: ITdMenuConfig
-  constructor(params: ITdMenuConfig = {}) {
+  override props: MenuProps;
+
+  constructor(params = {} as MenuProps) {
     super();
-    this.useTag('ul');
+    // this.useTag('ul');
     this.className = 'TdMenu';
     this.attr.addObj({
       name: 'td-menu',
-      role: 'menubar'
+      role: 'menubar',
     });
     this.style.addObj({
       // border-right: solid 1px var(--el-menu-border-color),
@@ -22,8 +23,9 @@ export class TdMenu extends UI implements ITdMenu {
       paddingLeft: '0',
       // background-color: var(--el-menu-bg-color),
       backgroundColor: $borderColor.base,
-      boxSizing: 'border-box'
+      boxSizing: 'border-box',
     });
+
     this.props = this.useParams(params);
   }
 
@@ -36,7 +38,7 @@ export class TdMenu extends UI implements ITdMenu {
       this.style.addObj({
         display: 'flex',
         flexWrap: 'nowrap',
-        borderRight: 'none'
+        borderRight: 'none',
         // height: var(--el-menu-horizontal-height),
       });
     }

@@ -6,5 +6,5 @@ export const $badge = {
   radius: '10px',
   fontSize: '12px',
   padding: '6px',
-  size: '18px'
+  size: '18px',
 };

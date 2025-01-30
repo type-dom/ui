@@ -1,75 +1,51 @@
-import { $colors, IType } from '../../../styles/var';
-import { UI } from '../../../ui/ui.abstract';
+import { TypeSpan } from '@type-dom/framework';
+import { computed, unref } from '@type-dom/signals';
 import { CHANGE_EVENT } from '../../../constants/event';
-import { ITdCheckTag, ITdCheckTagConfig } from './td-check-tag.interface';
-import { $checkTag, $checkTagChecked, useType } from './td-check-tag.style';
+import { useNamespace } from '../../../hooks/use-namespace';
+import { ITdCheckTag, CheckTagProps } from './td-check-tag.interface';
+import { checkTagEmits, checkTagProps } from './td-check-tag.const';
+import './style/index';
 
-export class TdCheckTag extends UI implements ITdCheckTag {
+export class TdCheckTag extends TypeSpan implements ITdCheckTag {
   className: 'TdCheckTag';
-  override props: ITdCheckTagConfig;
-  checked?: boolean;
-  private type: IType;
+  override props: CheckTagProps;
 
-  constructor(params: ITdCheckTagConfig = {}) {
+  constructor(params: CheckTagProps = {}) {
     super();
-    this.useTag('span');
     this.className = 'TdCheckTag';
     this.attr.addName('td-check-tag');
-    this.type = params?.type || 'primary';
-    useType();
-    this.style.addObj($checkTag);
-    this.setChecked(params?.checked);
+
+    this.addEmits(checkTagEmits);
+    this.assignProps(checkTagProps);
     this.props = this.useParams(params);
-    this.addEvents({
-      click: () => {
-        // if (this.props.emits?.change) {
-        //   this.checked = !this.checked;
-        //   this.setChecked(this.checked);
-        // }
-        this.handleChange();
-      },
-      mouseenter: () => {
-        if (this.checked) {
-          this.style.setObj({
-            backgroundColor: $colors[this.type]['light-7']
-          });
-        } else {
-          this.style.setObj({
-            backgroundColor: $colors.info['light-7']
-          });
-        }
-      },
-      mouseleave: () => {
-        if (this.checked) {
-          this.style.setObj({
-            backgroundColor: $colors[this.type]['light-8']
-          });
-        } else {
-          this.style.setObj({
-            backgroundColor: $colors.info['light-9']
-          });
-        }
-      }
-    });
   }
 
-  handleChange() {
-    this.checked = !this.checked;
-    this.setChecked(this.checked);
-    this.emit(CHANGE_EVENT, this.checked);
-    this.emit('update:checked', this.checked);
-    // emit(CHANGE_EVENT, checked)
-    // emit('update:checked', checked)
-  }
-  setChecked(checked?: boolean) {
-    this.checked = checked;
-    if (checked) {
-      this.style.setObj($checkTagChecked[this.type]);
-    } else {
-      this.style.setObj({
-        backgroundColor: $colors.info['light-9'],
-        color: $colors.info.base
-      });
-    }
+  override setup() {
+    const props = this.props;
+    const emit = this.emit;
+
+    const ns = useNamespace('check-tag');
+    const isDisabled = computed(() => props.disabled as boolean);
+    const containerKls = computed(() => [
+      ns.b(),
+      ns.is('checked', unref(props.checked)),
+      ns.is('disabled', isDisabled.get()),
+      ns.m(props.type || 'primary'),
+    ]);
+
+    const handleChange = () => {
+      if (isDisabled.get()) {
+        return;
+      }
+      const checked = !unref(props.checked);
+      emit(CHANGE_EVENT, checked);
+      emit('update:checked', checked);
+    };
+
+    this.attr.addClass(containerKls);
+    this.addEvents({
+      click: handleChange,
+    });
+    this.slotChildren(props.slot || props.slots?.default);
   }
 }

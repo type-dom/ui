@@ -1,15 +1,29 @@
-import { TypeElement, TypeSvgSvg } from '@type-dom/framework';
-import { IUI, IUIConfig } from '../../../ui/ui.interface';
+import {
+  TypeProps,
+  ITypeElement,
+  ITypeFragment,
+  TypeFragmentProps,
+  TypeElement,
+  TypeSvgSvg,
+  TypeNode,
+  TypeHtml,
+} from '@type-dom/framework';
+import { TdNotification } from './td-notification.class';
 
-export type INotificationPosition = 'top-right' | 'top-left' | 'bottom-right' | 'bottom-left';
+export type INotificationPosition =
+  | 'top-right'
+  | 'top-left'
+  | 'bottom-right'
+  | 'bottom-left';
 
-export type INotificationType = 'success' | 'info' | 'warning' | 'error';
+export type INotificationType = 'success' | 'info' | 'warning' | 'error' | '';
 
-export interface ITdNotification extends IUI {
+export interface ITdNotification extends ITypeFragment {
   className: 'TdNotification';
+  props: NotificationProps;
 }
 
-export interface ITdNotificationConfig extends IUIConfig {
+export interface NotificationProps extends TypeFragmentProps {
   /**
    * @description custom class name for Notification
    *     default: ''
@@ -18,7 +32,7 @@ export interface ITdNotificationConfig extends IUIConfig {
   /**
    * @description whether `message` is treated as HTML string
    */
-  dangerouslyUseHTMLString?: boolean,
+  dangerouslyUseHTMLString?: boolean;
   /**
    * @description duration before close. It will not automatically close if set 0
    *     default: 4500
@@ -27,7 +41,7 @@ export interface ITdNotificationConfig extends IUIConfig {
   /**
    * @description custom icon component. It will be overridden by `type`
    */
-  icon?: TypeSvgSvg;
+  icon?: typeof TypeSvgSvg;
   /**
    * @description notification dom id
    *     default: ''
@@ -37,7 +51,7 @@ export interface ITdNotificationConfig extends IUIConfig {
    * @description description text
    *     default: ''
    */
-  message?: string | TypeElement;
+  message?: string | TypeNode;
   /**
    * @description offset from the top edge of the screen. Every Notification instance of the same moment should have the same offset
    *     default: 0
@@ -76,5 +90,59 @@ export interface ITdNotificationConfig extends IUIConfig {
   /**
    * @description initial zIndex
    */
-  zIndex?: number,
+  zIndex?: number;
 }
+
+export type NotificationOptions = Omit<NotificationProps, 'id' | 'onClose'> & {
+  /**
+   * @description set the root element for the notification, default to `document.body`
+   */
+  appendTo?: HTMLElement | string;
+  /**
+   * @description callback function when closed
+   */
+  onClose?(vm: TypeNode): void;
+};
+export type NotificationOptionsTyped = Omit<NotificationOptions, 'type'>;
+
+export interface NotificationHandle {
+  close: () => void;
+}
+
+export type NotificationParams =
+  | Partial<NotificationOptions>
+  | string
+  | TypeNode;
+export type NotificationParamsTyped =
+  | Partial<NotificationOptionsTyped>
+  | string
+  | TypeNode;
+
+export interface NotifyFn {
+  (
+    options?: NotificationParams
+    // appContext?: null | AppContext
+  ): NotificationHandle;
+
+  closeAll(): void;
+
+  // _context: AppContext | null
+}
+
+export type NotifyTypedFn = (
+  options?: NotificationParamsTyped
+  // appContext?: null | AppContext
+) => NotificationHandle;
+
+export interface Notify extends NotifyFn {
+  success: NotifyTypedFn;
+  warning: NotifyTypedFn;
+  error: NotifyTypedFn;
+  info: NotifyTypedFn;
+}
+
+export interface NotificationQueueItem {
+  vm: TdNotification;
+}
+
+export type NotificationQueue = NotificationQueueItem[];

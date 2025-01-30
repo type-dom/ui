@@ -1,11 +1,12 @@
-import { IUI, IUIConfig } from '../../../ui/ui.interface';
-import { TypeElement } from '@type-dom/framework';
+import { ITypeDiv, TypeDivProps } from '@type-dom/framework';
+import { Ref } from '@type-dom/signals';
+import { UseNamespaceReturn } from '../../../hooks/use-namespace';
 
-export interface ITdAnchor extends IUI {
+export interface ITdAnchor extends ITypeDiv {
   className: 'TdAnchor';
 }
 
-export interface ITdAnchorConfig extends IUIConfig {
+export interface AnchorProps extends TypeDivProps {
   /**
    * @description scroll container
    */
@@ -40,9 +41,31 @@ export interface ITdAnchorConfig extends IUIConfig {
    *     default: 'vertical',
    */
   direction?: 'vertical' | 'horizontal';
+  /**
+   * @description Scroll whether link is selected at the top
+   *     default: false,
+   */
+  scrollTop?: boolean;
 }
 
 export interface AnchorLinkState {
   el: HTMLElement;
   href: string;
+}
+
+export interface AnchorLinkState {
+  el: HTMLElement;
+  href: string;
+}
+
+export interface AnchorContext {
+  ns: UseNamespaceReturn;
+  direction: string;
+  currentAnchor: Ref<string>;
+
+  addLink(state: AnchorLinkState): void;
+
+  removeLink(href: string): void;
+
+  handleClick(e: MouseEvent, href?: string): void;
 }

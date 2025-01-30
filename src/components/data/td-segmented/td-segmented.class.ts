@@ -1,193 +1,269 @@
-import { Div, Input, Label, nextTick, vHash } from '@type-dom/framework';
-import { IStyle } from '@type-dom/css-type';
-import { UI } from '../../../ui/ui.abstract';
-import { CHANGE_EVENT, UPDATE_MODEL_EVENT } from '../../../constants/event';
-import { ITdSegmented, ITdSegmentedConfig, Option } from './td-segmented.interface';
 import {
-  $segmented,
-  $segmentedGroupStyle, $segmentedItemInputStyle, $segmentedItemLabelStyle,
-  $segmentedItemSelectedStyle,
-  $segmentedItemStyle,
-  $segmentedStyle, useStyle
-} from './td-segmented.style';
+  Div,
+  Input,
+  Label,
+  TypeFragment,
+  onMounted,
+  useActiveElement,
+  useResizeObserver,
+} from '@type-dom/framework';
+import {
+  computed,
+  effect,
+  signal,
+  toSignals,
+  unref,
+  watch,
+} from '@type-dom/signals';
+import { debugWarn, isObject } from '@type-dom/utils';
+import { CHANGE_EVENT, UPDATE_MODEL_EVENT } from '../../../constants/event';
+import { useNamespace } from '../../../hooks/use-namespace';
+import { useId } from '../../../hooks/use-id';
+import {
+  useFormDisabled,
+  useFormSize,
+} from '../../form/td-form/hooks/use-form-common-props';
+import {
+  useFormItem,
+  useFormItemInputId,
+} from '../../form/td-form/hooks/use-form-item';
+import { ITdSegmented, SegmentedProps, Option } from './td-segmented.interface';
+import { segmentedEmits, segmentedProps } from './td-segmented.const';
+import './style/index';
 
-export class TdSegmented extends UI implements ITdSegmented {
+export class TdSegmented extends TypeFragment implements ITdSegmented {
   className: 'TdSegmented';
-  override props: ITdSegmentedConfig
-  private group: Div;
-  private disabled?: boolean;
-  private state: {
-    translateX: number;
-    width: number;
-    disabled: boolean | undefined;
-    focusVisible: boolean;
-    isInit: boolean
-  };
-  private selectedStyle?: IStyle;
-  private selectedDiv: Div;
-  override modelValue?: string | number | boolean | undefined;
+  override props: SegmentedProps;
 
-  constructor(params: ITdSegmentedConfig = {}) {
+  constructor(params: SegmentedProps = {}) {
     super();
     this.className = 'TdSegmented';
-    useStyle(params);
-    this.attr.addName('td-segmented');
-    this.style.addObj($segmentedStyle);
-    this.attr.addObj({
-      role: 'radiogroup',
-      ariaLabel: 'Segmented',
-      ariaLabelledby: 'Segmented'
-    });
-    this.modelValue = params?.modelValue;
-    this.disabled = params?.disabled; // todo form disabled
-    this.group = new Div({
-      styleObj: $segmentedGroupStyle
-    });
-    this.addChild(this.group);
-    this.selectedDiv = new Div({
-      styleObj: $segmentedItemSelectedStyle
-    });
-    this.state = {
-      isInit: false,
-      width: 0,
-      translateX: 0,
-      disabled: false,
-      focusVisible: false
-    };
-    this.group.addChild(this.selectedDiv);
-    // const props = this.props;
-    const options = params?.options || [];
-    const labels: Label[] = [];
-    options.forEach((option, index) => {
-      const label = new Label({
-        name: 'td-segmented-item',
-        styleObj: $segmentedItemStyle,
-        childNodes: [
-          new Input({
-            name: params?.name || 'radio-' + vHash,
-            attrObj: {
-              type: 'radio',
-              value: this.getValue(option),
-              disabled: this.getDisabled(option),
-              checked: this.getSelected(option)
-            },
-            styleObj: $segmentedItemInputStyle,
-            events: {
-              change: (evt, element) => {
-                this.handleChange(option, element as Input);
-              }
-            }
-          })
-        ]
-      });
-      if (typeof option === 'object' && option.slot) {
-        label.addChild(option.slot);
-        option.slot.style.addObj({
-          zIndex: 1 // todo ????? 否则显示不出来
-        });
-      } else {
-        label.addChild(new Div({
-          text: this.getLabel(option)?.toString(),
-          name: 'item-label',
-          styleObj: $segmentedItemLabelStyle
-        }));
-      }
-      if (this.getDisabled(option)) {
-        label.style.addObj({
-          color: $segmented.itemDisabledColor,
-          cursor: 'not-allowed'
-        });
-      }
-      labels.push(label);
-    });
-    this.group.addChildren(...labels);
 
+    this.addEmits(segmentedEmits);
+    this.assignProps(segmentedProps);
     this.props = this.useParams(params);
   }
 
+  override setup() {
+    // console.log('TdSegmented created');
+    const props = this.props;
+    const emit = this.emit;
 
-  override mounted() {
-    console.log('TdSegmented created');
-    nextTick(() => {
-      this.updateSelect();
+    const ns = useNamespace('segmented');
+    const segmentedId = useId();
+    const segmentedSize = useFormSize();
+    const _disabled = useFormDisabled();
+    const { formItem } = useFormItem();
+    const { inputId, isLabeledByFormItem } = useFormItemInputId(props, {
+      formItemContext: formItem,
     });
-  }
 
-  getValue(item: Option): string | number | boolean | undefined {
-    return typeof item === 'object' ? item.value : item;
-  }
+    const segmentedRef = signal<Div | undefined>(undefined);
+    const activeElement = useActiveElement();
 
-  getLabel(item: Option): string | number | boolean | undefined {
-    return typeof item === 'object' ? item.label : item;
-  }
+    const state = toSignals({
+      isInit: false as boolean,
+      width: 0,
+      height: 0,
+      translateX: 0,
+      translateY: 0,
+      focusVisible: false as boolean,
+    });
 
-  getDisabled(item: Option): boolean | undefined {
-    return !!(this.disabled || (typeof item === 'object' ? item.disabled : false));
-  }
+    const handleChange = (item: Option) => {
+      console.warn('handleChange . item is ', item);
+      const value = getValue(item);
+      emit(UPDATE_MODEL_EVENT, value);
+      emit(CHANGE_EVENT, value);
+    };
 
-  getSelected(item: Option): boolean {
-    return this.props.modelValue === this.getValue(item);
-  }
+    const getValue = (item: Option) => {
+      return isObject(item) ? item.value : item;
+    };
 
-  getOption(value?: string | number | boolean) {
-    return this.props.options && this.props.options?.find((item) => this.getValue(item) === value);
-  }
+    const getLabel = (item: Option) => {
+      return isObject(item) ? item.label : (item as string);
+    };
 
-  updateSelect() {
-    console.log('updateSelect');
-    const labels: Label[] = this.group.findChildNodes('Label');
-    labels.forEach((label, index) => {
-      const input: Input | undefined = label.findChildNode('Input');
-      if (input?.attr.get('value') === this.modelValue) {
-        const rect = label.dom.getBoundingClientRect();
-        label.style.setObj({
-          color: $segmented.itemSelectedColor
-        });
-        this.state.isInit = true;
-        this.state.width = rect.width;
-        this.state.translateX = label.dom.offsetLeft;
-        this.state.disabled = this.getDisabled(this.getOption(this.modelValue));
+    const getDisabled = (item: Option) => {
+      return !!(_disabled.get() || (isObject(item) ? item.disabled : false));
+    };
+
+    const getSelected = (item: Option) => {
+      return props.vModel?.get() === getValue(item);
+    };
+
+    const getOption = (value: any) => {
+      return props.options?.find((item) => getValue(item) === value);
+    };
+
+    const getItemCls = (item: Option) => {
+      return computed(() => [
+        ns.e('item'),
+        ns.is('selected', getSelected(item)),
+        ns.is('disabled', getDisabled(item)),
+      ]);
+    };
+
+    const updateSelect = () => {
+      console.warn('updateSelect . ');
+      if (!segmentedRef.get()) return;
+      // 这一步有问题； is-selected 样式有异步。应该直接根据vModel的值匹配
+      // const selectedItem = segmentedRef.get()?.querySelector(
+      //   '.is-selected'
+      // ) as HTMLElement
+      // const selectedItemInput = segmentedRef.get()?.querySelector(
+      //   '.is-selected input'
+      // ) as HTMLElement
+      const selectedEl = this.down(
+        'attrObj.value',
+        props.vModel?.get()
+      ) as Label;
+      console.log('selectedItem is ', selectedEl);
+      // todo watch 触发时，dom 未必已经创建。
+      const selectedItem = selectedEl?.dom;
+      const selectedItemInput = selectedEl?.dom?.querySelector?.('input');
+      if (!selectedItem || !selectedItemInput) {
+        state.width.set(0);
+        state.height.set(0);
+        state.translateX.set(0);
+        state.translateY.set(0);
+        state.focusVisible.set(false);
+        return;
+      }
+      const rect = selectedItem.getBoundingClientRect();
+      state.isInit.set(true);
+      if (unref(props.direction) === 'vertical') {
+        state.height.set(rect.height);
+        state.translateY.set(selectedItem.offsetTop);
       } else {
-        input?.attr.remove('checked');
-        const options = this.props.options || [];
-        if (options[index]) {
-          const disabled = this.getDisabled(options[index]);
-          if (disabled) {
-            label.style.setObj({
-              color: $segmented.itemDisabledColor,
-            })
-          } else {
-            label.style.setObj({
-              color: undefined // remove color
-            });
-          }
+        state.width.set(rect.width);
+        state.translateX.set(selectedItem.offsetLeft);
+      }
+      try {
+        // This will failed in test
+        state.focusVisible.set(selectedItemInput.matches(':focus-visible'));
+      } catch {}
+    };
+
+    const segmentedCls = computed(() => [
+      ns.b(),
+      ns.m(segmentedSize.get()),
+      ns.is('block', props.block),
+    ]);
+
+    const selectedStyle = {
+      width: computed(() =>
+        unref(props.direction) === 'vertical'
+          ? '100%'
+          : `${state.width.get()}px`
+      ),
+      height: computed(() =>
+        unref(props.direction) === 'vertical'
+          ? `${state.height.get()}px`
+          : '100%'
+      ),
+      transform: computed(() =>
+        unref(props.direction) === 'vertical'
+          ? `translateY(${state.translateY.get()}px)`
+          : `translateX(${state.translateX.get()}px)`
+      ),
+      display: computed(() => (state.isInit.get() ? 'block' : 'none')),
+    };
+
+    const selectedCls = computed(() => [
+      ns.e('item-selected'),
+      ns.is('disabled', getDisabled(getOption(props.vModel?.get()))),
+      ns.is('focus-visible', state.focusVisible.get()),
+    ]);
+
+    const name = computed(() => {
+      return props.name || segmentedId.get();
+    });
+
+    this.addChild(
+      new Div({
+        vIf: props.options?.length,
+        refEl: segmentedRef,
+        styleObj: props.styleObj, // 父组件传入的样式
+        attrObj: {
+          name: 'td-segmented',
+          id: inputId.get(),
+          role: 'radiogroup',
+          class: segmentedCls,
+          ariaLabel: isLabeledByFormItem.get()
+            ? props.ariaLabel || 'segmented'
+            : undefined,
+          ariaLabelledby: isLabeledByFormItem.get()
+            ? formItem!.labelId
+            : undefined,
+        },
+        slot: new Div({
+          class: computed(() => [ns.e('group'), ns.m(unref(props.direction))]),
+          slot: [
+            new Div({
+              styleObj: selectedStyle,
+              class: selectedCls,
+            }),
+            ...props.options!.map((item, index) => {
+              return new Label({
+                class: getItemCls(item),
+                attrObj: {
+                  value: getValue(item),
+                },
+                slot: [
+                  new Input({
+                    attrObj: {
+                      class: ns.e('item-input'),
+                      type: 'radio',
+                      name: name.get(),
+                      checked: getSelected(item),
+                      disabled: getDisabled(item),
+                    },
+                    events: {
+                      change: () => handleChange(item),
+                    },
+                  }),
+                  new Div({
+                    class: ns.e('item-label'),
+                    slot:
+                      isObject(item) && item.slot ? item.slot : getLabel(item),
+                  }),
+                ],
+              });
+            }),
+          ],
+        }),
+      })
+    );
+
+    useResizeObserver(segmentedRef.get()?.dom, updateSelect);
+
+    watch(activeElement, updateSelect);
+
+    onMounted(() => {
+      // add by me
+      updateSelect(); // 不加初始化时选中样式不加载
+      effect(() => {
+        // unref(props.direction);
+        unref(props.size);
+        unref(props.vModel);
+        // unref(activeElement);
+        // unref(selectedStyle.width);
+        // unref(selectedStyle.height);
+        // unref(selectedStyle.transform); // 不加选中样式不加载
+        updateSelect();
+      });
+    });
+
+    watch(
+      () => props.vModel?.get(),
+      () => {
+        updateSelect();
+        if (props.validateEvent) {
+          formItem?.validate?.('change').catch((err) => debugWarn(err));
         }
       }
-    });
-    this.selectedStyle = {
-      width: `${this.state.width}px`,
-      transform: `translateX(${this.state.translateX}px)`,
-      display: this.state.isInit ? 'block' : 'none'
-    };
-    this.selectedDiv.style.setObj(this.selectedStyle);
-  }
-
-  handleChange(item: Option, element: Input) {
-    const value = this.getValue(item);
-    this.emit(UPDATE_MODEL_EVENT, value);
-    this.emit(CHANGE_EVENT, value);
-    console.log('handleChange ', item);
-    this.modelValue = this.getValue(item);
-    element.attr.add('checked', true);
-    this.updateSelect();
-    // const value = this.getValue(item);
-    // const update = this.props.emits?.[UPDATE_MODEL_EVENT];
-    // if (update) {
-    //   update(value);
-    // }
-    // const change = this.props.emits?.[CHANGE_EVENT];
-    // if (change) {
-    //   change(value);
-    // }
+    );
   }
 }

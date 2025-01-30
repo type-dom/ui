@@ -1,56 +1,44 @@
-import { UI } from '../../../ui/ui.abstract';
-import { TdIcon } from '../td-icon/td-icon.class';
-import { $baseText, $textStateColors, sizeOpts } from './td-text.style';
+import { TypeHtml } from '@type-dom/framework';
+import { computed } from '@type-dom/signals';
+import { isUndefined } from '@type-dom/utils';
+import { useNamespace } from '../../../hooks/use-namespace';
+import { useFormSize } from '../../form/td-form/hooks/use-form-common-props';
 import { ITdText, ITdTextConfig } from './td-text.interface';
+import { textProps } from './td-text.const';
+import './style/index';
 
-export class TdText extends UI implements ITdText {
+export class TdText extends TypeHtml implements ITdText {
   className: 'TdText';
+  dom?: HTMLElement;
   override props: ITdTextConfig;
-  icon?: TdIcon;
 
   constructor(params: ITdTextConfig = {}) {
     super();
-    this.useTag(params?.tag || 'span');
     this.className = 'TdText';
-    this.style.addObj($baseText);
+    this.assignProps(textProps);
     this.props = this.useParams(params);
-    // this.addChild(this.getSlotNode());
-    if (params.slot) {
-      this.slotChild(params.slot);
-    }
   }
 
   override setup() {
     const props = this.props;
-    if (props?.type) {
-      this.style.addObj($textStateColors[props.type].default);
-    } else {
-      this.style.addObj($textStateColors.default.default);
-    }
-    if (props?.size) {
-      this.style.addObj(sizeOpts[props?.size]);
-    } else {
-      this.style.addObj(sizeOpts.default);
-    }
-    if (props?.truncated && props?.width) {
+    const textSize = useFormSize();
+    const ns = useNamespace('text');
+
+    const textKls = computed(() => [
+      ns.b(),
+      ns.m(props.type),
+      ns.m(textSize.get()),
+      ns.is('truncated', props.truncated),
+      ns.is('line-clamp', !isUndefined(props.lineClamp)),
+    ]);
+    this.attr.addClass(textKls);
+    if (props.lineClamp) {
+      console.warn('then -webkit-line-clamp . ');
       this.style.addObj({
-        display: 'inline-block',
-        maxWidth: '100%',
-        textOverflow: 'ellipsis',
-        whiteSpace: 'nowrap',
-        overflow: 'hidden',
-        width: props?.width
+        // color: '#f00',
+        '-webkit-line-clamp': props.lineClamp,
       });
     }
-    if (props?.lineClamp) {
-      this.style.addObj({
-        // '-webkit-line-clamp': props?.lineClamp,
-        WebkitLineClamp: props?.lineClamp,
-        display: '-webkit-inline-box',
-        // '-webkit-box-orient': 'vertical',
-        WebkitBoxOrient: 'vertical',
-        overflow: 'hidden'
-      });
-    }
+    this.slotChildren(props.slot);
   }
 }

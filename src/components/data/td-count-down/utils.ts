@@ -1,6 +1,6 @@
-// import { isNumber } from '@element-plus/utils'
 import type { Dayjs } from 'dayjs';
 import { isNumber } from '@type-dom/utils';
+import { unref } from '@type-dom/signals';
 
 const timeUnits = [
   ['Y', 1000 * 60 * 60 * 24 * 365], // years
@@ -9,7 +9,7 @@ const timeUnits = [
   ['H', 1000 * 60 * 60], // hours
   ['m', 1000 * 60], // minutes
   ['s', 1000], // seconds
-  ['S', 1] // million seconds
+  ['S', 1], // million seconds
 ] as const;
 
 export const getTime = (value: number | Dayjs) => {
@@ -17,7 +17,8 @@ export const getTime = (value: number | Dayjs) => {
 };
 
 export const formatTime = (timestamp: number, format: string) => {
-  let timeLeft = timestamp;
+  // console.warn('formatTime , timestamp is ', timestamp, ' format is ', format);
+  let timeLeft = unref(timestamp);
   const escapeRegex = /\[([^\]]*)]/g;
 
   const replacedText = timeUnits.reduce((current, [name, unit]) => {

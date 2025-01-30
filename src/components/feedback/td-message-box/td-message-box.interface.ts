@@ -1,48 +1,77 @@
-import { InputEnum, TypeElement, TypeSvgSvg } from '@type-dom/framework';
+import {
+  InputEnum,
+  ITypeFragment,
+  TypeFragmentProps,
+  TypeElement,
+  TypeSvgSvg,
+  TypeNode,
+} from '@type-dom/framework';
 import { IStyle } from '@type-dom/css-type';
-import { IUI, IUIConfig } from '../../../ui/ui.interface';
-import { ISize } from '../../../styles/size';
+import { ComponentSize } from '../../../constants/size';
 import { TdInput } from '../../form';
+import { MaybeRef, Signal } from '@type-dom/signals';
 
-export interface ITdMessageBox extends IUI {
+export interface ITdMessageBox extends ITypeFragment {
   className: 'TdMessageBox';
+  props: MessageBoxProps;
+}
+
+export interface MessageBoxProps
+  extends TypeFragmentProps,
+    TdMessageBoxOptions,
+    MessageBoxState {
+  buttonSize?: ComponentSize;
+  modal?: boolean;
+  lockScroll?: boolean;
+  showClose?: boolean;
+  closeOnClickModal?: boolean;
+  closeOnPressEscape?: boolean;
+  closeOnHashChange?: boolean;
+  center?: boolean;
+  draggable?: boolean;
+  overflow?: boolean;
+  roundButton?: boolean;
+  container?: string;
+  boxType?: IMessageBoxType;
 }
 
 type MessageType = '' | 'success' | 'warning' | 'info' | 'error';
 
 export type IMessageBoxType = '' | 'prompt' | 'alert' | 'confirm';
-export type MessageBoxData = IMessageBoxInputData & IAction;
-export type IAction = 'confirm' | 'close' | 'cancel';
+export type MessageBoxData = IMessageBoxInputData & Action;
+export type Action = 'confirm' | 'close' | 'cancel';
+
 export interface IMessageBoxInputData {
+  value: string;
   input?: TdInput;
-  action?: IAction;
+  action?: Action;
 }
 
 export interface MessageBoxInputValidator {
-  (value?: string): boolean | string;
+  (value?: string | number): boolean | string;
 }
 
-export declare interface IMessageBoxState {
+export declare interface MessageBoxState {
   autofocus?: boolean;
-  title?: string;
-  message?: string;
+  title?: string | TdMessageBoxOptions;
+  message?: string | TypeNode;
   type?: MessageType;
-  icon?: TypeSvgSvg;
+  icon?: typeof TypeSvgSvg; // | string;
   customClass?: string;
   customStyle?: IStyle;
   showInput?: boolean;
-  inputValue?: string;
+  inputValue?: Signal<string>;
   inputPlaceholder?: string;
-  inputType?: string;
+  inputType?: keyof typeof InputEnum | 'textarea';
   inputPattern?: RegExp;
   inputValidator?: MessageBoxInputValidator;
   inputErrorMessage?: string;
   showConfirmButton?: boolean;
   showCancelButton?: boolean;
-  action?: IAction;
+  action?: Action;
   dangerouslyUseHTMLString?: boolean;
-  confirmButtonText?: string;
-  cancelButtonText?: string;
+  confirmButtonText?: MaybeRef<string>;
+  cancelButtonText?: MaybeRef<string>;
   confirmButtonLoading?: boolean;
   cancelButtonLoading?: boolean;
   confirmButtonLoadingIcon?: TypeSvgSvg;
@@ -50,11 +79,11 @@ export declare interface IMessageBoxState {
   confirmButtonClass?: string;
   confirmButtonDisabled?: boolean;
   cancelButtonClass?: string;
-  editorErrorMessage?: string;
+  editorErrorMessage?: Signal<string>; // need to reactivity
 
   beforeClose?: (
-    action: IAction,
-    instance: IMessageBoxState,
+    action: Action,
+    instance: MessageBoxState,
     done: () => void
   ) => void;
   callback?: Callback;
@@ -68,9 +97,10 @@ export declare interface IMessageBoxState {
   zIndex?: number;
 }
 
-export type Callback = (action: IAction) => void;
+export type Callback = (action: Action) => void;
 
-export interface ITdMessageBoxConfig extends IUIConfig {
+/** Options used in MessageBox */
+export interface TdMessageBoxOptions {
   /**
    * auto focus when open message-box
    */
@@ -78,8 +108,8 @@ export interface ITdMessageBoxConfig extends IUIConfig {
 
   /** Callback before MessageBox closes, and it will prevent MessageBox from closing */
   beforeClose?: (
-    action: IAction,
-    instance: IMessageBoxState,
+    action: Action,
+    instance: MessageBoxState,
     done: () => void
   ) => void;
 
@@ -92,11 +122,11 @@ export interface ITdMessageBoxConfig extends IUIConfig {
   /** MessageBox closing callback if you don't prefer Promise */
   callback?: Callback;
 
-  /** Text content of cancel button */
-  cancelButtonText?: string;
+  /** Text content of cancel button, need to reactivity */
+  cancelButtonText?: MaybeRef<string>;
 
-  /** Text content of confirm button */
-  confirmButtonText?: string;
+  /** Text content of confirm button,  need to reactivity*/
+  confirmButtonText?: MaybeRef<string>;
 
   /** Loading Icon content of cancel button */
   cancelButtonLoadingIcon?: TypeSvgSvg;
@@ -120,10 +150,10 @@ export interface ITdMessageBoxConfig extends IUIConfig {
   overflow?: boolean;
 
   /** Content of the MessageBox */
-  message?: string | TypeElement | (() => TypeElement);
+  message?: string | TypeNode; //| (() => TypeNode);
 
   /** Title of the MessageBox */
-  title?: string; // | ElMessageBoxOptions
+  title?: string | TdMessageBoxOptions;
 
   /** Message type, used for icon display */
   type?: MessageType;
@@ -132,7 +162,7 @@ export interface ITdMessageBoxConfig extends IUIConfig {
   boxType?: IMessageBoxType;
 
   /** Custom icon component */
-  icon?: TypeSvgSvg;
+  icon?: typeof TypeSvgSvg;
 
   /** Whether message is treated as HTML string */
   dangerouslyUseHTMLString?: boolean;
@@ -171,7 +201,7 @@ export interface ITdMessageBoxConfig extends IUIConfig {
   inputPlaceholder?: string;
 
   /** Initial value of input */
-  inputValue?: string;
+  inputValue?: Signal<string>;
 
   /** Regexp for the input */
   inputPattern?: RegExp;
@@ -186,17 +216,55 @@ export interface ITdMessageBoxConfig extends IUIConfig {
   inputErrorMessage?: string;
 
   /** Custom size of confirm and cancel buttons */
-  buttonSize?: ISize;
+  buttonSize?: ComponentSize;
 
   /** Custom element to append the message box to */
   appendTo?: HTMLElement | string;
 
-  emits?: {
-    vanish?: (
-      action?: IAction,
-      instance?: IMessageBoxState,
-      done?: () => void
-    ) => void;
-    action?: (action?: IAction) => void;
-  };
+  // emits?: {
+  //   vanish?: (
+  //     action?: Action,
+  //     instance?: MessageBoxState,
+  //     done?: () => void
+  //   ) => void;
+  //   action?: (action?: Action) => void;
+  // };
+}
+
+export type TdMessageBoxShortcutMethod = ((
+  message: TdMessageBoxOptions['message'],
+  options?: TdMessageBoxOptions
+  // appContext?: AppContext | null
+) => Promise<MessageBoxData>) &
+  ((
+    message: TdMessageBoxOptions['message'],
+    title: TdMessageBoxOptions['title'],
+    options?: TdMessageBoxOptions
+    // appContext?: AppContext | null
+  ) => Promise<MessageBoxData>);
+
+export interface ITdMessageBoxFn {
+  // _context: AppContext | null
+
+  /** Show a message box */
+
+  // (message: string, title?: string, type?: string): Promise<MessageBoxData>
+
+  /** Show a message box */
+  (
+    options: TdMessageBoxOptions
+    // appContext?: AppContext | null
+  ): Promise<MessageBoxData>;
+
+  /** Show an alert message box */
+  alert: TdMessageBoxShortcutMethod;
+
+  /** Show a confirm message box */
+  confirm: TdMessageBoxShortcutMethod;
+
+  /** Show a prompt message box */
+  prompt: TdMessageBoxShortcutMethod;
+
+  /** Close current message box */
+  close(): void;
 }

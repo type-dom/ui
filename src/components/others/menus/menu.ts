@@ -1,13 +1,20 @@
-import { Div, TypeMenu, type IRoute, Router, ITypeConfig } from '@type-dom/framework';
+import {
+  Div,
+  TypeMenu,
+  type IRoute,
+  Router,
+  TypeProps,
+} from '@type-dom/framework';
 import { ElCaretBottomSvg, ElCaretLeftSvg } from '@type-dom/svgs';
 import { TdIcon } from '../../basic/td-icon/td-icon.class';
 import { Menus } from './menus';
 
-export interface IMenuConfig extends ITypeConfig {
+export interface IMenuConfig extends TypeProps {
   route: IRoute;
   router?: Router;
   width?: string;
 }
+
 export class Menu extends TypeMenu {
   className: 'Menu';
   route?: IRoute;
@@ -19,13 +26,13 @@ export class Menu extends TypeMenu {
   caret?: TdIcon;
 
   constructor(params: IMenuConfig) {
-    console.log('Menu constructor . ');
+    // console.log('Menu constructor . ');
     super();
     this.className = 'Menu';
     this.route = params.route;
     this.router = params.router;
     this.style.addObj({
-      paddingInlineStart: '20px'
+      paddingInlineStart: '20px',
       // display: 'flex',
       // flexDirection: 'column',
     });
@@ -33,33 +40,33 @@ export class Menu extends TypeMenu {
       parent: this,
       styleObj: {
         display: 'flex',
-        alignItems: 'center'
-      }
+        alignItems: 'center',
+      },
     });
     if (this.route.svgObj) {
       div.addChild(
         new TdIcon({
-          svgObj: this.route.svgObj,
+          slot: this.route.svgObj,
           styleObj: {
-            paddingRight: '5px'
-          }
+            paddingRight: '5px',
+          },
         })
       );
     }
     div.addChild(
       new Div({
-        text: this.route.name,
+        slot: this.route.name,
         attrObj: {
-          name: 'route-name'
+          name: 'route-name',
         },
         styleObj: {
-          width: params.width ?? '160px'
-        }
+          width: params.width ?? '160px',
+        },
       })
     );
     if (this.route.children) {
       const caret = new TdIcon({
-        svgObj: new ElCaretBottomSvg(),
+        slot: new ElCaretBottomSvg(),
         // size: '30px'
       });
       caret.appendParent(div);
@@ -89,7 +96,7 @@ export class Menu extends TypeMenu {
           document.title = 'UI - ' + this.route?.name;
           event?.stopPropagation(); // 防止冒泡
           event?.preventDefault();
-        }
+        },
       });
     } else {
       //   todo 添加展开、收起的监听
@@ -115,7 +122,7 @@ export class Menu extends TypeMenu {
           this.collapsed = true;
           this.menuItems.forEach((menu) => {
             menu.style.setObj({
-              display: 'none'
+              display: 'none',
             });
           });
           this.caret?.replaceSvg(leftSvg); // 左三角
@@ -123,7 +130,7 @@ export class Menu extends TypeMenu {
           this.collapsed = false;
           this.menuItems.forEach((menu) => {
             menu.style.setObj({
-              display: 'block'
+              display: 'block',
             });
           });
           this.caret?.replaceSvg(bottomSvg); // 向下三角

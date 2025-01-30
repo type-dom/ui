@@ -1,29 +1,34 @@
-import { IUI, IUIConfig } from '../../../ui/ui.interface';
-import { ITdTabPaneConfig } from './td-tab-pane.interface';
+import { ITypeDiv, TypeDivProps } from '@type-dom/framework';
+import { TabPaneProps } from '../td-tab-pane/td-tab-pane.interface';
 import { TdTabs } from './td-tabs.class';
-import { ITabPaneName } from './td-tabs.interface';
+import { TabPaneName } from './td-tabs.interface';
+import { TabsPaneContext } from './constants';
 
-export interface ITdTabNav extends IUI {
-  className: 'TdTabNav'
+export interface ITdTabNav extends ITypeDiv {
+  className: 'TdTabNav';
 }
 
-export interface ITdTabNavConfig extends IUIConfig {
+export interface TabNavProps extends TypeDivProps {
   rootTabs?: TdTabs;
-  panes?: ITdTabPaneConfig[];
+  panes?: TabsPaneContext[];
   //   type: definePropType<TabsPaneContext[]>(Array),
   //   default: () => mutable([] as const),
-  currentName?: string | number;  // default: '',
-  editable?: boolean,
-  type?: 'card' | 'border-card' | '', // default: '',
-  stretch?: boolean,
+  currentName?: string | number; // default: '',
+  editable?: boolean;
+  type?: 'card' | 'border-card' | ''; // default: '',
+  stretch?: boolean;
 
   emits?: {
-    tabClick?: (tab: ITdTabPaneConfig, tabName: ITabPaneName, event: Event) => void;
-    tabRemove?: (tab: ITdTabPaneConfig, evt: Event) => void;
-  }
+    tabClick?: (
+      tab: TabsPaneContext,
+      tabName: TabPaneName,
+      event: Event
+    ) => void;
+    tabRemove?: (tab: TabsPaneContext, evt: Event) => void;
+  };
 }
 
-export interface IScrollable {
-  next?: boolean
-  prev?: number
+export interface Scrollable {
+  next?: boolean;
+  prev?: number;
 }

@@ -1,34 +1,39 @@
-import { IUI } from '../../../ui/ui.interface';
-import { ITdDialogContentConfig } from '../td-dialog-content/td-dialog-content.interface';
-import { UPDATE_MODEL_EVENT } from '../../../constants/event';
 import { isBoolean } from '@type-dom/utils';
+import { ITypeElement, TypeFragmentProps } from '@type-dom/framework';
+import { UPDATE_MODEL_EVENT } from '../../../constants/event';
+import { DialogContentProps } from '../td-dialog-content/td-dialog-content.interface';
 
-export interface ITdDialog extends IUI {
+export interface ITdDialog extends ITypeElement {
   className: 'TdDialog';
 }
 
-export interface ITdDialogConfig extends ITdDialogContentConfig {
+type DoneFn = (cancel?: boolean) => void;
+export type DialogBeforeCloseFn = (done: DoneFn) => void;
+
+export interface DialogProps
+  extends TypeFragmentProps,
+    Omit<DialogContentProps, 'nodeName' | 'slots'> {
   /**
    * @description whether to append Dialog itself to body. A nested Dialog should have this attribute set to `true`
    */
-  appendToBody?: boolean,
+  appendToBody?: boolean;
   /**
    * @description which element the Dialog appends to
    *     default: 'body',
    */
-  appendTo?: HTMLElement;
+  appendTo?: string;
   //   type: definePropType<string>(String),
   // },
   /**
    * @description callback before Dialog closes, and it will prevent Dialog from closing, use done to close the dialog
    */
-  // beforeClose: {
+  beforeClose?: DialogBeforeCloseFn;
   //   type: definePropType<DialogBeforeCloseFn>(Function),
   // },
   /**
    * @description destroy elements in Dialog when closed
    */
-  destroyOnClose?: boolean,
+  destroyOnClose?: boolean;
   /**
    * @description whether the Dialog can be closed by clicking the mask
    *     default: true,
@@ -66,11 +71,11 @@ export interface ITdDialogConfig extends ITdDialogContentConfig {
   /**
    * @description visibility of Dialog
    */
-  modelValue?: boolean,
+  modelValue?: boolean;
   /**
    * @description custom class names for mask
    */
-  modalClass?: string,
+  modalClass?: string;
   /**
    * @description width of Dialog, default is 50%
    */
@@ -86,25 +91,4 @@ export interface ITdDialogConfig extends ITdDialogContentConfig {
    *     default: '2',
    */
   headerAriaLevel?: string;
-
-  emits?: {
-    open?: () => void,
-    opened?: () => void,
-    close?: () => void,
-    closed?: () => void,
-    [UPDATE_MODEL_EVENT]?: (value: boolean) => void,
-    openAutoFocus?: () => void,
-    closeAutoFocus?: () => void,
-  }
-}
-
-
-export const dialogEmits = {
-  open: () => true,
-  opened: () => true,
-  close: () => true,
-  closed: () => true,
-  [UPDATE_MODEL_EVENT]: (value: boolean) => isBoolean(value),
-  openAutoFocus: () => true,
-  closeAutoFocus: () => true,
 }

@@ -1,12 +1,14 @@
-import { IUI, IUIConfig } from '../../../ui/ui.interface';
-import { ISize } from '../../../styles/size';
-import { IJsonData, XProxy } from '@type-dom/framework';
+import { TypeProps, ITypeHtml, TypeLabelProps } from '@type-dom/framework';
+import { MaybeRef, Signal } from '@type-dom/signals';
+import { ComponentSize } from '../../../constants/size';
 
-export interface ITdCheckbox extends IUI {
+export interface ITdCheckbox extends ITypeHtml {
   className: 'TdCheckbox';
+  props: CheckboxProps;
 }
 
-export interface ITdCheckboxConfig extends IUIConfig {
+export interface CheckboxProps extends TypeProps {
+  nodeName?: 'span' | 'label';
   /**
    * @description binding value
    */
@@ -14,7 +16,7 @@ export interface ITdCheckboxConfig extends IUIConfig {
   /**
    * @description label of the Checkbox when used inside a `checkbox-group`
    */
-  label?: string | number; // | XProxy<IJsonData>;
+  label?: string | number; // | boolean; // object;
   /**
    * @description value of the Checkbox when used inside a `checkbox-group`
    */
@@ -22,7 +24,7 @@ export interface ITdCheckboxConfig extends IUIConfig {
   /**
    * @description Set indeterminate state, only responsible for style control
    */
-  indeterminate?: boolean;
+  indeterminate?: Signal<boolean | undefined>;
   /**
    * @description whether the Checkbox is disabled
    */
@@ -69,7 +71,7 @@ export interface ITdCheckboxConfig extends IUIConfig {
   /**
    * @description size of the Checkbox
    */
-  size?: ISize;
+  size?: ComponentSize;
   /**
    * @description input tabindex
    */
@@ -80,4 +82,4 @@ export interface ITdCheckboxConfig extends IUIConfig {
   validateEvent?: boolean;
 }
 
-export type CheckboxValueType = string | number | boolean;
+export type CheckboxValueType = string | number | boolean | object;

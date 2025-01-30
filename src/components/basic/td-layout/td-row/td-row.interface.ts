@@ -1,29 +1,37 @@
-import { IUI, IUIConfig } from '../../../../ui/ui.interface';
+import { ITypeDiv, TypeDivProps } from '@type-dom/framework';
 
-export interface ITdRow extends IUI {
+export interface ITdRow extends ITypeDiv {
   className: 'TdRow';
+  props: RowProps;
 }
 
-/**
- * gutter: number = 0;
- * justify: string = 'start';
- * align: string = 'top';
- * tag: string = 'div';
- */
-
-export interface ITdRowConfig extends IUIConfig {
+export interface RowProps extends TypeDivProps {
+  /**
+   * @description custom element tag
+   *     default: 'div',
+   */
+  tag?: string;
+  /**
+   * @description grid spacing
+   *     default: 0,
+   */
   gutter?: number;
-  justify?: string;
-  align?: string;
+  /**
+   * @description horizontal alignment of flex layout
+   */
+  justify?: RowJustify;
+  /**
+   * @description vertical alignment of flex layout
+   */
+  align?: RowAlign;
 }
 
-export const RowJustify = [
-  'start',
-  'center',
-  'end',
-  'space-around',
-  'space-between',
-  'space-evenly'
-] as const;
+export type RowJustify =
+  | 'start'
+  | 'center'
+  | 'end'
+  | 'space-around'
+  | 'space-between'
+  | 'space-evenly';
 
-export const RowAlign = ['top', 'middle', 'bottom'] as const;
+export type RowAlign = 'top' | 'middle' | 'bottom';

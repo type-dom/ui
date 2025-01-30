@@ -1,124 +1,185 @@
-import { isElement } from '@type-dom/utils';
-import { UI } from '../../../../ui/ui.abstract';
+import { isElement, isNil } from '@type-dom/utils';
+import {
+  TypeFragment,
+  defineExpose,
+  inject,
+  onBeforeUnmount,
+  onMounted,
+  unrefElement,
+} from '@type-dom/framework';
+import { computed, unref, watch, WatchStopHandle } from '@type-dom/signals';
+import { isFocusable } from '../../../../../../utils/src/ui/dom';
 import { useForwardRef } from '../../../../hooks/use-forward-ref';
 import { TdOnlyChild } from '../../td-only-child/td-only-child.class';
-import { popperContentProps } from '../content/content.const';
-import { POPPER_INJECTION_KEY } from '../td-popper.const';
-import { ITdPopperTrigger, ITdPopperTriggerConfig } from './trigger.interface';
-import { TRIGGER_ELE_EVENTS } from './trigger.const';
+import { POPPER_INJECTION_KEY } from '../constants';
+import { ITdPopperTrigger, PopperTriggerProps } from './trigger.interface';
+import { popperTriggerProps } from './trigger.const';
 
-export class TdPopperTrigger extends UI implements ITdPopperTrigger {
+export class TdPopperTrigger extends TypeFragment implements ITdPopperTrigger {
   className: 'TdPopperTrigger';
-  override props: ITdPopperTriggerConfig;
-  private role: any;
-  triggerRef?: HTMLElement;
-  virtualTriggerAriaStopWatch?: () => void;
+  override props: PopperTriggerProps;
 
-
-  constructor(params: ITdPopperTriggerConfig = {}) {
+  constructor(params: PopperTriggerProps = {}) {
     super();
+    console.log('td-popper-trigger , params is ', params);
     this.className = 'TdPopperTrigger';
-    if (!params.virtualTriggering) {
-      this.addChild(new TdOnlyChild());
-    }
-    this.buildProps(popperContentProps);
+    this.assignProps(popperTriggerProps);
     this.props = this.useParams(params);
   }
-  get ariaHaspopup() {
-    if (this.role && this.role !== 'tooltip') {
-      return this.role
-    }
-    return undefined
-  }
 
-  get ariaControls() {
-    return this.ariaHaspopup ? this.props.id : undefined
-  }
-
-  get ariaDescribedby() {
-    if (this.role && this.role === 'tooltip') {
-      return this.props.open && this.props.id ? this.props.id : undefined
-    }
-    return undefined
-  }
-
-  get ariaExpanded() {
-    return this.ariaHaspopup.value ? `${this.props.open}` : undefined
-  }
   override setup() {
-    const { role, triggerRef } = this.inject(POPPER_INJECTION_KEY, undefined)!;
-    this.role = role;
-    this.triggerRef = triggerRef;
-    useForwardRef(triggerRef)
+    const props = this.props;
 
-  }
+    const { role, triggerRef } = inject(POPPER_INJECTION_KEY, undefined)!;
+    console.log('role is ', role, ' , triggerRef is ', triggerRef);
+    // 与 only-child组件配合使用的方法，绑定相关的方法；
+    useForwardRef(triggerRef);
 
-  override beforeDestroy() {
-    this.virtualTriggerAriaStopWatch?.()
-    this.virtualTriggerAriaStopWatch = undefined
-    if (this.triggerRef && isElement(this.triggerRef)) {
-      const el = this.triggerRef as HTMLElement
-      TRIGGER_ELE_EVENTS.forEach((eventName) => {
-        const handler = this.props[eventName];
-        if (handler) {
-          // todo eventName  onClick
-          el.removeEventListener(eventName.slice(2).toLowerCase(), handler)
+    const ariaControls = computed<string | undefined>(() => {
+      return ariaHaspopup.get() ? unref(props.id) : undefined;
+    });
+
+    const ariaDescribedby = computed<string | undefined>(() => {
+      if (role && role.get() === 'tooltip') {
+        return props.open?.get() && props.id ? unref(props.id) : undefined;
+      }
+      return undefined;
+    });
+
+    const ariaHaspopup = computed<string | undefined>(() => {
+      if (role && role.get() !== 'tooltip') {
+        return role.get();
+      }
+      return undefined;
+    });
+
+    const ariaExpanded = computed<string | undefined>(() => {
+      return ariaHaspopup.get() ? `${props.open?.get()}` : undefined;
+    });
+
+    let virtualTriggerAriaStopWatch: WatchStopHandle | undefined = undefined;
+
+    const TRIGGER_ELE_EVENTS = [
+      'onMouseenter',
+      'onMouseleave',
+      'onClick',
+      'onKeydown',
+      'onFocus',
+      'onBlur',
+      'onContextmenu',
+    ] as const;
+
+    onMounted(() => {
+      watch(
+        () => unref(props.virtualRef),
+        (virtualEl) => {
+          if (virtualEl) {
+            triggerRef?.set(unrefElement(virtualEl as HTMLElement));
+          }
+        },
+        {
+          immediate: true,
         }
-      });
-      this.triggerRef = undefined
-    }
-  }
+      );
 
-  setVirtualRef(el: HTMLElement) {
-    if (el) {
-      this.props.virtualRef = el;
-      this.triggerRef = el;
-    }
-  }
-
-  setTriggerRef(el: HTMLElement, prevEl?: HTMLElement) {
-    this.virtualTriggerAriaStopWatch?.();
-    this.virtualTriggerAriaStopWatch = undefined;
-
-    if (isElement(el)) {
-      TRIGGER_ELE_EVENTS.forEach((eventName) => {
-        const handler = this.props[eventName]
-        if (handler) {
-          (el as HTMLElement).addEventListener(
-            eventName.slice(2).toLowerCase(),
-            handler
-          );
-          (prevEl as HTMLElement)?.removeEventListener?.(
-            eventName.slice(2).toLowerCase(),
-            handler
-          )
+      watch(
+        triggerRef,
+        (el, prevEl) => {
+          virtualTriggerAriaStopWatch?.();
+          virtualTriggerAriaStopWatch = undefined;
+          if (isElement(el)) {
+            console.log(
+              'then bind listeners to trigger html element from this element props .'
+            );
+            TRIGGER_ELE_EVENTS.forEach((eventName) => {
+              const handler = props[eventName];
+              if (handler) {
+                (el as HTMLElement).addEventListener(
+                  eventName.slice(2).toLowerCase() as keyof HTMLElementEventMap,
+                  handler
+                );
+                (prevEl as HTMLElement)?.removeEventListener?.(
+                  eventName.slice(2).toLowerCase() as keyof HTMLElementEventMap,
+                  handler
+                );
+              }
+            });
+            if (isFocusable(el as HTMLElement)) {
+              virtualTriggerAriaStopWatch = watch(
+                () => [
+                  ariaControls.get(),
+                  ariaDescribedby.get(),
+                  ariaHaspopup.get(),
+                  ariaExpanded.get(),
+                ],
+                (watches) => {
+                  [
+                    'aria-controls',
+                    'aria-describedby',
+                    'aria-haspopup',
+                    'aria-expanded',
+                  ].forEach((key, idx) => {
+                    isNil(watches[idx])
+                      ? el.removeAttribute(key)
+                      : el.setAttribute(key, watches[idx]!);
+                  });
+                },
+                { immediate: true }
+              );
+            }
+          }
+          if (isElement(prevEl) && isFocusable(prevEl as HTMLElement)) {
+            [
+              'aria-controls',
+              'aria-describedby',
+              'aria-haspopup',
+              'aria-expanded',
+            ].forEach((key) => prevEl.removeAttribute(key));
+          }
+        },
+        {
+          immediate: true,
         }
-      });
-      // this.virtualTriggerAriaStopWatch = this.watch(
-      //   [ariaControls, ariaDescribedby, ariaHaspopup, ariaExpanded],
-      //   (watches) => {
-      //     ;[
-      //       'aria-controls',
-      //       'aria-describedby',
-      //       'aria-haspopup',
-      //       'aria-expanded',
-      //     ].forEach((key, idx) => {
-      //       isNil(watches[idx])
-      //         ? el.removeAttribute(key)
-      //         : el.setAttribute(key, watches[idx]!)
-      //     })
-      //   },
-      //   { immediate: true }
-      // )
-    }
-    if (isElement(prevEl)) {
-      [
-        'aria-controls',
-        'aria-describedby',
-        'aria-haspopup',
-        'aria-expanded',
-      ].forEach((key) => prevEl.removeAttribute(key))
-    }
-  }
+      );
+    });
 
+    onBeforeUnmount(() => {
+      virtualTriggerAriaStopWatch?.();
+      virtualTriggerAriaStopWatch = undefined;
+      if (triggerRef?.get() && isElement(triggerRef?.get())) {
+        const el = triggerRef.get() as HTMLElement;
+        TRIGGER_ELE_EVENTS.forEach((eventName) => {
+          const handler = props[eventName];
+          if (handler) {
+            el?.removeEventListener?.(
+              eventName.slice(2).toLowerCase(),
+              handler
+            );
+          }
+        });
+        triggerRef?.set(undefined);
+      }
+    });
+
+    defineExpose({
+      /**
+       * @description trigger element
+       */
+      triggerRef,
+    });
+
+    this.addChild(
+      new TdOnlyChild({
+        vIf: !this.props.virtualTriggering,
+        // v-bind: $attrs
+        attrObj: {
+          ariaControls: ariaControls,
+          ariaDescribedby: ariaDescribedby,
+          ariaExpanded: ariaExpanded,
+          ariaHaspopup: ariaHaspopup,
+        },
+        slot: props.slot,
+      })
+    );
+  }
 }

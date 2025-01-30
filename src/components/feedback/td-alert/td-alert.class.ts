@@ -1,120 +1,131 @@
-import { Div, P, Span, TextNode, Transition } from '@type-dom/framework';
-import { ElCloseSvg, TypeComponentsMap } from '@type-dom/svgs';
-import { UI } from '../../../ui/ui.abstract';
-import { TdIcon } from '../../basic/td-icon/td-icon.class';
-import { ITdAlert, ITdAlertConfig } from './td-alert.interface';
 import {
-  $alertCloseBtnStyle,
-  $alertContentStyle,
-  $alertDescriptionStyle,
-  $alertIconStyle,
-  $alertStyle,
-  $alertTitleStyle,
-  useStyle
-} from './td-alert.style';
+  Div,
+  Fragment,
+  P,
+  Span,
+  TextNode,
+  Transition,
+  TypeFragment,
+  useSlots,
+} from '@type-dom/framework';
+import { ElCloseSvg, TypeComponentsMap } from '@type-dom/svgs';
+import { computed, signal } from '@type-dom/signals';
+import { useNamespace } from '../../../hooks/use-namespace/index';
+import { TdIcon } from '../../basic/td-icon/td-icon.class';
+import { ITdAlert, AlertProps } from './td-alert.interface';
+import { alertEmits, alertProps } from './td-alert.const';
+import './style/index';
 
-export class TdAlert extends UI<undefined> implements ITdAlert {
+export class TdAlert extends TypeFragment implements ITdAlert {
   className: 'TdAlert';
-  override props: ITdAlertConfig;
-  private transition: Transition;
-  private alertDiv: Div;
-  private alertContent: Div;
+  // content: Transition;
+  override props: AlertProps;
+  // private alertDiv: Div;
+  // private alertContent: Div;
   private alertTitle?: Span;
   private alertDescription?: P;
+  name?: string;
 
-  constructor(params: ITdAlertConfig = {}) {
+  constructor(params: AlertProps = {}) {
     super();
-    this.useTag('fragment');
     this.className = 'TdAlert';
-    useStyle(params);
-    this.alertDiv = new Div({
-      attrObj: {
-        role: 'alert'
-      },
-      styleObj: $alertStyle,
-    });
-    if (params?.styleObj) {
-      this.alertDiv.style.addObj(params.styleObj);
-    }
-    this.transition = new Transition({
-      name: 'td-alert-fade',
-      slot: this.alertDiv,
-    });
-    this.addChild(this.transition);
-    const IconComponent = TypeComponentsMap[params?.type || 'info'];
-    if (params?.showIcon && IconComponent) {
-      this.alertDiv.addChild(new TdIcon({
-        styleObj: $alertIconStyle,
-        svgObj: new IconComponent()
-      }));
-    }
-    this.alertContent = new Div({
-      styleObj: $alertContentStyle
-    });
-    this.alertDiv.addChild(this.alertContent);
-    this.addTitle(params);
-    this.addDescription(params);
-    this.addCloseElement(params);
-
+    this.assignProps(alertProps);
+    this.addEmits(alertEmits);
     this.props = this.useParams(params);
   }
-  addTitle(params?: ITdAlertConfig) {
-    if (params?.title || params?.slots?.title) {
-      this.alertTitle = new Span({
-        styleObj: $alertTitleStyle
-      });
-      this.alertContent.addChild(this.alertTitle);
-      if (params.slots?.title) {
-        this.alertTitle.slotChild(params.slots.title);
-      } else if (params.title) {
-        this.alertTitle.addChild(new TextNode(params.title));
-      }
-    }
-  }
-  addDescription(params?: ITdAlertConfig) {
-    if (params?.slot || params?.description) {
-      this.alertDescription = new P({
-        name: 'alert-description',
-        styleObj: $alertDescriptionStyle
-      });
-      this.alertContent.addChild(this.alertDescription);
-      if (params.slot) {
-        this.alertDescription.slotChild(params.slot);
-      } else if (params.description) {
-        this.alertDescription.addChild(new TextNode(params.description));
-      }
-    }
-  }
-  addCloseElement(params?: ITdAlertConfig) {
-    const closable = params?.closable ?? true;
-    if (closable) {
-      if (params?.closeText) {
-        this.alertContent.addChild(new Div({
-          text: params.closeText,
-          styleObj: $alertCloseBtnStyle,
-          events: {
-            click: () => {
-              if (params.emits?.close) {
-                params.emits.close();
-              }
-              this.alertDiv.style.hide();
-            }
-          }
-        }));
-      } else {
-        this.alertContent.addChild(new TdIcon({
-          styleObj: $alertCloseBtnStyle,
-          svgObj: new ElCloseSvg(),
-          events: {
-            click: () => {
-              if (params?.emits?.close) {
-                params.emits.close();
-              }
-              this.alertDiv.style.hide();
-            }
-          }
-        }));
-      }
-    }
+
+  override setup() {
+    const props = this.props;
+    const slots = useSlots();
+
+    const ns = useNamespace('alert');
+    this.name = ns.b('fade');
+
+    const visible = signal(true);
+
+    const iconComponent = computed(() => TypeComponentsMap[props.type!]);
+
+    const hasDesc = computed(() => !!(props.description || slots?.default));
+
+    const close = (evt?: MouseEvent) => {
+      console.log('close . ');
+      visible.set(false);
+      this.emit('close', evt);
+    };
+    const { type, center, effect } = props;
+    const alertKls = [
+      ns.b(),
+      ns.m(type),
+      ns.is('center', center),
+      ns.is(effect!),
+    ];
+    console.warn('alertKls is ', alertKls);
+    this.addChild(
+      new Transition({
+        name: ns.b('fade'),
+        slot: new Div({
+          vShow: visible,
+          class: [
+            ns.b(),
+            ns.m(type),
+            ns.is('center', center),
+            ns.is(effect!),
+          ].filter((i) => i !== ''),
+          attrObj: {
+            role: 'alert',
+          },
+          styleObj: props.styleObj,
+          slot: [
+            new TdIcon({
+              vIf: props.showIcon && iconComponent,
+              class: [ns.e('icon'), { [ns.is('big')]: hasDesc }],
+              slot: new (iconComponent.get())(),
+            }),
+            new Div({
+              class: ns.e('content'),
+              slot: [
+                new Span({
+                  vIf: props.title || slots?.title,
+                  class: [ns.e('title'), { 'with-description': hasDesc.get() }],
+                  init: (ele) => {
+                    if (slots?.title) {
+                      ele.slotChildren(slots?.title);
+                    } else {
+                      ele.addChild(new TextNode(props.title!));
+                    }
+                  },
+                }),
+                new P({
+                  vIf: hasDesc,
+                  class: ns.e('description'),
+                  slot: [props.description || ''],
+                }),
+                new Fragment({
+                  vIf: props.closable,
+                  slot: [
+                    new Div({
+                      vIf: props.closeText,
+                      class: [ns.e('close-btn'), ns.is('customed')],
+                      slot: props.closeText,
+                      events: {
+                        click: close,
+                      },
+                    }),
+                    new TdIcon({
+                      class: ns.e('close-btn'),
+                      vIf: !props.closeText,
+                      slot: new ElCloseSvg(),
+                      events: {
+                        click: close,
+                      },
+                    }),
+                  ],
+                }),
+              ],
+            }),
+          ],
+        }),
+      })
+    );
   }
 }

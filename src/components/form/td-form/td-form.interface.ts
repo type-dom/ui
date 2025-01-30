@@ -1,12 +1,21 @@
-import { IUI, IUIConfig } from '../../../ui/ui.interface';
-import { ISize } from '../../../styles/size';
-import { ITdFormItemConfig } from '../td-form-item/td-form-item.interface';
+import { ITypeForm, TypeFormProps } from '@type-dom/framework';
+import { MaybeRef } from '@type-dom/signals';
+import { Arrayable } from '../../../../../utils/src/ui/typescript';
+import { ComponentSize } from '../../../constants';
+import {
+  FormItemProp,
+  FormItemProps,
+  IFormItemValidateState,
+  ITdFormItem,
+} from '../td-form-item/td-form-item.interface';
+import { TdFormItem } from '../td-form-item/td-form-item.class';
 
-export interface ITdForm extends IUI {
+export interface ITdForm extends ITypeForm {
   className: 'TdForm';
+  childNodes: ITdFormItem[];
 }
 
-export interface IFormRule {
+export interface FormRule {
   required?: boolean;
   validator?: (rule: any, value: any, callback: any) => boolean;
   trigger?: string;
@@ -18,19 +27,22 @@ export interface IFormRule {
   //   todo 自定义的验证规则
 }
 
-export interface IFormRules {
-  [propName: string]: IFormRule[];
+export interface FormRules {
+  [propName: string]: FormRule[];
 }
 
-export interface ITdFormConfig extends IUIConfig {
+export interface FormMetaProps {
   /**
    * @description Control the size of components in this form.
    */
-  size?: ISize;
+  size?: ComponentSize;
   /**
    * @description Whether to disable all components in this form. If set to `true`, it will override the `disabled` prop of the inner component.
    */
-  disabled?: boolean;
+  disabled?: MaybeRef<boolean>;
+}
+
+export interface FormProps extends FormMetaProps, TypeFormProps {
   /**
    * @description Data of form component.
    */
@@ -38,7 +50,7 @@ export interface ITdFormConfig extends IUIConfig {
   /**
    * @description Validation rules of form.
    */
-  rules?: IFormRules;
+  rules?: FormRules;
   // rules?: {
   //   type: definePropType<FormRules>(object),
   // },
@@ -97,39 +109,58 @@ export interface ITdFormConfig extends IUIConfig {
    */
   scrollIntoViewOptions?: object | boolean;
 
-  options?: Array<ITdFormItemConfig>;
+  options?: Array<FormItemProps>;
+  slot?: Array<TdFormItem>;
 }
 
-//
-// export type FormContext = FormProps &
-//   UnwrapRef<FormLabelWidthContext> & {
-//   emit: SetupContext<FormEmits>['emit']
-//   getField: (prop: string) => FormItemContext | undefined
-//   addField: (field: FormItemContext) => void
-//   removeField: (field: FormItemContext) => void
-//   resetFields: (props?: Arrayable<FormItemProp>) => void
-//   clearValidate: (props?: Arrayable<FormItemProp>) => void
-//   validateField: (
-//     props?: Arrayable<FormItemProp>,
-//     callback?: FormValidateCallback
-//   ) => FormValidationResult
-// }
-//
-// export interface FormItemContext extends FormItemProps {
-//   $el: HTMLDivElement | undefined
-//   size: ComponentSize
-//   validateState: FormItemValidateState
-//   isGroup: boolean
-//   labelId: string
-//   inputIds: string[]
-//   hasLabel: boolean
-//   fieldValue: any
-//   addInputId: (id: string) => void
-//   removeInputId: (id: string) => void
-//   validate: (
-//     trigger: string,
-//     callback?: FormValidateCallback
-//   ) => FormValidationResult
-//   resetField(): void
-//   clearValidate(): void
-// }
+export interface ValidateError {
+  message?: string;
+  fieldValue?: any;
+  field?: string;
+}
+
+import type { useFormLabelWidth } from './utils';
+
+export type FormLabelWidthContext = ReturnType<typeof useFormLabelWidth>;
+
+export type ValidateFieldsError = Record<string, ValidateError[]>;
+export type FormValidationResult = Promise<boolean>;
+export type FormValidateCallback = (
+  isValid: boolean,
+  invalidFields?: ValidateFieldsError
+) => Promise<void> | void;
+
+export type FormContext = FormProps &
+  FormLabelWidthContext & {
+    emit: any; // SetupContext<FormEmits>['emit']
+    getField: (prop: string) => FormItemContext | undefined;
+    addField: (field: FormItemContext) => void;
+    removeField: (field: FormItemContext) => void;
+    resetFields: (props?: Arrayable<FormItemProp>) => void;
+    clearValidate: (props?: Arrayable<FormItemProp>) => void;
+    validateField: (
+      props?: Arrayable<FormItemProp>,
+      callback?: FormValidateCallback
+    ) => FormValidationResult;
+  };
+
+export interface FormItemContext extends FormItemProps {
+  $el: MaybeRef<HTMLDivElement | undefined>;
+  size: MaybeRef<ComponentSize>;
+  validateState: MaybeRef<IFormItemValidateState>;
+  isGroup: MaybeRef<boolean>;
+  labelId: string;
+  inputIds: MaybeRef<string[]>;
+  hasLabel: MaybeRef<boolean>;
+  fieldValue: any;
+  addInputId: (id: string) => void;
+  removeInputId: (id: string) => void;
+  validate: (
+    trigger: string,
+    callback?: FormValidateCallback
+  ) => FormValidationResult;
+
+  resetField(): void;
+
+  clearValidate(): void;
+}

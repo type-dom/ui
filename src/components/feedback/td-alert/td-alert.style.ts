@@ -1,6 +1,14 @@
 import { IStyle } from '@type-dom/css-type';
-import { $borderRadius, $colors, $colorWhite, $transitionDurationFast } from '../../../styles/var';
-import { ITdAlertConfig } from './td-alert.interface';
+import {
+  $borderRadius,
+  $colors,
+  $colorWhite,
+  $transitionDurationFast,
+} from '../../../styles/var';
+import { AlertProps } from './td-alert.interface';
+
+// import '../../../styles/base/style/index'
+// import '../../../theme-chalk/src/alert.scss'
 
 export const $alert = {
   padding: '8px 16px',
@@ -57,7 +65,7 @@ export const $alertTitleStyle: IStyle = {
 export const $alertDescriptionStyle: IStyle = {
   // font-size: getCssVar('alert', 'description-font-size');
   fontSize: $alert.descriptionFontSize,
-  margin: 0
+  margin: 0,
 };
 
 export const $alertCloseBtnStyle: IStyle = {
@@ -70,14 +78,14 @@ export const $alertCloseBtnStyle: IStyle = {
   cursor: 'pointer',
 };
 
-export function useStyle(config?: ITdAlertConfig) {
+export function useStyle(config?: AlertProps) {
   useType(config);
   if (config?.center) {
     $alertStyle.justifyContent = 'center';
   } else {
     delete $alertStyle.justifyContent;
   }
-  const big = !!config?.description || !!config?.slot
+  const big = !!config?.description || !!config?.slot;
   if (big) {
     $alertIconStyle.fontSize = $alert.iconLargeSize;
     $alertIconStyle.width = $alert.iconLargeSize;
@@ -89,7 +97,7 @@ export function useStyle(config?: ITdAlertConfig) {
   }
 }
 
-export function useType(config?: ITdAlertConfig) {
+export function useType(config?: AlertProps) {
   const effect = config?.effect || 'light';
   const $alertBgColor = $colors[config?.type || 'info']['light-9'];
   switch (effect) {

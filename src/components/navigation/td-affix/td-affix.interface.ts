@@ -1,11 +1,11 @@
-import { IUI, IUIConfig } from '../../../ui/ui.interface';
-import { IJsonData, XProxy } from '@type-dom/framework';
+import { ITypeDiv, TypeDivProps, TypeHtml } from '@type-dom/framework';
+import { MaybeRef } from '@type-dom/signals';
 
-export interface ITdAffix extends IUI {
+export interface ITdAffix extends ITypeDiv {
   className: 'TdAffix';
 }
 
-export interface ITdAffixConfig extends IUIConfig {
+export interface AffixProps extends TypeDivProps {
   /**
    * @description affix element zIndex value
    *     default: 100,
@@ -15,7 +15,7 @@ export interface ITdAffixConfig extends IUIConfig {
    * @description target container. (CSS selector)
    *     default: '',
    */
-  target?: XProxy<IJsonData>;
+  target?: string;
   /**
    * @description offset distance
    *     default: 0,

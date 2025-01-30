@@ -1,10 +1,19 @@
-import { IUI, IUIConfig } from '../../../../ui/ui.interface';
+import { ITypeDiv, TypeDivProps } from '@type-dom/framework';
 
-export interface ITdCol extends IUI {
+export interface ITdCol extends ITypeDiv {
   className: 'TdCol';
+  props: ColProps;
 }
 
-export interface ITdColConfig extends IUIConfig {
+export type ColSizeObject = {
+  span?: number;
+  offset?: number;
+  pull?: number;
+  push?: number;
+};
+export type ColSize = number | ColSizeObject;
+
+export interface ColProps extends TypeDivProps {
   /**
    * @description number of column the grid spans
    */
@@ -24,21 +33,21 @@ export interface ITdColConfig extends IUIConfig {
   /**
    * @description `<768px` Responsive columns or column props object
    */
-  xs?: number;
+  xs?: ColSize;
   /**
    * @description `≥768px` Responsive columns or column props object
    */
-  sm?: number;
+  sm?: ColSize;
   /**
    * @description `≥992px` Responsive columns or column props object
    */
-  md?: number;
+  md?: ColSize;
   /**
    * @description `≥1200px` Responsive columns or column props object
    */
-  lg?: number;
+  lg?: ColSize;
   /**
    * @description `≥1920px` Responsive columns or column props object
    */
-  xl?: number;
+  xl?: ColSize;
 }

@@ -1,99 +1,187 @@
 import { isArray, isNumber } from '@type-dom/utils';
-import { TypeElement } from '@type-dom/framework';
-import { UI } from '../../../ui/ui.abstract';
-import { ITdSpace, ITdSpaceConfig } from './td-space.interface';
-import { SIZE_MAP } from './td-space.const';
+import {
+  arraySlot,
+  isFragment,
+  isValidElementNode,
+  ISlotItem,
+  Div,
+  Span,
+  TypeDiv,
+  TypeNode,
+  For,
+  TextNode,
+  ISlotRaw,
+} from '@type-dom/framework';
+import { ITdSpace, SpaceProps } from './td-space.interface';
+import { SIZE_MAP, spaceProps } from './td-space.const';
+import { TdSpaceItem } from './td-space-item/td-space-item.class';
+import { useSpace } from './use-space';
+import './style/index';
+import { computed, toRaw } from '@type-dom/signals';
 
-export class TdSpace extends UI implements ITdSpace {
+export class TdSpace extends TypeDiv implements ITdSpace {
   className: 'TdSpace';
-  override props: ITdSpaceConfig;
-  horizontalSize?: number;
-  verticalSize?: number;
+  override props: SpaceProps;
 
-  constructor(params: ITdSpaceConfig = {}) {
+  constructor(params: SpaceProps = {}) {
     super();
     this.className = 'TdSpace';
-    this.style.addObj({
-      display: 'inline-flex',
-      verticalAlign: 'top'
-    });
-    this.addChild(this.getSlotNode());
+    this.attr.addName('td-space');
+    this.assignProps(spaceProps);
     this.props = this.useParams(params);
   }
 
   override setup() {
-    this.children.forEach((item) => {
-      if (item instanceof TypeElement) {
-        item.style.addObj({
-          display: 'flex',
-          flexWrap: 'wrap'
-        });
-      }
-    });
+    console.log('td-space setup . ');
     const props = this.props;
-    this.useSize(props?.size);
+    const { classes, containerStyle, itemStyle } = useSpace(props);
 
-    if (props?.wrap) {
-      this.style.add('flexWrap', 'wrap');
-    }
-    if (props?.fill) {
-      this.style.addObj({
-        flexWrap: 'wrap',
-        flexGrow: 1,
-        minWidth: `${props?.fillRatio || 100}%`
-      });
-    }
-    if (props?.direction === 'horizontal') {
-      this.style.add('flexDirection', 'row');
-    }
-    if (props?.direction === 'vertical') {
-      this.style.add('flexDirection', 'column');
-    }
-    if (props?.alignment) {
-      this.style.add('alignItems', props.alignment);
-    }
-  }
-
-  useSize(size?: number | string | [number, number]) {
-    const props = this.props;
-    if (isArray(size)) {
-      this.horizontalSize = size[0];
-      this.verticalSize = size[1];
-    } else {
-      let val: number;
-      if (isNumber(size)) {
-        val = size;
-      } else {
-        val = SIZE_MAP[size || 'small'] || SIZE_MAP.small;
-      }
-      if (
-        (props?.wrap || props?.fill) &&
-        props?.direction === 'horizontal'
-      ) {
-        this.horizontalSize = this.verticalSize = val;
-      } else {
-        if (props?.direction === 'vertical') {
-          this.verticalSize = val;
-          this.horizontalSize = 0;
-        } else {
-          // horizontal 默认
-          this.horizontalSize = val;
-          this.verticalSize = 0;
+    // retrieve the children out via a simple for loop
+    // the edge case here is that when users uses directives like <v-for>, <v-if>
+    // we need to go deeper until the child is not the Fragment type
+    function extractChildren(
+      children: ISlotItem[],
+      parentKey = '',
+      extractedChildren: TypeNode[] = []
+    ) {
+      console.warn('extractChildren is ', children);
+      // const { prefixCls } = props
+      children.forEach((child, loopKey) => {
+        if (isFragment(child)) {
+          if (child instanceof For) {
+            // For element should be done here
+            const data = toRaw(child.props.data);
+            const getter = child.props.getter;
+            if (data !== undefined) {
+              data.forEach((item, index) => {
+                let slot: ISlotRaw;
+                if (getter) {
+                  slot = getter(item, index);
+                } else {
+                  slot = item;
+                }
+                extractedChildren.push(
+                  new TdSpaceItem({
+                    styleObj: itemStyle,
+                    prefixCls: props.prefixCls,
+                    slot: slot,
+                  })
+                );
+              });
+            }
+          } else if (isArray(child.children)) {
+            child.children.forEach((nested, key) => {
+              if (isFragment(nested) && isArray(nested.children)) {
+                extractChildren(
+                  nested.children,
+                  `${parentKey + key}-`,
+                  extractedChildren
+                );
+              } else {
+                extractedChildren.push(
+                  new TdSpaceItem({
+                    styleObj: itemStyle,
+                    prefixCls: props.prefixCls,
+                    slot: nested,
+                  })
+                );
+              }
+            });
+          }
+          // if the current child is valid vnode, then append this current vnode
+          // to item as child node.
+        } else if (isValidElementNode(child)) {
+          extractedChildren.push(
+            new TdSpaceItem({
+              styleObj: itemStyle,
+              prefixCls: props.prefixCls,
+              slot: child,
+            })
+          );
         }
-      }
-    }
-    this.style.addObj({
-      rowGap: this.verticalSize + 'px',
-      columnGap: this.horizontalSize + 'px'
-    });
-  }
+      });
 
-  setSize(size: number | string | [number, number]) {
-    console.log('setSize size is ', size);
-    this.useSize(size);
-    this.style.setObj({
-      rowGap: this.verticalSize + 'px',
-      columnGap: this.horizontalSize + 'px'
-    });
+      return extractedChildren;
+    }
+
+    const { spacer, direction } = props;
+
+    // this.slotChildren(props.slot || props.slots?.default);
+
+    // this.children.forEach((item) => {
+    //   if (item instanceof TypeHtml) {
+    //     item.style.addObj({
+    //       display: 'flex',
+    //       flexWrap: 'wrap'
+    //     });
+    //   } else if (item instanceof TypeFragment) {
+    //     item.addStyleObj({
+    //       display: 'flex',
+    //       flexWrap: 'wrap'
+    //     })
+    //   }
+    // });
+
+    // const children = renderSlot(slots, 'default', { key: 0 }, () => [])
+    const children = arraySlot(props.slot ?? props.slots?.default);
+
+    // if ((children.children ?? []).length === 0) return null
+    if ((children ?? []).length === 0) return;
+    // loop the children, if current children is rendered via `renderList` or `<v-for>`
+    if (isArray(children)) {
+      let extractedChildren = extractChildren(children);
+      console.log('extractChildren is ', extractedChildren);
+      if (spacer) {
+        // track the current rendering index, when encounters the last element
+        // then no need to add a spacer after it.
+        const len = extractedChildren.length - 1;
+        extractedChildren = extractedChildren.reduce<TypeNode[]>(
+          (acc, child, idx) => {
+            const children = [...acc, child];
+            if (idx !== len) {
+              children.push(
+                // adding width 100% for vertical alignment,
+                // when the spacer inherit the width from the
+                // parent, this span's width was not set, so space
+                // might disappear
+                new Span({
+                  styleObj: computed(() => [
+                    itemStyle.get(),
+                    { width: direction === 'vertical' ? '100%' : null },
+                  ]),
+                  // if spacer is already a valid node, then append it to the current
+                  // span element.
+                  // otherwise, treat it as string.
+                  slot: spacer,
+                })
+                // createVNode(
+                //   'span',
+                //   {
+                //     style: [
+                //       itemStyle.value,
+                //       direction === 'vertical' ? 'width: 100%' : null,
+                //     ],
+                //     key: idx,
+                //   },
+                //   [
+                //     isVNode(spacer)
+                //       ? spacer
+                //       : createTextVNode(spacer as string, PatchFlags.TEXT),
+                //   ],
+                //   PatchFlags.STYLE
+                // )
+              );
+            }
+            return children;
+          },
+          []
+        );
+      }
+
+      // spacer container.
+      this.attr.addClass(classes);
+      this.style.addObj(containerStyle);
+      this.slotChildren(extractedChildren);
+    }
   }
 }

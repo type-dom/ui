@@ -1,17 +1,17 @@
-import { Transition } from '@type-dom/framework';
-import { UI } from '../../../ui/ui.abstract';
-import { ITdDrawer, ITdDrawerConfig } from './td-drawer.interface';
+import { Transition, TypeFragment } from '@type-dom/framework';
 import { TdOverlay } from '../td-overlay/td-overlay.class';
+import { ITdDrawer, DrawerProps } from './td-drawer.interface';
 
-export class TdDrawer extends UI<undefined> implements ITdDrawer {
+export class TdDrawer extends TypeFragment implements ITdDrawer {
   className: 'TdDrawer';
-  override props: ITdDrawerConfig;
-  private transition: Transition;
-  constructor(params: ITdDrawerConfig = {}) {
+  content: Transition;
+  override props: DrawerProps;
+
+  constructor(params: DrawerProps = {}) {
     super();
-    this.useTag('fragment');
+    // this.useTag('fragment');
     this.className = 'TdDrawer';
-    this.transition = new Transition({
+    this.content = new Transition({
       name: 'fade',
       emits: {
         afterEnter: () => {
@@ -31,11 +31,11 @@ export class TdDrawer extends UI<undefined> implements ITdDrawer {
           click: () => {
             //
             console.log('click . ');
-          }
-        }
-      })
+          },
+        },
+      }),
     });
-    this.addChild(this.transition);
+    this.addChild(this.content);
 
     this.props = this.useParams(params);
   }

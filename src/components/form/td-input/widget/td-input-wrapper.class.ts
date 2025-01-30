@@ -1,10 +1,4 @@
-import {
-  Div,
-  Input,
-  TypeDiv,
-  TypeElement,
-  XProxy
-} from '@type-dom/framework';
+import { Div, Input, TypeDiv, TypeElement } from '@type-dom/framework';
 import { useCursor } from '../../../../hooks/use-cursor';
 import { $textColor } from '../../../../styles/var';
 import { TdInput } from '../td-input.class';
@@ -14,16 +8,17 @@ import {
   $inputHeight,
   $inputInnerHeight,
   $inputTextColor,
-  $wrapperPadding
+  $wrapperPadding,
 } from '../td-input.style';
-import { ITdInputConfig, TargetElement } from '../td-input.interface';
+import { TdInputProps, TargetElement } from '../td-input.interface';
 import { ITdInputWrapper } from './td-input-wrapper.interface';
 import { TdInputSuffix } from './suffix';
 import { TdInputPrefix } from './prefix';
+import { Computed, Signal, unref } from '@type-dom/signals';
 
 export class TdInputWrapper extends TypeDiv implements ITdInputWrapper {
   className: 'TdInputWrapper';
-  override props: ITdInputConfig;
+  override props: TdInputProps;
   override parent?: TdInput;
   prepend?: Div;
   append?: Div;
@@ -36,7 +31,7 @@ export class TdInputWrapper extends TypeDiv implements ITdInputWrapper {
   private validateState?: boolean;
   private needStatusIcon?: boolean;
 
-  constructor(params: ITdInputConfig = {}) {
+  constructor(params: TdInputProps = {}) {
     super();
     this.className = 'TdInputWrapper';
     this.parent = params?.parent;
@@ -63,14 +58,17 @@ export class TdInputWrapper extends TypeDiv implements ITdInputWrapper {
       borderRadius: $input.borderRadius,
       //   transition: getCssVar('transition-box-shadow'),
       //       transition: var(--el-transition-box-shadow),
-      boxShadow: '0 0 0 1px ' + $input.borderColor + ' inset'
+      boxShadow: '0 0 0 1px ' + $input.borderColor + ' inset',
     });
 
     this.prefix = new TdInputPrefix(this, params);
     this.unshiftChild(this.prefix);
     let placeholder = '';
-    if (params?.placeholder instanceof XProxy) {
-      placeholder = params.placeholder.value;
+    if (
+      params?.placeholder instanceof Signal ||
+      params?.placeholder instanceof Computed
+    ) {
+      placeholder = params.placeholder.get();
     } else if (params?.placeholder) {
       placeholder = params.placeholder as string;
     }
@@ -81,7 +79,7 @@ export class TdInputWrapper extends TypeDiv implements ITdInputWrapper {
             ? 'text'
             : 'password'
           : params?.type,
-        placeholder: placeholder
+        placeholder: placeholder,
       },
       styleObj: {
         width: '100%',
@@ -101,7 +99,7 @@ export class TdInputWrapper extends TypeDiv implements ITdInputWrapper {
         //   height: getCssVar('input-inner-height');
         height: $inputInnerHeight,
         //   line-height: getCssVar('input-inner-height');
-        lineHeight: $inputInnerHeight
+        lineHeight: $inputInnerHeight,
       },
       events: {
         compositionstart: () => {
@@ -122,11 +120,11 @@ export class TdInputWrapper extends TypeDiv implements ITdInputWrapper {
         input: (event, element) => this.handleInput(event, element),
         focus: (i) => {
           console.log('td-input focus . this.parent is ', this.parent);
-          this.parent?.setFocus(true);
+          // this.parent?.setFocus(true);
         },
         blur: () => {
           console.log('blur . ');
-          this.parent?.setFocus(false);
+          // this.parent?.setFocus(false);
           if (this.props.clearable) {
             this.setShowClear(this.showClear);
           }
@@ -139,8 +137,8 @@ export class TdInputWrapper extends TypeDiv implements ITdInputWrapper {
         },
         keydown: () => {
           console.log('keydown . ');
-        }
-      }
+        },
+      },
     });
     this.addChild(this.inner);
     this.suffix = new TdInputSuffix(this, params);
@@ -157,11 +155,11 @@ export class TdInputWrapper extends TypeDiv implements ITdInputWrapper {
       this.style.addObj({
         padding: $wrapperPadding[props.size || 'default'],
         fontSize: $inputFontSize[props.size || 'default'],
-        height: $inputHeight[props.size || 'default']
+        height: $inputHeight[props.size || 'default'],
       });
     }
     if (props?.disabled) {
-      this.setDisabled(props.disabled);
+      this.setDisabled(unref(props.disabled));
     }
     this.setNativeInputValue();
   }
@@ -188,8 +186,8 @@ export class TdInputWrapper extends TypeDiv implements ITdInputWrapper {
       this.props.clearable &&
       !this.props.disabled &&
       !this.props.readonly &&
-      !!this.nativeInputValue &&
-      (this.parent?.isFocused || this.parent?.hovering)
+      !!this.nativeInputValue // &&
+      // (this.parent?.isFocused || this.parent?.hovering)
     );
   }
 
@@ -198,17 +196,20 @@ export class TdInputWrapper extends TypeDiv implements ITdInputWrapper {
       this.props.showPassword &&
       !this.props.disabled &&
       !this.props.readonly &&
-      !!this.nativeInputValue &&
-      (!!this.nativeInputValue || this.parent?.isFocused)
+      !!this.nativeInputValue
+      // &&
+      // (!!this.nativeInputValue || this.parent?.isFocused)
     );
   }
 
   get nativeInputValue() {
-    return this.inner.dom.value || '';
+    return this.inner.dom?.value || '';
   }
 
   set nativeInputValue(value: string) {
-    this.inner.dom.value = value;
+    if (this.inner.dom) {
+      this.inner.dom.value = value;
+    }
   }
 
   setDisabled(disabled: boolean) {
@@ -219,7 +220,7 @@ export class TdInputWrapper extends TypeDiv implements ITdInputWrapper {
         color: $textColor.disabled,
         // -webkit-text-fill-color: var(--el-disabled-text-color),
         WebkitTextFillColor: $textColor.disabled,
-        cursor: 'not-allowed'
+        cursor: 'not-allowed',
       });
     } else {
       this.inner.attr.remove('disabled');
@@ -228,7 +229,7 @@ export class TdInputWrapper extends TypeDiv implements ITdInputWrapper {
         color: $textColor.regular,
         // -webkit-text-fill-color: var(--el-text-color),
         WebkitTextFillColor: $textColor.regular,
-        cursor: 'text'
+        cursor: 'text',
       });
     }
   }
@@ -266,11 +267,13 @@ export class TdInputWrapper extends TypeDiv implements ITdInputWrapper {
   setShowClear(showClear: boolean | undefined) {
     console.log('setShowClear . showClear is ', showClear);
     this.suffix.style.show(this.suffixVisible ? 'inline-flex' : 'none');
-    this.suffix.clearIcon?.style.show(showClear ? 'inline-flex' : 'none');
+    this.suffix?.clearIcon?.style?.show(showClear ? 'inline-flex' : 'none');
   }
 
   setShowPassword(showPassword: boolean | undefined) {
-    this.suffix.passwordIcon?.style.show(showPassword ? 'inline-flex' : 'none');
+    this.suffix.passwordIcon?.style?.show(
+      showPassword ? 'inline-flex' : 'none'
+    );
   }
 
   setNativeInputValue() {
@@ -285,8 +288,8 @@ export class TdInputWrapper extends TypeDiv implements ITdInputWrapper {
 
   handleInput(event?: Event, element?: TypeElement) {
     console.log('input . this is ', this);
-    const [recordCursor, setCursor] = useCursor((element as Input)?.dom);
-    recordCursor();
+    // const [recordCursor, setCursor] = useCursor(element?.dom);
+    // recordCursor();
 
     let { value } = (event as InputEvent)?.target as TargetElement;
 
@@ -314,7 +317,7 @@ export class TdInputWrapper extends TypeDiv implements ITdInputWrapper {
     // await nextTick()
     this.nativeInputValue = value;
     this.setNativeInputValue();
-    setCursor();
+    // setCursor();
     console.log('handleInput then setShowClear . ');
     if (this.props.clearable) {
       this.setShowClear(this.showClear);

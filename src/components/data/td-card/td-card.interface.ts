@@ -1,11 +1,11 @@
-import { IUI, IUIConfig } from '../../../ui/ui.interface';
 import { IStyle } from '@type-dom/css-type';
+import { ITypeDiv, TypeDivProps } from '@type-dom/framework';
 
-export interface ITdCard extends IUI {
+export interface ITdCard extends ITypeDiv {
   className: 'TdCard';
 }
 
-export interface ITdCardConfig extends IUIConfig {
+export interface CardProps extends TypeDivProps {
   /**
    * @description title of the card. Also accepts a DOM passed by `slot#header`
    *     default: '',

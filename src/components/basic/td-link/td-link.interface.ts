@@ -1,8 +1,9 @@
-import { IUI, IUIConfig } from '../../../ui/ui.interface';
+import { ITypeA, TypeAProps } from '@type-dom/framework';
 import { TdIcon } from '../td-icon/td-icon.class';
 
-export interface ITdLink extends IUI {
+export interface ITdLink extends ITypeA {
   className: 'TdLink';
+  props: LinkProps;
 }
 
 export type ITdLinkType =
@@ -13,7 +14,7 @@ export type ITdLinkType =
   | 'info'
   | 'danger';
 
-export interface ITdLinkConfig extends IUIConfig {
+export interface LinkProps extends TypeAProps {
   title?: string; // 文本内容
   /**
    * @description type

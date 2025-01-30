@@ -1,36 +1,31 @@
-import { IPopperCoreConfigProps, ITdPopperContentConfig } from './content.interface';
+import { PopperCoreConfigProps, PopperContentProps } from './content.interface';
 
-export const popperCoreConfigProps: IPopperCoreConfigProps = {
-  boundariesPadding:  0,
-  // fallbackPlacements: undefined,
+export const popperCoreConfigProps: PopperCoreConfigProps = {
+  boundariesPadding: 0,
   gpuAcceleration: true,
-  /**
-   * @description offset of the Tooltip
-   */
   offset: 12,
-  /**
-   * @description position of Tooltip
-   */
   placement: 'bottom',
-  /**
-   * @description [popper.js](https://popper.js.org/docs/v2/) parameters
-   */
-  // popperOptions:  () => ({}),
   strategy: 'absolute',
 };
 
-
-export const popperContentProps: ITdPopperContentConfig = {
-  ...popperCoreConfigProps,
-  // style: {
-  //   type: definePropType<StyleValue>([String, Array, Object]),
-  // },
-  // className: {
-  //   type: definePropType<ClassType>([String, Array, Object]),
-  // },
-  effect:'dark',
+export const popperContentProps: PopperContentProps = {
+  boundariesPadding: 0,
+  gpuAcceleration: true,
+  offset: 12,
+  placement: 'bottom',
+  strategy: 'absolute',
+  // ...popperCoreConfigProps,
+  effect: 'dark',
   enterable: true,
   focusOnShow: false,
   trapping: false,
   stopPopperMouseEvent: true,
+};
+
+export const popperContentEmits = {
+  mouseenter: (evt?: MouseEvent) => evt instanceof MouseEvent,
+  mouseleave: (evt?: MouseEvent) => evt instanceof MouseEvent,
+  focus: () => true,
+  blur: () => true,
+  close: () => true,
 };

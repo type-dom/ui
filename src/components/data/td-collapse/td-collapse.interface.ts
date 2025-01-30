@@ -1,11 +1,15 @@
-import { IUI, IUIConfig } from '../../../ui/ui.interface';
-import { Arrayable } from '../../feedback/td-tooltip/utils';
+import { ITypeDiv, TypeDivProps } from '@type-dom/framework';
+import { Arrayable } from '../../../../../utils/src/ui/typescript';
+import { TdCollapseItem } from '../td-collapse-item/td-collapse-item.class';
 
-export interface ITdCollapse extends IUI {
+export type CollapseActiveName = string | number;
+export type CollapseModelValue = Arrayable<CollapseActiveName>;
+
+export interface ITdCollapse extends ITypeDiv {
   className: 'TdCollapse';
 }
 
-export interface ITdCollapseConfig extends IUIConfig {
+export interface CollapseProps extends TypeDivProps {
   /**
    * @description whether to activate accordion mode
    */
@@ -14,10 +18,7 @@ export interface ITdCollapseConfig extends IUIConfig {
    * @description currently active panel, the type is `string` in accordion mode, otherwise it is `array`
    *   default: () => mutable([] as const),
    */
-  modelValue?: string | number | ICollapseActiveName[];
+  modelValue?: CollapseModelValue;
   //   type: definePropType<CollapseModelValue>([Array, String, Number]),
-  slot?: undefined;
+  slot?: TdCollapseItem[];
 }
-
-export type ICollapseActiveName = string | number;
-export type ICollapseModelValue = Arrayable<ICollapseActiveName>;

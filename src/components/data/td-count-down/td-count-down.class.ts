@@ -1,63 +1,120 @@
-import { Dayjs } from 'dayjs';
-import { cAF, rAF } from '@type-dom/utils';
-import { TdStatisticAbstract } from '../td-statistic/td-statistic.abstract';
-import { ITdStatisticConfig } from '../td-statistic/td-statistic.interface';
-import { ITdCountDown, ITdCountDownConfig } from './td-count-down.interface';
+import { cAF, isUndefined, rAF } from '@type-dom/utils';
+import { ITdCountDown, CountDownProps } from './td-count-down.interface';
 import { formatTime, getTime } from './utils';
+import {
+  defineExpose,
+  onBeforeUnmount,
+  onMounted,
+  TextNode,
+  toValue,
+  TypeFragment,
+  TypeNode,
+} from '@type-dom/framework';
+import { countdownEmits, countdownProps } from './td-count-down.const';
+import {
+  Computed,
+  computed,
+  Signal,
+  signal,
+  unref,
+  watch,
+} from '@type-dom/signals';
+import { TdStatistic } from '../td-statistic/td-statistic.class';
 
-export class TdCountDown extends TdStatisticAbstract implements ITdCountDown {
+export class TdCountDown extends TypeFragment implements ITdCountDown {
   className: 'TdCountDown';
-  private rawValue: number; // form value submit
-  private timer?: ReturnType<typeof rAF> | undefined;
-  override props: ITdCountDownConfig;
+  override props: CountDownProps;
+  displayValue?: Computed<string>;
 
-  constructor(params: ITdCountDownConfig = {}) {
-    const format = params?.format || 'HH:mm:ss';
-    params.formatter = (val: number | Dayjs) =>
-      formatTime(val as number, format);
-    // title,prefix,suffix 可以是 TypeElement元素；
-    super(params);
+  constructor(params: CountDownProps = {}) {
+    super();
     this.className = 'TdCountDown';
-    this.rawValue = getTime(params?.value || 0) - Date.now();
-    this.setNumber(this.rawValue);
-
-    this.addChild(this.getSlotNode());
+    this.addEmits(countdownEmits);
+    this.assignProps(countdownProps);
     this.props = this.useParams(params);
   }
 
-  override mounted() {
-    this.stopTimer();
-    this.startTimer();
-  }
+  override setup() {
+    console.warn('TdCountDown setup . ');
+    const props = this.props;
+    const emit = this.emit;
 
-  stopTimer() {
-    if (this.timer) {
-      cAF(this.timer);
-      this.timer = undefined;
-    }
-  }
+    let timer: ReturnType<typeof rAF> | undefined;
+    const rawValue = signal<number>(0);
+    const displayValue = computed(() =>
+      formatTime(rawValue.get(), props.format!)
+    );
 
-  startTimer() {
-    console.log('this.props.value is ', this.props.value);
-    const timestamp = getTime(this.props?.value || 0);
-    const frameFunc = () => {
-      let diff = timestamp - Date.now();
-      // console.log('diff is ', diff);
-      // emit('change', diff)
-      this.setNumber(diff);
-      if (diff <= 0) {
-        diff = 0;
-        this.stopTimer();
-        // emit('finish')
-      } else {
-        this.timer = rAF(frameFunc);
+    const formatter: any = (val: number) => formatTime(val, props.format!);
+
+    const stopTimer = () => {
+      if (timer) {
+        cAF(timer);
+        timer = undefined;
       }
-      this.rawValue = diff;
     };
-    this.timer = rAF(frameFunc);
-  }
 
-  setNumber(value: number) {
-    this.number.textNode?.setText(this.formatValue(value));
+    const startTimer = () => {
+      const value = unref(props.value);
+      if (isUndefined(value)) {
+        return;
+      }
+      const timestamp = getTime(value);
+      const frameFunc = () => {
+        let diff = timestamp - Date.now();
+        emit('change', diff);
+        if (diff <= 0) {
+          diff = 0;
+          stopTimer();
+          emit('finish');
+        } else {
+          timer = rAF(frameFunc);
+        }
+        rawValue.set(diff);
+      };
+      timer = rAF(frameFunc);
+    };
+
+    onMounted(() => {
+      const value = unref(props.value) as number;
+      if (isUndefined(value)) {
+        return;
+      }
+      rawValue.set(getTime(value - Date.now()));
+
+      watch(
+        () => [unref(props.value), props.format],
+        () => {
+          stopTimer();
+          startTimer();
+        },
+        {
+          immediate: true,
+        }
+      );
+    });
+
+    onBeforeUnmount(() => {
+      stopTimer();
+    });
+
+    defineExpose({
+      /**
+       * @description current display value
+       */
+      displayValue,
+    });
+
+    this.addChild(
+      new TdStatistic({
+        value: rawValue,
+        title: props.title,
+        prefix: props.prefix,
+        suffix: props.suffix,
+        valueStyle: props.valueStyle,
+        formatter,
+        slots: props.slots,
+      })
+    );
   }
 }

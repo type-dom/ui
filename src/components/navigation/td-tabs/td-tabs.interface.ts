@@ -1,19 +1,15 @@
-import { isNumber, isString } from '@type-dom/utils';
 import { IStyle } from '@type-dom/css-type';
-import { IUI, IUIConfig } from '../../../ui/ui.interface';
+import { ITypeDiv, TypeDivProps } from '@type-dom/framework';
 import { UPDATE_MODEL_EVENT } from '../../../constants/event';
 import { TdIcon } from '../../basic/td-icon/td-icon.class';
-import { ITdTabPaneConfig } from './td-tab-pane.interface';
-import { TdTabPane } from './td-tab-pane.class';
+import { TabPaneProps } from '../td-tab-pane/td-tab-pane.interface';
+import { TdTabPane } from '../td-tab-pane/td-tab-pane.class';
 
-export interface ITdTabs extends IUI {
+export interface ITdTabs extends ITypeDiv {
   className: 'TdTabs';
 }
 
-const isPaneName = (value: unknown): value is string | number =>
-  isString(value) || isNumber(value);
-
-export interface ITdTabsConfig extends IUIConfig {
+export interface TabsProps extends TypeDivProps {
   /**
    * @description type of Tab
    *     default: '',
@@ -22,11 +18,11 @@ export interface ITdTabsConfig extends IUIConfig {
   /**
    * @description whether Tab is closable
    */
-  closable?: boolean,
+  closable?: boolean;
   /**
    * @description whether Tab is addable
    */
-  addable?: boolean,
+  addable?: boolean;
   /**
    * @description binding value, name of the selected tab
    */
@@ -34,7 +30,7 @@ export interface ITdTabsConfig extends IUIConfig {
   /**
    * @description whether Tab is addable and closable
    */
-  editable?: boolean,
+  editable?: boolean;
   /**
    * @description position of tabs
    *     default: 'top',
@@ -44,46 +40,42 @@ export interface ITdTabsConfig extends IUIConfig {
    * @description hook function before switching tab. If `false` is returned or a `Promise` is returned and then is rejected, switching will be prevented
    *     default: () => true,
    */
-  beforeLeave?: (newName: ITabPaneName, oldName: ITabPaneName | undefined) => void | boolean;
+  beforeLeave?: (
+    newName: TabPaneName,
+    oldName: TabPaneName | undefined
+  ) => void | boolean;
   // type: definePropType<
   //   (newName: TabPaneName, oldName: TabPaneName) => Awaitable<void | boolean>
   // >(Function),
   /**
    * @description whether width of tab automatically fits its container
    */
-  stretch?: boolean,
+  stretch?: boolean;
 
   contentStyle?: IStyle;
-  emits?: {
-    [UPDATE_MODEL_EVENT]?: (name: ITabPaneName) => void;
-    tabClick?: (pane: ITdTabPaneConfig, ev: Event) => void;
-    tabChange?: (name: ITabPaneName) => void;
-    edit?: (paneName: ITabPaneName | undefined, action: 'remove' | 'add') =>
-      void;
-    tabRemove?: (name: ITabPaneName) => void;
-    tabAdd?: () => true,
-  }
+
   slot?: TdTabPane[];
   slots?: {
     addIcon?: TdIcon;
-  }
+  };
 }
 
-export type ITabPaneName = string | number;
-export type ITabsPaneContext = {
-  uid: number
+export type TabsPanes = Record<number, TabsPaneContext>;
+
+export type TabPaneName = string | number;
+export type TabsPaneContext = {
+  uid: number;
   // slots: Slots
-  config: ITdTabsConfig;
-  paneName: ITabPaneName;
+  config: TabsProps;
+  paneName: TabPaneName;
   active: boolean;
   index: string | undefined;
   isClosable: boolean;
-}
+};
 
 export interface ITabsRootContext {
-  config: ITdTabsConfig;
-  currentName: ITabPaneName;
-  registerPane: (pane: ITabsPaneContext) => void;
+  config: TabsProps;
+  currentName: TabPaneName;
+  registerPane: (pane: TabsPaneContext) => void;
   unregisterPane: (uid: number) => void;
 }
-

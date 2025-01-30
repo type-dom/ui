@@ -1,20 +1,30 @@
-import { IUI, IUIConfig } from '../../../ui/ui.interface';
-import { ISize } from '../../../styles/size';
-import { TypeNode } from '@type-dom/framework';
+import {
+  RuleItem,
+  ValidateError,
+  ValidateFieldsError,
+} from '@type-dom/async-validator';
+import { TypeDivProps, ITypeElement } from '@type-dom/framework';
+import { MaybeRef } from '@type-dom/signals';
+import { Arrayable } from '../../../../../utils/src/ui/typescript';
+import { ComponentSize } from '../../../constants';
 
 export const formItemValidateStates = [
   '',
   'error',
   'validating',
-  'success'
+  'success',
 ] as const;
 export type IFormItemValidateState = (typeof formItemValidateStates)[number];
 
-export interface ITdFormItem extends IUI {
+export interface ITdFormItem extends ITypeElement {
   className: 'TdFormItem';
 }
 
-export interface ITdFormItemConfig extends IUIConfig {
+export type FormItemProp = Arrayable<string>;
+
+export type FormItemValidateState = (typeof formItemValidateStates)[number];
+
+export interface FormItemProps extends TypeDivProps {
   /**
    * @description Label text.
    */
@@ -26,7 +36,7 @@ export interface ITdFormItemConfig extends IUIConfig {
   /**
    * @description  A key of `model`. It could be an array of property paths (e.g `['a', 'b', '0']`). In the use of `validate` and `resetFields` method, the attribute is required.
    */
-  // prop: {
+  prop?: FormItemProp;
   //   type: definePropType<FormItemProp>([string, Array]),
   // },
   /**
@@ -36,7 +46,7 @@ export interface ITdFormItemConfig extends IUIConfig {
   /**
    * @description Validation rules of form, see the [following table](#formitemrule), more advanced usage at [async-validator](https://github.com/yiminghe/async-validator).
    */
-  // rules: {
+  rules?: Arrayable<FormItemRule>;
   //   type: definePropType<Arrayable<FormItemRule>>([Object, Array]),
   // },
   /**
@@ -67,10 +77,30 @@ export interface ITdFormItemConfig extends IUIConfig {
   /**
    * @description Control the size of components in this form-item.
    */
-  size?: ISize;
+  size?: MaybeRef<ComponentSize>;
 
   contentAlign?: 'left' | 'right' | 'center';
   labelPosition?: ILabelPosition;
 }
 
-export type ILabelPosition = 'left' | 'right' | 'top';
+export type ILabelPosition = '' | 'left' | 'right' | 'top';
+
+export interface FormItemRule extends RuleItem {
+  trigger?: Arrayable<string>;
+}
+
+export type FormValidationResult = Promise<boolean>;
+export type FormValidateCallback = (
+  isValid: boolean,
+  invalidFields?: ValidateFieldsError
+) => Promise<void> | void;
+
+export interface FormValidateFailure {
+  errors: ValidateError[] | null;
+  fields: ValidateFieldsError;
+}
+
+export interface FormValidateFailure {
+  errors: ValidateError[] | null;
+  fields: ValidateFieldsError;
+}

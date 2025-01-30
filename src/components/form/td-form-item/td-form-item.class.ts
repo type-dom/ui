@@ -1,197 +1,489 @@
-import { addUnit } from '@type-dom/utils';
-import { Div, Label, Span } from '@type-dom/framework';
-import { UI } from '../../../ui/ui.abstract';
-import { ISize } from '../../../styles/size';
-import { $colors, $fontSizes, $textColor } from '../../../styles/var';
-import { TdForm } from '../td-form/td-form.class';
-import { formContextKey } from '../td-form/td-form.const';
-import { ITdFormConfig } from '../td-form/td-form.interface';
 import {
-  $formItemErrorPaddingTop,
-  $formItemLineHeight,
-  $formItemMarginBottom
-} from './td-form-item.style';
+  addUnit,
+  isArray,
+  isBoolean,
+  isFunction,
+  isString,
+  clone,
+} from '@type-dom/utils';
+import AsyncValidator, { RuleItem } from '@type-dom/async-validator';
+// import { clone } from 'lodash';
 import {
-  ILabelPosition,
+  Arrayable,
+  arraySlot,
+  defineExpose,
+  Div,
+  inject,
+  logMethod,
+  logProperty,
+  nextTick,
+  onBeforeUnmount,
+  onMounted,
+  provide,
+  refDebounced,
+  Span,
+  TransitionGroup,
+  TypeDiv,
+  useSlots,
+  XElement,
+} from '@type-dom/framework';
+import { IStyle } from '@type-dom/css-type';
+import { computed, Signal, signal, watch } from '@type-dom/signals';
+
+import { useNamespace } from '../../../hooks/use-namespace';
+import { useId } from '../../../hooks/use-id';
+import { ensureArray } from '../../../../../utils/src/ui/arrays';
+import { getProp } from '../../../../../utils/src/ui/objects';
+import { formContextKey, formItemContextKey } from '../td-form/td-form.const';
+import { FormItemContext, FormProps } from '../td-form/td-form.interface';
+import { useFormSize } from '../td-form/hooks/use-form-common-props';
+import { FormLabelWrap } from '../td-form/form-label-wrap/form-label-wrap.class';
+import {
   ITdFormItem,
-  ITdFormItemConfig
+  FormItemProps,
+  FormItemRule,
+  FormItemValidateState,
+  FormValidateFailure,
 } from './td-form-item.interface';
+import { formItemProps } from './td-form-item.const';
+import './style/index';
 
-export class TdFormItem extends UI implements ITdFormItem {
+export class TdFormItem extends TypeDiv implements ITdFormItem {
   className: 'TdFormItem';
-  label?: Label;
-  override props: ITdFormItemConfig;
-  override parent?: TdForm;
-  private formConfig?: ITdFormConfig; // 不是必须的
-  private labelWrap?: Div;
-  private content: Div;
-  private error?: Div;
+  override props: FormItemProps;
 
-  // new TdFormItem 是 发生在 TdForm slotChild 之前的。
-  constructor(params: ITdFormItemConfig = {}) {
+  // new TdFormItem 是 发生在 TdForm slotChildren 之前的。
+  constructor(params: FormItemProps = {}) {
     super();
     this.className = 'TdFormItem';
     this.attr.addName('td-form-item');
-    this.style.addObj({
-      display: 'flex',
-      // --font-size: 14px,
-      fontSize: $fontSizes[params?.size || 'base'],
-      marginBottom: $formItemMarginBottom[params?.size || 'default'],
-    });
-    this.labelWrap = new Div({
-      name: 'td-form-item-label-wrap',
-      styleObj: {
-        display: 'flex',
-        alignItems: 'center'
-        // marginLeft: '11px', // 这个是动态计算的
-      },
-    });
-    this.addChild(this.labelWrap);
-
-    if (!params.label && params.required) {
-      this.labelWrap?.addChild(
-        new Span({
-          text: '*',
-          styleObj: {
-            color: $colors.danger.base,
-            marginRight: '4px',
-          },
-        })
-      );
-    }
-    this.content = new Div({
-      name: 'td-form-item-content',
-      styleObj: {
-        display: 'flex',
-        flexWrap: 'wrap',
-        alignItems: 'center',
-        flex: 1,
-        justifyContent: params?.contentAlign || 'left',
-        lineHeight: '32px',
-        position: 'relative',
-        // font-size: var(--font-size),
-        fontSize: $fontSizes.base,
-        minWidth: 0,
-      },
-    });
-    this.error = new Div({
-      text: params.error || '',
-      name: 'td-form-item-error',
-      styleObj: {
-        display: 'none',
-        // color: getCssVar('color-danger');
-        color: $colors.danger.base,
-        fontSize: '12px',
-        lineHeight: '1',
-        // padding-top: #{map.get($form-item-error-padding-top, 'default')},
-        paddingTop: $formItemErrorPaddingTop[params?.size || 'default'],
-        position: 'absolute',
-        top: '100%',
-        left: '0',
-      },
-    });
-    // todo 动态加载
-    this.content.addChild(this.error);
-    this.addChild(this.content);
-    this.content.addChild(this.getSlotNode());
-
+    this.assignProps(formItemProps);
     this.props = this.useParams(params);
   }
 
+  // @logMethod
   override setup() {
-    // inject 要在 created 之中，否则无法确定 parent .
-    this.formConfig = this.inject(formContextKey);
-    // 就是 this.parent.params , 有必要单独引入一次吗？
-    console.log('this.formConfig is ', this.formConfig);
-    // this.childNodes = [this.labelWrap, this.content];
-    // 下面的方法要调用到 this.parent 才能获取到。需要 form的setConfig 方法调用后
     const props = this.props;
-    if (props?.label) {
-      this.label = new Label({
-        text: props.label,
-        styleObj: {
-          display: 'inline-flex',
-          justifyContent: 'flex-end',
-          alignItems: 'flex-start',
-          flex: '0 0 auto',
-          // font-size: var(--el-form-label-font-size),
-          fontSize: $fontSizes[props?.size || 'base'],
-          // color: var(--el-text-color-regular),
-          color: $textColor.regular,
-          height: '32px',
-          lineHeight: '32px',
-          padding: '0 12px 0 0',
-          boxSizing: 'border-box',
-          // width: props?.labelWidth || this.parent?.props.labelWidth || '',
-        },
-      });
-      if (this.parent?.props.labelPosition === 'top') {
-        //   todo
-      } else {
-        const labelWidth = addUnit(
-          props.labelWidth || this.parent?.props.labelWidth || '120px'
-        );
-        if (labelWidth) {
-          this.label.style.addObj({
-            width: labelWidth,
-          });
+    const slots = useSlots();
+
+    const formContext = inject(formContextKey, undefined);
+    const parentFormItemContext = inject(formItemContextKey, undefined);
+
+    const _size = useFormSize(undefined, { formItem: false });
+    const ns = useNamespace('form-item');
+
+    const labelId = useId().get();
+    const inputIds = signal<string[]>([]);
+
+    const validateState = signal<FormItemValidateState>('');
+    const validateStateDebounced = refDebounced(validateState, 100);
+    const validateMessage = signal('');
+    const formItemRef = signal<HTMLDivElement>();
+    // special inline value.
+    let initialValue: any = undefined;
+    let isResettingField = false;
+
+    const labelPosition = computed(
+      () => props.labelPosition || formContext?.labelPosition
+    );
+
+    const labelStyle = computed<IStyle>(() => {
+      if (labelPosition.get() === 'top') {
+        return {};
+      }
+
+      const labelWidth = addUnit(
+        props.labelWidth || formContext?.labelWidth || ''
+      );
+      if (labelWidth) return { width: labelWidth };
+      return {};
+    });
+
+    const contentStyle = computed<IStyle>(() => {
+      if (labelPosition.get() === 'top' || formContext?.inline) {
+        return {};
+      }
+      if (!props.label && !props.labelWidth && isNested) {
+        return {};
+      }
+      const labelWidth = addUnit(
+        props.labelWidth || formContext?.labelWidth || ''
+      );
+      if (!props.label && !slots?.label) {
+        return { marginLeft: labelWidth };
+      }
+      return {};
+    });
+
+    const formItemClasses = computed(() => [
+      ns.b(),
+      ns.m(_size.get()),
+      ns.is('error', validateState.get() === 'error'),
+      ns.is('validating', validateState.get() === 'validating'),
+      ns.is('success', validateState.get() === 'success'),
+      ns.is('required', isRequired.get() || props.required),
+      ns.is('no-asterisk', formContext?.hideRequiredAsterisk),
+      formContext?.requireAsteriskPosition === 'right'
+        ? 'asterisk-right'
+        : 'asterisk-left',
+      {
+        [ns.m('feedback')]: formContext?.statusIcon,
+        [ns.m(`label-${labelPosition.get()}`)]: labelPosition.get(),
+      },
+    ]);
+
+    const _inlineMessage = computed(() =>
+      isBoolean(props.inlineMessage)
+        ? props.inlineMessage
+        : formContext?.inlineMessage || false
+    );
+
+    const validateClasses = computed(() => [
+      ns.e('error'),
+      { [ns.em('error', 'inline')]: _inlineMessage.get() },
+    ]);
+
+    const propString = computed(() => {
+      if (!props.prop) return '';
+      return isString(props.prop) ? props.prop : props.prop.join('.');
+    });
+
+    const hasLabel = computed<boolean>(() => {
+      return !!(props.label || slots?.label);
+    });
+
+    const labelFor = computed<string | undefined>(() => {
+      return (
+        props.for ||
+        (inputIds.get().length === 1 ? inputIds.get()[0] : undefined)
+      );
+    });
+    console.error('labelFor', labelFor.get());
+
+    const isGroup = computed<boolean>(() => {
+      return !labelFor.get() && hasLabel.get();
+    });
+
+    const isNested = !!parentFormItemContext;
+
+    const fieldValue = computed(() => {
+      const model = formContext?.model;
+      if (!model || !props.prop) {
+        return;
+      }
+      return getProp(model, props.prop).value;
+    });
+
+    const normalizedRules = computed(() => {
+      const { required } = props;
+
+      const rules: FormItemRule[] = [];
+
+      if (props.rules) {
+        rules.push(...ensureArray(props.rules));
+      }
+
+      const formRules = formContext?.rules;
+      if (formRules && props.prop) {
+        const _rules = getProp<Arrayable<FormItemRule> | undefined>(
+          formRules,
+          props.prop
+        ).value;
+        if (_rules) {
+          rules.push(...ensureArray(_rules));
         }
       }
-      if (props.required) {
-        this.label?.unshiftChild(
-          new Span({
-            text: '*',
-            styleObj: {
-              color: $colors.danger.base,
-              marginRight: '4px',
-            },
-          })
-        );
-      }
-      this.labelWrap?.addChild(this.label);
-      this.style.addObj({
-        display: this.parent?.props.inline ? 'inline-flex' : 'flex',
-        verticalAlign: 'middle',
-        marginRight: this.parent?.props.inline
-          ? '32px'
-          : this.style.get('marginRight'),
-        // justifyContent: justifyContent,
-      });
-      this.setLabelPosition(this.parent?.props.labelPosition);
-      this.setSize(this.parent?.props.size);
-      this.setLabelWidth(this.parent?.props.labelWidth);
-    }
-  }
-  // 待实现：设置子元素的labelWidth
-  setLabelWidth(width?: string | number) {
-    if (width === undefined) {
-      return;
-    }
-    this.label?.style.addObj({
-      width: addUnit(width),
-    });
-  }
-  setLabelPosition(position?: ILabelPosition) {
-    // todo top 怎么处理 ？
-    this.label?.style.addObj({
-      justifyContent: position === 'left' ? 'flex-start' : 'flex-end',
-    });
-  }
 
-  setSize(size: ISize = 'default') {
-    this.style.addObj({
-      fontSize: $fontSizes[size],
-      marginBottom: $formItemMarginBottom[size],
+      if (required !== undefined) {
+        const requiredRules = rules
+          .map((rule, i) => [rule, i] as const)
+          .filter(([rule]) => Object.keys(rule).includes('required'));
+
+        if (requiredRules.length > 0) {
+          for (const [rule, i] of requiredRules) {
+            if (rule.required === required) continue;
+            rules[i] = { ...rule, required };
+          }
+        } else {
+          rules.push({ required });
+        }
+      }
+
+      return rules;
     });
-    this.label?.style.addObj({
-      height: $formItemLineHeight[size],
-      lineHeight: $formItemLineHeight[size],
+
+    const validateEnabled = computed(() => normalizedRules.get().length > 0);
+
+    const getFilteredRule = (trigger: string) => {
+      const rules = normalizedRules.get();
+      return (
+        rules
+          .filter((rule) => {
+            if (!rule.trigger || !trigger) return true;
+            if (isArray(rule.trigger)) {
+              return rule.trigger.includes(trigger);
+            } else {
+              return rule.trigger === trigger;
+            }
+          })
+          // exclude trigger
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+          .map(({ trigger, ...rule }): RuleItem => rule)
+      );
+    };
+
+    const isRequired = computed(() =>
+      normalizedRules.get().some((rule) => rule.required)
+    );
+
+    const shouldShowError = computed(
+      () =>
+        validateStateDebounced.get() === 'error' &&
+        props.showMessage &&
+        (formContext?.showMessage ?? true)
+    );
+
+    const currentLabel = computed(
+      () => `${props.label || ''}${formContext?.labelSuffix || ''}`
+    );
+
+    const setValidationState = (state: FormItemValidateState) => {
+      validateState.set(state);
+    };
+
+    const onValidationFailed = (error: FormValidateFailure) => {
+      const { errors, fields } = error;
+      if (!errors || !fields) {
+        console.error(error);
+      }
+
+      setValidationState('error');
+      validateMessage.set(
+        errors ? errors?.[0]?.message ?? `${props.prop} is required` : ''
+      );
+
+      formContext?.emit('validate', props.prop!, false, validateMessage.get());
+    };
+
+    const onValidationSucceeded = () => {
+      setValidationState('success');
+      formContext?.emit('validate', props.prop!, true, '');
+    };
+
+    const doValidate = async (rules: RuleItem[]): Promise<true> => {
+      const modelName = propString.get();
+      const validator = new AsyncValidator({
+        [modelName]: rules,
+      });
+      return validator
+        .validate({ [modelName]: fieldValue.get() }, { firstFields: true })
+        .then(() => {
+          onValidationSucceeded();
+          return true as const;
+        })
+        .catch((err: FormValidateFailure) => {
+          onValidationFailed(err as FormValidateFailure);
+          return Promise.reject(err);
+        });
+    };
+
+    const validate: FormItemContext['validate'] = async (trigger, callback) => {
+      // skip validation if its resetting
+      if (isResettingField || !props.prop) {
+        return false;
+      }
+
+      const hasCallback = isFunction(callback);
+      if (!validateEnabled.get()) {
+        callback?.(false);
+        return false;
+      }
+
+      const rules = getFilteredRule(trigger);
+      if (rules.length === 0) {
+        callback?.(true);
+        return true;
+      }
+
+      setValidationState('validating');
+
+      return doValidate(rules)
+        .then(() => {
+          callback?.(true);
+          return true as const;
+        })
+        .catch((err: FormValidateFailure) => {
+          const { fields } = err;
+          callback?.(false, fields);
+          return hasCallback ? false : Promise.reject(fields);
+        });
+    };
+
+    const clearValidate: FormItemContext['clearValidate'] = () => {
+      setValidationState('');
+      validateMessage.set('');
+      isResettingField = false;
+    };
+
+    const resetField: FormItemContext['resetField'] = async () => {
+      const model = formContext?.model;
+      if (!model || !props.prop) return;
+
+      const computedValue = getProp(model, props.prop);
+
+      // prevent validation from being triggered
+      isResettingField = true;
+
+      computedValue.value = clone(initialValue);
+      // computedValue.set(clone(initialValue)); // todo
+      await nextTick();
+      clearValidate();
+
+      isResettingField = false;
+    };
+
+    const addInputId: FormItemContext['addInputId'] = (id: string) => {
+      console.error('addInputId . ');
+      if (!inputIds.get().includes(id)) {
+        inputIds.get().push(id);
+      }
+    };
+
+    const removeInputId: FormItemContext['removeInputId'] = (id: string) => {
+      inputIds.set(inputIds.get().filter((listId) => listId !== id));
+    };
+
+    watch(
+      () => props.error,
+      (val) => {
+        validateMessage.set(val || '');
+        setValidationState(val ? 'error' : '');
+      },
+      { immediate: true }
+    );
+
+    watch(
+      () => props.validateStatus,
+      (val) => setValidationState(val || '')
+    );
+
+    const context: FormItemContext = {
+      // ...toRefs(props),
+      ...props,
+      $el: formItemRef,
+      size: _size,
+      validateState,
+      labelId,
+      inputIds,
+      isGroup,
+      hasLabel,
+      fieldValue,
+      addInputId,
+      removeInputId,
+      resetField,
+      clearValidate,
+      validate,
+    };
+
+    provide(formItemContextKey, context);
+
+    onMounted(() => {
+      if (props.prop) {
+        formContext?.addField(context);
+        initialValue = clone(fieldValue.get());
+      }
     });
-    this.content.style.addObj({
-      lineHeight: $formItemLineHeight[size],
+
+    onBeforeUnmount(() => {
+      formContext?.removeField(context);
     });
-    this.error?.style.addObj({
-      paddingTop: $formItemErrorPaddingTop[size],
+
+    defineExpose({
+      /**
+       * @description Form item size.
+       */
+      size: _size,
+      /**
+       * @description Validation message.
+       */
+      validateMessage,
+      /**
+       * @description Validation state.
+       */
+      validateState,
+      /**
+       * @description Validate form item.
+       */
+      validate,
+      /**
+       * @description Remove validation status of the field.
+       */
+      clearValidate,
+      /**
+       * @description Reset current field and remove validation result.
+       */
+      resetField,
     });
+    this.assignProps({
+      refDom: formItemRef,
+    });
+    this.attr.addObj({
+      class: formItemClasses,
+      role: isGroup.get() ? 'group' : undefined,
+      ariaLabeledby: isGroup.get() ? labelId : undefined,
+    });
+    this.addChild(
+      new FormLabelWrap({
+        isAutoWidth: labelStyle.get().width === 'auto',
+        updateAll: formContext.labelWidth === 'auto',
+        slot: new XElement({
+          tag: labelFor.get() ? 'label' : 'div',
+          vIf: hasLabel,
+          attrObj: {
+            id: labelId,
+            for: labelFor.get(),
+            class: ns.e('label'),
+          },
+          styleObj: labelStyle.get(),
+          slot: slots?.label || currentLabel.get(),
+        }),
+      })
+    );
+    this.addChild(
+      new Div({
+        class: ns.e('content'),
+        styleObj: contentStyle,
+        slot: [
+          ...arraySlot(props.slot || slots?.default),
+          new TransitionGroup({
+            // todo error
+            //  <slot v-if="shouldShowError" name="error" :error="validateMessage">
+            //           <div :class="validateClasses">
+            //             {{ validateMessage }}
+            //           </div>
+            //         </slot>
+            slot: shouldShowError.get()
+              ? slots?.error ??
+                new Div({
+                  class: validateClasses,
+                  slot: validateMessage,
+                })
+              : undefined,
+            // init: (element) => {
+            //   if (shouldShowError.get()) {
+            //     if (slots?.error) {
+            //       element.slotChildren(slots.error)
+            //     } else {
+            //       element.addChild(new Div({
+            //         class: validateClasses,
+            //         slot: validateMessage
+            //       }))
+            //     }
+            //   }
+            // }
+          }),
+        ],
+      })
+    );
   }
 }

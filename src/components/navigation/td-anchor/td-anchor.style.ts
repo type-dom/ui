@@ -11,5 +11,5 @@ export const $anchor = {
   // activeColor: getCssVar('color-primary'),
   activeColor: $colorPrimary,
   // markerBgColor: getCssVar('color-primary'),
-  markerBgColor: $colorPrimary
+  markerBgColor: $colorPrimary,
 };

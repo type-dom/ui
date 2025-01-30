@@ -1,10 +1,10 @@
-import { IUI, IUIConfig } from '../../../ui/ui.interface';
+import { ITypeDiv, TypeDivProps, TypeSvgSvg } from '@type-dom/framework';
 
-export interface ITdCollapseItem extends IUI {
+export interface ITdCollapseItem extends ITypeDiv {
   className: 'TdCollapseItem';
 }
 
-export interface ITdCollapseItemConfig extends IUIConfig {
+export interface CollapseItemProps extends TypeDivProps {
   /**
    * @description title of the panel
    *     default: '',
@@ -14,8 +14,16 @@ export interface ITdCollapseItemConfig extends IUIConfig {
    * @description unique identification of the panel
    *     default: undefined,
    */
-  nameId?: string | number;
+  name?: string | number;
   //   type: definePropType<CollapseActiveName>([String, Number]),
+  // },
+
+  /**
+   * @description icon of the collapse item
+   */
+  icon?: typeof TypeSvgSvg;
+  //   type: iconPropType,
+  //   default: ArrowRight,
   // },
   /**
    * @description disable the collapse item

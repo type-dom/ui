@@ -10,8 +10,9 @@ export class TdContainerComp extends HTMLElement {
   connectedCallback() {
     // 省去了监听document加载完毕
     const title = 'td-container';
-    const container = new TdContainer();
-    container.attr.setName(title);
+    const container = new TdContainer({
+      attrObj: { name: title },
+    });
     // 渲染
     container.mount();
     console.log('container is ', container);

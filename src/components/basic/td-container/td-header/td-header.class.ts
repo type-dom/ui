@@ -1,29 +1,34 @@
-import { UI } from '../../../../ui/ui.abstract';
+import { TypeHeader } from '@type-dom/framework';
 import { TdContainer } from '../td-container.class';
-import type { ITdHeader, ITdHeaderConfig } from './td-header.interface';
+import type { ITdHeader, TdHeaderProps } from './td-header.interface';
+import { useNamespace } from '../../../../hooks/use-namespace';
+import { computed } from '@type-dom/signals';
+import { IStyle } from '@type-dom/css-type';
 
-export class TdHeader extends UI implements ITdHeader {
+export class TdHeader extends TypeHeader implements ITdHeader {
   className: 'TdHeader';
-  override props: ITdHeaderConfig;
+  override props: TdHeaderProps;
   override parent?: TdContainer;
 
-  constructor(params: ITdHeaderConfig = {}) {
+  constructor(params: TdHeaderProps = {}) {
     super();
-    this.useTag('header');
     this.className = 'TdHeader';
     this.attr.addName('td-header');
-    this.style.addObj({
-      display: 'flex',
-      alignItems: 'center',
-      padding: '0 20px',
-      boxSizing: 'border-box',
-      flexShrink: 0,
-      height: 60,
-      backgroundColor: '#fff'
-    });
-    if (params?.slot) {
-      this.slotChild(params.slot);
-    }
     this.props = this.useParams(params);
+  }
+
+  override setup() {
+    const props = this.props;
+    const ns = useNamespace('header');
+    const style = computed(() => {
+      return props.height
+        ? (ns.cssVarBlock({
+            height: props.height.toString(),
+          }) as IStyle)
+        : {};
+    });
+    this.attr.addClass(ns.b());
+    this.style.addObj(style);
+    this.slotChildren(props.slot || props.slots?.default);
   }
 }

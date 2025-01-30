@@ -4,28 +4,26 @@ import { IRadioOption, IRadioOptionConfig } from './radio-option.interface';
 
 export class RadioOption extends TypeSpan implements IRadioOption {
   className: 'RadioOption';
-  override props: IRadioOptionConfig
+  override props: IRadioOptionConfig;
   input: Input;
   override parent?: RadioGroup;
   override childNodes: [Input, TextNode];
-  override textNode: TextNode;
 
   constructor(params: IRadioOptionConfig = {}) {
     super();
     this.className = 'RadioOption';
     this.style.addObj({
-      padding: '0 5px'
+      padding: '0 5px',
     });
     this.input = new Input({ parent: this });
     this.input.attr.addObj({
-      type: 'radio'
+      type: 'radio',
       // name: optionSetting.name,
       // label: opt.label,
       // value: opt.value,
       // checked: opt.checked || false
     });
-    this.textNode = new TextNode('');
-    this.childNodes = [this.input, this.textNode];
+    this.childNodes = [this.input, new TextNode('')];
     this.props = this.useParams(params);
   }
 
@@ -42,9 +40,9 @@ export class RadioOption extends TypeSpan implements IRadioOption {
     this.input.addEvents({
       click: () => {
         console.log('this.input.dom click . ');
-        console.log('this.input.dom.value is ', this.input.dom.value);
-        if (this.parent) this.parent.value = this.input.dom.value;
-      }
+        console.log('this.input.dom.value is ', this.input.dom?.value);
+        if (this.parent) this.parent.value = this.input.dom?.value;
+      },
     });
   }
 }

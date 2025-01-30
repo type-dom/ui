@@ -1,14 +1,15 @@
+import { IStyle } from '@type-dom/css-type';
 import {
   $bgColor,
   $borderColor,
   $borderRadius,
   $borderStyle,
-  $borderWidth, $boxShadow,
+  $borderWidth,
+  $boxShadow,
   $colors,
-  $textColor
+  $textColor,
 } from '../../../styles/var';
-import { IStyle } from '@type-dom/css-type';
-import { IMessageTypes, ITdMessageConfig } from './td-message.interface';
+import { IMessageType, MessageProps } from './td-message.interface';
 
 export const $message = {
   // bgColor: getCssVar('color', 'info', 'light-9'),
@@ -20,7 +21,7 @@ export const $message = {
   // closeIconColor: getCssVar('text-color-placeholder'),
   closeIconColor: $textColor.placeholder,
   // closeHoverColor: getCssVar('text-color-secondary'),
-  closeHoverColor: $textColor.secondary
+  closeHoverColor: $textColor.secondary,
 };
 
 export const $messageStyle: IStyle = {
@@ -49,20 +50,20 @@ export const $messageStyle: IStyle = {
   alignItems: 'center',
   gap: '8px',
 
-  zIndex: 9999,
+  zIndex: 99999,
 };
 
 export const $messageContentStyle: IStyle = {
   padding: 0,
   fontSize: '14px',
   lineHeight: 1,
-  margin: 0 // add by me  P 标签默认有 margin
+  margin: 0, // add by me  P 标签默认有 margin
 };
 
 export const $messageBadgeStyle: IStyle = {
   position: 'absolute',
   top: '-8px',
-  right: '-8px'
+  right: '-8px',
 };
 
 export const $messageCloseBtnStyle: IStyle = {
@@ -70,14 +71,14 @@ export const $messageCloseBtnStyle: IStyle = {
   // color: getCssVar('message', 'close-icon-color'),
   color: $message.closeIconColor,
   // font-size: getCssVar('message', 'close-size'),
-  fontSize: $message.closeSize
+  fontSize: $message.closeSize,
 };
 
-export function useStyle(config?: ITdMessageConfig) {
+export function useMessageStyle(config?: MessageProps) {
   if (config?.center) {
     $messageStyle.justifyContent = 'center';
   }
-  useType(config);
+  useMessageType(config);
   if (config?.plain) {
     // background-color: getCssVar('bg-color', 'overlay');
     $messageStyle.backgroundColor = $bgColor.overlay;
@@ -94,25 +95,25 @@ export function useStyle(config?: ITdMessageConfig) {
 
 export const $messageIconStyle: IStyle = {};
 
-export function useType(config?: ITdMessageConfig) {
-  const type: IMessageTypes = config?.type || 'info';
-//    @include css-var-from-global(
-//         ('message', 'bg-color'),
-//         ('color', $type, 'light-9')
-//       );
+export function useMessageType(config?: MessageProps) {
+  const type: IMessageType = config?.type || 'info';
+  //    @include css-var-from-global(
+  //         ('message', 'bg-color'),
+  //         ('color', $type, 'light-9')
+  //       );
   $message.bgColor = $colors[type]['light-9'];
-//       @include css-var-from-global(
-//         ('message', 'border-color'),
-//         ('color', $type, 'light-8')
-//       );
+  //       @include css-var-from-global(
+  //         ('message', 'border-color'),
+  //         ('color', $type, 'light-8')
+  //       );
   $message.borderColor = $colors[type]['light-8'];
-//       @include css-var-from-global(('message', 'text-color'), ('color', $type));
+  //       @include css-var-from-global(('message', 'text-color'), ('color', $type));
 
   const $messageTextColor = $colors[type].base;
-//  .#{$namespace}-message__content {
-//         color: getCssVar('message', 'text-color');
-//         overflow-wrap: break-word;
-//       }
+  //  .#{$namespace}-message__content {
+  //         color: getCssVar('message', 'text-color');
+  //         overflow-wrap: break-word;
+  //       }
   $messageContentStyle.color = $messageTextColor;
   $messageContentStyle.overflowWrap = 'break-word';
   $messageIconStyle.color = $messageTextColor;

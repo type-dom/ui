@@ -3,39 +3,40 @@ import {
   $borderColor,
   $fillColor,
   $fontSizes,
-  $textColor
+  $textColor,
 } from '../../../styles/var';
 import { $inputFontSize } from '../../form/td-input/td-input.style';
-import { ITdDescriptionsConfig } from './td-descriptions.interface';
+import { DescriptionsProps } from './td-descriptions.interface';
+import { unref } from '@type-dom/signals';
 
 export const $descriptionsHeaderMarginBottom = {
   large: '20px',
   default: '16px',
-  small: '12px'
+  small: '12px',
 };
 
 export const $descriptionsTitleFontSize = {
   large: '16px',
   default: '16px',
-  small: '14px'
+  small: '14px',
 };
 
 export const $descriptionsCellPaddingBottom = {
   large: '16px',
   default: '12px',
-  small: '8px'
+  small: '8px',
 };
 
 export const $descriptionsBorderedCellPadding = {
   large: '12px 15px',
   default: '8px 11px',
-  small: '4px 7px'
+  small: '4px 7px',
 };
 
 export const $descriptionsCellFontSize = {
   large: '14px',
   default: '14px',
-  small: '12px'
+  small: '12px',
 };
 
 // Descriptions
@@ -44,7 +45,7 @@ export const $descriptions = {
   // tableBorder: 1px solid getCssVar('border-color-lighter'),
   tableBorder: '1px solid ' + $borderColor.lighter,
   // itemBorderedLabelBackground: getCssVar('fill-color', 'light'),
-  itemBorderedLabelBackground: $fillColor.light
+  itemBorderedLabelBackground: $fillColor.light,
 };
 
 export const $descriptionsStyle: IStyle = {
@@ -52,7 +53,7 @@ export const $descriptionsStyle: IStyle = {
   // fontSize: getCssVar('font-size', 'base'),
   fontSize: $fontSizes.base,
   // color: getCssVar('text-color', 'primary'),
-  color: $textColor.primary
+  color: $textColor.primary,
 };
 
 export const $descriptionsHeaderStyle: IStyle = {
@@ -60,23 +61,23 @@ export const $descriptionsHeaderStyle: IStyle = {
   justifyContent: 'space-between',
   alignItems: 'center',
   // margin-bottom: map.get($descriptions-header-margin-bottom, 'default'),
-  marginBottom: $descriptionsHeaderMarginBottom.default
+  marginBottom: $descriptionsHeaderMarginBottom.default,
 };
 export const $descriptionsHeaderTitleStyle: IStyle = {
   // color: getCssVar('text-color', 'primary'),
   color: $textColor.primary,
   // font-size: map.get($descriptions-title-font-size, 'default'),
   fontSize: $descriptionsTitleFontSize.default,
-  fontWeight: 'bold'
+  fontWeight: 'bold',
 };
 
 export const $descriptionsBodyStyle: IStyle = {
   // background-color: getCssVar('fill-color', 'blank')
-  backgroundColor: $fillColor.blank
+  backgroundColor: $fillColor.blank,
 };
 export const $descriptionsBodyTableStyle: IStyle = {
   borderCollapse: 'collapse',
-  width: '100%'
+  width: '100%',
 };
 
 export const $descriptionsBodyTableCellStyle: IStyle = {
@@ -87,17 +88,17 @@ export const $descriptionsBodyTableCellStyle: IStyle = {
   fontWeight: 'normal',
   lineHeight: '23px',
   // font-size: map.get($descriptions-cell-font-size, 'default'),
-  fontSize: $descriptionsCellFontSize.default
+  fontSize: $descriptionsCellFontSize.default,
 };
 
 export const $descriptionsItemLabelMarginRight = {
   large: '16px',
   default: '16px',
-  small: '12px'
+  small: '12px',
 };
 
-export function useSize(config?: ITdDescriptionsConfig) {
-  const size = config?.size || 'default';
+export function useSize(config?: DescriptionsProps) {
+  const size = unref(config?.size) || 'default';
   // if (size !== 'default') {
   $descriptionsStyle.fontSize = $inputFontSize[size];
   $descriptionsHeaderStyle.marginBottom = $descriptionsHeaderMarginBottom[size];
@@ -121,22 +122,22 @@ export function useSize(config?: ITdDescriptionsConfig) {
 export const $descriptionsItemVerticalLabelPaddingBottom = {
   large: '8px',
   default: '6px',
-  small: '4px'
+  small: '4px',
 };
 
 export let $descriptionsCellLabelStyle: IStyle = {};
 
 export const $descriptionsCellContentStyle: IStyle = {
-  color: $textColor.regular
+  color: $textColor.regular,
 };
 
-export function useBordered(config: ITdDescriptionsConfig) {
+export function useBordered(config: DescriptionsProps) {
   const bordered = config?.border;
   if (bordered) {
     $descriptionsCellLabelStyle = {
       fontWeight: 'bold',
       color: $textColor.regular,
-      backgroundColor: $descriptions.itemBorderedLabelBackground
+      backgroundColor: $descriptions.itemBorderedLabelBackground,
     };
     $descriptionsBodyTableCellStyle.border = $descriptions.tableBorder;
     $descriptionsBodyTableCellStyle.padding =
@@ -149,7 +150,7 @@ export function useBordered(config: ITdDescriptionsConfig) {
       $descriptionsCellPaddingBottom.default;
     $descriptionsCellLabelStyle = {
       color: $textColor.primary,
-      marginRight: $descriptionsItemLabelMarginRight.default
+      marginRight: $descriptionsItemLabelMarginRight.default,
     };
     if (config.direction === 'vertical') {
       $descriptionsCellLabelStyle.paddingBottom =
