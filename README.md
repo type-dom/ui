@@ -27,18 +27,187 @@
             –
         -   test
 
-# type-dom 自定义组件
+# type-dom UI组件库
 
-## basic 基础组件
+    共77项，完成24项
 
-### button 按钮组件
+##	Basic 共 11项， 完成7项
 
-## data 数据组件
+###	Button
 
-## form 表单组件
+###	Border
 
-## feedback 反馈组件
+###	Color
 
-## navigation 导航组件
+###	Container
 
-## other 其它组件
+####	Aside
+####	Container
+####	Footer
+####	Header
+####	Main
+
+###	Icon
+
+###	Layout
+
+####	Row
+####	Col
+
+###	Link
+
+###	Text
+
+###	Scrollbar
+
+###	Space
+
+### Typography
+
+##	Config
+
+###	Config Provider
+
+##	Form   共20项，完成5项；
+
+###	Autocomplete
+
+###	Cascader
+
+###	Checkbox
+
+###	Color Picker
+
+###	Date Picker
+
+###	DateTime Picker
+
+###	Form
+
+###	Input
+
+###	InputNumber
+
+###	Input Tag
+
+###	Mention
+
+###	Radio
+
+###	Rate
+
+###	Select
+
+###	Virtualized Select
+
+###	Slider
+
+###	Switch  
+
+###	Time Picker
+
+###	Time Select
+
+###	Transfer
+
+###	TreeSelect
+
+###	Upload
+
+###	Data
+
+###	Avatar
+
+###	Badge
+
+###	Calendar
+
+###	Card
+
+###	Carousel
+
+###	Collapse   
+
+###	Descriptions
+
+###	Empty
+
+###	Image
+
+###	Infinite Scroll
+
+###	Pagination
+
+###	Progress
+
+###	Result
+
+###	Skeleton
+
+###	Table
+
+###	Virtualized Table
+
+###	Tag
+
+###	Timeline
+
+###	Tour
+
+###	Tree
+
+###	Virtual Tree
+
+###	Statistic
+
+###	Segmented
+
+##	Navigation    共9项；完成1项；
+
+###	Affix
+
+###	Anchor
+
+###	Backtop
+
+###	Breadcrumb
+
+###	Dropdown
+
+###	Menu
+
+###	Page Header
+
+###	Steps
+
+###	Tabs
+
+##	Feedback    共11项，完成4项；
+
+###	Alert
+
+###	Dialog
+
+###	Drawer
+
+###	Loading
+
+###	Message
+
+###	Message Box
+
+###	Notification
+
+###	transition  show  is not from left or right, config position
+
+###	Popconfirm
+
+###	Popover
+
+###	Tooltip
+
+##	Other
+
+###	Divider
+
+###	Watermark
