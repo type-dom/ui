@@ -19,6 +19,8 @@ export { TdNotification } from './td-notification/index';
 // export type * from './td-notification/td-notification.interface';
 
 export * from './td-loading/index';
+export { TdPopconfirm } from './td-popconfirm/td-popconfirm.class';
+export type * from './td-popconfirm/td-popconfirm.interface';
 
 export type * from './td-popper/td-popper.interface';
 export { TdPopover } from './td-popover/td-popover.class';

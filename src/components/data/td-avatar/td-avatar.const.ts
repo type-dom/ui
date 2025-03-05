@@ -1,6 +1,6 @@
-import { ITdAvatarConfig } from '@type-dom/ui';
+import { AvatarProps } from './td-avatar.interface';
 
-export const avatarProps: ITdAvatarConfig = {
+export const avatarProps: AvatarProps = {
   shape: 'circle',
   src: '',
   fit: 'cover',

@@ -18,7 +18,7 @@ import './style/index';
 export class TdPopover extends TypeFragment implements ITdPopover {
   className: 'TdPopover';
   override props: PopoverProps;
-  popperRef?: Computed<TdPopper | undefined>;
+  popperRef?: Computed<HTMLElement | undefined>;
   hide?: () => void;
 
   constructor(params: PopoverProps) {
@@ -51,7 +51,7 @@ export class TdPopover extends TypeFragment implements ITdPopover {
         {
           width: addUnit(props.width),
         },
-        props.popperStyle!,
+        props.popperStyle,
       ];
     });
 
@@ -93,11 +93,14 @@ export class TdPopover extends TypeFragment implements ITdPopover {
     this.addChild(
       new TdTooltip({
         refEl: tooltipRef,
-        //    v-bind="$attrs"
+        //    v-bind="$attrs"  // virtualTriggering  virtualRef等
+        virtualRef: props.virtualRef,
+        virtualTriggering: props.virtualTriggering,
+
         trigger: props.trigger,
         placement: props.placement,
         disabled: props.disabled,
-        visible: props.visible ?? null, // todo undefined don't show popover , why ?
+        visible: props.visible, // todo undefined don't show popover , why ?
         transition: props.transition,
         popperOptions: props.popperOptions,
         content: props.content,

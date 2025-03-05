@@ -24,7 +24,7 @@ export interface ProgressProps extends TypeDivProps {
   /**
    * @description control the animation duration of indeterminate progress or striped flow progress
    */
-  duration?: number;
+  duration?: MaybeRef<number>;
   /**
    * @description the width of progress bar
    */

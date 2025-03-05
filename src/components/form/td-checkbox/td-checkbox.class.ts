@@ -25,7 +25,7 @@ export class TdCheckbox extends TypeHtml implements ITdCheckbox {
   }
 
   override setup() {
-    console.warn('TdCheckbox setup');
+    // console.warn('TdCheckbox setup');
     const props = this.props;
     const slots = useSlots();
     const {
@@ -46,7 +46,7 @@ export class TdCheckbox extends TypeHtml implements ITdCheckbox {
       nodeName: !hasOwnLabel && isLabeledByFormItem ? 'span' : 'label',
     });
     const ns = useNamespace('checkbox');
-    console.warn('isChecked is ', isChecked);
+    // console.warn('isChecked is ', isChecked);
     const compKls = computed(() => [
       ns.b(),
       ns.m(checkboxSize.get()),
@@ -88,11 +88,11 @@ export class TdCheckbox extends TypeHtml implements ITdCheckbox {
             },
             events: {
               click: (ev) => {
-                console.warn('td-checkbox input click . ');
+                // console.warn('td-checkbox input click . ');
                 ev?.stopPropagation();
               },
               change: (ev) => {
-                console.warn('td-checkbox input change . ');
+                // console.warn('td-checkbox input change . ');
                 handleChange(ev);
                 ev?.stopPropagation();
               },
@@ -134,7 +134,7 @@ export class TdCheckbox extends TypeHtml implements ITdCheckbox {
     // add by me todo why should add ???
     this.addEmits({
       change: (newValue) => {
-        console.warn('change emit , newValue is ', newValue);
+        // console.warn('change emit , newValue is ', newValue);
         const selected = model.get();
         // todo 数组 还是 值
         if (isArray(selected)) {

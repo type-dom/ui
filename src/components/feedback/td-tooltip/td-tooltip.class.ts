@@ -21,10 +21,10 @@ import {
   computed,
   readonly,
   Signal,
-  signal,
+  signal, toRaw,
   toRef,
   unref,
-  watch,
+  watch
 } from '@type-dom/signals';
 import { useDelayedToggle } from '../../../hooks/use-delayed-toggle';
 import { usePopperContainer } from '../../../hooks/use-popper-container';
@@ -59,7 +59,7 @@ export class TdTooltip extends TypeFragment implements ITdTooltip {
     super();
     this.className = 'TdTooltip';
     // console.log('TdTooltip . ');
-    // this.addEmits(tooltipEmits)
+    // this.addEmits(tooltipEmits);
     // 要设置默认值，否则使用 创建 TooltipTrigger/TooltipContent 时，会确认默认值。。
     this.assignProps(tooltipProps);
     this.props = this.useParams(params);
@@ -67,7 +67,6 @@ export class TdTooltip extends TypeFragment implements ITdTooltip {
 
   override setup() {
     const props = this.props;
-    console.warn('props.visible is ', props.visible);
     const emit = this.emit;
 
     usePopperContainer();
@@ -81,9 +80,7 @@ export class TdTooltip extends TypeFragment implements ITdTooltip {
       const popperComponent = unref(popperRef);
       if (popperComponent) {
         // popperComponent.popperInstanceRef?.get()？.update()
-        const popperInstance = popperComponent.popperInstanceRef?.get();
-        // console.log('popperInstance is ', popperInstance);
-        popperInstance?.update();
+        popperComponent.popperInstanceRef?.get()?.update();
       }
     };
     const open = signal(false);
@@ -103,8 +100,11 @@ export class TdTooltip extends TypeFragment implements ITdTooltip {
     });
 
     const controlled = computed(() => {
-      console.warn('controlled . props.visible is ', props.visible);
-      return isBoolean(unref(props.visible)) && !hasUpdateHandler.get(); // todo
+      // console.warn('controlled . isBoolean(unref(props.visible)) is ', isBoolean(unref(props.visible)));
+      // console.warn('props.visible is ', props.visible);
+      // console.warn('toRaw(props.visible) is ', toRaw(props.visible));
+      // console.warn('!hasUpdateHandler.get() is ', !hasUpdateHandler.get());
+      return isBoolean(toRaw(props.visible)) && !hasUpdateHandler.get(); // todo
     });
 
     provide(TOOLTIP_INJECTION_KEY, {
@@ -113,7 +113,7 @@ export class TdTooltip extends TypeFragment implements ITdTooltip {
       open: open, // readonly(open),
       trigger: signal(props.trigger),
       onOpen: (event?: Event) => {
-        console.log('TdTooltip onOpen . ', event);
+        // console.log('TdTooltip onOpen . ', event);
         onOpen(event);
       },
       onClose: (event?: Event) => {
@@ -228,11 +228,11 @@ export class TdTooltip extends TypeFragment implements ITdTooltip {
             virtualTriggering: props.virtualTriggering,
             appendTo: props.appendTo,
             attrObj: {
-              disabled: props.disabled,
               ariaLabel: props.ariaLabel,
+              disabled: props.disabled,
               zIndex: props.zIndex,
             },
-            slot: () => [
+            slot: [
               new Fragment({
                 slot: props.slots?.content ?? [
                   props.rawContent

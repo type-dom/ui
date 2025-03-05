@@ -5,6 +5,7 @@ import {
 } from '@type-dom/framework';
 import { Computed, Signal } from '@type-dom/signals';
 import { IStyle } from '@type-dom/css-type';
+import { Instance } from '@type-dom/popper';
 
 export interface ITdPopper extends ITypeFragment {
   className: 'TdPopper';
@@ -44,7 +45,7 @@ export type Measurable = {
 export type TdPopperInjectionContext = {
   triggerRef: Signal<Measurable | undefined>;
   contentRef: Signal<HTMLElement | undefined>;
-  popperInstanceRef: Signal;
+  popperInstanceRef: Signal<Instance | undefined>;
   referenceRef: Signal<Measurable | undefined>;
   role: Computed<RoleTypes | undefined>;
 };

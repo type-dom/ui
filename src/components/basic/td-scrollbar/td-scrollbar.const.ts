@@ -1,8 +1,8 @@
 import { isNumber } from '@type-dom/utils';
 import { InjectionKey } from '@type-dom/framework';
-import { ITdScrollbarConfig, ScrollbarContext } from './td-scrollbar.interface';
+import { ScrollbarProps, ScrollbarContext } from './td-scrollbar.interface';
 
-export const scrollbarProps: ITdScrollbarConfig = {
+export const scrollbarProps: ScrollbarProps = {
   native: false,
   tag: 'div',
   minSize: 20,

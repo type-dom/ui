@@ -1,12 +1,12 @@
 import { Div, TypeDiv } from '@type-dom/framework';
+import { computed, unref } from '@type-dom/signals';
+import { IStyle } from '@type-dom/css-type';
+import { useNamespace } from '../../../hooks/use-namespace';
 import {
   CarouselItemProps,
   ITdCarouselItem,
 } from './td-carousel-item.interface';
-import { useNamespace } from '../../../hooks/use-namespace';
 import { useCarouselItem } from './use-carousel-item';
-import { computed, unref } from '@type-dom/signals';
-import { IStyle } from '@type-dom/css-type';
 
 export class TdCarouselItem extends TypeDiv implements ITdCarouselItem {
   className: 'TdCarouselItem';
@@ -50,7 +50,7 @@ export class TdCarouselItem extends TypeDiv implements ITdCarouselItem {
       },
     ]);
 
-    const itemStyle = computed<IStyle>(() => {
+    const itemStyle = computed(() => {
       const translateType = `translate${unref(isVertical) ? 'Y' : 'X'}`;
       const _translate = `${translateType}(${unref(translate)}px)`;
       const _scale = `scale(${unref(scale)})`;

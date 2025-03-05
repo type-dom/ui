@@ -84,7 +84,7 @@ export class TdRadioButton extends TypeLabel implements ITdRadioButton {
 
     // add by me
     function handleChange() {
-      console.warn('handleChange . modelValue.get() is ', modelValue.get());
+      // console.warn('handleChange . modelValue.get() is ', modelValue.get());
       modelValue.set(actualValue.get()); // add by me todo refine  value绑定的问题
       // todo 值没有变
       nextTick(() => emit('change', modelValue.get()));

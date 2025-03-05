@@ -1,4 +1,4 @@
-import { StatisticProps } from '@type-dom/ui';
+import { StatisticProps } from './td-statistic.interface';
 
 export const statisticProps: StatisticProps = {
   decimalSeparator: '.',

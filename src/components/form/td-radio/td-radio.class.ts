@@ -37,7 +37,7 @@ export class TdRadio extends TypeLabel implements ITdRadio {
     } = useRadio(props, emit);
 
     function handleChange() {
-      console.warn('handleChange . modelValue.get() is ', modelValue.get());
+      // console.warn('handleChange . modelValue.get() is ', modelValue.get());
       modelValue.set(actualValue.get()); // add by me todo refine  value绑定的问题
       // todo 值没有变
       nextTick(() => emit('change', modelValue.get()));
@@ -76,7 +76,7 @@ export class TdRadio extends TypeLabel implements ITdRadio {
               focus: () => focus.set(true),
               blur: () => focus.set(false),
               change: (ev) => {
-                console.warn('td-radio input change . ');
+                // console.warn('td-radio input change . ');
                 handleChange();
                 ev?.stopPropagation(); // todo must add stopPropagation
               },

@@ -1,4 +1,4 @@
-import { MessageBoxProps } from '@type-dom/ui';
+import { MessageBoxProps } from './td-message-box.interface';
 
 export const messageBoxProps: MessageBoxProps = {
   modal: true,

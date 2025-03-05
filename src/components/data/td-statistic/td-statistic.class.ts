@@ -13,7 +13,7 @@ export class TdStatistic extends TypeDiv implements ITdStatistic {
 
   constructor(params: StatisticProps = {}) {
     super();
-    console.warn('TdStatistic constructor . ');
+    // console.warn('TdStatistic constructor . ');
     this.className = 'TdStatistic';
     this.assignProps(statisticProps);
     this.props = this.useParams(params);

@@ -1,4 +1,5 @@
 import { ITypeDiv, TypeDivProps, TypeHtml } from '@type-dom/framework';
+import { MaybeRef } from '@type-dom/signals';
 import { TdIcon } from '../../basic/td-icon/td-icon.class';
 
 export interface ITdDialogContent extends ITypeDiv {
@@ -21,7 +22,7 @@ export interface DialogContentProps extends TypeDivProps {
   /**
    * @description enable dragging feature for Dialog
    */
-  draggable?: boolean;
+  draggable?: MaybeRef<boolean>;
   /**
    * @description draggable Dialog can overflow the viewport
    */

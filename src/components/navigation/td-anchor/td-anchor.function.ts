@@ -1,21 +1,11 @@
-import { AnchorLinkState, AnchorProps } from './td-anchor.interface';
-import { createProxy } from '@type-dom/framework';
 import { signal } from '@type-dom/signals';
 import {
   animateScrollTo,
   getElement,
   getOffsetTopDistance,
   getScrollElement,
-} from '../../../../../utils/src/ui/dom';
-// import {
-//   animateScrollTo,
-//   getElement,
-//   getOffsetTopDistance,
-//   getScrollElement,
-//   getScrollTop,
-//   isUndefined,
-//   throttleByRaf
-// } from '@type-dom/utils';
+} from '@type-dom/utils';
+import { AnchorLinkState, AnchorProps } from './td-anchor.interface';
 
 const currentAnchor = signal<string | null>(null);
 const containerEl = signal<HTMLElement | Window | null>(null); // ref<HTMLElement | Window>()

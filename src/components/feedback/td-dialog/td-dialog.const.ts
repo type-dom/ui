@@ -1,5 +1,5 @@
-import { UPDATE_MODEL_EVENT } from 'libs/ui/src/constants/event';
 import { isBoolean } from '@type-dom/utils';
+import { UPDATE_MODEL_EVENT } from '../../../constants/event';
 import { DialogProps } from './td-dialog.interface';
 // import { dialogContentProps } from '../td-dialog-content/td-dialog-content.const';
 

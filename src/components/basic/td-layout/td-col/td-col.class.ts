@@ -69,7 +69,7 @@ export class TdCol extends TypeDiv implements ITdCol {
       if (gutter.get()) {
         classes.push(ns.is('guttered'));
       }
-      console.error('classes is ', classes);
+      // console.error('classes is ', classes);
       return [ns.b(), classes];
     });
 

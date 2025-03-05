@@ -1,12 +1,13 @@
 import { IStyle } from '@type-dom/css-type';
-import { ITypeDiv, TypeDivProps, TypeDiv } from '@type-dom/framework';
+import { ITypeDiv, TypeDivProps, TypeDiv, IClass } from '@type-dom/framework';
 import { TdScrollbar } from './td-scrollbar.class';
+import { Ref, Signal } from '@type-dom/signals';
 
 export interface ITdScrollbar extends ITypeDiv {
   className: 'TdScrollbar';
 }
 
-export interface ITdScrollbarConfig extends TypeDivProps {
+export interface ScrollbarProps extends TypeDivProps {
   /**
    * @description height of scrollbar
    */
@@ -25,9 +26,16 @@ export interface ITdScrollbarConfig extends TypeDivProps {
    */
   wrapStyle?: Partial<IStyle>;
   /**
+   * @description class of wrap
+   */
+  wrapClass?: IClass;
+  //   type: [String, Array],
+  //   default: '',
+  // },
+  /**
    * @description class of view
    */
-  viewClass?: string;
+  viewClass?: IClass;
   //   type: [String, Array],
   //   default: '',
   // },
@@ -57,6 +65,13 @@ export interface ITdScrollbarConfig extends TypeDivProps {
    */
   minSize?: number; // default 20
   /**
+   * @description Wrap tabindex
+   */
+  tabindex?: string | number;
+  //   type: [String, Number],
+  //   default: undefined,
+  // },
+  /**
    * @description id of view
    */
   id?: string;
@@ -77,6 +92,6 @@ export interface ITdScrollbarConfig extends TypeDivProps {
 }
 
 export interface ScrollbarContext {
-  scrollbarElement: TdScrollbar;
-  wrapElement: TypeDiv;
+  scrollbarElement: Signal<HTMLDivElement | undefined>;
+  wrapElement: Signal<HTMLDivElement | undefined>;
 }

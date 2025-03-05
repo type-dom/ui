@@ -4,6 +4,7 @@ import { IStyle } from '@type-dom/css-type';
 import { useNamespace } from '../../../../hooks/use-namespace';
 import { useZIndex } from '../../../../hooks/use-z-index';
 import { PopperContentProps } from '../content/content.interface';
+import { StyleValue } from '@type-dom/framework';
 
 export const usePopperContentDOM = (
   props: PopperContentProps,
@@ -28,11 +29,14 @@ export const usePopperContentDOM = (
       ns.is(props.effect || ''),
       props.popperClass,
     ]);
-    const contentStyle: IStyle = {
-      zIndex: unref(contentZIndex),
-      ...styles.popper,
-      ...((props.popperStyle as IStyle) || {}),
-    } as IStyle;
+    const contentStyle = computed<StyleValue[]>(() => {
+      // console.warn('props.popperStyle is ', props.popperStyle)
+      return [
+        { zIndex: unref(contentZIndex) } as IStyle,
+        unref(styles).popper as IStyle,
+        props.popperStyle || {},
+      ]
+    });
     const ariaModal = computed<string | undefined>(() =>
       role === 'dialog' ? 'false' : undefined
     );

@@ -1,4 +1,4 @@
-import { isElement, isNil } from '@type-dom/utils';
+import { isElement, isFocusable, isNil } from '@type-dom/utils';
 import {
   TypeFragment,
   defineExpose,
@@ -8,7 +8,7 @@ import {
   unrefElement,
 } from '@type-dom/framework';
 import { computed, unref, watch, WatchStopHandle } from '@type-dom/signals';
-import { isFocusable } from '../../../../../../utils/src/ui/dom';
+
 import { useForwardRef } from '../../../../hooks/use-forward-ref';
 import { TdOnlyChild } from '../../td-only-child/td-only-child.class';
 import { POPPER_INJECTION_KEY } from '../constants';
@@ -21,7 +21,7 @@ export class TdPopperTrigger extends TypeFragment implements ITdPopperTrigger {
 
   constructor(params: PopperTriggerProps = {}) {
     super();
-    console.log('td-popper-trigger , params is ', params);
+    // console.log('td-popper-trigger , params.virtualRef is ', params.virtualRef);
     this.className = 'TdPopperTrigger';
     this.assignProps(popperTriggerProps);
     this.props = this.useParams(params);
@@ -31,7 +31,7 @@ export class TdPopperTrigger extends TypeFragment implements ITdPopperTrigger {
     const props = this.props;
 
     const { role, triggerRef } = inject(POPPER_INJECTION_KEY, undefined)!;
-    console.log('role is ', role, ' , triggerRef is ', triggerRef);
+    // console.log('role is ', role, ' , triggerRef is ', triggerRef);
     // 与 only-child组件配合使用的方法，绑定相关的方法；
     useForwardRef(triggerRef);
 
@@ -72,7 +72,8 @@ export class TdPopperTrigger extends TypeFragment implements ITdPopperTrigger {
     onMounted(() => {
       watch(
         () => unref(props.virtualRef),
-        (virtualEl) => {
+        (virtualEl, prevEl) => {
+          // console.warn('virtualEl, prevEl is ', virtualEl, prevEl);
           if (virtualEl) {
             triggerRef?.set(unrefElement(virtualEl as HTMLElement));
           }
@@ -85,12 +86,13 @@ export class TdPopperTrigger extends TypeFragment implements ITdPopperTrigger {
       watch(
         triggerRef,
         (el, prevEl) => {
+          // console.warn('triggerRef , prevEl is ', el, prevEl);
           virtualTriggerAriaStopWatch?.();
           virtualTriggerAriaStopWatch = undefined;
           if (isElement(el)) {
-            console.log(
-              'then bind listeners to trigger html element from this element props .'
-            );
+            // console.log(
+            //   'then bind listeners to trigger html element from this element props .'
+            // );
             TRIGGER_ELE_EVENTS.forEach((eventName) => {
               const handler = props[eventName];
               if (handler) {
@@ -170,7 +172,7 @@ export class TdPopperTrigger extends TypeFragment implements ITdPopperTrigger {
 
     this.addChild(
       new TdOnlyChild({
-        vIf: !this.props.virtualTriggering,
+        vIf: !props.virtualTriggering,
         // v-bind: $attrs
         attrObj: {
           ariaControls: ariaControls,
@@ -178,7 +180,7 @@ export class TdPopperTrigger extends TypeFragment implements ITdPopperTrigger {
           ariaExpanded: ariaExpanded,
           ariaHaspopup: ariaHaspopup,
         },
-        slot: props.slot,
+        slot: props.slot ?? props.slots?.default,
       })
     );
   }

@@ -53,7 +53,7 @@ export class TdMessageBox extends TypeFragment implements ITdMessageBox {
     super();
     this.className = 'TdMessageBox';
     this.assignProps(messageBoxProps);
-    console.warn('params is ', params);
+    // console.warn('params is ', params);
     this.props = this.useParams(params);
   }
 
@@ -145,7 +145,7 @@ export class TdMessageBox extends TypeFragment implements ITdMessageBox {
       () => state.inputValue?.get(),
       async (val) => {
         await nextTick();
-        console.log('watch state.inputValue , val is ', val);
+        // console.log('watch state.inputValue , val is ', val);
         if (props.boxType === 'prompt' && val !== undefined) {
           validate();
         }

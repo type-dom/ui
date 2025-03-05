@@ -11,10 +11,9 @@ import {
   TypeDiv,
 } from '@type-dom/framework';
 import { CloseComponents } from '@type-dom/svgs';
-import { computed } from '@type-dom/signals';
+import { computed, unref } from '@type-dom/signals';
 import { useLocale } from '../../../hooks/use-locale';
 import { useDraggable } from '../../../hooks/use-draggable';
-import { composeRefs } from '../../../utils/refs';
 import { TdIcon } from '../../basic/td-icon/td-icon.class';
 import { dialogInjectionKey } from '../td-dialog/constants';
 import { FOCUS_TRAP_INJECTION_KEY } from '../td-focus-trap/tokens';
@@ -27,6 +26,7 @@ import {
   dialogContentEmits,
   dialogContentProps,
 } from './td-dialog-content.const';
+import { composeRefs } from '../../../utils/refs';
 
 export class TdDialogContent extends TypeDiv implements ITdDialogContent {
   className: 'TdDialogContent';
@@ -54,15 +54,15 @@ export class TdDialogContent extends TypeDiv implements ITdDialogContent {
     const dialogKls = computed(() => [
       ns.b(),
       ns.is('fullscreen', props.fullscreen),
-      ns.is('draggable', props.draggable),
+      ns.is('draggable', unref(props.draggable)),
       ns.is('align-center', props.alignCenter),
       { [ns.m('center')]: props.center },
     ]);
 
     const composedDialogRef = composeRefs(focusTrapRef, dialogRef);
 
-    const draggable = computed(() => props.draggable);
-    console.log('draggable is ', draggable.get());
+    const draggable = computed(() => unref(props.draggable));
+    // console.log('draggable is ', draggable.get());
     const overflow = computed(() => props.overflow);
     const { resetPosition } = useDraggable(
       dialogRef,
@@ -82,7 +82,7 @@ export class TdDialogContent extends TypeDiv implements ITdDialogContent {
       // refDom: composedDialogRef,
       refDom: dialogRef,
     });
-    console.log('then addClass dialogKls is ', dialogKls.get());
+    // console.log('then addClass dialogKls is ', dialogKls.get());
     this.attr.addClass(dialogKls);
     this.style.addObj(style);
     this.addChildren(

@@ -1,12 +1,12 @@
 import { TypeSpan, TypeSpanProps } from '@type-dom/framework';
-import { ComponentSize } from 'libs/ui/src/constants/size';
-import { isEqual } from 'lodash';
+import { isArray } from '@type-dom/utils';
 import { computed, signal, watch } from '@type-dom/signals';
-import { usePagination } from '../usePagination';
+import { isEqual } from 'lodash';
+import { ComponentSize } from '../../../../constants/size';
 import { useNamespace } from '../../../../hooks/use-namespace';
 import { useLocale } from '../../../../hooks/use-locale';
-import { isArray } from '@type-dom/utils';
 import { TdSelect } from '../../../form/td-select/td-select.class';
+import { usePagination } from '../usePagination';
 
 export interface PaginationSizesProps extends TypeSpanProps {
   pageSize?: number;

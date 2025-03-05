@@ -20,7 +20,7 @@ export class TdBadge extends TypeDiv implements ITdBadge {
   }
 
   override setup() {
-    console.log('TdBadge setup');
+    // console.log('TdBadge setup');
     const props = this.props;
 
     const ns = useNamespace('badge');

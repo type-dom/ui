@@ -20,7 +20,7 @@ export class TdBreadcrumb extends TypeDiv implements ITdBreadcrumb {
   }
 
   override setup() {
-    console.log('TdBreadcrumb setup . ');
+    // console.log('TdBreadcrumb setup . ');
     const { t } = useLocale();
     const props = this.props;
 

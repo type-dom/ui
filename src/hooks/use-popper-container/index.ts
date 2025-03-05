@@ -7,7 +7,7 @@ import { useGetDerivedNamespace } from '../use-namespace';
 import { useIdInjection } from '../use-id';
 
 export const usePopperContainerId = () => {
-  console.log('usePopperContainerId');
+  // console.log('usePopperContainerId');
   const namespace = useGetDerivedNamespace();
   const idInjection = useIdInjection();
 
@@ -30,7 +30,7 @@ const createContainer = (id: string) => {
 };
 
 export const usePopperContainer = () => {
-  console.log('usePopperContainer');
+  // console.log('usePopperContainer');
   const { id, selector } = usePopperContainerId();
   onBeforeMount(() => {
     if (!isClient) return;

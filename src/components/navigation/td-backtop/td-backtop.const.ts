@@ -2,6 +2,7 @@ import { BacktopProps } from './td-backtop.interface';
 
 export const backtopProps: BacktopProps = {
   visibilityHeight: 200,
+  target: '',
   right: 40,
   bottom: 40,
 };

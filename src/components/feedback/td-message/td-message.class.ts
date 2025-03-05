@@ -143,7 +143,7 @@ export class MessageClass extends TypeFragment implements ITdMessage {
         name: ns.b('fade'),
         // onBeforeLeave: props.onClose, // todo 会提前消除 instance
         onAfterLeave: () => {
-          console.error('TdMessage Transition afterLeave');
+          // console.error('TdMessage Transition afterLeave');
           props.onClose?.();
           emit('destroy');
         },

@@ -3,16 +3,16 @@ import { computed, signal, watch } from '@type-dom/signals';
 import { addUnit, isNumber, isString } from '@type-dom/utils';
 import { IStyle } from '@type-dom/css-type';
 import { useNamespace } from '../../../hooks/use-namespace';
-import { TdIcon } from '../../basic';
-import { ITdAvatar, ITdAvatarConfig } from './td-avatar.interface';
+import { TdIcon } from '../../basic/td-icon/td-icon.class';
+import { ITdAvatar, AvatarProps } from './td-avatar.interface';
 import { avatarEmits, avatarProps } from './td-avatar.const';
 import './style/index';
 
 export class TdAvatar extends TypeSpan implements ITdAvatar {
   className: 'TdAvatar';
-  override props: ITdAvatarConfig;
+  override props: AvatarProps;
 
-  constructor(params: ITdAvatarConfig = {}) {
+  constructor(params: AvatarProps = {}) {
     super();
     this.className = 'TdAvatar';
     this.attr.addName('td-avatar');
@@ -64,7 +64,7 @@ export class TdAvatar extends TypeSpan implements ITdAvatar {
     );
 
     function handleError(e?: Event) {
-      console.warn('TdAvatar handleError. ');
+      // console.warn('TdAvatar handleError. ');
       hasLoadError.set(true);
       emit('error', e);
     }
@@ -100,7 +100,7 @@ export class TdAvatar extends TypeSpan implements ITdAvatar {
       this.slotChildren(props.slot);
     }
     watch(
-      () => hasLoadError.get(),
+      () => hasLoadError.get(), // add by me
       (newVal) => {
         if (newVal) {
           if (props.slot instanceof TypeElement) {

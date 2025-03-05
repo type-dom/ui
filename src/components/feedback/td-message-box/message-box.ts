@@ -12,17 +12,7 @@
 // import MessageBoxConstructor from './index.vue'
 //
 // import type { AppContext, ComponentPublicInstance, VNode } from 'vue'
-import type {
-  Action,
-  Callback,
-  MessageBoxProps,
-  TdMessageBoxShortcutMethod,
-  ITdMessageBox,
-  MessageBoxData,
-  MessageBoxState,
-  ITdMessageBoxFn,
-  TdMessageBoxOptions,
-} from './td-message-box.interface';
+
 import { isVNode, TypeElement, TypeNode } from '@type-dom/framework';
 import {
   debugWarn,
@@ -34,9 +24,19 @@ import {
   isUndefined,
 } from '@type-dom/utils';
 import { TdMessageBox } from './td-message-box.class';
+import type {
+  Action,
+  Callback,
+  MessageBoxProps,
+  TdMessageBoxShortcutMethod,
+  ITdMessageBox,
+  MessageBoxData,
+  MessageBoxState,
+  ITdMessageBoxFn,
+  TdMessageBoxOptions,
+} from './td-message-box.interface';
 
 // component default merge props & data
-
 const messageInstance = new Map<
   TypeElement, // marking doClose as function
   {
@@ -98,13 +98,13 @@ const genContainer = () => {
 };
 
 const showMessage = (options: any) => {
-  console.warn('showMessage options is ', options);
+  // console.warn('showMessage options is ', options);
   const container = genContainer();
   // Adding destruct method.
   // when transition leaves emitting `vanish` evt. so that we can do the clean job.
   options.emits = {};
   options.emits.vanish = () => {
-    console.warn('showMessage options emits vanish ');
+    // console.warn('showMessage options emits vanish ');
     // not sure if this causes mem leak, need proof to verify that.
     // maybe calling out like 1000 msg-box then close them all.
     // render(null, container) // todo
@@ -129,7 +129,12 @@ const showMessage = (options: any) => {
         if (options.distinguishCancelAndClose && action !== 'cancel') {
           currentMsg.reject('close');
         } else {
-          currentMsg.reject('cancel');
+          try {
+            // currentMsg.reject('cancel'); // todo 会有什么影响？？？
+          } catch (e) {
+            console.error(e);
+          }
+          // currentMsg.reject('cancel');
         }
       } else {
         currentMsg.resolve(resolve);
@@ -169,7 +174,7 @@ function MessageBox(
   options: TdMessageBoxOptions | string | TypeNode
   // appContext: AppContext | null = null
 ): Promise<{ value: string; action: Action } | Action> {
-  console.warn('MessageBox options is ', options);
+  // console.warn('MessageBox options is ', options);
   if (!isClient) return Promise.reject();
   let callback: Callback | undefined;
   if (isString(options) || isVNode(options)) {
@@ -192,8 +197,8 @@ function MessageBox(
       resolve,
       reject,
     });
-    console.warn('messageInstance is ', messageInstance);
-  });
+    // console.warn('messageInstance is ', messageInstance);
+  })
 }
 
 const MESSAGE_BOX_VARIANTS = ['alert', 'confirm', 'prompt'] as const;
@@ -258,6 +263,7 @@ MessageBox.close = () => {
 
   messageInstance.clear();
 };
+
 // ;(MessageBox as ITdMessageBoxFn)._context = null
 
 export default MessageBox as ITdMessageBoxFn;

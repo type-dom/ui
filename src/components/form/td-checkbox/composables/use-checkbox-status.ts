@@ -32,11 +32,11 @@ export const useCheckboxStatus = (
     if (isBoolean(value)) {
       return value;
     } else if (isArray(value)) {
-      console.warn('isChecked is array . ');
+      // console.warn('isChecked is array . ');
       if (isObject(actualValue.get())) {
         return value.map(toRaw).some((o) => isEqual(o, actualValue.get()));
       } else {
-        console.warn('computed value is ', value, ' toRaw is ', toRaw);
+        // console.warn('computed value is ', value, ' toRaw is ', toRaw);
         return value.map(toRaw).includes(actualValue.get());
       }
     } else if (value !== null && value !== undefined) {

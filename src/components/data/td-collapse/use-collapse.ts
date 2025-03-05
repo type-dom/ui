@@ -11,9 +11,9 @@
 //   CollapseProps,
 // } from './collapse'
 
-import { ensureArray } from '@type-dom/utils';
+import { AnyFn, ensureArray } from '@type-dom/utils';
 import { computed, signal, watch } from '@type-dom/signals';
-import { AnyFn, provide } from '@type-dom/framework';
+import { provide } from '@type-dom/framework';
 import { useNamespace } from '../../../hooks/use-namespace';
 import { CHANGE_EVENT, UPDATE_MODEL_EVENT } from '../../../constants/event';
 import { collapseContextKey } from './constants';

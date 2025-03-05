@@ -1,6 +1,7 @@
-import { $borderRadius } from '@type-dom/ui';
+
 import { IStyle } from '@type-dom/css-type';
 import { $select, $selectDropdown } from '../td-select.style';
+import { $borderRadius } from '../../../../styles/var';
 
 export const $selectDropdownStyle: IStyle = {
   // zIndex: calc(#{getCssVar('index-top')} + 1),

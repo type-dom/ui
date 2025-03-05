@@ -1,4 +1,4 @@
-import { BadgeProps } from '@type-dom/ui';
+import { BadgeProps } from './td-badge.interface';
 
 export const badgeProps: BadgeProps = {
   value: '',

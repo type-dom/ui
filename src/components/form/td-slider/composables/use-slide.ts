@@ -1,216 +1,212 @@
-import { ITdSliderConfig, SliderInitData } from '../td-slider.interface';
-import {
-  formContextKey,
-  formItemContextKey,
-} from '../../td-form/td-form.const';
-import { TdSlider } from '../td-slider.class';
-import { FormContext, FormItemContext } from '../../td-form/td-form.interface';
+import { computed, Ref, signal, unref } from '@type-dom/signals';
+import { IStyle } from '@type-dom/css-type';
+import { Arrayable } from '@type-dom/utils';
+import { nextTick } from '@type-dom/framework';
+import { CHANGE_EVENT, INPUT_EVENT, UPDATE_MODEL_EVENT } from '../../../../constants/event';
+import { useFormItem } from '../../td-form/hooks/use-form-item';
+import { SliderProps, SliderInitData } from '../td-slider.interface';
+import { TdSliderButton } from '../button/button.class';
+import { ButtonRefs } from '../button/button.interface';
 
 export const useSlide = (
-  node: TdSlider,
-  props: ITdSliderConfig,
+  props: SliderProps,
   initData: SliderInitData,
   emit: any
 ) => {
-  // const { form: elForm, formItem: elFormItem } = useFormItem()
-  const elForm = node.inject<FormContext>(formContextKey, undefined);
-  const elFormItem = node.inject<FormItemContext>(
-    formItemContextKey,
-    undefined
-  );
-  let slider: HTMLElement;
-  //
-  // const firstButton = ref<SliderButtonInstance>()
-  //
-  // const secondButton = ref<SliderButtonInstance>()
-  //
-  // const buttonRefs: ButtonRefs = {
-  //   firstButton,
-  //   secondButton,
-  // }
-  //
-  // const sliderDisabled = computed(() => {
-  //   return props.disabled || elForm?.disabled || false
-  // })
-  //
-  // const minValue = computed(() => {
-  //   return Math.min(initData.firstValue, initData.secondValue)
-  // })
-  //
-  // const maxValue = computed(() => {
-  //   return Math.max(initData.firstValue, initData.secondValue)
-  // })
-  //
-  // const barSize = computed(() => {
-  //   return props.range
-  //     ? `${
-  //         (100 * (maxValue.value - minValue.value)) / (props.max - props.min)
-  //       }%`
-  //     : `${
-  //         (100 * (initData.firstValue - props.min)) / (props.max - props.min)
-  //       }%`
-  // })
-  //
-  // const barStart = computed(() => {
-  //   return props.range
-  //     ? `${(100 * (minValue.value - props.min)) / (props.max - props.min)}%`
-  //     : '0%'
-  // })
-  //
-  // const runwayStyle = computed<CSSProperties>(() => {
-  //   return props.vertical ? { height: props.height } : {}
-  // })
-  //
-  // const barStyle = computed<CSSProperties>(() => {
-  //   return props.vertical
-  //     ? {
-  //         height: barSize.value,
-  //         bottom: barStart.value,
-  //       }
-  //     : {
-  //         width: barSize.value,
-  //         left: barStart.value,
-  //       }
-  // })
-  //
-  // const resetSize = () => {
-  //   if (slider.value) {
-  //     initData.sliderSize =
-  //       slider.value[`client${props.vertical ? 'Height' : 'Width'}`]
-  //   }
-  // }
-  //
-  // const getButtonRefByPercent = (
-  //   percent: number
-  // ): Ref<SliderButtonInstance | undefined> => {
-  //   const targetValue = props.min + (percent * (props.max - props.min)) / 100
-  //   if (!props.range) {
-  //     return firstButton
-  //   }
-  //   let buttonRefName: 'firstButton' | 'secondButton'
-  //   if (
-  //     Math.abs(minValue.value - targetValue) <
-  //     Math.abs(maxValue.value - targetValue)
-  //   ) {
-  //     buttonRefName =
-  //       initData.firstValue < initData.secondValue
-  //         ? 'firstButton'
-  //         : 'secondButton'
-  //   } else {
-  //     buttonRefName =
-  //       initData.firstValue > initData.secondValue
-  //         ? 'firstButton'
-  //         : 'secondButton'
-  //   }
-  //   return buttonRefs[buttonRefName]
-  // }
-  //
-  // const setPosition = (
-  //   percent: number
-  // ): Ref<SliderButtonInstance | undefined> => {
-  //   const buttonRef = getButtonRefByPercent(percent)
-  //   buttonRef.value!.setPosition(percent)
-  //   return buttonRef
-  // }
-  //
-  // const setFirstValue = (firstValue: number | undefined) => {
-  //   initData.firstValue = firstValue ?? props.min
-  //   _emit(
-  //     props.range ? [minValue.value, maxValue.value] : firstValue ?? props.min
-  //   )
-  // }
-  //
-  // const setSecondValue = (secondValue: number) => {
-  //   initData.secondValue = secondValue
-  //
-  //   if (props.range) {
-  //     _emit([minValue.value, maxValue.value])
-  //   }
-  // }
-  //
-  // const _emit = (val: Arrayable<number>) => {
-  //   emit(UPDATE_MODEL_EVENT, val)
-  //   emit(INPUT_EVENT, val)
-  // }
-  //
-  // const emitChange = async () => {
-  //   await nextTick()
-  //   emit(
-  //     CHANGE_EVENT,
-  //     props.range ? [minValue.value, maxValue.value] : props.modelValue
-  //   )
-  // }
-  //
-  // const handleSliderPointerEvent = (
-  //   event: MouseEvent | TouchEvent
-  // ): Ref<SliderButtonInstance | undefined> | undefined => {
-  //   if (sliderDisabled.value || initData.dragging) return
-  //   resetSize()
-  //   let newPercent = 0
-  //   if (props.vertical) {
-  //     const clientY =
-  //       (event as TouchEvent).touches?.item(0)?.clientY ??
-  //       (event as MouseEvent).clientY
-  //     const sliderOffsetBottom = slider.value!.getBoundingClientRect().bottom
-  //     newPercent = ((sliderOffsetBottom - clientY) / initData.sliderSize) * 100
-  //   } else {
-  //     const clientX =
-  //       (event as TouchEvent).touches?.item(0)?.clientX ??
-  //       (event as MouseEvent).clientX
-  //     const sliderOffsetLeft = slider.value!.getBoundingClientRect().left
-  //     newPercent = ((clientX - sliderOffsetLeft) / initData.sliderSize) * 100
-  //   }
-  //   if (newPercent < 0 || newPercent > 100) return
-  //   return setPosition(newPercent)
-  // }
-  //
-  // const onSliderWrapperPrevent = (event: TouchEvent) => {
-  //   if (
-  //     buttonRefs['firstButton'].value?.dragging ||
-  //     buttonRefs['secondButton'].value?.dragging
-  //   ) {
-  //     event.preventDefault()
-  //   }
-  // }
-  //
-  // const onSliderDown = async (event: MouseEvent | TouchEvent) => {
-  //   const buttonRef = handleSliderPointerEvent(event)
-  //   if (buttonRef) {
-  //     await nextTick()
-  //     buttonRef.value!.onButtonDown(event)
-  //   }
-  // }
-  //
-  // const onSliderClick = (event: MouseEvent | TouchEvent) => {
-  //   const buttonRef = handleSliderPointerEvent(event)
-  //   if (buttonRef) {
-  //     emitChange()
-  //   }
-  // }
-  //
-  // const onSliderMarkerDown = (position: number) => {
-  //   if (sliderDisabled.value || initData.dragging) return
-  //   setPosition(position)
-  // }
-  //
-  // return {
-  //   elFormItem,
-  //   slider,
-  //   firstButton,
-  //   secondButton,
-  //   sliderDisabled,
-  //   minValue,
-  //   maxValue,
-  //   runwayStyle,
-  //   barStyle,
-  //   resetSize,
-  //   setPosition,
-  //   emitChange,
-  //   onSliderWrapperPrevent,
-  //   onSliderClick,
-  //   onSliderDown,
-  //   onSliderMarkerDown,
-  //   setFirstValue,
-  //   setSecondValue,
-  // }
+  const { form: elForm, formItem: tdFormItem } = useFormItem()
+
+  const slider = signal<HTMLElement>()
+
+  const firstButton = signal<TdSliderButton>()
+
+  const secondButton = signal<TdSliderButton>()
+
+  const buttonRefs: ButtonRefs = {
+    firstButton,
+    secondButton,
+  }
+
+  const sliderDisabled = computed(() => {
+    return unref(props.disabled) || unref(elForm?.disabled) || false
+  })
+
+  const minValue = computed(() => {
+    return Math.min(initData.firstValue.get(), initData.secondValue.get())
+  })
+
+  const maxValue = computed(() => {
+    return Math.max(initData.firstValue.get(), initData.secondValue.get())
+  })
+
+  const barSize = computed(() => {
+    return props.range
+      ? `${
+        (100 * (maxValue.get() - minValue.get())) / (unref(props.max)! - unref(props.min)!)
+      }%`
+      : `${
+        (100 * (initData.firstValue.get() - unref(props.min)!)) / (unref(props.max)! - unref(props.min)!)
+      }%`
+  })
+
+  const barStart = computed(() => {
+    return props.range
+      ? `${(100 * (minValue.get() - unref(props.min)!)) / (unref(props.max)! - unref(props.min)!)}%`
+      : '0%'
+  })
+
+  const runwayStyle = computed<IStyle>(() => {
+    return props.vertical ? { height: props.height } : {}
+  })
+
+  const barStyle = computed<IStyle>(() => {
+    return props.vertical
+      ? {
+        height: barSize.get(),
+        bottom: barStart.get(),
+      }
+      : {
+        width: barSize.get(),
+        left: barStart.get(),
+      }
+  })
+
+  const resetSize = () => {
+    if (slider.get()) {
+      initData.sliderSize.set(slider.get()![`client${props.vertical ? 'Height' : 'Width'}`]!)
+    }
+  }
+
+  const getButtonRefByPercent = (
+    percent: number
+  ): Ref<TdSliderButton | undefined> => {
+    const targetValue = unref(props.min)! + (percent * (unref(props.max)! - unref(props.min)!)) / 100
+    if (!props.range) {
+      return firstButton
+    }
+    let buttonRefName: 'firstButton' | 'secondButton'
+    if (
+      Math.abs(minValue.get() - targetValue) <
+      Math.abs(maxValue.get() - targetValue)
+    ) {
+      buttonRefName =
+        initData.firstValue.get() < initData.secondValue.get()
+          ? 'firstButton'
+          : 'secondButton'
+    } else {
+      buttonRefName =
+        initData.firstValue.get() > initData.secondValue.get()
+          ? 'firstButton'
+          : 'secondButton'
+    }
+    return buttonRefs[buttonRefName]
+  }
+
+  const setPosition = (
+    percent: number
+  ): Ref<TdSliderButton | undefined> => {
+    const buttonRef = getButtonRefByPercent(percent)
+    buttonRef.get()?.setPosition?.(percent)
+    return buttonRef
+  }
+
+  const setFirstValue = (firstValue: number | undefined) => {
+    initData.firstValue.set(firstValue ?? unref(props.min)!)
+    _emit(
+      props.range ? [minValue.get(), maxValue.get()] : firstValue ?? unref(props.min)!
+    )
+  }
+
+  const setSecondValue = (secondValue: number) => {
+    initData.secondValue.set(secondValue)
+
+    if (props.range) {
+      _emit([minValue.get(), maxValue.get()])
+    }
+  }
+
+  const _emit = (val: Arrayable<number>) => {
+    emit(UPDATE_MODEL_EVENT, val)
+    emit(INPUT_EVENT, val)
+  }
+
+  const emitChange = async () => {
+    await nextTick()
+    emit(
+      CHANGE_EVENT,
+      props.range ? [minValue.get(), maxValue.get()] : props.modelValue
+    )
+  }
+
+  const handleSliderPointerEvent = (
+    event?: MouseEvent | TouchEvent
+  ): Ref<TdSliderButton | undefined> | undefined => {
+    if (sliderDisabled.get() || initData.dragging) return
+    resetSize()
+    let newPercent = 0
+    if (props.vertical) {
+      const clientY =
+        (event as TouchEvent).touches?.item(0)?.clientY ??
+        (event as MouseEvent).clientY
+      const sliderOffsetBottom = slider.get()!.getBoundingClientRect().bottom
+      newPercent = ((sliderOffsetBottom - clientY) / initData.sliderSize.get()) * 100
+    } else {
+      const clientX =
+        (event as TouchEvent).touches?.item(0)?.clientX ??
+        (event as MouseEvent).clientX
+      const sliderOffsetLeft = slider.get()!.getBoundingClientRect().left
+      newPercent = ((clientX - sliderOffsetLeft) / initData.sliderSize.get()) * 100
+    }
+    if (newPercent < 0 || newPercent > 100) return
+    return setPosition(newPercent)
+  }
+
+  const onSliderWrapperPrevent = (event: TouchEvent) => {
+    if (
+      buttonRefs['firstButton'].get()?.dragging ||
+      buttonRefs['secondButton'].get()?.dragging
+    ) {
+      event.preventDefault()
+    }
+  }
+
+  const onSliderDown = async (event?: MouseEvent | TouchEvent) => {
+    const buttonRef = handleSliderPointerEvent(event)
+    if (buttonRef) {
+      await nextTick()
+      buttonRef.get()!.onButtonDown?.(event)
+    }
+  }
+
+  const onSliderClick = (event: MouseEvent | TouchEvent) => {
+    const buttonRef = handleSliderPointerEvent(event)
+    if (buttonRef) {
+      emitChange()
+    }
+  }
+
+  const onSliderMarkerDown = (position: number) => {
+    if (sliderDisabled.get() || initData.dragging) return
+    setPosition(position)
+  }
+
+  return {
+    tdFormItem,
+    slider,
+    firstButton,
+    secondButton,
+    sliderDisabled,
+    minValue,
+    maxValue,
+    runwayStyle,
+    barStyle,
+    resetSize,
+    setPosition,
+    emitChange,
+    onSliderWrapperPrevent,
+    onSliderClick,
+    onSliderDown,
+    onSliderMarkerDown,
+    setFirstValue,
+    setSecondValue,
+  }
 };

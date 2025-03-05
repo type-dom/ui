@@ -1,91 +1,99 @@
-import { TypeFragment } from '@type-dom/framework';
+import { defineExpose, inject, TypeFragment } from '@type-dom/framework';
+import { signal } from '@type-dom/signals';
 import { GAP } from '../util';
-import { ScrollbarContext } from '../td-scrollbar.interface';
-import { TdScrollbarThumb } from '../thumb/thumb.class';
+import { Thumb } from '../thumb/thumb.class';
 import { scrollbarContextKey } from '../td-scrollbar.const';
-import { ITdScrollbarBar, ITdScrollbarBarConfig } from './bar.interface';
+import { IBar, BarProps } from './bar.interface';
 import { barProps } from './bar.const';
 
-export class TdScrollbarBar extends TypeFragment implements ITdScrollbarBar {
-  className: 'TdScrollbarBar';
-  override props: ITdScrollbarBarConfig;
-  override childNodes: TdScrollbarThumb[];
-  private scrollbar?: ScrollbarContext;
-  private moveX: number;
-  private moveY: number;
-  private sizeWidth: string;
-  private sizeHeight: string;
-  private ratioX: number;
-  private ratioY: number;
+export class Bar extends TypeFragment implements IBar {
+  className: 'Bar';
+  override props: BarProps;
+  override childNodes: Thumb[];
+  handleScroll?: (el?: HTMLDivElement) => void;
+  updateDom?: (el?: HTMLDivElement) => void; // todo
 
-  constructor(params: ITdScrollbarBarConfig = {}) {
+  constructor(params: BarProps = {}) {
     super();
-    this.className = 'TdScrollbarBar';
+    this.className = 'Bar';
     this.childNodes = [];
     // this.attr.addName('td-scrollbar-bar');
-    // this.style.addObj($scrollbarBarStyle);
-    // config?.minSize 20
-    this.moveX = 0;
-    this.moveY = 0;
-    this.sizeWidth = '';
-    this.sizeHeight = '';
-    this.ratioY = 1;
-    this.ratioX = 1;
 
     this.assignProps(barProps);
     this.props = this.useParams(params);
-    this.addChildren(
-      new TdScrollbarThumb({
-        move: this.moveX,
-        ratio: this.ratioX,
-        size: this.sizeWidth,
-        always: this.props.always,
-      }),
-      new TdScrollbarThumb({
-        move: this.moveY,
-        ratio: this.ratioY,
-        always: this.props.always,
-        vertical: true,
-      })
-    );
+
   }
 
   override setup() {
-    this.scrollbar = this.inject<ScrollbarContext>(scrollbarContextKey);
+
+    const props = this.props;
+
+    const scrollbar = inject(scrollbarContextKey)
+
+    const moveX = signal(0)
+    const moveY = signal(0)
+    const sizeWidth = signal('')
+    const sizeHeight = signal('')
+    const ratioY = signal(1)
+    const ratioX = signal(1)
+
+    const handleScroll = (wrap: HTMLDivElement) => {
+      if (wrap) {
+        const offsetHeight = wrap.offsetHeight - GAP
+        const offsetWidth = wrap.offsetWidth - GAP
+
+        moveY.set(((wrap.scrollTop * 100) / offsetHeight) * ratioY.get())
+        moveX.set(((wrap.scrollLeft * 100) / offsetWidth) * ratioX.get())
+      }
+    }
+
+    const update = () => {
+      const wrap = scrollbar?.wrapElement.get();
+      if (!wrap) return
+      const offsetHeight = wrap.offsetHeight - GAP
+      const offsetWidth = wrap.offsetWidth - GAP
+
+      const originalHeight = offsetHeight ** 2 / wrap.scrollHeight
+      const originalWidth = offsetWidth ** 2 / wrap.scrollWidth
+      const height = Math.max(originalHeight, props.minSize!)
+      const width = Math.max(originalWidth, props.minSize!)
+
+      ratioY.set(
+        originalHeight /
+        (offsetHeight - originalHeight) /
+        (height / (offsetHeight - height))
+      )
+
+      ratioX.set(
+        originalWidth /
+        (offsetWidth - originalWidth) /
+        (width / (offsetWidth - width))
+      )
+
+      sizeHeight.set(height + GAP < offsetHeight ? `${height}px` : '')
+      // console.warn('sizeHeight is ', sizeHeight);
+      sizeWidth.set(width + GAP < offsetWidth ? `${width}px` : '')
+      // console.warn('sizeWidth is ', sizeWidth);
+    }
+
+    defineExpose({
+      handleScroll,
+      updateDom: update,
+    })
+    this.addChildren(
+      new Thumb({
+        move: moveX,
+        ratio: ratioX,
+        size: sizeWidth,
+        always: props.always,
+      }),
+      new Thumb({
+        move: moveY,
+        ratio: ratioY,
+        size: sizeHeight,
+        vertical: true,
+        always: props.always,
+      })
+    );
   }
-
-  handleScroll = (wrap: HTMLDivElement) => {
-    if (wrap) {
-      const offsetHeight = wrap.offsetHeight - GAP;
-      const offsetWidth = wrap.offsetWidth - GAP;
-
-      this.moveY = ((wrap.scrollTop * 100) / offsetHeight) * this.ratioY;
-      this.moveX = ((wrap.scrollLeft * 100) / offsetWidth) * this.ratioX;
-    }
-  };
-  updateBar = () => {
-    const wrap = this.scrollbar?.wrapElement.dom;
-    if (!wrap) {
-      return;
-    }
-    const offsetHeight = wrap.offsetHeight - GAP;
-    const offsetWidth = wrap.offsetWidth - GAP;
-
-    const originalHeight = offsetHeight ** 2 / wrap.scrollHeight;
-    const originalWidth = offsetWidth ** 2 / wrap.scrollWidth;
-    const height = Math.max(originalHeight, this.props.minSize!);
-    const width = Math.max(originalWidth, this.props.minSize!);
-
-    this.ratioY =
-      originalHeight /
-      (offsetHeight - originalHeight) /
-      (height / (offsetHeight - height));
-    this.ratioX =
-      originalWidth /
-      (offsetWidth - originalWidth) /
-      (width / (offsetWidth - width));
-
-    this.sizeHeight = height + GAP < offsetHeight ? `${height}px` : '';
-    this.sizeWidth = width + GAP < offsetWidth ? `${width}px` : '';
-  };
 }

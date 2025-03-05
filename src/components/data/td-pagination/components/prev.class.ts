@@ -5,9 +5,9 @@ import {
   TypeButtonProps,
   TypeSvgSvg,
 } from '@type-dom/framework';
-import { useLocale } from '../../../../hooks/use-locale';
 import { computed } from '@type-dom/signals';
-import { TdIcon } from '@type-dom/ui';
+import { useLocale } from '../../../../hooks/use-locale';
+import { TdIcon } from '../../../basic/td-icon/td-icon.class';
 
 export interface PaginationPrevProps extends TypeButtonProps {
   disabled?: boolean;

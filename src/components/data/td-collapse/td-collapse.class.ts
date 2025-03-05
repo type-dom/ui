@@ -27,7 +27,7 @@ export class TdCollapse extends TypeDiv implements ITdCollapse {
   }
 
   override setup() {
-    console.log('TdCollapse setup . ');
+    // console.log('TdCollapse setup . ');
     const props = this.props;
     const emit = this.emit;
 

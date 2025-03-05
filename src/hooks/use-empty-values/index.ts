@@ -1,9 +1,8 @@
-import { debugWarn, isFunction } from '@type-dom/utils';
+import {  AnyFn, debugWarn, isFunction } from '@type-dom/utils';
 import {
   InjectionKey,
   getCurrentInstance,
   inject,
-  AnyFn,
 } from '@type-dom/framework';
 import { computed } from '@type-dom/signals';
 

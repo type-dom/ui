@@ -1,6 +1,6 @@
 {
   "name": "type-dom-ui",
-  "version": "0.0.8",
+  "version": "0.1.1",
   "description": "type dom ui components . ",
   "main": "src/index.ts",
   "scripts": {
@@ -50,8 +50,10 @@
     "typescript-coverage-report": "^0.8.0"
   },
   "dependencies": {
-    "@type-dom/framework": "*",
-    "@type-dom/svgs": "*"
+    "@type-dom/framework": "^0.1.13",
+    "@type-dom/signals": "*",
+    "@type-dom/svgs": "^0.1.8",
+    "@type-dom/utils": "^0.0.14"
   },
   "repository": {
     "type": "git",

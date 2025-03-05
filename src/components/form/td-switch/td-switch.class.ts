@@ -8,12 +8,11 @@ import {
 import {
   arraySlot,
   defineExpose,
-  Div,
-  Fragment,
-  Input,
-  ISlotRaw,
   nextTick,
   onMounted,
+  Div,
+  Input,
+  ISlotRaw,
   Span,
   TypeDiv,
 } from '@type-dom/framework';
@@ -66,7 +65,7 @@ export class TdSwitch extends TypeDiv implements ITdSwitch {
     const { inputId } = useFormItemInputId(props, {
       formItemContext: formItem,
     });
-    const switchDisabled = useFormDisabled(computed(() => props.loading));
+    const switchDisabled = useFormDisabled(computed(() => unref(props.loading)));
     const isControlled = signal(props.modelValue !== false);
     const input = signal<HTMLInputElement>();
     const core = signal<HTMLSpanElement>();

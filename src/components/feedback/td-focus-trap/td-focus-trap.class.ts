@@ -1,4 +1,4 @@
-import { isNil, isString } from '@type-dom/utils';
+import { isFunction, isNil, isString } from '@type-dom/utils';
 import {
   nextTick,
   onBeforeUnmount,
@@ -325,9 +325,11 @@ export class TdFocusTrap extends TypeFragment implements ITdFocusTrap {
       handleKeydown: onKeydown,
     });
     this.slotChildren(
+      isFunction(props.slot) ?
       props.slot?.({
         handleKeydown: onKeydown,
       })
+        : props.slot
     );
   }
 }

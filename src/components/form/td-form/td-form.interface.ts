@@ -1,6 +1,6 @@
 import { ITypeForm, TypeFormProps } from '@type-dom/framework';
 import { MaybeRef } from '@type-dom/signals';
-import { Arrayable } from '../../../../../utils/src/ui/typescript';
+import { Arrayable } from '@type-dom/utils';
 import { ComponentSize } from '../../../constants';
 import {
   FormItemProp,
@@ -9,6 +9,7 @@ import {
   ITdFormItem,
 } from '../td-form-item/td-form-item.interface';
 import { TdFormItem } from '../td-form-item/td-form-item.class';
+import type { useFormLabelWidth } from './utils';
 
 export interface ITdForm extends ITypeForm {
   className: 'TdForm';
@@ -119,7 +120,6 @@ export interface ValidateError {
   field?: string;
 }
 
-import type { useFormLabelWidth } from './utils';
 
 export type FormLabelWidthContext = ReturnType<typeof useFormLabelWidth>;
 

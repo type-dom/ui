@@ -1,5 +1,5 @@
-import { AnyFn, inject } from '@type-dom/framework';
-import { isPropAbsent } from '@type-dom/utils';
+import { inject } from '@type-dom/framework';
+import { AnyFn, isPropAbsent } from '@type-dom/utils';
 import { computed, signal } from '@type-dom/signals';
 import { useDeprecated } from '../../../hooks/use-deprecated';
 import { UPDATE_MODEL_EVENT } from '../../../constants/event';
@@ -28,11 +28,11 @@ export const useRadio = (
   });
   const modelValue = computed({
     get() {
-      console.error('get model value isGroup is  ', isGroup.get());
+      // console.error('get model value isGroup is  ', isGroup.get());
       return isGroup.get() ? radioGroup?.vModel?.get() : props.vModel?.get();
     },
     set(val) {
-      console.error('set model value is ', val);
+      // console.error('set model value is ', val);
       if (isGroup.get()) {
         radioGroup.changeEvent(val);
       } else {

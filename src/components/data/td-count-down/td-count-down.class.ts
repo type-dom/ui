@@ -35,7 +35,7 @@ export class TdCountDown extends TypeFragment implements ITdCountDown {
   }
 
   override setup() {
-    console.warn('TdCountDown setup . ');
+    // console.warn('TdCountDown setup . ');
     const props = this.props;
     const emit = this.emit;
 

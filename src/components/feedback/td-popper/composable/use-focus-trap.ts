@@ -1,5 +1,5 @@
 import { PopperContentProps } from '../content/content.interface';
-import { signal } from '@type-dom/signals';
+import { signal, unref } from '@type-dom/signals';
 
 export const usePopperContentFocusTrap = (
   props: PopperContentProps,
@@ -20,7 +20,7 @@ export const usePopperContentFocusTrap = (
   };
 
   const onFocusInTrap = (event?: FocusEvent) => {
-    if (props.visible && !trapped.get()) {
+    if (unref(props.visible) && !trapped.get()) {
       if (event?.target) {
         focusStartRef.set(event.target as HTMLElement);
       }

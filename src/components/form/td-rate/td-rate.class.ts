@@ -121,7 +121,7 @@ export class TdRate extends TypeDiv implements ITdRate {
         : colors;
     });
     const activeColor = computed(() => {
-      console.warn('colorMap is ', colorMap);
+      // console.warn('colorMap is ', colorMap);
       const color = getValueFromMap(currentValue.get(), colorMap.get()!);
       // {value: '', excluded: true} returned
       return isObject(color) ? '' : color;
@@ -139,8 +139,8 @@ export class TdRate extends TypeDiv implements ITdRate {
       };
     });
     const componentMap = computed(() => {
-      console.warn('componentMap is ');
-      let icons = isArray(props.icons) ? [...props.icons] : { ...props.icons };
+      // console.warn('componentMap is ');
+      const icons = isArray(props.icons) ? [...props.icons] : { ...props.icons };
       // icons = markRaw(icons) as
       //   | Array<string | typeof TypeSvgSvg>
       //   | Record<number, string | typeof TypeSvgSvg>
@@ -156,7 +156,7 @@ export class TdRate extends TypeDiv implements ITdRate {
         : icons;
     });
     const decimalIconComponent = computed(() => {
-      console.warn('decimalIconComponent is ', componentMap);
+      // console.warn('decimalIconComponent is ', componentMap);
       return getValueFromMap(props.modelValue!, componentMap.get());
     });
     const voidComponent = computed(

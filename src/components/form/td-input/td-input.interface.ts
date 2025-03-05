@@ -5,7 +5,7 @@ import {
   Span,
   TypeSvgSvg,
 } from '@type-dom/framework';
-import { Computed, MaybeRef, Signal } from '@type-dom/signals';
+import { Computed, MaybeRef, Ref, Signal } from '@type-dom/signals';
 import { IStyle } from '@type-dom/css-type';
 import { ComponentSize } from '../../../constants/size';
 import { TdInput } from './td-input.class';
@@ -136,7 +136,7 @@ export interface TdInputProps extends TypeDivProps {
   autofocus?: boolean;
   rows?: number;
 
-  vModel?: Signal<string> | Computed<string>;
+  vModel?: Ref<string | number | null | undefined>;
   // $slot
   prepend?: boolean;
   append?: boolean;
@@ -148,22 +148,6 @@ export interface TdInputProps extends TypeDivProps {
   passwordVisible?: boolean;
   width?: number;
   suffix?: Span;
-
-  // emits?: {
-  //   input?: (value: string) => void,
-  //   change?: (value: string) => void,
-  //   focus?: (evt: FocusEvent) => void,
-  //   blur?: (evt: FocusEvent) => void,
-  //   clear?: () => true,
-  //   mouseleave?: (evt: MouseEvent) => void,
-  //   mouseenter?: (evt: MouseEvent) => void,
-  //   // NOTE: when autofill by browser, the keydown event is instanceof Event, not KeyboardEvent
-  //   // relative bug report https://github.com/element-plus/element-plus/issues/6665
-  //   keydown?: (evt: KeyboardEvent | Event) => void,
-  //   compositionstart?: (evt: CompositionEvent) => void,
-  //   compositionupdate?: (evt: CompositionEvent) => void,
-  //   compositionend?: (evt: CompositionEvent) => void,
-  // };
 }
 
 export type TargetElement = HTMLInputElement | HTMLTextAreaElement;

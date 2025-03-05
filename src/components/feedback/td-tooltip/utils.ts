@@ -2,9 +2,9 @@
 // import { isArray } from '@element-plus/utils'
 // import type { Arrayable } from '@element-plus/utils'
 // import type { Ref } from 'vue'
-import { isArray } from '@type-dom/utils';
-import { Arrayable } from '../../../../../utils/src/ui/typescript';
+import { isArray, Arrayable } from '@type-dom/utils';
 import type { TooltipTriggerType } from './trigger/trigger.interface';
+import { Ref, unref } from '@type-dom/signals';
 
 export const isTriggerType = (
   trigger: Arrayable<TooltipTriggerType>,
@@ -17,13 +17,13 @@ export const isTriggerType = (
 };
 
 export const whenTrigger = (
-  // trigger: Ref<Arrayable<TooltipTriggerType>>,
-  trigger: Arrayable<TooltipTriggerType>,
+  trigger: Ref<Arrayable<TooltipTriggerType>>,
+  // trigger: Arrayable<TooltipTriggerType>,
   type: TooltipTriggerType,
-  handler: (e: Event) => void
+  handler: (e?: Event) => void
 ) => {
-  return (e: Event) => {
-    console.log('whenTrigger', trigger, type, e);
-    isTriggerType(trigger, type) && handler(e);
+  return (e?: Event) => {
+    // console.log('whenTrigger', trigger, type, e);
+    isTriggerType(unref(trigger), type) && handler(e);
   };
 };

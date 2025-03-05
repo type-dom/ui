@@ -56,7 +56,7 @@ export class TdIcon extends TypeI implements ITdIcon {
    * @param fromSvg 可选参数，指定要替换的SVG元素。如果不提供，则替换所有实例化的SVG元素。
    */
   replaceSvg(toSvg: TypeSvgSvg, fromSvg?: TypeSvgSvg) {
-    console.log('replaceSvg ');
+    // console.log('replaceSvg ');
     // 查找要替换的SVG元素的索引。
     const svgIndex = this.childNodes?.findIndex((child) => {
       // 如果指定了要替换的SVG元素，则判断当前元素是否是待替换的元素。

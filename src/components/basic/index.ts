@@ -8,7 +8,6 @@ export { TdIcon } from './td-icon/td-icon.class';
 export type * from './td-icon/td-icon.interface';
 
 export { TdContainer } from './td-container/td-container.class';
-export { TdContainerComp } from './td-container/td-container';
 export type * from './td-container/td-container.interface';
 export { TdHeader } from './td-container/td-header/td-header.class';
 export type * from './td-container/td-header/td-header.interface';

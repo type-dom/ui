@@ -5,9 +5,8 @@
 // import type { FormItemProp } from './form-item'
 
 import { computed, signal } from '@type-dom/signals';
-import { debugWarn } from '@type-dom/utils';
+import { debugWarn, ensureArray } from '@type-dom/utils';
 import { Arrayable } from '@type-dom/framework';
-import { ensureArray } from '../../../../../utils/src/ui/arrays';
 import { FormItemProp } from '../td-form-item/td-form-item.interface';
 import { FormItemContext } from './td-form.interface';
 

@@ -1,46 +1,48 @@
-import { AnyFn, TypeProps, ITypeDiv } from '@type-dom/framework';
+import { TypeProps, ITypeDiv, TypeDivProps } from '@type-dom/framework';
 import { Placement } from '@type-dom/popper';
-import { isArray, isNumber } from '@type-dom/utils';
+import { MaybeRef, Ref, Signal } from '@type-dom/signals';
+import { AnyFn, Arrayable, isArray, isNumber } from '@type-dom/utils';
 
-import { Arrayable } from '../../../../../utils/src/ui/typescript';
 import {
   CHANGE_EVENT,
   INPUT_EVENT,
   UPDATE_MODEL_EVENT,
 } from '../../../constants/event';
 import { ComponentSize } from '../../../constants/size';
-import { ITdSliderMarkerConfig } from './td-slider-marker';
+import { SliderMarkerProps } from './mark/mark.interface';
 
 export interface ITdSlider extends ITypeDiv {
   className: 'TdSlider';
 }
 
-type SliderMarks = Record<number, string | ITdSliderMarkerConfig['mark']>;
+type SliderMarks = Record<number, string | SliderMarkerProps['mark']>;
 
 export interface SliderInitData {
-  firstValue: number;
-  secondValue: number;
-  oldValue?: Arrayable<number>;
+  firstValue: Signal<number>;
+  secondValue: Signal<number>;
+  oldValue: Arrayable<number>;
   dragging: boolean;
-  sliderSize: number;
+  sliderSize: Signal<number>;
 }
 
-export interface ITdSliderConfig extends TypeProps {
+export interface SliderProps extends TypeDivProps {
   /**
    * @description binding value
    */
   modelValue?: number | number[];
+  vModel?: Ref<number | number[]>; // add by me
   id?: string;
   /**
    * @description minimum value
    */
-  min?: number;
+  min?: MaybeRef<number>;
   /**
    * @description maximum value
    */
-  max?: number;
+  max?: MaybeRef<number>;
   /**
    * @description step size
+   * default: 1
    */
   step?: number;
   /**
@@ -119,6 +121,12 @@ export interface ITdSliderConfig extends TypeProps {
    * @description whether to trigger form validation
    */
   validateEvent?: boolean;
+  /**
+   * @description when slider tooltip inactive and `persistent` is `false` , popconfirm will be destroyed. `persistent` always be `false` when `show-tooltip ` is `false`
+   */
+  persistent?: boolean,
+  //   default: true,
+  // },
   // ...useAriaProps(['ariaLabel']),
 }
 

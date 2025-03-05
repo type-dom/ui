@@ -1,4 +1,4 @@
-import { AlertProps } from '@type-dom/ui';
+import { AlertProps } from './td-alert.interface';
 
 export const alertEffects = ['light', 'dark'] as const;
 

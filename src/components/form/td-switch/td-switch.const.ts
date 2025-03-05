@@ -21,7 +21,7 @@ export const switchProps: SwitchProps = {
 // 这些只是验证器，与双向绑定没有任何关系的。
 export const switchEmits = {
   [UPDATE_MODEL_EVENT]: (val: boolean | string | number) => {
-    console.log('switch emit update:modelValue . ');
+    // console.log('switch emit update:modelValue . ');
     return isBoolean(val) || isString(val) || isNumber(val);
   },
   [CHANGE_EVENT]: (val: boolean | string | number) =>

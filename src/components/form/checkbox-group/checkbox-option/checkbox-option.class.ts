@@ -25,8 +25,8 @@ export class CheckboxOption extends TypeSpan implements ICheckboxOption {
   override setup(): void {
     this.input.addEvents({
       click: () => {
-        console.log('this.input.dom click . ');
-        console.log('this.input.dom.value is ', this.input.dom?.value);
+        // console.log('this.input.dom click . ');
+        // console.log('this.input.dom.value is ', this.input.dom?.value);
         const flag = this.parent?.value.findIndex(
           (item) => item === this.input.dom?.value
         );

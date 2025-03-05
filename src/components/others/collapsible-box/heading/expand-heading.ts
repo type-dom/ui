@@ -45,7 +45,7 @@ export class ExpandHeading extends TypeDiv {
   override setup(): void {
     this.svg.addEvents({
       click: (e) => {
-        console.log('expand-heading svg.dom clicked');
+        // console.log('expand-heading svg.dom clicked');
         e?.stopPropagation();
         // const style = getComputedStyle(this.svg.dom);
         // console.log('style.transform is ', style.transform);

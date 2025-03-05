@@ -20,6 +20,7 @@ import { useNamespace } from '../../../hooks/use-namespace';
 import { TdIcon } from '../../basic/td-icon/td-icon.class';
 import { ProgressColor, ProgressProps } from './td-progress.interface';
 import { progressProps } from './td-progress.const';
+import './style/index';
 
 export class TdProgress extends TypeDiv {
   className: 'TdProgress';
@@ -154,13 +155,13 @@ export class TdProgress extends TypeDiv {
     }
 
     const getCurrentColor = (percentage: number) => {
-      const { color } = props;
+      const color  = unref(props.color);
       if (isFunction(color)) {
         return color(percentage);
       } else if (isString(color)) {
         return color;
       } else {
-        const colors = getColors(unref(color) as ProgressColor[]);
+        const colors = getColors(color as ProgressColor[]);
         for (const color of colors) {
           if (color.percentage > percentage) return color.color;
         }
@@ -172,7 +173,7 @@ export class TdProgress extends TypeDiv {
       computed(() => [
         ns.b(),
         ns.m(props.type),
-        ns.is(status),
+        ns.is(props.status!),
         {
           [ns.m('without-text')]: !props.showText,
           [ns.m('text-inside')]: props.textInside,
@@ -188,6 +189,7 @@ export class TdProgress extends TypeDiv {
     });
 
     if (props.type === 'line') {
+      console.warn('line progress');
       this.addChild(
         new Div({
           class: ns.b('bar'),
@@ -209,10 +211,14 @@ export class TdProgress extends TypeDiv {
               styleObj: barStyle,
               slot: new Div({
                 vIf:
-                  (this.props.showText || props.slots?.default || props.slot) &&
-                  props.textInside,
+                  (props.showText || (props.slots?.default ?? props.slot)) &&
+                  !!props.textInside,
                 class: ns.be('bar', 'innerText'),
-                slot: props.slots?.percentage ?? new Span({ slot: content }),
+                slot: isFunction(props.slot)
+                  ? props.slot(props.percentage)
+                  : props.slot
+                    ? this.props.slot
+                    : new Span({ slot: content }),
               }),
             }),
           }),
@@ -236,23 +242,23 @@ export class TdProgress extends TypeDiv {
                   class: ns.be('circle', 'track'),
                   d: trackPath.get(),
                   stroke: `var(${ns.cssVarName('fill-color-light')}, #e5e9f2)`,
-                  strokeLinecap: this.props.strokeLinecap,
+                  strokeLinecap: props.strokeLinecap,
                   strokeWidth: Number(relativeStrokeWidth.get()),
                   fill: 'none',
                 },
-                styleObj: trailPathStyle.get(),
+                styleObj: trailPathStyle,
               }),
               new SvgPath({
                 attrObj: {
                   class: ns.be('circle', 'path'),
                   d: trackPath.get(),
-                  stroke: stroke.get(),
+                  stroke: stroke,
                   fill: 'none',
-                  opacity: this.props.percentage ? 1 : 0,
+                  opacity: props.percentage ? 1 : 0,
                   strokeLinecap: this.props.strokeLinecap,
                   strokeWidth: Number(relativeStrokeWidth.get()),
                 },
-                styleObj: circlePathStyle.get(),
+                styleObj: circlePathStyle,
               }),
             ],
           }),
@@ -261,29 +267,28 @@ export class TdProgress extends TypeDiv {
     }
 
     if (
-      (this.props.showText || props.slots?.default || props.slot) &&
-      !this.props.textInside
+      (props.showText || props.slots?.default || props.slot) &&
+      !props.textInside
     ) {
       this.addChild(
         new Div({
-          class: ns.b('text'),
+          class: ns.e('text'),
           styleObj: {
             fontSize: `${progressTextSize.get()}px`,
           },
-          slot:
-            props.slots?.percentage ??
-            new Fragment({
-              slot: [
-                new Span({
-                  vIf: !status,
-                  slot: content,
-                }),
-                new TdIcon({
-                  vIf: status,
-                  slot: new (statusIcon.get() as any)(),
-                }),
-              ],
-            }),
+          slot: isFunction(props.slot)
+            ? props.slot(props.percentage)
+            : props.slot
+              ? props.slot
+              : new Fragment({
+                slot: !props.status
+                  ? new Span({
+                    slot: content,
+                  })
+                  : new TdIcon({
+                    slot: new (statusIcon.get() as any)(),
+                  })
+              }),
         })
       );
     }

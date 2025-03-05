@@ -18,7 +18,6 @@
 
 // import type { SetupContext } from 'vue'
 import {
-  AnyFn,
   getCurrentInstance,
   onBeforeUnmount,
   onMounted,
@@ -28,7 +27,7 @@ import {
 } from '@type-dom/framework';
 import { computed, signal, unref, watch } from '@type-dom/signals';
 import { throttle } from 'lodash';
-import { debugWarn, isString } from '@type-dom/utils';
+import { AnyFn, debugWarn, isString } from '@type-dom/utils';
 import { useOrderedChildren } from '../../../hooks/use-ordered-children';
 import type { CarouselItemContext } from './constants';
 import { CAROUSEL_ITEM_NAME, carouselContextKey } from './constants';

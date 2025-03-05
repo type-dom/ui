@@ -7,6 +7,6 @@ export * from './components/feedback';
 export * from './components/form';
 export * from './components/navigation';
 export * from './components/others';
-export * from './constants/event';
+export * from './constants/index';
 export * from './hooks/index';
 export * from './constants/index';

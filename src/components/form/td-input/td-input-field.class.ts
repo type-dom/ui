@@ -7,7 +7,7 @@ export class TdInputField extends FieldInput implements ITdInputField {
 
   constructor(params: ITdInputFieldConfig) {
     super(params.labelTitle, params.placeholder);
-    console.log('InputItem constructor . ');
+    // console.log('InputItem constructor . ');
     this.className = 'TdInputField';
     this.style.addObj({
       padding: '2px 10px 2px 0',

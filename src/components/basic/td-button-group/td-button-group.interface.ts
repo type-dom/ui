@@ -7,10 +7,10 @@ import {
 
 export interface ITdButtonGroup extends ITypeDiv {
   className: 'TdButtonGroup';
-  props: ITdButtonGroupConfig;
+  props: TdButtonGroupProps;
 }
 
-export interface ITdButtonGroupConfig extends TypeDivProps {
+export interface TdButtonGroupProps extends TypeDivProps {
   /**
    * @description control the size of buttons in this button-group
    */

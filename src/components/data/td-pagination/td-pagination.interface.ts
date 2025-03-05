@@ -3,7 +3,7 @@ import {
   TypeFragmentProps,
   TypeSvgSvg,
 } from '@type-dom/framework';
-import { ComponentSize } from 'libs/ui/src/constants/size';
+import { ComponentSize } from '../../../constants/size';
 import { paginationEmits } from './td-pagination.const';
 
 export interface ITdPagination extends ITypeFragment {

@@ -13,8 +13,8 @@ export class TdLink extends TypeA implements ITdLink {
   constructor(params: LinkProps) {
     super();
     this.className = 'TdLink';
-    this.assignProps(linkProps);
     this.addEmits(linkEmits);
+    this.assignProps(linkProps);
     this.props = this.useParams(params);
   }
 

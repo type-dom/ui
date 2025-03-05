@@ -113,6 +113,9 @@ export interface PopoverProps extends TypeFragmentProps {
    */
   persistent?: boolean;
   'onUpdate:visible'?: (visible: boolean) => void;
+
+  virtualRef?: Ref<Measurable>;
+  virtualTriggering?: boolean;
   //   type: Function as PropType<(visible: boolean) => void>,
   // },
   //

@@ -42,7 +42,7 @@ export class TdSwitchCore extends TypeSpan {
 
   constructor(params: SwitchProps = {}) {
     super();
-    console.log('TdSwitchCore constructor . ');
+    // console.log('TdSwitchCore constructor . ');
     this.className = 'TdSwitchCore';
     this.attr.addObj({
       name: 'switch-core',
@@ -157,13 +157,13 @@ export class TdSwitchCore extends TypeSpan {
   }
 
   override setup() {
-    console.warn('td-switch-core setup . ');
+    // console.warn('td-switch-core setup . ');
     // const props = this.props;
     const switchContext = this.inject<SwitchContext>(switchKey);
     watch(
       () => toValue(switchContext?.checked),
       (newChecked) => {
-        console.warn('switchContext.checked changed', newChecked);
+        // console.warn('switchContext.checked changed', newChecked);
         const raw = unref(newChecked);
         if (raw) {
           this.style.setObj({
@@ -187,7 +187,7 @@ export class TdSwitchCore extends TypeSpan {
           }
         } else {
           // todo false
-          console.warn('raw is false . ');
+          // console.warn('raw is false . ');
           this.style.setObj({
             backgroundColor: this.props.switchOffColor ?? $switchOffColor,
           });

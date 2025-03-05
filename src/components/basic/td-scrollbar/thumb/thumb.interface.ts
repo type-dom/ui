@@ -1,13 +1,14 @@
 import { ITypeFragment, TypeFragmentProps } from '@type-dom/framework';
+import { Ref } from '@type-dom/signals';
 
-export interface ITdScrollbarThumb extends ITypeFragment {
-  className: 'TdScrollbarThumb';
+export interface IThumb extends ITypeFragment {
+  className: 'Thumb';
 }
 
-export interface ITdScrollbarThumbConfig extends TypeFragmentProps {
+export interface ThumbProps extends TypeFragmentProps {
   vertical?: boolean;
-  size?: string;
-  move?: number;
-  ratio?: number; // required: true,
+  size?: Ref<string>;
+  move?: Ref<number>;
+  ratio?: Ref<number>; // required: true,
   always?: boolean;
 }

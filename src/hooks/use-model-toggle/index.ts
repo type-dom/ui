@@ -13,10 +13,12 @@
 
 import { getCurrentInstance, onMounted } from '@type-dom/framework';
 import { isBoolean, isClient, isFunction } from '@type-dom/utils';
-import { computed, watch, Ref } from '@type-dom/signals';
+import { computed, watch, Ref, unref } from '@type-dom/signals';
 
 const _prop: boolean | null = null;
-const _event = (val: boolean) => {};
+const _event = (val: boolean) => {
+  //
+};
 
 export type UseModelTogglePropsRaw<T extends string> = {
   [K in T]: typeof _prop;
@@ -54,13 +56,15 @@ export const createModelToggleComposable = <T extends string>(name: T) => {
       disabled: boolean;
     };
     const hasUpdateHandler = computed(() => {
-      console.warn('[useModelToggle]', ' hasUpdateHandler .');
+      // console.warn('[useModelToggle]', ' hasUpdateHandler . updateEventKeyRaw is ', updateEventKeyRaw);
       return isFunction(props[updateEventKeyRaw]);
     });
     // when it matches the default value we say this is absent
     // though this could be mistakenly passed from the user but we need to rule out that
     // condition
-    const isModelBindingAbsent = computed(() => props[name] === null);
+    // console.error('useModelToggle props[' + name + '] is ', props[name]);
+    // const isModelBindingAbsent = computed(() => props[name] === null); // visible控制显示、隐藏
+    const isModelBindingAbsent = computed(() => !unref(props[name]));
 
     const doShow = (event?: Event) => {
       if (indicator.get() === true) {
@@ -91,7 +95,7 @@ export const createModelToggleComposable = <T extends string>(name: T) => {
     };
 
     const show = (event?: Event) => {
-      console.warn('[useModelToggle]', 'show .');
+      // console.warn('[useModelToggle]', 'show .');
       if (
         props.disabled === true ||
         (isFunction(shouldProceed) && !shouldProceed())
@@ -124,6 +128,7 @@ export const createModelToggleComposable = <T extends string>(name: T) => {
     };
 
     const onChange = (val: boolean) => {
+      // console.warn('[useModelToggle] onChange val is ', val);
       if (!isBoolean(val)) return;
       if (props.disabled && val) {
         if (hasUpdateHandler.get()) {
@@ -146,7 +151,7 @@ export const createModelToggleComposable = <T extends string>(name: T) => {
       }
     };
 
-    watch(() => props[name], onChange);
+    watch(() => unref(props[name]), onChange);
 
     // todo
     if (
@@ -173,7 +178,7 @@ export const createModelToggleComposable = <T extends string>(name: T) => {
     }
 
     onMounted(() => {
-      onChange(props[name]);
+      onChange(unref(props[name]));
     });
 
     return {

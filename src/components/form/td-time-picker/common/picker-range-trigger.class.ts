@@ -2,12 +2,12 @@
 // import { useAttrs, useFocusController, useNamespace } from '@element-plus/hooks'
 // import { timePickerRngeTriggerProps } from './props'
 // import type { CSSProperties } from 'vue'
-import { defineExpose, Input, TypeProps, TypeDiv } from '@type-dom/framework';
+import { computed, signal } from '@type-dom/signals';
+import { defineExpose, Input, TypeDiv } from '@type-dom/framework';
 import { useAttrs } from '../../../../hooks/use-attrs';
 import { useNamespace } from '../../../../hooks/use-namespace';
+import { useFocusController } from '../../../../hooks/use-focus-controller';
 import { TimePickerRangeTriggerProps } from './props';
-import { computed, signal } from '@type-dom/signals';
-import { useFocusController } from 'libs/ui/src/hooks/use-focus-controller';
 
 export class PickerRangeTrigger extends TypeDiv {
   className: 'PickerRangeTrigger';

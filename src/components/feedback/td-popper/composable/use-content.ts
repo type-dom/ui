@@ -5,24 +5,13 @@
 // import type { Modifier } from '@popperjs/core'
 // import type { PartialOptions } from '@element-plus/hooks'
 
-import {
-  Computed,
-  computed,
-  Ref,
-  signal,
-  unref,
-  watch,
-} from '@type-dom/signals';
-import {
-  arrow,
-  flip,
-  FloatingElement,
-  Middleware,
-  ReferenceElement,
-} from '@type-dom/popper';
-import { isUndefined } from '@type-dom/utils';
-import { onMounted, inject } from '@type-dom/framework';
+import { Computed, Ref, computed, signal, unref, watch, toRaw } from '@type-dom/signals';
+import { arrow, FloatingElement, Middleware } from '@type-dom/popper';
+import { isUndefined, setStyle } from '@type-dom/utils';
+import { onMounted, inject, nextTick } from '@type-dom/framework';
 import { PartialOptions, usePopper } from '../../../../hooks/use-popper';
+import { usePopperContainerId } from '../../../../hooks/use-popper-container';
+import { TOOLTIP_INJECTION_KEY } from '../../td-tooltip/td-tooltip.const';
 import { buildPopperOptions, unwrapMeasurableEl } from '../utils';
 import { PopperContentProps } from '../content/content.interface';
 import { POPPER_INJECTION_KEY } from '../constants';
@@ -39,15 +28,20 @@ export const usePopperContent = (props: PopperContentProps) => {
   const arrowRef = signal<HTMLElement>();
   const arrowOffset = signal<number>(5);
 
-  // const eventListenerModifier = computed(() => {
-  //   return {
-  //     name: 'eventListeners',
-  //     enabled: !!props.visible,
-  //   } // as Modifier<'eventListeners', any>
-  // })
+  const eventListenerMiddleware = computed(() => {
+    return {
+      name: 'eventListeners',
+      // enabled: !!props.visible,
+      fn: (state) => {
+        if (toRaw(props.visible)) {
+          // update();
+        }
+      },
+    } as Middleware
+  })
   // middleWare
-  const arrowMiddleware = computed(() => {
-    console.log('arrowMiddleware', arrowRef, arrowOffset);
+  const arrowMiddleware = computed<Middleware>(() => {
+    // console.log('arrowMiddleware', arrowRef, arrowOffset);
     const arrowEl = unref(arrowRef);
     const offset = unref(arrowOffset) ?? DEFAULT_ARROW_OFFSET;
     // Seems like the `phase` and `fn` is required by Modifier type
@@ -62,27 +56,24 @@ export const usePopperContent = (props: PopperContentProps) => {
     //   },
     // }
     if (!isUndefined(arrowEl)) {
-      return arrow({ element: arrowEl, padding: offset });
-    } else {
-      return undefined;
+      if (state.get().elements) {
+         state.get().elements!.arrow = arrowEl;
+      }
     }
+    return arrow({ element: arrowEl, padding: offset });
   });
   // 这个 options 对应的是 中间件 Middleware, 不包含其它的选项。
   const options = computed<PartialOptions>(() => {
-    console.warn('useContent options computed . ');
+    // console.warn('useContent options computed . ');
     return {
-      // onFirstUpdate: () => {
-      //   update()
-      // },
+      onFirstUpdate: () => {
+        update()
+      },
       ...buildPopperOptions(props, [
-        unref(arrowMiddleware),
+        unref(arrowMiddleware)!,
         // unref(eventListenerModifier),
       ]),
-      // arrowMiddleware: arrowMiddleware.get(),
-      // arrowEl,
-      // ...props,
-      // middleware,
-    };
+    } as PartialOptions;
   });
 
   const computedReference: Computed = computed(
@@ -101,6 +92,7 @@ export const usePopperContent = (props: PopperContentProps) => {
           unref(computedReference) as unknown as Measurable
         )?.getBoundingClientRect(),
       () => {
+        // virtual-trigger
         update();
       }
     );

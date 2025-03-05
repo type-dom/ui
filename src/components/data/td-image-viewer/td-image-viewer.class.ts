@@ -1,6 +1,6 @@
 import { throttle } from 'lodash';
 import { IStyle } from '@type-dom/css-type';
-import { computed, effectScope, signal, watch } from '@type-dom/signals';
+import { computed, effectScope, signal, unref, watch } from '@type-dom/signals';
 import { keysOf } from '@type-dom/utils';
 import {
   nextTick,
@@ -56,7 +56,7 @@ export class TdImageViewer extends TypeFragment implements ITdImageViewer {
   }
 
   override setup() {
-    console.warn('TdImageViewer setup . ');
+    // console.warn('TdImageViewer setup . ');
     const modes: Record<'CONTAIN' | 'ORIGINAL', ImageViewerMode> = {
       CONTAIN: {
         name: 'contain',
@@ -70,6 +70,9 @@ export class TdImageViewer extends TypeFragment implements ITdImageViewer {
 
     const props = this.props;
     const emit = this.emit;
+
+    let stopWheelListener: (() => void) | undefined
+    let prevOverflow = ''
 
     const { t } = useLocale();
     const ns = useNamespace('image-viewer');
@@ -106,7 +109,7 @@ export class TdImageViewer extends TypeFragment implements ITdImageViewer {
     });
 
     const currentImg = computed(() => {
-      console.warn('currentImg . ');
+      // console.warn('currentImg . ');
       return props.urlList && props.urlList[activeIndex.get() || 0];
     });
 
@@ -124,8 +127,8 @@ export class TdImageViewer extends TypeFragment implements ITdImageViewer {
 
     // only when set transform, imgStyle will change; it is different from vue's reactivity.
     const imgStyle = computed(() => {
-      console.warn('imgStyle . ');
-      console.warn('imgStyle transform.get() is ', transform.get());
+      // console.warn('imgStyle . ');
+      // console.warn('imgStyle transform.get() is ', transform.get());
       const { scale, deg, offsetX, offsetY, enableTransition } =
         transform.get();
       let translateX = offsetX / scale;
@@ -147,9 +150,15 @@ export class TdImageViewer extends TypeFragment implements ITdImageViewer {
       return style;
     });
 
+    const progress = computed(
+      () => `${activeIndex.get() + 1} / ${props.urlList!.length}`
+    )
+
     function hide() {
-      console.warn('hide . ');
+      // console.warn('hide . ');
       unregisterEventListener();
+      stopWheelListener?.()
+      document.body.style.overflow = prevOverflow
       emit('close');
     }
 
@@ -201,12 +210,12 @@ export class TdImageViewer extends TypeFragment implements ITdImageViewer {
     }
 
     function handleImgLoad() {
-      console.warn('handleImgLoad . ');
+      // console.warn('handleImgLoad . ');
       loading.set(false);
     }
 
     function handleImgError(e: Event) {
-      console.warn('handleImgError . ');
+      // console.warn('handleImgError . ');
       loading.set(false);
       (e.target as HTMLImageElement).alt = t('el.image.error');
     }
@@ -249,7 +258,8 @@ export class TdImageViewer extends TypeFragment implements ITdImageViewer {
     }
 
     function toggleMode() {
-      if (loading.get()) return;
+      // console.error('toggleMode . ');
+      // if (loading.get()) return; // todo edit by me
 
       const modeNames = keysOf(modes);
       const modeValues = Object.values(modes);
@@ -261,7 +271,7 @@ export class TdImageViewer extends TypeFragment implements ITdImageViewer {
     }
 
     function setActiveItem(index: number) {
-      console.error('setActiveItem . index is ', index);
+      // console.error('setActiveItem . index is ', index);
       const len = props.urlList!.length;
       activeIndex.set((index + len) % len);
     }
@@ -272,14 +282,14 @@ export class TdImageViewer extends TypeFragment implements ITdImageViewer {
     }
 
     function next() {
-      console.error('next . ');
+      // console.error('next . ');
       if (isLast.get() && !props.infinite) return;
       setActiveItem(activeIndex.get() + 1);
     }
 
     function handleActions(action: ImageViewerAction, options = {}) {
-      console.error('handleActions . action is ', action);
-      if (loading.get()) return;
+      // console.error('handleActions . action is ', action);
+      // if (loading.get()) return; // todo
       const { minScale, maxScale } = props;
       const { zoomRate, rotateDeg, enableTransition } = {
         zoomRate: props.zoomRate,
@@ -330,6 +340,19 @@ export class TdImageViewer extends TypeFragment implements ITdImageViewer {
       }
     }
 
+    function wheelHandler(e: WheelEvent) {
+      if (!e.ctrlKey) return undefined;
+
+      if (e.deltaY < 0) {
+        e.preventDefault()
+        return false
+      } else if (e.deltaY > 0) {
+        e.preventDefault()
+        return false
+      }
+      return undefined;
+    }
+
     watch(currentImg, () => {
       nextTick(() => {
         // todo imgRefs.get()[0] has error , can not get nothing ;
@@ -347,12 +370,27 @@ export class TdImageViewer extends TypeFragment implements ITdImageViewer {
     });
 
     onMounted(() => {
-      registerEventListener();
-    });
+      watch(() => unref(props.vIf), (val) => {
+        if (val !== false ) { // add by me
+          registerEventListener();
 
+          stopWheelListener = useEventListener('wheel', wheelHandler, {
+            passive: false,
+          })
+
+          // prevent body scroll
+          prevOverflow = document.body.style.overflow
+          document.body.style.overflow = 'hidden'
+        }
+      })
+
+    });
+    /**
+     * @description manually switch image
+     */
     this.setActiveItem = setActiveItem;
 
-    console.error('then image-viewer add TdTeleport');
+    // console.error('then image-viewer add TdTeleport');
     this.addChild(
       new TdTeleport({
         to: 'body',
@@ -368,7 +406,7 @@ export class TdImageViewer extends TypeFragment implements ITdImageViewer {
               class: ns.e('wrapper'),
             },
             styleObj: {
-              zIndex: zIndex.get(),
+              zIndex: zIndex,
             },
             slot: new TdFocusTrap({
               loop: true,
@@ -403,7 +441,7 @@ export class TdImageViewer extends TypeFragment implements ITdImageViewer {
 
                 // <!-- ARROW -->
                 new Fragment({
-                  // vIf: isSingle,
+                  vIf: computed(() => !isSingle.get()),
                   slot: [
                     new Span({
                       class: arrowPrevKls,
@@ -425,13 +463,24 @@ export class TdImageViewer extends TypeFragment implements ITdImageViewer {
                     }),
                   ],
                 }),
+                new Div({
+                  vIf: props.showProgress,
+                  class: [ns.e('btn'), ns.e('progress')],
+                  slot: props.slots?.progress?.(activeIndex, props.urlList?.length) ?? progress,
+                }),
 
                 // <!-- ACTIONS -->
                 new Div({
                   class: [ns.e('btn'), ns.e('actions')],
                   slot: new Div({
                     class: ns.e('actions__inner'),
-                    slot: [
+                    slot: props.slots?.toolbar?.({
+                      actions: handleActions,
+                      prev: prev,
+                      next: next,
+                      reset: toggleMode,
+                      activeIndex: activeIndex,
+                    }) ?? [
                       new TdIcon({
                         events: {
                           click: () => handleActions('zoomOut'),
@@ -496,8 +545,7 @@ export class TdImageViewer extends TypeFragment implements ITdImageViewer {
                 }),
                 new Fragment({
                   slot: props.slot,
-                }),
-                // ...arraySlot(props.slot),
+                })
               ],
             }),
           }),

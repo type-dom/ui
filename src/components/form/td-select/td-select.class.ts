@@ -24,6 +24,7 @@ import { selectKey } from './token';
 import { useSelect } from './useSelect';
 import { ITdSelect, TdSelectProps, SelectContext } from './td-select.interface';
 import './style';
+import { TdOptions } from './td-options/td-options.class';
 
 export class TdSelect extends TypeDiv implements ITdSelect {
   className: 'TdSelect';
@@ -86,6 +87,9 @@ export class TdSelect extends TypeDiv implements ITdSelect {
       [API.mouseEnterEventName.get()!]: () => (API.states.inputHovering = true),
       mouseleave: () => (API.states.inputHovering = false),
     });
+
+    // console.warn('API.states.options.size > 0 && !unref(props.loading) is ', API.states.options.size > 0 && !unref(props.loading));
+
     this.addChild(
       new TdTooltip({
         refEl: API.tooltipRef,
@@ -208,7 +212,7 @@ export class TdSelect extends TypeDiv implements ITdSelect {
                           refDom: API.tagMenuRef,
                           class: nsSelect.e('selection'),
                           slot: new For({
-                            data: API.states.collapseTagList,
+                            data: API.collapseTagList,
                             getter: (item: any) =>
                               new Div({
                                 // key: API.getValueKey(item),
@@ -364,7 +368,7 @@ export class TdSelect extends TypeDiv implements ITdSelect {
                     nsSelect.e('icon'),
                     API.iconReverse,
                   ],
-                  slot: new (API.iconComponent.get() as any)(),
+                  slot: API.iconComponent.get() && new (API.iconComponent.get() as any)(),
                 }),
                 new TdIcon({
                   vIf: computed(() => API.showClose.get() && props.clearIcon),
@@ -414,12 +418,12 @@ export class TdSelect extends TypeDiv implements ITdSelect {
                 },
               }),
               new TdScrollbar({
-                vShow: computed(
-                  () => API.states.options.size > 0 && !unref(props.loading)
-                ),
+                // vShow: computed(
+                //   () => API.states.options.size > 0 && !unref(props.loading) // todo
+                // ),
                 refEl: API.scrollbarRef as Computed<TdScrollbar>,
                 tag: 'ul',
-                // wrapClass: nsSelect.be('dropdown', 'wrap'),
+                wrapClass: nsSelect.be('dropdown', 'wrap'),
                 viewClass: nsSelect.be('dropdown', 'list'),
                 class: [
                   nsSelect.is('empty', API.filteredOptionsCount.get() === 0),
@@ -439,27 +443,26 @@ export class TdSelect extends TypeDiv implements ITdSelect {
                     value: API.states.inputValue,
                     created: true,
                   }),
-                  // new TdOptions({ // todo
-                  //   slot: props.slot
-                  // })
+                  new TdOptions({ // todo
+                    slot: props.slot
+                  })
                 ],
               }),
-              new Div({
-                vIf: props.slots?.loading && props.loading,
-                class: nsSelect.be('dropdown', 'loading'),
-                slot: props.slots?.loading,
-              }),
-              new Div({
-                vIf:
-                  !(props.slots?.loading && props.loading) &&
-                  (props.loading || API.filteredOptionsCount.get() === 0),
-                class: nsSelect.be('dropdown', 'empty'),
-                slot:
-                  props.slots?.empty ??
-                  new Span({
-                    slot: API.emptyText,
-                  }),
-              }),
+              (props.slots?.loading && props.loading)
+                ? new Div({
+                  class: nsSelect.be('dropdown', 'loading'),
+                  slot: props.slots?.loading,
+                })
+                : ((props.loading || API.filteredOptionsCount.get() === 0))
+                  ? new Div({
+                      class: nsSelect.be('dropdown', 'empty'),
+                      slot:
+                        props.slots?.empty ??
+                        new Span({
+                          slot: API.emptyText,
+                        }),
+                    })
+                  : undefined,
               new Div({
                 vIf: props.slots?.footer,
                 class: nsSelect.be('dropdown', 'footer'),

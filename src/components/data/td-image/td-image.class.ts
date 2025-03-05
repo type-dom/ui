@@ -14,10 +14,6 @@ import {
   ISlotItem,
   defineExpose,
 } from '@type-dom/framework';
-import { ITdImage, ImageProps } from './td-image.interface';
-import { imageEmits, imageProps } from './td-image.const';
-import { useLocale } from 'libs/ui/src/hooks/use-locale';
-import { useNamespace } from 'libs/ui/src/hooks/use-namespace';
 import { computed, effect, signal, watch } from '@type-dom/signals';
 import {
   fromPairs,
@@ -25,14 +21,19 @@ import {
   isArray,
   isClient,
   isElement,
+  isFunction,
   isInContainer,
   isString,
 } from '@type-dom/utils';
-import { useAttrs } from '../../../hooks';
+import { FlDividerShortFilledSvg } from '@type-dom/svgs';
 import { IStyle } from '@type-dom/css-type';
+import { useAttrs } from '../../../hooks/use-attrs';
+import { useLocale } from '../../../hooks/use-locale';
+import { useNamespace } from '../../../hooks/use-namespace';
+import { ITdImage, ImageProps } from './td-image.interface';
+import { imageEmits, imageProps } from './td-image.const';
 import { TdImageViewer } from '../td-image-viewer/td-image-viewer.class';
 import './style/index';
-import { FlDividerShortFilledSvg } from '@type-dom/svgs';
 
 export class TdImage extends TypeDiv implements ITdImage {
   className: 'TdImage';
@@ -55,8 +56,6 @@ export class TdImage extends TypeDiv implements ITdImage {
   override setup() {
     const props = this.props;
     const emit = this.emit;
-
-    let prevOverflow = '';
 
     const { t } = useLocale();
     const ns = useNamespace('image');
@@ -87,7 +86,6 @@ export class TdImage extends TypeDiv implements ITdImage {
 
     const supportLoading = isClient && 'loading' in HTMLImageElement.prototype;
     let stopScrollListener: (() => void) | undefined;
-    let stopWheelListener: (() => void) | undefined;
 
     const imageKls = computed(() => [
       ns.e('inner'),
@@ -134,6 +132,7 @@ export class TdImage extends TypeDiv implements ITdImage {
       // reset status
       isLoading.set(true);
       hasLoadError.set(false);
+      // console.warn('props.src is ', props.src);
       imageSrc.set(props.src);
     };
 
@@ -194,38 +193,16 @@ export class TdImage extends TypeDiv implements ITdImage {
       _scrollContainer.set(undefined);
     }
 
-    function wheelHandler(e: WheelEvent) {
-      if (!e.ctrlKey) return;
-
-      if (e.deltaY < 0) {
-        e.preventDefault();
-        return false;
-      } else if (e.deltaY > 0) {
-        e.preventDefault();
-        return false;
-      }
-      return false;
-    }
-
     function clickHandler() {
       // don't show viewer when preview is false
-      console.error('clickHandler . ');
+      // console.error('clickHandler . ');
       if (!preview.get()) return;
 
-      stopWheelListener = useEventListener('wheel', wheelHandler, {
-        passive: false,
-      });
-
-      // prevent body scroll
-      prevOverflow = document.body.style.overflow;
-      document.body.style.overflow = 'hidden';
       showViewer.set(true);
       emit('show');
     }
 
     function closeViewer() {
-      stopWheelListener?.();
-      document.body.style.overflow = prevOverflow;
       showViewer.set(false);
       emit('close');
     }
@@ -234,12 +211,13 @@ export class TdImage extends TypeDiv implements ITdImage {
       emit('switch', val);
     }
 
+    // () => props.src  这样也能监听到 props.src 赋值的。
     watch(
       () => props.src,
-      () => {
-        // console.warn('watch props.src is ', props.src);
+      (newSrc, oldSrc) => {
+        // console.warn('watch props.src is ', newSrc, oldSrc);
         if (isManual.get()) {
-          console.warn('watch isManual props.src is ', props.src);
+          // console.warn('watch isManual props.src is ', newSrc);
           // reset status
           isLoading.set(true);
           hasLoadError.set(false);
@@ -248,22 +226,23 @@ export class TdImage extends TypeDiv implements ITdImage {
         } else {
           loadImage();
         }
-      }
+      },
       // { immediate: true }
     );
 
     onMounted(() => {
+      // console.warn('onMounted . ');
       if (isManual.get()) {
         addLazyLoadListener();
       } else {
         loadImage();
       }
     });
-
-    defineExpose({
-      /** @description manually open preview */
-      showPreview: clickHandler,
-    });
+    this.showPreview = clickHandler;
+    // defineExpose({
+    //   /** @description manually open preview */
+    //   showPreview: clickHandler,
+    // });
     this.assignProps({
       refDom: container,
       // v-bind="containerAttrs" todo
@@ -272,124 +251,84 @@ export class TdImage extends TypeDiv implements ITdImage {
       },
     });
 
-    // this.addChild(
-    //   new Fragment({
-    //     slot: computed(() => {
-    //       if (hasLoadError.get()) {
-    //         return props.slots?.error ?? new Div({
-    //           class: ns.e('error'),
-    //           slot: t('el.image.error'),
-    //         })
-    //       } else {
-    //         return [
-    //           new Img({
-    //             // vIf: computed(() => imageSrc.get() !== undefined),
-    //             // loading: props.loading, // todo
-    //             attrObj: {
-    //               // ...imgAttrs.get(), // v-bind imgAttrs
-    //               src: imageSrc.get() ?? "", // must has src. other then trigger events ,eg. load error
-    //               class: imageKls,
-    //               crossorigin: props.crossorigin,
-    //             },
-    //             styleObj: imageStyle,
-    //             events: {
-    //               click: clickHandler,
-    //               load: handleLoad,
-    //               error: handleError,
-    //             }
-    //           }),
-    //           new Div({
-    //             vIf: isLoading,
-    //             class: ns.e('wrapper'),
-    //             slot: props.slots?.placeholder ?? new Div({
-    //               class: ns.e('placeholder'),
-    //             })
-    //           }),
-    //         ]
-    //       }
-    //     })
-    //   }));
-
-    // todo preview has error
-    const slot = computed(() => {
-      let els: ISlotItem = [];
-      if (hasLoadError.get()) {
-        // console.warn('hasLoadError.get() is ', hasLoadError.get());
-        if (props.slots?.error) {
-          els = props.slots.error;
-        } else {
-          els = new Div({
-            class: ns.e('error'),
-            slot: t('el.image.error'),
-          });
-        }
-      } else {
-        // if (imageSrc.get()) {
-        els.push(
-          new Img({
-            // vIf: computed(() => imageSrc.get() !== undefined),
-            // loading: props.loading, // todo
-            attrObj: {
-              // ...imgAttrs.get(), // v-bind imgAttrs
-              src: imageSrc.get() ?? '', // must has src. other then trigger events ,eg. load error
-              class: imageKls,
-              crossorigin: props.crossorigin,
-            },
-            styleObj: imageStyle,
-            events: {
-              click: clickHandler,
-              load: handleLoad,
-              error: handleError,
-            },
-          })
-        );
-        // }
-        if (isLoading.get()) {
-          els.push(
-            new Div({
-              class: ns.e('wrapper'),
-              slot:
-                props.slots?.placeholder ??
-                new Div({
-                  class: ns.e('placeholder'),
-                }),
+    this.addChild(
+      new Fragment({
+        slot: computed(() => {
+          if (hasLoadError.get()) {
+            // console.warn('hasLoadError.get() is ', hasLoadError.get());
+            return props.slots?.error ?? new Div({
+              class: ns.e('error'),
+              slot: t('el.image.error'),
             })
-          );
-          if (preview.get()) {
-            console.warn('preview.get() is ', true);
-            els.push(
-              new TdImageViewer({
-                vIf: showViewer,
-                zoomRate: props.zoomRate,
-                initialIndex: imageIndex.get(),
-                infinite: props.infinite,
-                minScale: props.minScale,
-                urlList: props.previewSrcList,
-                hideOnClickModal: props.hideOnClickModal,
-                teleported: props.previewTeleported,
-                closeOnPressEscape: props.closeOnPressEscape,
+          } else {
+            return [
+              new Img({
+                vIf: imageSrc.get(),
+                class: imageKls,
                 attrObj: {
-                  zIndex: props.zIndex,
+                  loading: props.loading, // todo
+                  // ...imgAttrs.get(), // v-bind imgAttrs
+                  src: imageSrc.get() ?? '', // must has src. other then trigger events ,eg. load error
                   crossorigin: props.crossorigin,
                 },
-                emits: {
-                  close: closeViewer,
-                  switch: switchViewer,
-                },
-                slot: props.slots?.viewer
-                  ? new Div({
-                      slot: props.slots.viewer,
-                    })
-                  : undefined,
-              })
-            );
+                styleObj: imageStyle,
+                events: {
+                  click: clickHandler,
+                  load: handleLoad,
+                  error: handleError,
+                }
+              }),
+              new Div({
+                vIf: isLoading.get(),
+                class: ns.e('wrapper'),
+                slot: props.slots?.placeholder ?? new Div({
+                  class: ns.e('placeholder'),
+                })
+              }),
+            ]
           }
-        }
+        })
+      })
+    );
+
+    this.addChild(
+      new Fragment({
+        vIf: preview,
+        slot: new TdImageViewer({
+          vIf: showViewer,
+          initialIndex: imageIndex.get(),
+          zoomRate: props.zoomRate,
+          infinite: props.infinite,
+          minScale: props.minScale,
+          maxScale: props.maxScale,
+          showProgress: props.showProgress,
+          urlList: props.previewSrcList,
+          hideOnClickModal: props.hideOnClickModal,
+          teleported: props.previewTeleported,
+          closeOnPressEscape: props.closeOnPressEscape,
+          attrObj: {
+            zIndex: props.zIndex,
+            crossorigin: props.crossorigin,
+          },
+          emits: {
+            close: closeViewer,
+            switch: switchViewer,
+          },
+          slot: props.slots?.viewer
+            ? new Div({
+              slot: props.slots.viewer,
+            })
+            : undefined,
+          slots: {
+            progress: (progress) => isFunction(props.slots?.progress)
+            ? props.slots?.progress(progress)
+              : undefined,
+            toolbar: ({ actions, prev, next, reset, activeIndex }) => isFunction(props.slots?.toolbar)
+              ? props.slots?.toolbar({ actions, prev, next, reset, activeIndex })
+              : undefined,
+          }
+        })
       }
-      return els;
-    });
-    // todo 与上面的 slotChildren 方法重叠了。 响应式会清空所有子节点。
-    // console.warn('then slotChildren slot, slot is ', slot);
-    this.slotChildren(slot); // todo slotChildren方法待完善 会清空加载的图片
+    ))
   }
 }

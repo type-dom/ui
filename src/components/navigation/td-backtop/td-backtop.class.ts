@@ -1,21 +1,16 @@
 import {
-  createClass,
   Div,
   Transition,
-  TypeElement,
   TypeFragment,
-  TypeNode,
-  TypeTransition,
 } from '@type-dom/framework';
 import { ElCaretTopSvg } from '@type-dom/svgs';
-import { throttle } from '@type-dom/utils';
-import { TdIcon } from '../../basic/td-icon/td-icon.class';
 import { computed } from '@type-dom/signals';
+import { useNamespace } from '../../../hooks/use-namespace';
+import { TdIcon } from '../../basic/td-icon/td-icon.class';
 import { ITdBackTop, BacktopProps } from './td-backtop.interface';
-import { $backtop, $backtopStyle } from './td-backtop.style';
 import { backtopEmits, backtopProps } from './td-backtop.const';
 import { useBackTop } from './use-backtop';
-import { useNamespace } from '../../../hooks/use-namespace';
+import './style/index';
 
 export class TdBackTop extends TypeFragment implements ITdBackTop {
   className: 'TdBackTop';

@@ -23,14 +23,14 @@ export class TdOnlyChild extends TypeFragment {
   constructor(params: TypeFragmentProps = {}) {
     super();
     this.className = 'TdOnlyChild';
-    console.log('TdOnlyChild.constructor', params);
+    // console.log('TdOnlyChild.constructor', params);
     this.slotChildren(params.slot);
     this.props = this.useParams(params);
   }
 
   // todo
   override setup() {
-    console.log('TdOnlyChild.setup', this.props);
+    // console.log('TdOnlyChild.setup', this.props);
     const forwardRefInjection = this.inject(FORWARD_REF_INJECTION_KEY);
     const forwardRefDirective = useForwardRefDirective(
       forwardRefInjection?.setForwardRef ?? NOOP

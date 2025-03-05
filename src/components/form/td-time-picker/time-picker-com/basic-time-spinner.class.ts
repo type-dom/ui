@@ -10,6 +10,8 @@ import {
   UL,
 } from '@type-dom/framework';
 import { computed, signal, Ref, unref, watch } from '@type-dom/signals';
+import { debounce, getStyle, isNumber } from '@type-dom/utils';
+import { ElArrowDownSvg, ElArrowUpSvg } from '@type-dom/svgs';
 import { useNamespace } from '../../../../hooks/use-namespace';
 import { TdScrollbar } from '../../../basic/td-scrollbar/td-scrollbar.class';
 import {
@@ -19,9 +21,7 @@ import {
 import { getTimeLists } from '../composables/use-time-picker';
 import { TimeUnit, timeUnits } from '../constants';
 import { buildTimeList, TimeList } from '../utils';
-import { debounce, getStyle, isNumber } from '@type-dom/utils';
-import { TdIcon } from '@type-dom/ui';
-import { ElArrowDownSvg, ElArrowUpSvg } from '@type-dom/svgs';
+import { TdIcon } from '../../../basic/td-icon/td-icon.class';
 
 export class BasicTimeSpinner extends TypeDiv {
   className: 'BasicTimeSpinner';
@@ -68,11 +68,12 @@ export class BasicTimeSpinner extends TypeDiv {
       return props.showSeconds ? timeUnits : timeUnits.slice(0, 2);
     });
 
-    const timePartials = computed<Record<TimeUnit, number>>(() => {
+    const timePartials = computed<Record<TimeUnit, number> | undefined>(() => {
       const { spinnerDate } = props;
-      const hours = spinnerDate?.hour()!;
-      const minutes = spinnerDate?.minute()!;
-      const seconds = spinnerDate?.second()!;
+      if (!spinnerDate) return;
+      const hours = spinnerDate.hour()!;
+      const minutes = spinnerDate.minute()!;
+      const seconds = spinnerDate.second()!;
       return { hours, minutes, seconds };
     });
 
@@ -331,7 +332,7 @@ export class BasicTimeSpinner extends TypeDiv {
               return new LI({
                 class: [
                   ns.be('spinner', 'item'),
-                  ns.is('active', key === timePartials.get()[item]),
+                  ns.is('active', key === timePartials.get()?.[item]),
                   ns.is('disabled', disabled),
                 ],
                 events: {
@@ -374,7 +375,7 @@ export class BasicTimeSpinner extends TypeDiv {
                   return new LI({
                     class: [
                       ns.be('spinner', 'item'),
-                      ns.is('active', key === timePartials.get()[item]),
+                      ns.is('active', key === timePartials.get()?.[item]),
                       ns.is('disabled', timeList.get()[item][time!]),
                     ],
                     slot: new Fragment({

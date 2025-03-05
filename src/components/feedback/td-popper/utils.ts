@@ -10,25 +10,25 @@
 import { TypeNode, unrefElement } from '@type-dom/framework';
 import { MaybeRef } from '@type-dom/signals';
 // todo floatingui 的 api 变了
-import { detectOverflow, flip, Middleware, offset } from '@type-dom/popper';
+import { detectOverflow, flip, Middleware, offset, PopperOptions } from '@type-dom/popper';
 import { isClient } from '@type-dom/utils';
 import { PopperCoreConfigProps } from './content/content.interface';
 import { Measurable } from './td-popper.interface';
 
 export const buildPopperOptions = (
   props: PopperCoreConfigProps,
-  middleware: (Middleware | undefined)[] = []
+  middlewares: Middleware[] = []
 ) => {
   const { placement, strategy, popperOptions } = props;
-  const options = {
+  const options: PopperOptions = {
     placement,
     strategy,
     ...popperOptions,
-    middleware: [...genMiddleware(props), ...middleware],
+    middleware: [...genMiddleware(props), ...middlewares],
   };
 
   deriveExtraMiddleware(options, popperOptions?.middleware ?? []);
-  console.error('options is ', options);
+  // console.error('options is ', options);
   return options;
 };
 
@@ -41,10 +41,10 @@ export const unwrapMeasurableEl = (
 
 // todo api 变了
 //   应该对应新的 middleWare
-function genMiddleware(options: PopperCoreConfigProps) {
-  const { offset: pOffset, gpuAcceleration, fallbackPlacements } = options;
+function genMiddleware(options: PopperCoreConfigProps): Middleware[] {
+  const { gpuAcceleration, fallbackPlacements } = options;
   return [
-    offset(pOffset ?? 12),
+    offset(options.offset ?? 12),
     // {
     //   name: 'offset',
     //   options: {

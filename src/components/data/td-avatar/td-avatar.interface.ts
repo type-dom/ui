@@ -5,10 +5,10 @@ import { TdIcon } from '../../basic/td-icon/td-icon.class';
 
 export interface ITdAvatar extends ITypeSpan {
   className: 'TdAvatar';
-  props: ITdAvatarConfig;
+  props: AvatarProps;
 }
 
-export interface ITdAvatarConfig extends TypeSpanProps {
+export interface AvatarProps extends TypeSpanProps {
   /**
    * @description avatar size.
    *     default: '',

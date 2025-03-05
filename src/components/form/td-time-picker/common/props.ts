@@ -7,21 +7,21 @@
 // } from '@element-plus/hooks'
 // import { CircleClose } from '@element-plus/icons-vue'
 import { ElCircleCloseSvg } from '@type-dom/svgs';
-import { DisabledTimeListsProps } from '../props/shared';
+import { AnyFn } from '@type-dom/utils';
 
 // import type { Component, ExtractPropTypes } from 'vue'
 // import type { Options } from '@popperjs/core'
 import type { ComputePositionConfig as Options } from '@type-dom/popper';
 import type { Dayjs } from 'dayjs';
 import {
-  AnyFn,
   TypeDivProps,
   TypeFragmentProps,
   TypeSvgSvg,
 } from '@type-dom/framework';
 import { Placement } from '@type-dom/popper';
-import { ComponentSize } from '@type-dom/ui';
+import { ComponentSize } from '../../../../constants/size';
 // import type { Placement } from '@element-plus/components/popper'
+import { DisabledTimeListsProps } from '../props/shared';
 
 export type SingleOrRange<T> = T | [T, T];
 export type DateModelType = number | string | Date;

@@ -18,7 +18,7 @@ import {
 import { computed, signal, watch } from '@type-dom/signals';
 import { useLocale } from '../../../hooks/use-locale';
 import { useGlobalSize } from '../../../hooks/use-size';
-import { useDeprecated } from 'libs/ui/src/hooks/use-deprecated';
+import { useDeprecated } from '../../../hooks/use-deprecated';
 import { useNamespace } from '../../../hooks/use-namespace';
 import { debugWarn } from '@type-dom/utils';
 import { tdPaginationKey } from './constants';

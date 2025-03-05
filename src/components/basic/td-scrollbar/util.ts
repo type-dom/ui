@@ -1,5 +1,7 @@
 import { IStyle } from '@type-dom/css-type';
-import { ITdScrollbarThumbConfig } from './thumb/thumb.interface';
+import { unref } from '@type-dom/signals';
+import { ThumbProps } from './thumb/thumb.interface';
+import { addUnit } from '@type-dom/utils';
 
 export const GAP = 4; // top 2 + bottom 2 of bar instance
 
@@ -30,9 +32,14 @@ export const renderThumbStyle = ({
   move,
   size,
   bar,
-}: Pick<ITdScrollbarThumbConfig, 'move' | 'size'> & {
+}: Pick<ThumbProps, 'move' | 'size'> & {
   bar: (typeof BAR_MAP)[keyof typeof BAR_MAP];
-}): IStyle => ({
-  [bar.size]: size,
-  transform: `translate${bar.axis}(${move}%)`,
-});
+}): IStyle => {
+  // console.warn('size is ', size);
+  // console.warn('move is ', move);
+  // console.warn('bar is ', bar);
+  return {
+    [bar.size]: addUnit(size?.get()),
+    transform: `translate${bar.axis}(${unref(move)}%)`,
+  }
+};

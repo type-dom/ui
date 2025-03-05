@@ -24,11 +24,11 @@ export const useCollapseItem = (props: CollapseItemProps) => {
         id
       )}`) as CollapseActiveName;
   });
-  console.warn('name is ', name);
+  // console.warn('name is ', name);
   const isActive = computed(() =>
     collapse?.activeNames.get().includes(unref(name)!)
   );
-  console.error('isActive is ', isActive);
+  // console.error('isActive is ', isActive);
   const handleFocus = () => {
     setTimeout(() => {
       if (!isClick.get()) {

@@ -1,11 +1,12 @@
 import {
   Div,
+  For,
   Input,
   Label,
   TypeFragment,
   onMounted,
   useActiveElement,
-  useResizeObserver,
+  useResizeObserver, Fragment, nextTick
 } from '@type-dom/framework';
 import {
   computed,
@@ -71,7 +72,7 @@ export class TdSegmented extends TypeFragment implements ITdSegmented {
     });
 
     const handleChange = (item: Option) => {
-      console.warn('handleChange . item is ', item);
+      // console.warn('handleChange . item is ', item);
       const value = getValue(item);
       emit(UPDATE_MODEL_EVENT, value);
       emit(CHANGE_EVENT, value);
@@ -106,7 +107,7 @@ export class TdSegmented extends TypeFragment implements ITdSegmented {
     };
 
     const updateSelect = () => {
-      console.warn('updateSelect . ');
+      // console.warn('updateSelect . ');
       if (!segmentedRef.get()) return;
       // 这一步有问题； is-selected 样式有异步。应该直接根据vModel的值匹配
       // const selectedItem = segmentedRef.get()?.querySelector(
@@ -119,7 +120,7 @@ export class TdSegmented extends TypeFragment implements ITdSegmented {
         'attrObj.value',
         props.vModel?.get()
       ) as Label;
-      console.log('selectedItem is ', selectedEl);
+      // console.log('selectedItem is ', selectedEl);
       // todo watch 触发时，dom 未必已经创建。
       const selectedItem = selectedEl?.dom;
       const selectedItemInput = selectedEl?.dom?.querySelector?.('input');
@@ -143,7 +144,9 @@ export class TdSegmented extends TypeFragment implements ITdSegmented {
       try {
         // This will failed in test
         state.focusVisible.set(selectedItemInput.matches(':focus-visible'));
-      } catch {}
+      } catch(err) {
+        console.error('selectedItemInput.matches is not supported', err);
+      }
     };
 
     const segmentedCls = computed(() => [
@@ -185,12 +188,12 @@ export class TdSegmented extends TypeFragment implements ITdSegmented {
       new Div({
         vIf: props.options?.length,
         refEl: segmentedRef,
+        class: segmentedCls,
         styleObj: props.styleObj, // 父组件传入的样式
         attrObj: {
           name: 'td-segmented',
           id: inputId.get(),
           role: 'radiogroup',
-          class: segmentedCls,
           ariaLabel: isLabeledByFormItem.get()
             ? props.ariaLabel || 'segmented'
             : undefined,
@@ -205,33 +208,35 @@ export class TdSegmented extends TypeFragment implements ITdSegmented {
               styleObj: selectedStyle,
               class: selectedCls,
             }),
-            ...props.options!.map((item, index) => {
-              return new Label({
-                class: getItemCls(item),
-                attrObj: {
-                  value: getValue(item),
-                },
-                slot: [
-                  new Input({
-                    attrObj: {
-                      class: ns.e('item-input'),
-                      type: 'radio',
-                      name: name.get(),
-                      checked: getSelected(item),
-                      disabled: getDisabled(item),
-                    },
-                    events: {
-                      change: () => handleChange(item),
-                    },
-                  }),
-                  new Div({
-                    class: ns.e('item-label'),
-                    slot:
-                      isObject(item) && item.slot ? item.slot : getLabel(item),
-                  }),
-                ],
-              });
-            }),
+            new Fragment({
+              slot: props.options?.map((item) => {
+                return new Label({
+                  class: getItemCls(item),
+                  attrObj: {
+                    value: getValue(item),
+                  },
+                  slot: [
+                    new Input({
+                      attrObj: {
+                        class: ns.e('item-input'),
+                        type: 'radio',
+                        name: name.get(),
+                        checked: getSelected(item),
+                        disabled: getDisabled(item),
+                      },
+                      events: {
+                        change: () => handleChange(item),
+                      },
+                    }),
+                    new Div({
+                      class: ns.e('item-label'),
+                      slot:
+                        isObject(item) && item.slot ? item.slot : getLabel(item),
+                    }),
+                  ],
+                });
+              }),
+            })
           ],
         }),
       })
@@ -242,27 +247,23 @@ export class TdSegmented extends TypeFragment implements ITdSegmented {
     watch(activeElement, updateSelect);
 
     onMounted(() => {
+      // console.error('onMounted . ');
       // add by me
-      updateSelect(); // 不加初始化时选中样式不加载
-      effect(() => {
-        // unref(props.direction);
-        unref(props.size);
-        unref(props.vModel);
-        // unref(activeElement);
-        // unref(selectedStyle.width);
-        // unref(selectedStyle.height);
-        // unref(selectedStyle.transform); // 不加选中样式不加载
+      // 不加初始化时选中样式不加载
+      nextTick(() => {
         updateSelect();
-      });
+      })
     });
 
-    watch(
-      () => props.vModel?.get(),
+    watch(props.vModel,
       () => {
         updateSelect();
         if (props.validateEvent) {
           formItem?.validate?.('change').catch((err) => debugWarn(err));
         }
+      },
+      {
+        immediate: true,
       }
     );
   }

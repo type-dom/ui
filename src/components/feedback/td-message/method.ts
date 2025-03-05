@@ -80,7 +80,7 @@ const normalizeOptions = (
       );
       appendTo = document.body;
     }
-    console.error('appendTo is ', appendTo);
+    // console.error('appendTo is ', appendTo);
     normalized.appendTo = appendTo;
   }
 
@@ -128,7 +128,7 @@ const createMessage = ({
     // zIndex: nextIndex() + options.zIndex
     id,
     onClose: () => {
-      console.error('createMessage props onClose ');
+      // console.error('createMessage props onClose ');
       userOnClose?.();
       closeMessage(instance);
     },
@@ -187,11 +187,11 @@ const createMessage = ({
 const message: MessageFn & Partial<Message> = (
   options = {} as string | TypeNode
 ) => {
-  console.log('message options is ', options);
+  // console.log('message options is ', options);
   if (!isClient) return { close: () => undefined };
 
   const normalized = normalizeOptions(options as any);
-  console.error('normalized is ', normalized);
+  // console.error('normalized is ', normalized);
   if (normalized.grouping && instances.get().length) {
     const instance = instances
       .get()

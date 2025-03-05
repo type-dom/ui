@@ -8,13 +8,12 @@ import {
   UL,
   useMutationObserver,
 } from '@type-dom/framework';
-import { $selectGroup } from '../td-select/td-select.style';
-import { ITdOptionGroup, OptionGroupProps } from './td-option-group.interface';
 import { ensureArray } from '@type-dom/utils';
 import { computed, Signal, signal, toRefs } from '@type-dom/signals';
-import { selectGroupKey } from '../td-select/token';
 import { useNamespace } from '../../../hooks/use-namespace';
+import { selectGroupKey } from '../td-select/token';
 import { TdOption } from '../td-option/td-option.class';
+import { ITdOptionGroup, OptionGroupProps } from './td-option-group.interface';
 
 export class TdOptionGroup extends TypeUL implements ITdOptionGroup {
   className: 'TdOptionGroup';

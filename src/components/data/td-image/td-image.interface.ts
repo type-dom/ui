@@ -79,6 +79,11 @@ export interface ImageProps extends TypeDivProps {
    */
   maxScale?: number;
   /**
+   * @description show preview image progress content.
+   *    default: false,
+   */
+  showProgress?: boolean;
+  /**
    * @description set HTML attribute: crossorigin.
    */
   crossorigin?: 'anonymous' | 'use-credentials' | '';

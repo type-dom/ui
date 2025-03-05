@@ -8,21 +8,20 @@ import {
   TypeDiv,
   useSlots,
 } from '@type-dom/framework';
+import { computed, Signal, signal, watch } from '@type-dom/signals';
 import { ElPlusSvg } from '@type-dom/svgs';
 import { isUndefined } from '@type-dom/utils';
 // import { $colorPrimary, $colors, $textColor } from '../../../styles';
+import { useNamespace } from '../../../hooks/use-namespace';
+import { useOrderedChildren } from '../../../hooks/use-ordered-children';
 import { UPDATE_MODEL_EVENT } from '../../../constants/event';
+import { EVENT_CODE } from '../../../constants';
 import { TdIcon } from '../../basic/td-icon/td-icon.class';
 import { TabPaneProps } from '../td-tab-pane/td-tab-pane.interface';
+import { tabsEmits, tabsProps } from './td-tabs.const';
 import { TabPaneName, ITdTabs, TabsProps } from './td-tabs.interface';
 import { TdTabNav } from './td-tab-nav.class';
-import { TdTabPane } from '../td-tab-pane/td-tab-pane.class';
 import { TabsPaneContext, tabsRootContextKey } from './constants';
-import { tabsEmits, tabsProps } from './td-tabs.const';
-import { useNamespace } from '../../../hooks/use-namespace';
-import { computed, Signal, signal, watch } from '@type-dom/signals';
-import { useOrderedChildren } from 'libs/ui/src/hooks/use-ordered-children';
-import { EVENT_CODE } from 'libs/ui/src/constants';
 
 export class TdTabs extends TypeDiv implements ITdTabs {
   className: 'TdTabs';

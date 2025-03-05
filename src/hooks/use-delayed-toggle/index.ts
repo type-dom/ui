@@ -46,7 +46,7 @@ export const useDelayedToggle = ({
   } = useTimeout();
 
   const onOpen = (event?: Event) => {
-    console.log('use-delayed-toggle onOpen');
+    // console.log('use-delayed-toggle onOpen');
     registerTimeout(() => {
       open?.(event);
 

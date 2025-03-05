@@ -4,16 +4,17 @@ import {
   inject,
   TypeFragment,
 } from '@type-dom/framework';
-import { composeEventHandlers } from '../../../../../../utils/src/ui/dom/event';
+import { Signal, signal, unref } from '@type-dom/signals';
+import { composeEventHandlers } from '@type-dom/utils';
+
+import { useNamespace } from '../../../../hooks/use-namespace';
 import { TdPopperTrigger } from '../../td-popper/trigger/trigger.class';
+import { OnlyChildExpose } from '../../td-only-child/td-only-child.interface';
 import { whenTrigger } from '../utils';
 import { TOOLTIP_INJECTION_KEY } from '../td-tooltip.const';
 import { TooltipContext } from '../td-tooltip.interface';
 import { ITdTooltipTrigger, TooltipTriggerProps } from './trigger.interface';
 import { tooltipTriggerProps } from './trigger.const';
-import { useNamespace } from '../../../../hooks/use-namespace';
-import { Signal, signal, unref } from '@type-dom/signals';
-import { OnlyChildExpose } from '../../td-only-child/td-only-child.interface';
 
 export class TdTooltipTrigger
   extends TypeFragment
@@ -25,7 +26,7 @@ export class TdTooltipTrigger
 
   constructor(params: TooltipTriggerProps = {}) {
     super();
-    console.log('TdTooltipTrigger, ', params);
+    // console.log('TdTooltipTrigger, ', params.virtualRef);
     this.className = 'TdTooltipTrigger';
     this.assignProps(tooltipTriggerProps);
     this.props = this.useParams(params);
@@ -43,13 +44,14 @@ export class TdTooltipTrigger
     const triggerRef = signal<OnlyChildExpose | undefined>(undefined);
 
     const stopWhenControlledOrDisabled = () => {
-      console.warn('stopWhenControlledOrDisabled');
+      // console.warn('stopWhenControlledOrDisabled');
+      // console.log('unref(controlled) is ', unref(controlled));
       if (unref(controlled) || unref(props.disabled)) {
         return true;
       }
-      return false; // add by me
+      return;
     };
-    const trigger = props.trigger || [];
+    const trigger = signal(props.trigger || []);
     // console.log('trigger is ', trigger);
 
     const onMouseenter = composeEventHandlers(
@@ -85,22 +87,23 @@ export class TdTooltipTrigger
 
     const onContextmenu = composeEventHandlers(
       stopWhenControlledOrDisabled,
-      whenTrigger(trigger, 'contextmenu', (e: Event) => {
-        e.preventDefault();
+      whenTrigger(trigger, 'contextmenu', (e?: Event) => {
+        e?.preventDefault();
         onToggle(e);
       })
     );
 
     const onKeydown = composeEventHandlers(
       stopWhenControlledOrDisabled,
-      (e: KeyboardEvent) => {
+      (e?: KeyboardEvent) => {
+        if (!e) return;
         const { code } = e;
         if (this.props.triggerKeys?.includes(code)) {
-          e.preventDefault();
+          e?.preventDefault();
           onToggle(e);
         }
       }
-    ) as (evt: Event) => void;
+    ) as (evt?: Event) => void;
 
     defineExpose({
       /**
@@ -112,9 +115,9 @@ export class TdTooltipTrigger
     this.addChild(
       new TdPopperTrigger({
         id: id,
-        virtualRef: this.props.virtualRef,
+        virtualRef: props.virtualRef,
         open: open,
-        virtualTriggering: this.props.virtualTriggering,
+        virtualTriggering: props.virtualTriggering,
         class: ns.e('trigger'),
         onBlur,
         onClick,

@@ -151,7 +151,7 @@ export class TdCheckboxButton extends TypeLabel implements ITdCheckboxButton {
     // add by me
     this.addEmits({
       change: (newValue) => {
-        console.warn('change emit , newValue is ', newValue);
+        // console.warn('change emit , newValue is ', newValue);
         const selected = model.get();
         // todo 数组 还时 值
         if (isArray(selected)) {

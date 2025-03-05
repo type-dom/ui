@@ -1,6 +1,6 @@
 import { isClient } from '@type-dom/utils';
-import { MessageProps } from '@type-dom/ui';
 import { signal } from '@type-dom/signals';
+import { MessageProps } from './td-message.interface';
 
 export const messageDefaults: MessageProps = {
   // customClass: '',

@@ -7,17 +7,17 @@ import {
   defineExpose,
 } from '@type-dom/framework';
 import { computed, Signal, toRefs, toSignals, unref } from '@type-dom/signals';
-import { ITdOption, TdOptionProps } from './td-option.interface';
 import { useNamespace } from '../../../hooks/use-namespace';
 import { useId } from '../../../hooks/use-id';
-import { SelectOptionProxy } from '../td-select/td-select.interface';
 import { useOption } from './useOption';
+import { ITdOption, OptionStates, TdOptionProps } from './td-option.interface';
 import './style/index';
 
 export class TdOption extends TypeLI implements ITdOption {
   className: 'TdOption';
   override props: TdOptionProps;
   visible?: Signal<boolean>;
+  value?: string;
 
   constructor(params: TdOptionProps = {}) {
     super();
@@ -27,6 +27,7 @@ export class TdOption extends TypeLI implements ITdOption {
       role: 'option',
     });
 
+    this.value = ''
     this.props = this.useParams(params);
   }
 
@@ -43,7 +44,7 @@ export class TdOption extends TypeLI implements ITdOption {
       ns.is('hovering', unref(hover)),
     ]);
 
-    const states = {
+    const states: OptionStates = {
       index: -1,
       groupDisabled: false,
       visible: true,
@@ -62,30 +63,38 @@ export class TdOption extends TypeLI implements ITdOption {
     const { visible, hover } = toSignals(states);
 
     // todo
-    // const vm = getCurrentInstance().proxy as unknown as SelectOptionProxy
+    const vm = getCurrentInstance() as TdOption //.proxy as unknown as SelectOptionProxy
 
-    // select.onOptionCreate(vm);
+    select.onOptionCreate(vm);
 
     onBeforeUnmount(() => {
-      // const key = vm.value
-      // const { selected: selectedOptions } = select.states
-      // const doesSelected = selectedOptions.some((item) => {
-      //   return item.value === vm.value
-      // })
-      // // if option is not selected, remove it from cache
-      // nextTick(() => {
-      //   if (select.states.cachedOptions.get(key) === vm && !doesSelected) {
-      //     select.states.cachedOptions.delete(key)
-      //   }
-      // })
-      // select.onOptionDestroy(key, vm)
+      const key = unref(vm.props.value)
+      const { selected: selectedOptions } = select.states
+      const doesSelected = selectedOptions.some((item: any) => {
+        return item.value === unref(vm.props.value)
+      })
+      // if option is not selected, remove it from cache
+      nextTick(() => {
+        if (select.states.cachedOptions.get(key) === vm && !doesSelected) {
+          select.states.cachedOptions.delete(key)
+        }
+      })
+      select.onOptionDestroy(key, vm)
     });
 
     function selectOptionClick() {
       if (!isDisabled.get()) {
-        // select.handleOptionSelect(vm)
+        select.handleOptionSelect(vm)
       }
     }
+    defineExpose({
+      visible,
+      hover,
+      selectOptionClick,
+      states,
+      isDisabled,
+      select,
+    });
 
     this.assignProps({
       vShow: visible,
@@ -100,24 +109,16 @@ export class TdOption extends TypeLI implements ITdOption {
     this.addEvents({
       mousemove: hoverItem,
       click: (evt) => {
-        selectOptionClick(), evt?.stopPropagation();
+        selectOptionClick();
+        evt?.stopPropagation();
       },
     });
     this.slotChildren(
-      props.slot ||
-        props.slots?.default ||
+      props.slot ??
+        props.slots?.default ??
         new Span({
           slot: currentLabel,
         })
     );
-
-    defineExpose({
-      visible,
-      hover,
-      selectOptionClick,
-      states,
-      isDisabled,
-      select,
-    });
   }
 }

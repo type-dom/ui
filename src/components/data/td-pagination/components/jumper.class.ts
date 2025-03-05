@@ -1,9 +1,9 @@
 import { Span, TypeSpan, TypeSpanProps } from '@type-dom/framework';
 import { computed, signal } from '@type-dom/signals';
-import { TdInput } from '@type-dom/ui';
 import { ComponentSize } from '../../../../constants/size';
 import { useLocale } from '../../../../hooks/use-locale';
 import { useNamespace } from '../../../../hooks/use-namespace';
+import { TdInput } from '../../../form/td-input/td-input.class';
 import { usePagination } from '../usePagination';
 
 export interface PaginationJumperProps extends TypeSpanProps {

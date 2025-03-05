@@ -12,11 +12,10 @@ import {
   onBeforeUnmount,
   TypeDivProps,
   onMounted,
-  TypeDiv,
+  TypeDiv, inject
 } from '@type-dom/framework';
 import { IStyle } from '@type-dom/css-type';
 import { Instance } from '@type-dom/popper';
-import { FormItemProps } from '../../../form/td-form-item/td-form-item.interface';
 import { formItemContextKey } from '../../../form/td-form/td-form.const';
 import { TdFocusTrap } from '../../td-focus-trap/td-focus-trap.class';
 import { POPPER_CONTENT_INJECTION_KEY } from '../constants';
@@ -33,12 +32,12 @@ export class TdPopperContent extends TypeDiv implements ITdPopperContent {
   // 只需要定义就好，exposed方法会赋值；
   popperContentRef!: Signal<HTMLElement | undefined>;
   popperInstanceRef?: Computed<Instance | undefined>;
-  updatePopper!: (shouldUpdateZIndex?: boolean) => void;
-  contentStyle!: IStyle;
+  updatePopper?: (shouldUpdateZIndex?: boolean) => void;
+  contentStyle?: IStyle;
 
   constructor(params: PopperContentProps = {}) {
     super();
-    console.log('TdPopperContent . ');
+    // console.log('TdPopperContent . ');
     this.className = 'TdPopperContent';
     this.attr.addName('td-popper-content');
     this.addEmits(popperContentEmits);
@@ -52,6 +51,7 @@ export class TdPopperContent extends TypeDiv implements ITdPopperContent {
     const {
       focusStartRef,
       trapped,
+
       onFocusAfterReleased,
       onFocusAfterTrapped,
       onFocusInTrap,
@@ -63,7 +63,6 @@ export class TdPopperContent extends TypeDiv implements ITdPopperContent {
       attributes,
       arrowRef,
       contentRef,
-      state,
       styles,
       instanceRef,
       role,
@@ -83,7 +82,7 @@ export class TdPopperContent extends TypeDiv implements ITdPopperContent {
       role,
     });
 
-    const formItemContext = this.inject<FormItemProps>(
+    const formItemContext = inject(
       formItemContextKey,
       undefined
     );
@@ -98,7 +97,7 @@ export class TdPopperContent extends TypeDiv implements ITdPopperContent {
     if (formItemContext) {
       // disallow auto-id from inside popper content
       this.provide(formItemContextKey, {
-        ...(formItemContext as any),
+        ...formItemContext,
         addInputId: NOOP,
         removeInputId: NOOP,
       });
@@ -107,52 +106,13 @@ export class TdPopperContent extends TypeDiv implements ITdPopperContent {
     let triggerTargetAriaStopWatch: WatchStopHandle | undefined = undefined;
 
     const updatePopper = async (shouldUpdateZIndex = true) => {
-      console.warn('updatePopper . ');
-      if (!instanceRef.get()) {
-        return;
-      }
-      const state = await update();
-      console.warn('state is ', state);
-      if (!state) return;
-      if (contentRef.get()) {
-        this.attr.setObj({
-          // maybe flip
-          dataPopperPlacement: state.placement,
-        });
-        const popperStyle = state?.styles.popper;
-        if (popperStyle) {
-          setStyle(contentRef.get()!, {
-            position: state.strategy,
-            left: popperStyle.left + 'px',
-            top: popperStyle.top + 'px',
-          });
-        }
-        const arrowDom = arrowRef.get();
-        if (arrowDom && state?.middlewareData.arrow) {
-          // const arrowStyle = matchPlacement(state.placement?.split('-')?.shift() as keyof typeof $placements || 'top');
-          // setStyle(arrowDom, {
-          //   position: state.strategy,
-          //   ...arrowStyle
-          // });
-
-          const arrowParams = state.middlewareData.arrow;
-          if (arrowParams?.x) {
-            setStyle(arrowDom, {
-              left: arrowParams.x + 'px',
-            });
-          }
-          if (arrowParams?.y) {
-            setStyle(arrowDom, {
-              top: arrowParams.y + 'px',
-            });
-          }
-        }
-      }
+      // console.warn('updatePopper . ');
+      update()
       shouldUpdateZIndex && updateZIndex();
     };
 
     const togglePopperAlive = () => {
-      console.warn('togglePopperAlive . ');
+      // console.warn('togglePopperAlive . ');
       updatePopper(false);
       if (unref(props.visible) && props.focusOnShow) {
         trapped.set(true);
@@ -163,7 +123,7 @@ export class TdPopperContent extends TypeDiv implements ITdPopperContent {
 
     onMounted(() => {
       watch(
-        () => props.triggerTargetEl,
+        () => unref(props.triggerTargetEl),
         (triggerTargetEl, prevTriggerTargetEl) => {
           triggerTargetAriaStopWatch?.();
           triggerTargetAriaStopWatch = undefined;
@@ -230,11 +190,17 @@ export class TdPopperContent extends TypeDiv implements ITdPopperContent {
 
     this.assignProps({
       refDom: contentRef,
+      // styleObj: contentStyle,
     });
+    // this.addEvents({ // dead loop
+    //   mouseenter: (e) => emit('mouseenter', e),
+    //   mouseleave: (e) => emit('mouseleave', e),
+    // });
     this.attr.addObj({
       tabindex: -1,
       class: contentClass,
     });
+    // console.warn('contentStyle is ', contentStyle.get());
     this.style.addObj(contentStyle);
     this.addChild(
       new TdFocusTrap({

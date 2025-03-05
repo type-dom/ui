@@ -19,17 +19,18 @@ export abstract class TdButtonAbstract
 
   protected constructor(params: TdButtonProps = {}) {
     super();
-    this.assignProps(buttonProps);
     this.addEmits(buttonEmits);
+    this.assignProps(buttonProps);
     this.props = this.useParams(params);
   }
 
   override setup() {
     const props = this.props;
+    const emit = this.emit;
     const buttonStyle = useButtonCustomStyle(props);
-    if (props.color) {
-      console.error('buttonStyle is ', buttonStyle);
-    }
+    // if (props.color) {
+    //   console.error('buttonStyle is ', buttonStyle);
+    // }
     const ns = useNamespace('button');
     const {
       _ref,
@@ -39,7 +40,8 @@ export abstract class TdButtonAbstract
       _props,
       shouldAddSpace,
       handleClick,
-    } = useButton(props, this.emit);
+    } = useButton(props, emit);
+    // console.log('_disabled.get() is ', _disabled.get());
     const buttonKls = computed(() => [
       ns.b(),
       ns.m(_type.get()),
@@ -56,7 +58,9 @@ export abstract class TdButtonAbstract
     // v-bind="_props"
     // :is="tag"
     this.assignProps({
+      ..._props,
       nodeName: props.tag,
+      refDom: _ref,
     });
     this.addEvents({
       click: handleClick,
@@ -64,7 +68,6 @@ export abstract class TdButtonAbstract
     this.attr.addObj({
       type: 'button',
       class: buttonKls,
-      refDom: _ref,
     });
     this.style.addObj(buttonStyle);
     // this.attr.addClass(buttonStyle);

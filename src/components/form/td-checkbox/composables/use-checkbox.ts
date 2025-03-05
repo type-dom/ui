@@ -15,12 +15,12 @@ import { computed } from '@type-dom/signals';
 export const useCheckbox = (props: CheckboxProps, slots: ISlots = {}) => {
   const { formItem: elFormItem } = useFormItem();
   const { model, isGroup, isLimitExceeded } = useCheckboxModel(props);
-  console.log(
-    'isGroup is ',
-    isGroup.get(),
-    ' isLimitExceeded is ',
-    isLimitExceeded.get()
-  );
+  // console.log(
+  //   'isGroup is ',
+  //   isGroup.get(),
+  //   ' isLimitExceeded is ',
+  //   isLimitExceeded.get()
+  // );
   const {
     isFocused,
     isChecked,

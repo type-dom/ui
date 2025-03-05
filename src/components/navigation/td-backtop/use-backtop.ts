@@ -4,8 +4,6 @@
 // import type { SetupContext } from 'vue'
 // import type { BacktopEmits, BacktopProps } from './backtop'
 
-import { BacktopEmits } from './td-backtop.const';
-import { BacktopProps } from './td-backtop.interface';
 import { signal } from '@type-dom/signals';
 import {
   onMounted,
@@ -13,6 +11,7 @@ import {
   useThrottleFn,
 } from '@type-dom/framework';
 import { throwError } from '@type-dom/utils';
+import { BacktopProps } from './td-backtop.interface';
 
 export const useBackTop = (
   props: BacktopProps,
@@ -24,7 +23,9 @@ export const useBackTop = (
   const visible = signal(false);
 
   const handleScroll = () => {
-    if (el.get()) visible.set(el.get()!.scrollTop >= props.visibilityHeight!);
+    if (el.get()) {
+      visible.set(el.get()!.scrollTop >= props.visibilityHeight!);
+    }
   };
 
   const handleClick = (event?: MouseEvent) => {

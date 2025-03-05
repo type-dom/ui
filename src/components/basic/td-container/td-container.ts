@@ -15,8 +15,8 @@ export class TdContainerComp extends HTMLElement {
     });
     // 渲染
     container.mount();
-    console.log('container is ', container);
+    // console.log('container is ', container);
   }
 }
 
-customElements.define('td-container', TdContainerComp);
+// customElements.define('td-container', TdContainerComp);

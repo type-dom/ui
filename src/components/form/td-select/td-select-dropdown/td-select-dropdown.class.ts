@@ -25,7 +25,7 @@ export class TdSelectDropDown extends TypeDiv implements ITdSelectDropdown {
   }
 
   override setup() {
-    console.log('TdSelectDropDown setup');
+    // console.log('TdSelectDropDown setup');
     const props = this.props;
     const select = inject(selectKey)!;
     const ns = useNamespace('select');

@@ -33,7 +33,7 @@ export class TdText extends TypeHtml implements ITdText {
     ]);
     this.attr.addClass(textKls);
     if (props.lineClamp) {
-      console.warn('then -webkit-line-clamp . ');
+      // console.warn('then -webkit-line-clamp . ');
       this.style.addObj({
         // color: '#f00',
         '-webkit-line-clamp': props.lineClamp,

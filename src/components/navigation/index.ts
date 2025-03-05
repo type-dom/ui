@@ -12,6 +12,9 @@ export { TdBreadcrumb } from './td-breadcrumb/td-breadcrumb.class';
 export type { ITdBreadcrumb } from './td-breadcrumb/td-breadcrumb.interface';
 export { TdBreadcrumbItem } from './td-breadcrumb-item/td-breadcrumb-item.class';
 export type { ITdBreadcrumbItem } from './td-breadcrumb-item/td-breadcrumb-item.interface';
+// menu
+export * from './td-menu/index';
+
 export { TdTabs } from './td-tabs/td-tabs.class';
 export type * from './td-tabs/td-tabs.interface';
 export { TdTabPane } from './td-tab-pane/td-tab-pane.class';

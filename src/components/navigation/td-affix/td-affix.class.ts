@@ -3,16 +3,18 @@ import { IStyle } from '@type-dom/css-type';
 import { computed, effect, signal, watch } from '@type-dom/signals';
 import {
   defineExpose,
-  Div,
+  nextFrame,
   onMounted,
-  TypeDiv,
   useElementBounding,
   useEventListener,
   useWindowSize,
+  Div,
+  TypeDiv,
 } from '@type-dom/framework';
 import { useNamespace } from '../../../hooks/use-namespace';
 import { ITdAffix, AffixProps } from './td-affix.interface';
 import { affixEmits, affixProps } from './td-affix.const';
+import './style/index';
 
 export class TdAffix extends TypeDiv implements ITdAffix {
   className: 'TdAffix';
@@ -22,7 +24,7 @@ export class TdAffix extends TypeDiv implements ITdAffix {
 
   constructor(params: AffixProps = {}) {
     super();
-    console.log('TdAffix constructor . ');
+    // console.log('TdAffix constructor . ');
     this.className = 'TdAffix';
     this.attr.addName('td-affix');
 
@@ -57,27 +59,50 @@ export class TdAffix extends TypeDiv implements ITdAffix {
     const transform = signal(0);
 
     const rootStyle = computed<IStyle>(() => {
+      // console.warn('rootStyle . ');
+      // const height = fixed.get() && rootHeight.get() ? `${rootHeight.get()}px`: undefined;
+      // const width = fixed.get() && rootWidth.get() ? `${rootWidth.get()}px` : undefined;
+      const height = fixed.get()? `${rootHeight.get()}px`: undefined;
+      const width = fixed.get() ? `${rootWidth.get()}px` : undefined;
+      // console.log('height is ', height);
+      // console.log('width is ', width);
       return {
-        height: fixed.get() ? `${rootHeight.get()}px` : '',
-        width: fixed.get() ? `${rootWidth.get()}px` : '',
+        height,
+        width,
       };
     });
 
     const affixStyle = computed<IStyle>(() => {
-      if (!fixed.get()) return {};
+      // console.log('affixStyle . ');
+      if (!fixed.get()) return {
+        height: undefined,
+        width: undefined,
+        top: undefined,
+        bottom: undefined,
+        transform: undefined,
+        zIndex: undefined,
+      };
 
-      const offset = props.offset ? addUnit(props.offset) : 0;
+      const offsetY = props.offset ? addUnit(props.offset) : 0;
+
+      const height = rootHeight.get() ? `${rootHeight.get()}px` : undefined;
+      const width = rootWidth.get() ? `${rootWidth.get()}px` : undefined;
+      const top = props.position === 'top' ? offsetY : '';
+      const transformY = transform.get()
+        ? `translateY(${transform.get()}px)`
+        : '';
       return {
-        height: `${rootHeight.get()}px`,
-        width: `${rootWidth.get()}px`,
-        top: props.position === 'top' ? offset : '',
-        bottom: props.position === 'bottom' ? offset : '',
-        transform: transform.get() ? `translateY(${transform.get()}px)` : '',
+        height,
+        width,
+        top,
+        bottom: props.position === 'bottom' ? offsetY : '',
+        transform: transformY,
         zIndex: props.zIndex,
       };
     });
 
     const updateAffix = () => {
+      // console.warn('updateAffix . ');
       if (!scrollContainer.get()) return;
 
       scrollTop.set(
@@ -87,31 +112,36 @@ export class TdAffix extends TypeDiv implements ITdAffix {
       );
 
       const { position, target } = props;
-      const offset = props.offset!;
-      const rootHeightOffset = offset! + rootHeight.get();
+      // todo offset floatingui function, here cannot set .
+      // console.error('then offset . ');
+      const offset = props.offset ?? 0;
+      const offsetY = props.offset ?? 0;
+      const rootHeightOffset = offsetY + rootHeight.get();
 
       if (position === 'top') {
         if (target) {
           const difference = targetRect.bottom.get() - rootHeightOffset;
-          fixed.set(offset > rootTop.get() && targetRect.bottom.get() > 0);
+          fixed.set(offsetY > rootTop.get() && targetRect.bottom.get() > 0);
           transform.set(difference < 0 ? difference : 0);
         } else {
-          fixed.set(offset > rootTop.get());
+          fixed.set(offsetY > rootTop.get());
+          // console.warn('fixed.get() is ', fixed.get());
         }
       } else if (target) {
         const difference =
           windowHeight.get() - targetRect.top.get() - rootHeightOffset;
         fixed.set(
-          windowHeight.get() - offset < rootBottom.get() &&
+          windowHeight.get() - offsetY < rootBottom.get() &&
             windowHeight.get() > targetRect.top.get()
         );
         transform.set(difference < 0 ? -difference : 0);
       } else {
-        fixed.set(windowHeight.get() - offset < rootBottom.get());
+        fixed.set(windowHeight.get() - offsetY < rootBottom.get());
       }
     };
 
     const handleScroll = () => {
+      // console.warn('handleScroll . ');
       updateRoot();
       emit('scroll', {
         scrollTop: scrollTop.get(),
@@ -122,18 +152,26 @@ export class TdAffix extends TypeDiv implements ITdAffix {
     watch(fixed, (val) => emit('change', val));
 
     onMounted(() => {
-      if (props.target) {
-        target.set(
-          document.querySelector<HTMLElement>(props.target) ?? undefined
-        );
+      nextFrame(() => {
+        // console.warn('nextFrame . ');
+        if (props.target) {
+          target.set(
+            document.querySelector<HTMLElement>(props.target) ?? undefined
+          );
 
-        if (!target.get())
-          throwError(COMPONENT_NAME, `Target does not exist: ${props.target}`);
-      } else {
-        target.set(document.documentElement);
-      }
-      scrollContainer.set(getScrollContainer(root.get()!, true));
-      updateRoot();
+          if (!target.get()) {
+            throwError(
+              COMPONENT_NAME,
+              `Target does not exist: ${props.target}`
+            );
+          }
+        } else {
+          target.set(document.documentElement);
+        }
+        scrollContainer.set(getScrollContainer(root.get()!, true));
+        // console.warn('scrollContainer.get() is ', scrollContainer.get());
+        updateRoot();
+      });
     });
 
     useEventListener(scrollContainer, 'scroll', handleScroll);
@@ -148,13 +186,17 @@ export class TdAffix extends TypeDiv implements ITdAffix {
 
     this.assignProps({
       refDom: root,
-      class: ns.b(),
-      styleObj: rootStyle,
+      // class: ns.b(), // todo not set
+      // styleObj: rootStyle,
     });
+    this.attr.addClass(ns.b());
+    this.style.addObj(rootStyle);
 
     this.addChild(
       new Div({
         class: computed(() => [{ [ns.m('fixed')]: fixed.get() }]),
+        // class: computed(() => fixed.get() ? ns.m('fixed') : ''),
+        styleObj: affixStyle,
         slot: props.slot || props.slots?.default,
       })
     );

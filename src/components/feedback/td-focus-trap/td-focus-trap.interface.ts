@@ -21,7 +21,7 @@ export interface FocusTrapProps extends TypeFragmentProps {
   //   type: [Object, String] as PropType<'container' | 'first' | HTMLElement>,
   //   default: 'first',
   // },
-  slot?: (arg?: any) => ISlotRaw | ISlotRaw[];
+  // slot?: (arg?: any) => ISlotRaw | ISlotRaw[];
   emits?: {
     [ON_TRAP_FOCUS_EVT]?: () => void;
     [ON_RELEASE_FOCUS_EVT]?: () => void;

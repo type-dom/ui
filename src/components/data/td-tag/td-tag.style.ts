@@ -84,14 +84,14 @@ export function genTheme(
       textColor: $colors[type].base,
       hit: $colors[type].base,
     };
-    console.log('$tagTypes[type] is ', $tagTypes[type]);
+    // console.log('$tagTypes[type] is ', $tagTypes[type]);
   }
   const hoverColor = returnVarList($hoverColorWeight, 'primary');
-  console.log('hoverColor is ', hoverColor);
+  // console.log('hoverColor is ', hoverColor);
 }
 
 function returnVarList($var: string | false, $type: IType = 'primary') {
-  console.log('returnVarList . ');
+  // console.log('returnVarList . ');
   let $list = $fillColor.blank;
   if ($var !== false) {
     $list = $colors[$type] && $colors[$type][$var || 'base'];

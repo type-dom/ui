@@ -1,6 +1,6 @@
 import { signal } from '@type-dom/signals';
 import { nextTick } from '@type-dom/framework';
-import { isKorean } from '../../../../utils/src/ui/i18n';
+import { isKorean } from '@type-dom/utils';
 
 interface UseCompositionOptions {
   afterComposition: (event?: CompositionEvent) => void;

@@ -6,12 +6,12 @@ import {
   Span,
   Textarea,
   TypeDiv,
-  arraySlot,
+  useAttrs as useRawAttrs,
   defineExpose,
   nextTick,
   onMounted,
   useResizeObserver,
-  useSlots,
+  useSlots, StyleValue
 } from '@type-dom/framework';
 import {
   Computed,
@@ -29,7 +29,8 @@ import {
   ElViewSvg,
   ValidateComponentsMap,
 } from '@type-dom/svgs';
-import { UPDATE_MODEL_EVENT } from '../../../constants/event';
+import { INPUT_EVENT, UPDATE_MODEL_EVENT } from '../../../constants/event';
+import { useAttrs } from '../../../hooks/use-attrs';
 import { useFocusController } from '../../../hooks/use-focus-controller/index';
 import { useComposition } from '../../../hooks/use-composition';
 import { useNamespace } from '../../../hooks/use-namespace';
@@ -43,7 +44,7 @@ import {
   useFormDisabled,
   useFormSize,
 } from '../td-form/hooks/use-form-common-props';
-import { calcTextareaHeight } from './widget/utils';
+import { calcTextareaHeight } from './utils';
 import {
   ITdInput,
   TdInputProps,
@@ -52,7 +53,6 @@ import {
 } from './td-input.interface';
 import { inputEmits, inputProps } from './td-input.const';
 import './style/index';
-import { useAttrs } from 'libs/ui/src/hooks/use-attrs';
 
 export class TdInput extends TypeDiv implements ITdInput {
   className: 'TdInput';
@@ -78,15 +78,15 @@ export class TdInput extends TypeDiv implements ITdInput {
       name: 'td-input',
     });
 
-    this.assignProps(inputProps);
     this.addEmits(inputEmits);
+    this.assignProps(inputProps);
     this.props = this.useParams(params);
   }
 
   override setup() {
     const props = this.props;
     const emit = this.emit;
-    // const rawAttrs = useRawAttrs()
+    const rawAttrs = useRawAttrs()
     const attrs = useAttrs();
     const slots = useSlots();
 
@@ -108,7 +108,7 @@ export class TdInput extends TypeDiv implements ITdInput {
           showClear.get() && showPwdVisible.get(),
         [nsInput.b('hidden')]: props.type === 'hidden',
       },
-      // rawAttrs.class,
+      rawAttrs?.class,
     ]);
 
     const wrapperKls = computed(() => [
@@ -161,14 +161,17 @@ export class TdInput extends TypeDiv implements ITdInput {
     const passwordIcon = computed(() =>
       passwordVisible.get() ? new ElViewSvg() : new ElHideSvg()
     );
-    // const containerStyle = computed(() => [
-    //   // rawAttrs.style,
-    // ])
-    const textareaStyle = computed(() =>
-      Object.assign({}, props.inputStyle, textareaCalcStyle.get(), {
-        resize: props.resize,
-      })
-    );
+    const containerStyle = computed<StyleValue>(() => [
+      rawAttrs?.style as StyleValue,
+    ])
+    const textareaStyle = computed<StyleValue>(() => [
+        props.inputStyle,
+        textareaCalcStyle.get(),
+        {
+          resize: props.resize,
+        }
+      ]
+    )
     const nativeInputValue = computed(() =>
       isNil(props.vModel?.get()) ? '' : String(props.vModel?.get())
     );
@@ -236,10 +239,10 @@ export class TdInput extends TypeDiv implements ITdInput {
 
       if (autosize) {
         const minRows = isObject(autosize)
-          ? (autosize as any).minRows
+          ? autosize.minRows
           : undefined;
         const maxRows = isObject(autosize)
-          ? (autosize as any).maxRows
+          ? autosize.maxRows
           : undefined;
         const textareaStyle = calcTextareaHeight(
           textarea.get()!,
@@ -285,10 +288,12 @@ export class TdInput extends TypeDiv implements ITdInput {
     const onceInitSizeTextarea = createOnceInitResize(resizeTextarea);
 
     const setNativeInputValue = () => {
+      // console.warn('setNativeInputValue . ');
       const input = _ref.get();
       const formatterValue = props.formatter
         ? props.formatter(nativeInputValue.get())
         : nativeInputValue.get();
+      // console.warn('formatterValue is ', formatterValue);
       if (!input || input.value === formatterValue) {
         return;
       }
@@ -296,6 +301,7 @@ export class TdInput extends TypeDiv implements ITdInput {
     };
 
     const handleInput = async (event?: Event) => {
+      // console.warn('handleInput . event is ', event);
       recordCursor();
 
       let { value } = event?.target as TargetElement;
@@ -318,7 +324,8 @@ export class TdInput extends TypeDiv implements ITdInput {
       }
 
       emit(UPDATE_MODEL_EVENT, value);
-      emit('input', value);
+      // console.warn('then emit(INPUT_EVENT) , value is ', value);
+      emit(INPUT_EVENT, value);
 
       // ensure native input value is controlled
       // see: https://github.com/ElemeFE/element/issues/12850
@@ -351,16 +358,16 @@ export class TdInput extends TypeDiv implements ITdInput {
 
     const handleMouseLeave = (evt?: MouseEvent) => {
       hovering.set(false);
-      // this.emit('mouseleave', evt); // todo 循环调用了
+      emit('mouseleave', evt); // todo 循环调用了
     };
 
     const handleMouseEnter = (evt?: MouseEvent) => {
       hovering.set(true);
-      // this.emit('mouseenter', evt); // todo 循环调用了
+      emit('mouseenter', evt); // todo 循环调用了
     };
 
     const handleKeydown = (evt?: KeyboardEvent) => {
-      // this.emit('keydown', evt); // todo 循环调用了
+      emit('keydown', evt); // todo 循环调用了
     };
 
     const select = () => {
@@ -368,16 +375,17 @@ export class TdInput extends TypeDiv implements ITdInput {
     };
 
     const clear = () => {
+      // console.warn('clear . ');
       emit(UPDATE_MODEL_EVENT, '');
       emit('change', '');
       emit('clear');
-      emit('input', '');
+      emit(INPUT_EVENT, '');
     };
 
     watch(
       () => props.vModel?.get(),
       () => {
-        nextTick(() => this.resizeTextarea?.());
+        nextTick(() => resizeTextarea());
         if (props.validateEvent) {
           elFormItem?.validate?.('change').catch((err) => debugWarn(err));
         }
@@ -397,7 +405,7 @@ export class TdInput extends TypeDiv implements ITdInput {
       async () => {
         await nextTick();
         setNativeInputValue();
-        this.resizeTextarea?.();
+        resizeTextarea();
       }
     );
 
@@ -409,7 +417,7 @@ export class TdInput extends TypeDiv implements ITdInput {
         );
       }
       setNativeInputValue();
-      nextTick(this.resizeTextarea!);
+      nextTick(resizeTextarea);
     });
 
     defineExpose({
@@ -440,21 +448,14 @@ export class TdInput extends TypeDiv implements ITdInput {
       resizeTextarea,
     });
 
-    this.attr.addClass(
-      computed(() => {
-        const cls = containerKls.get();
-        // console.log('cls is ', cls);
-        if (slots?.append) {
-          cls.push(nsInput.bm('group', 'append'));
-        }
-        if (slots?.prepend) {
-          cls.push(nsInput.bm('group', 'prepend'));
-        }
-        // console.warn('cls is ', cls);
-        return cls;
-      })
-    );
-    // this.style.addObj(containerStyle);
+    this.attr.addClass([
+      containerKls,
+      {
+        [nsInput.bm('group', 'append')]: props.slots?.append,
+        [nsInput.bm('group', 'prepend')]: props.slots?.prepend,
+      },
+    ]);
+    this.style.addObj(containerStyle);
     this.addEvents({
       mouseenter: handleMouseEnter,
       mouseleave: handleMouseLeave,
@@ -482,9 +483,12 @@ export class TdInput extends TypeDiv implements ITdInput {
                 new Span({
                   class: nsInput.e('prefix-inner'),
                   slot: [
-                    ...arraySlot(slots?.prefix),
+                    new Fragment({
+                      slot: slots?.prefix
+                    }),
                     new TdIcon({
                       vIf: props.prefixIcon,
+                      class: nsInput.e('icon'),
                       slot: props.prefixIcon,
                     }),
                   ],
@@ -492,14 +496,13 @@ export class TdInput extends TypeDiv implements ITdInput {
               ],
             }),
             new Input({
-              id: inputId.get(),
               refDom: input,
               class: nsInput.e('inner'),
+              // v-bind="attrs" todo attr 到底对应什么 父组件的所有属性
               attrObj: {
-                // v-bind="attrs" todo attr 到底对应什么 父组件的所有属性
+                id: inputId.get(),
                 minlength: props.minlength,
                 maxlength: props.maxlength,
-                disabled: inputDisabled,
                 type: computed(() =>
                   props.showPassword
                     ? passwordVisible.get()
@@ -507,6 +510,7 @@ export class TdInput extends TypeDiv implements ITdInput {
                       : 'password'
                     : props.type
                 ),
+                disabled: inputDisabled,
                 readonly: props.readonly,
                 autocomplete: props.autocomplete,
                 tabindex: props.tabindex,
@@ -541,7 +545,9 @@ export class TdInput extends TypeDiv implements ITdInput {
                         !isWordLimitVisible.get()
                     ),
                     slot: [
-                      ...arraySlot(slots?.suffix),
+                      new Fragment({
+                        slot: slots?.suffix,
+                      }),
                       new TdIcon({
                         vIf: props.suffixIcon,
                         class: nsInput.e('icon'),
@@ -552,23 +558,22 @@ export class TdInput extends TypeDiv implements ITdInput {
                   new TdIcon({
                     vIf: showClear,
                     class: [nsInput.e('icon'), nsInput.e('clear')],
-                    slot: new ElCircleCloseSvg(),
                     events: {
-                      click: this.clear,
                       mousedown: (evt) => {
                         NOOP();
                         evt?.preventDefault();
                       },
+                      click: clear,
                     },
+                    slot: new ElCircleCloseSvg(),
                   }),
                   new TdIcon({
                     vIf: showPwdVisible,
                     class: [nsInput.e('icon'), nsInput.e('password')],
-                    // ToDo svg要变化的
-                    slot: passwordIcon,
                     events: {
                       click: handlePasswordVisible,
                     },
+                    slot: passwordIcon,
                   }),
                   new Span({
                     vIf: isWordLimitVisible,
@@ -577,8 +582,8 @@ export class TdInput extends TypeDiv implements ITdInput {
                       class: nsInput.e('count-inner'),
                       slot: computed(
                         () =>
-                          (textLength.get() + ' / ' + props.maxlength) as string
-                      ), // todo 动态
+                          (textLength.get() + ' / ' + props.maxlength)
+                      ),
                     }),
                   }),
                   new TdIcon({
@@ -591,9 +596,7 @@ export class TdInput extends TypeDiv implements ITdInput {
                         validateState.get() === 'validating'
                       ),
                     ],
-                    slot: validateIcon.get()
-                      ? new (validateIcon.get())()
-                      : undefined,
+                    slot: validateIcon.get() && new (validateIcon.get())()
                   }),
                 ],
               }),
@@ -630,7 +633,6 @@ export class TdInput extends TypeDiv implements ITdInput {
             disabled: inputDisabled,
             readonly: props.readonly,
             autocomplete: props.autocomplete,
-            // style: textareaStyle,
             ariaLabel: props.ariaLabel,
             placeholder: props.placeholder,
             form: props.form,

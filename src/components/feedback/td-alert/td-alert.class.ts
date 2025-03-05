@@ -48,7 +48,7 @@ export class TdAlert extends TypeFragment implements ITdAlert {
     const hasDesc = computed(() => !!(props.description || slots?.default));
 
     const close = (evt?: MouseEvent) => {
-      console.log('close . ');
+      // console.log('close . ');
       visible.set(false);
       this.emit('close', evt);
     };
@@ -59,7 +59,7 @@ export class TdAlert extends TypeFragment implements ITdAlert {
       ns.is('center', center),
       ns.is(effect!),
     ];
-    console.warn('alertKls is ', alertKls);
+    // console.warn('alertKls is ', alertKls);
     this.addChild(
       new Transition({
         name: ns.b('fade'),

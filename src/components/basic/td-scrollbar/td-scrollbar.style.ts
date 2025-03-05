@@ -1,6 +1,6 @@
-import { $textColor } from '@type-dom/ui';
 import { IStyle } from '@type-dom/css-type';
 import { $transitionDuration } from '../../../styles/transition';
+import { $textColor } from '../../../styles/var';
 
 // Scrollbar
 // css3 var in packages/theme-chalk/src/scrollbar.scss

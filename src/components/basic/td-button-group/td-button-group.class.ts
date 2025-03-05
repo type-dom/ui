@@ -5,16 +5,16 @@ import { TdButton } from '../td-button/td-button.class';
 import { buttonGroupContextKey } from '../td-button/constants';
 import {
   ITdButtonGroup,
-  ITdButtonGroupConfig,
+  TdButtonGroupProps,
 } from './td-button-group.interface';
 import './style/index';
 
 export class TdButtonGroup extends TypeDiv implements ITdButtonGroup {
   className: 'TdButtonGroup';
-  override props: ITdButtonGroupConfig;
+  override props: TdButtonGroupProps;
   override childNodes: TdButton[];
 
-  constructor(params: ITdButtonGroupConfig) {
+  constructor(params: TdButtonGroupProps = {}) {
     super();
     this.className = 'TdButtonGroup';
     this.childNodes = [];
@@ -22,7 +22,7 @@ export class TdButtonGroup extends TypeDiv implements ITdButtonGroup {
   }
 
   override setup(): void {
-    console.log('td-button-group setup . ');
+    // console.log('td-button-group setup . ');
     const props = this.props;
     this.attr.addName('td-button-group');
     const ns = useNamespace('button');

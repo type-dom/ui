@@ -5,7 +5,8 @@ import {
 } from '@type-dom/async-validator';
 import { TypeDivProps, ITypeElement } from '@type-dom/framework';
 import { MaybeRef } from '@type-dom/signals';
-import { Arrayable } from '../../../../../utils/src/ui/typescript';
+import { Arrayable } from '@type-dom/utils';
+
 import { ComponentSize } from '../../../constants';
 
 export const formItemValidateStates = [

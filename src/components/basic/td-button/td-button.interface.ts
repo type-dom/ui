@@ -14,6 +14,7 @@ export interface ITdButton extends ITdButtonAbstract {
 }
 
 export type IButtonSize = 'small' | 'default' | 'large';
+
 export type IButtonType =
   | 'default'
   | 'primary'
@@ -27,6 +28,7 @@ export type IButtonType =
    */
   | 'text'
   | '';
+
 export type IButtonNativeType = 'button' | 'submit' | 'reset';
 
 /**
@@ -54,7 +56,7 @@ export interface TdButtonProps extends TypeProps {
   /**
    * @description disable the button
    */
-  disabled?: boolean;
+  disabled?: MaybeRef<boolean>;
   /**
    * @description button type
    */

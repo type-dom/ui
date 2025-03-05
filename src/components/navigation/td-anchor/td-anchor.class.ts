@@ -1,18 +1,12 @@
 import {
   defineExpose,
-  Div,
-  I,
   onMounted,
   provide,
-  TypeDiv,
-  TypeHtml,
   useEventListener,
+  Div,
+  TypeDiv,
 } from '@type-dom/framework';
-import { ITdAnchor, AnchorProps, AnchorLinkState } from './td-anchor.interface';
-import { scrollTo } from './td-anchor.function';
-import { anchorEmits, anchorProps } from './td-anchor.const';
 import { computed, signal, watch } from '@type-dom/signals';
-import { useNamespace } from 'libs/ui/src/hooks/use-namespace';
 import {
   animateScrollTo,
   getElement,
@@ -23,6 +17,10 @@ import {
   isWindow,
   throttleByRaf,
 } from '@type-dom/utils';
+import { useNamespace } from '../../../hooks/use-namespace';
+import { ITdAnchor, AnchorProps, AnchorLinkState } from './td-anchor.interface';
+import { scrollTo } from './td-anchor.function';
+import { anchorEmits, anchorProps } from './td-anchor.const';
 import { anchorKey } from './constants';
 
 export class TdAnchor extends TypeDiv implements ITdAnchor {

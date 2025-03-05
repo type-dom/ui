@@ -2,7 +2,7 @@
 // import type { SelectProps } from './select'
 
 import { InjectionKey } from '@type-dom/framework';
-import { SelectContext, SelectGroupContext } from './td-select.interface';
+import { SelectContext, SelectGroupContext, TdSelectProps } from './td-select.interface';
 
 // For individual build sharing injection key, we had to make `Symbol` to string
 export const selectGroupKey: InjectionKey<SelectGroupContext> =
@@ -10,4 +10,4 @@ export const selectGroupKey: InjectionKey<SelectGroupContext> =
 
 export const selectKey: InjectionKey<SelectContext> = Symbol('TdSelect');
 
-// export type ISelectProps = ExtractPropTypes<typeof SelectProps>
+// export type ISelectProps = ExtractPropTypes<TdSelectProps>

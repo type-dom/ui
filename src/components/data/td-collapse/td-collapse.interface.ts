@@ -1,5 +1,5 @@
 import { ITypeDiv, TypeDivProps } from '@type-dom/framework';
-import { Arrayable } from '../../../../../utils/src/ui/typescript';
+import { Arrayable } from '@type-dom/utils';
 import { TdCollapseItem } from '../td-collapse-item/td-collapse-item.class';
 
 export type CollapseActiveName = string | number;

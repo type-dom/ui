@@ -127,11 +127,11 @@ export class TdNotification extends TypeFragment implements ITdNotification {
       new Transition({
         name: 'fade',
         onBeforeLeave: () => {
-          console.log('beforeLeave');
+          // console.log('beforeLeave');
           props.onClose?.();
         },
         onAfterLeave: () => {
-          console.log('afterLeave');
+          // console.log('afterLeave');
           emit('destroy');
         },
         slot: new Div({

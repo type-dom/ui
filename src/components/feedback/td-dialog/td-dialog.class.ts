@@ -35,7 +35,7 @@ export class TdDialog extends TypeFragment implements ITdDialog {
 
   constructor(params: DialogProps & DialogContentProps = {}) {
     super();
-    console.log('TdDialog . ');
+    // console.log('TdDialog . ');
     this.className = 'TdDialog';
     this.addEmits(dialogEmits);
     this.assignProps(dialogProps);
@@ -128,6 +128,7 @@ export class TdDialog extends TypeFragment implements ITdDialog {
               zIndex: zIndex,
             },
             slot: new Div({
+              class: `${ns.namespace.get()}-overlay-dialog`,
               styleObj: overlayDialogStyle,
               attrObj: {
                 role: 'dialog',
@@ -135,7 +136,6 @@ export class TdDialog extends TypeFragment implements ITdDialog {
                 ariaLabel: props.title,
                 ariaLabelledby: !props.title ? titleId.get() : undefined,
                 ariaDescribedby: bodyId.get(),
-                class: `${ns.namespace.get()}-overlay-dialog`,
               },
               events: {
                 click: overlayEvent.onClick,
@@ -161,7 +161,7 @@ export class TdDialog extends TypeFragment implements ITdDialog {
                     center: props.center,
                     alignCenter: props.alignCenter,
                     closeIcon: props.closeIcon,
-                    draggable: draggable.get(),
+                    draggable: draggable,
                     overflow: props.overflow,
                     fullscreen: props.fullscreen,
                     headerClass: props.headerClass,

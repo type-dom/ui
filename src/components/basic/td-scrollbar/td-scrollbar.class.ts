@@ -1,156 +1,171 @@
-import { Div, nextTick, TypeDiv, XElement } from '@type-dom/framework';
-import { TdScrollbarBar } from './bar/bar.class';
+import {
+  defineExpose,
+  Div,
+  nextTick,
+  onMounted,
+  onUpdated,
+  provide, StyleValue,
+  TypeDiv,
+  useEventListener,
+  useResizeObserver,
+  XElement
+} from '@type-dom/framework';
+import { computed, signal, watch } from '@type-dom/signals';
+import { addUnit, Arrayable, debugWarn, isNumber, isObject } from '@type-dom/utils';
+import { IStyle } from '@type-dom/css-type';
+import { useNamespace } from '../../../hooks/use-namespace';
+import { Bar } from './bar/bar.class';
 import {
   ITdScrollbar,
-  ITdScrollbarConfig,
-  ScrollbarContext,
+  ScrollbarProps,
 } from './td-scrollbar.interface';
 import {
   scrollbarContextKey,
   scrollbarEmits,
   scrollbarProps,
 } from './td-scrollbar.const';
-import {
-  $scrollbarStyle,
-  $scrollbarWrapHiddenDefaultStyle,
-  $scrollbarWrapStyle,
-} from './td-scrollbar.style';
-import { addUnit, debugWarn, isNumber, isObject } from '@type-dom/utils';
-import { IStyle } from '@type-dom/css-type';
+import './style/index';
 
 export class TdScrollbar extends TypeDiv implements ITdScrollbar {
   className: 'TdScrollbar';
-  override props: ITdScrollbarConfig;
-  private wrap: Div;
-  private bar?: TdScrollbarBar;
+  override props: ScrollbarProps;
 
   handleScroll?: () => void;
   stopResizeObserver?: () => void;
   stopResizeListener?: () => void;
   scrollTo?: (xCord: number, yCord?: number) => void;
-  setScrollTop?: (value: number) => void;
+  setScrollTop?: (value: Arrayable<number>) => void;
   scrollLeft?: (value: number) => void;
 
-  constructor(params: ITdScrollbarConfig = {}) {
+  constructor(params: ScrollbarProps = {}) {
     super();
     this.className = 'TdScrollbar';
     this.attr.addName('td-scrollbar');
-    this.style.addObj($scrollbarStyle);
+    this.addEmits(scrollbarEmits);
     this.assignProps(scrollbarProps);
     this.props = this.useParams(params);
-
-    this.wrap = new Div({
-      name: 'td-scrollbar-wrap',
-      styleObj: Object.assign({}, $scrollbarWrapStyle, params.wrapStyle),
-      slot: [
-        new XElement({
-          tag: this.props.tag,
-          name: 'td-scrollbar-resize',
-          attrObj: {
-            role: 'role',
-            ariaLabel: params.ariaLabel,
-            ariaOrientation: params.ariaOrientation,
-          },
-          styleObj: params.viewStyle,
-          init: (element) => {
-            element.slotChildren(params.slot);
-          },
-        }),
-      ],
-    });
-    const wrapStyle: IStyle = {};
-    if (params.height) {
-      wrapStyle.height = addUnit(params.height);
-    }
-    if (params.maxHeight) {
-      wrapStyle.maxHeight = addUnit(params.maxHeight);
-    }
-    this.wrap.style.addObj(wrapStyle);
-    if (!this.props.native) {
-      this.wrap.style.addObj($scrollbarWrapHiddenDefaultStyle);
-    }
-    this.addChild(this.wrap);
-    this.addEmits(scrollbarEmits);
-    if (!this.props?.native) {
-      this.bar = new TdScrollbarBar({
-        always: this.props?.always,
-        minSize: this.props?.minSize,
-      });
-      this.addChild(this.bar);
-    }
-    this.provide<ScrollbarContext>(scrollbarContextKey, {
-      scrollbarElement: this,
-      wrapElement: this.wrap,
-    });
   }
 
   override setup() {
     const COMPONENT_NAME = 'TdScrollbar';
 
-    let wrapScrollTop = 0;
-    let wrapScrollLeft = 0;
+    const props = this.props;
+    const emit = this.emit;
+
+    const ns = useNamespace('scrollbar')
+
+    let stopResizeObserver: (() => void) | undefined = undefined
+    let stopResizeListener: (() => void) | undefined = undefined
+    let wrapScrollTop = 0
+    let wrapScrollLeft = 0
+
+    const scrollbarRef = signal<HTMLDivElement>()
+    const wrapRef = signal<HTMLDivElement>()
+    const resizeRef = signal<HTMLElement>()
+    const barRef = signal<Bar>()
+
+    const wrapStyle = computed<StyleValue>(() => {
+      const style: IStyle = {}
+      if (props.height) style.height = addUnit(props.height)
+      if (props.maxHeight) style.maxHeight = addUnit(props.maxHeight)
+      return [props.wrapStyle, style]
+    })
+
+    const wrapKls = computed(() => {
+      return [
+        props.wrapClass,
+        ns.e('wrap'),
+        { [ns.em('wrap', 'hidden-default')]: !props.native },
+      ]
+    })
+
+    const resizeKls = computed(() => {
+      return [ns.e('view'), props.viewClass]
+    })
 
     const handleScroll = () => {
-      if (this.wrap.dom) {
-        this.bar?.handleScroll(this.wrap.dom);
-        wrapScrollTop = this.wrap.dom.scrollTop;
-        wrapScrollLeft = this.wrap.dom.scrollLeft;
+      // console.warn('handleScroll')
+      if (wrapRef.get()) {
+        barRef.get()?.handleScroll?.(wrapRef.get()!)
+        wrapScrollTop = wrapRef.get()!.scrollTop
+        wrapScrollLeft = wrapRef.get()!.scrollLeft
 
-        this.emit('scroll', {
-          scrollTop: this.wrap.dom.scrollTop,
-          scrollLeft: this.wrap.dom.scrollLeft,
-        });
-      }
-    };
-    this.handleScroll = handleScroll;
-    this.wrap.addEvents({
-      scroll: handleScroll,
-    });
-
-    // eslint-disable-next-line @typescript-eslint/no-this-alias
-    const self = this;
-
-    // TODO: refactor method overrides, due to script setup dts
-    function scrollTo(xCord: number, yCord?: number): void;
-    function scrollTo(options: ScrollToOptions): void;
-    function scrollTo(arg1: unknown, arg2?: number) {
-      if (isObject(arg1)) {
-        self.wrap.dom?.scrollTo(arg1);
-      } else if (isNumber(arg1) && isNumber(arg2)) {
-        self.wrap.dom?.scrollTo(arg1, arg2);
+        emit('scroll', {
+          scrollTop: wrapRef.get()?.scrollTop,
+          scrollLeft: wrapRef.get()?.scrollLeft,
+        })
       }
     }
 
-    this.scrollTo = scrollTo;
+// TODO: refactor method overrides, due to script setup dts
+    function scrollTo(xCord: number, yCord?: number): void
+    function scrollTo(options: ScrollToOptions): void
+    function scrollTo(arg1: unknown, arg2?: number) {
+      if (isObject(arg1)) {
+        wrapRef.get()!.scrollTo(arg1)
+      } else if (isNumber(arg1) && isNumber(arg2)) {
+        wrapRef.get()!.scrollTo(arg1, arg2)
+      }
+    }
+
     const setScrollTop = (value: number) => {
       if (!isNumber(value)) {
-        debugWarn(COMPONENT_NAME, 'value must be a number');
-        return;
+        debugWarn(COMPONENT_NAME, 'value must be a number')
+        return
       }
-      this.wrap.dom!.scrollTop = value;
-    };
-    this.setScrollTop = setScrollTop;
+      wrapRef.get()!.scrollTop = value
+    }
 
     const setScrollLeft = (value: number) => {
       if (!isNumber(value)) {
-        debugWarn(COMPONENT_NAME, 'value must be a number');
-        return;
+        debugWarn(COMPONENT_NAME, 'value must be a number')
+        return
       }
-      this.wrap.dom!.scrollLeft = value;
-    };
-    this.scrollLeft = setScrollLeft;
-
-    this.onUpdated(() => this.updateScroll);
-
-    this.setResize(this.props.noresize);
-    if (!this.props.native) {
-      nextTick(() => {
-        this.updateScroll();
-        if (this.wrap.dom) {
-          this.bar?.handleScroll(this.wrap.dom);
-        }
-      });
+      wrapRef.get()!.scrollLeft = value
     }
+
+    const update = () => {
+      barRef.get()?.updateDom?.()
+    }
+
+    watch(
+      () => props.noresize,
+      (noresize) => {
+        if (noresize) {
+          stopResizeObserver?.()
+          stopResizeListener?.()
+        } else {
+          ({ stop: stopResizeObserver } = useResizeObserver(resizeRef, update))
+          stopResizeListener = useEventListener('resize', update)
+        }
+      },
+      { immediate: true }
+    )
+
+    watch(
+      () => [props.maxHeight, props.height],
+      () => {
+        if (!props.native)
+          nextTick(() => {
+            update()
+            if (wrapRef.get()) {
+              barRef.get()?.handleScroll?.(wrapRef.get())
+            }
+          })
+      }
+    )
+
+    provide(
+      scrollbarContextKey,
+      // reactive({
+      //   scrollbarElement: scrollbarRef,
+      //   wrapElement: wrapRef,
+      // })
+      {
+        scrollbarElement: scrollbarRef,
+        wrapElement: wrapRef,
+      }
+    )
 
     // onActivated(() => {
     //   if (wrapRef.value) {
@@ -158,32 +173,71 @@ export class TdScrollbar extends TypeDiv implements ITdScrollbar {
     //     wrapRef.value.scrollLeft = wrapScrollLeft
     //   }
     // })
-  }
 
-  override mounted() {
-    if (!this.props.native) {
-      nextTick(() => {
-        this.updateScroll();
-      });
+    onMounted(() => {
+      if (!props.native)
+        nextTick(() => {
+          update()
+        })
+    })
+    onUpdated(() => update())
+
+    defineExpose({
+      /** @description scrollbar wrap ref */
+      wrapRef,
+      /** @description update scrollbar state manually */
+      updateDom: update,
+      /** @description scrolls to a particular set of coordinates */
+      scrollTo,
+      /** @description set distance to scroll top */
+      setScrollTop,
+      /** @description set distance to scroll left */
+      setScrollLeft,
+      /** @description handle scroll event */
+      handleScroll,
+    })
+
+    this.assignProps({
+      refDom: scrollbarRef,
+      // class: ns.b() // todo 不生效 ？？？
+    })
+    this.attr.addClass(ns.b());
+
+    this.addChild(new Div({
+      name: 'td-scrollbar-wrap',
+      refDom: wrapRef,
+      class: wrapKls,
+      styleObj: wrapStyle,
+      attrObj: {
+        tabindex: props.tabindex,
+      },
+      events: {
+        scroll: handleScroll,
+      },
+      slot: [
+        new XElement({
+          tag: props.tag,
+          refDom: resizeRef,
+          class: resizeKls,
+          name: 'td-scrollbar-resize',
+          attrObj: {
+            id: props.id,
+            role: props.role,
+            ariaLabel: props.ariaLabel,
+            ariaOrientation: props.ariaOrientation,
+          },
+          styleObj: props.viewStyle,
+          slot: props.slot
+        }),
+      ],
+    }));
+
+    if (!props?.native) {
+      this.addChild(new Bar({
+        refEl: barRef,
+        always: props?.always,
+        minSize: props?.minSize,
+      }));
     }
-  }
-
-  updateScroll = () => {
-    this.bar?.updateBar();
-  };
-
-  setResize(noresize?: boolean) {
-    if (noresize) {
-      this.stopResizeObserver?.();
-      this.stopResizeListener?.();
-    } else {
-      // ({ stop: stopResizeObserver } = useResizeObserver(resizeRef, update))
-      // this.stopResizeListener = useEventListener('resize', update)
-      window.addEventListener('resize', this.updateScroll);
-    }
-  }
-
-  override beforeUnmount() {
-    window.removeEventListener('resize', this.updateScroll);
   }
 }

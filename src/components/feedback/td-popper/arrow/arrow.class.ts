@@ -25,7 +25,7 @@ export class TdPopperArrow extends TypeSpan implements ITdPopperArrow {
   }
 
   override setup() {
-    console.log('TdPopperArrow setup . ');
+    // console.log('TdPopperArrow setup . ');
     const props = this.props;
     const ns = useNamespace('popper');
     const { arrowOffset, arrowRef, arrowStyle } = inject(
@@ -36,7 +36,7 @@ export class TdPopperArrow extends TypeSpan implements ITdPopperArrow {
     watch(
       () => props.arrowOffset?.get(),
       (val) => {
-        console.warn('watch props.arrowOffset is ', val);
+        // console.warn('watch props.arrowOffset is ', val);
         arrowOffset?.set(val);
       }
     );

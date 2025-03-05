@@ -175,7 +175,7 @@ export const useDialog = (
   watch(
     () => props.vModel?.get(),
     (val) => {
-      console.warn('watch vModel val is ', val);
+      // console.warn('watch vModel val is ', val);
       if (val) {
         closed.set(false);
         open();

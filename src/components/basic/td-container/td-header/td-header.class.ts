@@ -1,9 +1,9 @@
 import { TypeHeader } from '@type-dom/framework';
-import { TdContainer } from '../td-container.class';
-import type { ITdHeader, TdHeaderProps } from './td-header.interface';
-import { useNamespace } from '../../../../hooks/use-namespace';
 import { computed } from '@type-dom/signals';
 import { IStyle } from '@type-dom/css-type';
+import { useNamespace } from '../../../../hooks/use-namespace';
+import { TdContainer } from '../td-container.class';
+import type { ITdHeader, TdHeaderProps } from './td-header.interface';
 
 export class TdHeader extends TypeHeader implements ITdHeader {
   className: 'TdHeader';

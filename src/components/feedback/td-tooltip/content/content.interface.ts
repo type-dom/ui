@@ -35,7 +35,7 @@ export interface TooltipContentProps
   /**
    * @description display content, can be overridden by `slot#content`
    */
-  content?: string; // default: '',
+  content?: MaybeRef<string>; // default: '',
   /**
    * @description whether `content` is treated as HTML string
    */

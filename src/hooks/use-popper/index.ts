@@ -11,25 +11,21 @@
 //   VirtualElement,
 // } from '@popperjs/core'
 
-import { computed, signal, Signal, unref, watch, Ref, Computed } from '@type-dom/signals';
+import { computed, signal, unref, watch, Ref, Computed } from '@type-dom/signals';
 import {
-  computePosition,
   VirtualElement,
   ComputePositionConfig as Options,
   MiddlewareState,
   FloatingElement,
   Middleware,
-  State,
-  ComputePositionReturn,
-  createPopper, Instance, ComputePositionConfig, arrow, shift, flip
+  State, Instance, ComputePositionConfig,
+  createPopper, PopperOptions
 } from '@type-dom/popper';
-import { inject, nextFrame, onBeforeUnmount, onMounted } from '@type-dom/framework';
-import { fromPairs, setStyle } from '@type-dom/utils';
-import { POPPER_CONTENT_INJECTION_KEY } from '../../components/feedback/td-popper/constants';
+import { nextFrame, onBeforeUnmount } from '@type-dom/framework';
 
 type ElementType = HTMLElement | undefined
 type ReferenceElement = ElementType | VirtualElement
-export type PartialOptions = Partial<Options & { arrowMiddleware?: Middleware }>
+export type PartialOptions = Partial<PopperOptions & { arrowMiddleware?: Middleware }>
 
 export const usePopper = (
   referenceElementRef: Ref<ReferenceElement>,
@@ -50,7 +46,7 @@ export const usePopper = (
 
   const options = computed<Options>(() => {
     const {
-      // onFirstUpdate,
+      onFirstUpdate,
       placement,
       strategy,
       // arrowMiddleware,
@@ -59,7 +55,7 @@ export const usePopper = (
     } = unref(opts);
 
     return {
-      // onFirstUpdate,
+      onFirstUpdate,
       placement: placement || 'bottom',
       strategy: strategy || 'absolute',
       middleware: middleware
@@ -96,10 +92,10 @@ export const usePopper = (
   watch(
     options,
     (newOptions) => {
-      console.warn('watch options newOption is ', newOptions);
+      // console.warn('watch options newOption is ', newOptions);
       const instance = unref(instanceRef);
       if (instance) {
-        console.warn('watch options instance ', instance);
+        // console.warn('watch options instance ', instance);
         instance.setOptions(newOptions);
       }
     }
@@ -108,19 +104,18 @@ export const usePopper = (
   watch(
     () => [referenceElementRef.get(), popperElementRef.get()],
     ([referenceElement, popperElement]) => {
-      console.error('watch referenceElement and popperElement referenceElementRef.get() and popperElementRef.get() is ', referenceElementRef.get(), popperElementRef.get());
+      // console.error('watch referenceElement and popperElement referenceElementRef.get() and popperElementRef.get() is ', referenceElementRef.get(), popperElementRef.get());
       destroy();
       //  popperElement 会先创建，只是没有挂载。所以还要看是否挂载了。
       if (!referenceElement || !popperElement) return;
-      console.warn('watch referenceElement and popperElement ', referenceElement,
-        popperElement);
+      // console.warn('watch referenceElement and popperElement ', referenceElement, popperElement);
 
-      console.warn('watch referenceElement and popperElement options is ', options);
+      // console.warn('watch referenceElement and popperElement options is ', options);
       nextFrame(async () => {
         instanceRef.set(await createPopper(
           referenceElement,
           popperElement,
-          unref(options) as ComputePositionConfig
+          unref(options) as PopperOptions
         ));
       });
     }

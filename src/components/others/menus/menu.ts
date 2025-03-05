@@ -87,7 +87,7 @@ export class Menu extends TypeMenu {
       // todo addEvent 如何pipe ??
       this.contentItem.addEvents({
         click: (event) => {
-          console.log('click . ');
+          // console.log('click . ');
           if (this.menuRoot?.selectedMenu === this) {
             return;
           }
@@ -114,7 +114,7 @@ export class Menu extends TypeMenu {
       // })
       // bottomSvg.resetSize('1.5em', '1.5em');
       this.contentItem.addEvent('click', (event) => {
-        console.log('click .');
+        // console.log('click .');
         if (this.menuRoot?.selectedMenu === this) {
           return;
         }

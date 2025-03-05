@@ -1,13 +1,12 @@
 import { ComputePositionConfig, Placement } from '@type-dom/popper';
-import { AnyFn, ISlotItem, ITypeDiv, TypeDivProps } from '@type-dom/framework';
+import { ISlotItem, ITypeDiv, TypeDivProps } from '@type-dom/framework';
 import { MaybeRef, Ref, ToRefs } from '@type-dom/signals';
 import { ElArrowDownSvg, ElCircleCloseSvg } from '@type-dom/svgs';
-import { IPrimitive } from '@type-dom/utils';
+import { AnyFn, IPrimitive } from '@type-dom/utils';
 
 import { ComponentSize } from '../../../constants/size';
 import { IType } from '../../../styles';
 import { TooltipContentProps } from '../../feedback/td-tooltip/content/content.interface';
-import { tagProps } from '../../data/td-tag/td-tag.const';
 import { CheckboxValueType } from '../td-checkbox/td-checkbox.interface';
 import { TdOption } from '../td-option/td-option.class';
 import { TdOptionGroup } from '../td-option-group/td-option-group.class';
@@ -256,20 +255,16 @@ export interface SelectGroupContext extends OptionGroupProps {
 export interface SelectContext {
   props: TdSelectProps;
   states: any;
-  expanded: boolean;
+  expanded?: boolean;
   selectRef: Ref<HTMLElement | undefined>;
   optionsArray: any[];
-
   setSelected(): void;
-
-  onOptionCreate(vm: SelectOptionProxy): void;
-
+  onOptionCreate(vm?: TdOption /*SelectOptionProxy*/): void;
   onOptionDestroy(
-    key: number | string | Record<string, string>,
-    vm: SelectOptionProxy
+    key: string | number | boolean | object | undefined,
+    vm: TdOption, // SelectOptionProxy
   ): void;
-
-  handleOptionSelect(vm: SelectOptionProxy): void;
+  handleOptionSelect(vm?: TdOption /*SelectOptionProxy*/): void;
 }
 
 export interface SelectOptionProxy {

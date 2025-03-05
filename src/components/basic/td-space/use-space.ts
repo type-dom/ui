@@ -33,7 +33,7 @@ export function useSpace(props: SpaceProps) {
       columnGap: `${horizontalSize.get()}px`,
     };
     // return Object.assign({}, wrapKls, alignment, gap, props.styleObj)
-    return [wrapKls, alignment, gap, props.styleObj as IStyle];
+    return [wrapKls, alignment, gap, props.styleObj];
   });
 
   const itemStyle = computed<IStyle>(() => {
@@ -43,9 +43,12 @@ export function useSpace(props: SpaceProps) {
   });
 
   effect(() => {
-    console.error('TdSpace effect . ');
-    const { wrap, direction: dir, fill } = props;
-    const size = unref(props.size);
+    // console.error('TdSpace effect . ');
+    const { size: inputSize = 'small', wrap, direction: dir, fill } = props;
+    // const size = unref(props.size) ?? 'small';
+    // console.error('TdSpace effect , inputSize ',  inputSize);
+    const size = unref(inputSize) ?? 'small';
+    // console.error('size is ', size);
     // when the specified size have been given
     if (isArray(size)) {
       const [h = 0, v = 0] = size;
@@ -56,7 +59,7 @@ export function useSpace(props: SpaceProps) {
       if (isNumber(size)) {
         val = size;
       } else {
-        val = SIZE_MAP[size || 'small'] || SIZE_MAP.small;
+        val = SIZE_MAP[size as string || 'small'] || SIZE_MAP.small;
       }
 
       if ((wrap || fill) && dir === 'horizontal') {

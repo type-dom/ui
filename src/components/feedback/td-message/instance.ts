@@ -9,7 +9,7 @@ import { MessageContext } from './td-message.interface';
 export const instances: Signal<MessageContext[]> = signal([]);
 
 export const getInstance = (id: string) => {
-  console.warn('getInstance, id is ', id);
+  // console.warn('getInstance, id is ', id);
   const idx = instances.get().findIndex((instance) => instance.id === id);
   const current = instances.get()[idx];
   let prev: MessageContext | undefined;
@@ -20,7 +20,7 @@ export const getInstance = (id: string) => {
 };
 
 export const getLastOffset = (id: string): number => {
-  console.warn('getLastOffset, id is ', id);
+  // console.warn('getLastOffset, id is ', id);
   const { prev } = getInstance(id);
   if (!prev) return 0;
   // return prev.vm.exposed!.bottom.value
@@ -28,7 +28,7 @@ export const getLastOffset = (id: string): number => {
 };
 
 export const getOffsetOrSpace = (id: string, offset: number) => {
-  console.warn('getOffsetOrSpace, id is ', id);
+  // console.warn('getOffsetOrSpace, id is ', id);
   const idx = instances.get().findIndex((instance) => instance.id === id);
   return idx > 0 ? 16 : offset;
 };

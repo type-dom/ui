@@ -47,7 +47,7 @@ export class OpBtns extends TypeDiv {
               await navigator.clipboard.writeText(textToCopy);
               alert('文本已复制到剪贴板！');
             } catch (err) {
-              console.error('无法复制文本: ', err);
+              // console.error('无法复制文本: ', err);
               alert('复制失败，请手动复制。');
             }
           },

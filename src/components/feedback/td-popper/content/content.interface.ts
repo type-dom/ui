@@ -1,15 +1,7 @@
 import { IStyle } from '@type-dom/css-type';
 import { Placement, Strategy } from '@type-dom/popper';
-import {
-  IEmits,
-  TypeProps,
-  ITypeDiv,
-  TypeDivProps,
-  TypeHtml,
-  StyleValue,
-  ISlotRaw,
-} from '@type-dom/framework';
-import { MaybeRef, Signal } from '@type-dom/signals';
+import { TypeProps, ITypeDiv, StyleValue } from '@type-dom/framework';
+import { MaybeRef } from '@type-dom/signals';
 import { popperContentEmits } from './content.const';
 
 export interface ITdPopperContent extends ITypeDiv {
@@ -25,7 +17,7 @@ export interface ITdPopperContent extends ITypeDiv {
 // type AutoPlacement = 'auto' | 'auto-start' | 'auto-end';
 // export type Placement = AutoPlacement | BasePlacement | VariationPlacement;
 
-type ClassObjectType = Record<string, boolean>;
+type ClassObjectType = Record<string, boolean | unknown>;
 type ClassType = string | ClassObjectType | (ClassType | undefined)[];
 
 export interface PopperCoreConfigProps extends TypeProps {
@@ -79,15 +71,15 @@ export interface PopperContentProps extends PopperCoreConfigProps {
   popperStyle?: StyleValue;
   //   type: definePropType<StyleValue>([String, Array, Object]),
   // },
-  referenceEl?: TypeHtml;
-  triggerTargetEl?: TypeHtml;
+  referenceEl?: HTMLElement;
+  triggerTargetEl?: HTMLElement;
   stopPopperMouseEvent?: boolean; // default: true,
-  ariaLabel?: MaybeRef<string>; // default: undefined,
   virtualTriggering?: boolean;
   zIndex?: number;
+  ariaLabel?: MaybeRef<string>; // default: undefined,
 
   // emits?: ITdPopperContentEmits;
-  slot?: (arg?: any) => ISlotRaw | ISlotRaw[];
+  // slot?:  (arg?: any) => ISlotRaw | ISlotRaw[];
 }
 
 export type PopperContentEmits = typeof popperContentEmits;

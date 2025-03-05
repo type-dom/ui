@@ -57,7 +57,7 @@ export class TdCheckboxGroup extends TypeHtml implements ITdCheckboxGroup {
     });
     this.slotChildren(props.slot);
     const changeEvent = async (value: CheckboxGroupValueType) => {
-      console.warn('td-check-group changeEvent, value is ', value);
+      // console.warn('td-check-group changeEvent, value is ', value);
       this.emit(UPDATE_MODEL_EVENT, value);
       await nextTick();
       this.emit('change', value);
@@ -69,12 +69,12 @@ export class TdCheckboxGroup extends TypeHtml implements ITdCheckboxGroup {
         return props.vModel?.get();
       },
       set(val: CheckboxGroupValueType) {
-        console.warn('modelValue', val);
+        // console.warn('modelValue', val);
         changeEvent(val);
       },
     });
 
-    console.log('then provide checkboxGroupContext . ');
+    // console.log('then provide checkboxGroupContext . ');
     this.provide(checkboxGroupContextKey, {
       ...pick(toRefs(props), [
         'size',

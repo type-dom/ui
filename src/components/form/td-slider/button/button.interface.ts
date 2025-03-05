@@ -1,16 +1,23 @@
-import { TypeProps, ITypeDiv } from '@type-dom/framework';
+import { ITypeDiv, TypeDivProps } from '@type-dom/framework';
 import { Placement } from '@type-dom/popper';
+import { Ref } from '@type-dom/signals';
+import { TdSliderButton } from './button.class';
 
 export interface ITdSliderButton extends ITypeDiv {
   className: 'TdSliderButton';
 }
 
-export interface ITdSliderButtonConfig extends TypeProps {
+export interface SliderButtonProps extends TypeDivProps {
   modelValue?: number;
   vertical?: boolean;
   tooltipClass?: string;
   placement?: Placement;
 }
+
+export type ButtonRefs = Record<
+  'firstButton' | 'secondButton',
+  Ref<TdSliderButton | undefined>
+>
 
 export interface SliderButtonInitData {
   hovering: boolean;
@@ -22,5 +29,5 @@ export interface SliderButtonInitData {
   currentY: number;
   startPosition: number;
   newPosition: number;
-  oldValue: number;
+  oldValue: number | undefined;
 }

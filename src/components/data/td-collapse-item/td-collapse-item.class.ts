@@ -36,7 +36,7 @@ export class TdCollapseItem extends TypeDiv implements ITdCollapseItem {
   }
 
   override setup() {
-    console.log('setup . ');
+    // console.log('setup . ');
     const props = this.props;
     const {
       focusing,
@@ -99,7 +99,7 @@ export class TdCollapseItem extends TypeDiv implements ITdCollapseItem {
       })
     );
 
-    console.log('isActive.get() is ', isActive.get());
+    // console.log('isActive.get() is ', isActive.get());
     this.addChild(
       new TdCollapseTransition({
         slot: new Div({

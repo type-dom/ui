@@ -6,8 +6,6 @@ export { FieldSelect } from './field-item/select/field-select.abstract';
 export { FieldSpan } from './field-item/span/field-span.abstract';
 export { FieldTextarea } from './field-item/textarea/field-textarea.abstract';
 export * from './field-item/field-item.interface';
-export { TdInputField } from './td-input/td-input-field.class';
-export type { ITdInputFieldConfig } from './td-input/td-input-field.interface';
 export { RadioGroup } from './radio-group/radio-group.class';
 export { RadioOption } from './radio-group/radio-option/radio-option.class';
 
@@ -16,15 +14,20 @@ export type * from './td-checkbox/td-checkbox.interface';
 export { TdCheckboxGroup } from './td-checkbox-group/td-checkbox-group.class';
 export type { ITdCheckboxGroupConfig } from './td-checkbox-group/td-checkbox-group.interface';
 export { TdCheckboxButton } from './td-checkbox-button/td-checkbox-button.class';
+
 export { TdForm } from './td-form/td-form.class';
 export type { ITdForm } from './td-form/td-form.interface';
+
 export { TdFormItem } from './td-form-item/td-form-item.class';
 export type {
   ITdFormItem,
   ILabelPosition,
 } from './td-form-item/td-form-item.interface';
+
 export { TdInput } from './td-input/td-input.class';
 export type * from './td-input/td-input.interface';
+export { TdInputNumber } from './td-input-number/td-input-number.class';
+export type * from './td-input-number/td-input-number.interface';
 
 export { TdOption } from './td-option/td-option.class';
 export type * from './td-option/td-option.interface';
@@ -46,3 +49,6 @@ export { TdSlider } from './td-slider/td-slider.class';
 export type * from './td-slider/td-slider.interface';
 export { TdSwitch } from './td-switch/td-switch.class';
 export type * from './td-switch/td-switch.interface';
+export { TdUpload } from './td-upload/td-upload.class';
+export type * from './td-upload/td-upload.interface';
+export * from './td-upload/td-upload.const';

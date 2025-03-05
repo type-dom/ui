@@ -4,7 +4,7 @@ import {
   isBoolean,
   isFunction,
   isString,
-  clone,
+  clone, getProp, ensureArray
 } from '@type-dom/utils';
 import AsyncValidator, { RuleItem } from '@type-dom/async-validator';
 // import { clone } from 'lodash';
@@ -32,8 +32,6 @@ import { computed, Signal, signal, watch } from '@type-dom/signals';
 
 import { useNamespace } from '../../../hooks/use-namespace';
 import { useId } from '../../../hooks/use-id';
-import { ensureArray } from '../../../../../utils/src/ui/arrays';
-import { getProp } from '../../../../../utils/src/ui/objects';
 import { formContextKey, formItemContextKey } from '../td-form/td-form.const';
 import { FormItemContext, FormProps } from '../td-form/td-form.interface';
 import { useFormSize } from '../td-form/hooks/use-form-common-props';
@@ -158,7 +156,7 @@ export class TdFormItem extends TypeDiv implements ITdFormItem {
         (inputIds.get().length === 1 ? inputIds.get()[0] : undefined)
       );
     });
-    console.error('labelFor', labelFor.get());
+    // console.error('labelFor', labelFor.get());
 
     const isGroup = computed<boolean>(() => {
       return !labelFor.get() && hasLabel.get();
@@ -343,7 +341,7 @@ export class TdFormItem extends TypeDiv implements ITdFormItem {
     };
 
     const addInputId: FormItemContext['addInputId'] = (id: string) => {
-      console.error('addInputId . ');
+      // console.error('addInputId . ');
       if (!inputIds.get().includes(id)) {
         inputIds.get().push(id);
       }

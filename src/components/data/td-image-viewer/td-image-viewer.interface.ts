@@ -1,7 +1,8 @@
 import {
+  ISlotRaw,
   ITypeFragment,
   TypeFragmentProps,
-  TypeSvgSvg,
+  TypeSvgSvg
 } from '@type-dom/framework';
 
 export interface ITdImageViewer extends ITypeFragment {
@@ -57,9 +58,19 @@ export interface ImageViewerProps extends TypeFragmentProps {
    */
   maxScale?: number;
   /**
+   * @description show preview image progress content.
+   *    default: false,
+   */
+  showProgress?: boolean;
+  /**
    * @description set HTML attribute: crossorigin.
    */
   crossorigin?: 'anonymous' | 'use-credentials' | '';
+
+  slots?: {
+    progress?: (progress: any, index?: number) => ISlotRaw | ISlotRaw[];
+    toolbar?: (toolbar: any) => ISlotRaw | ISlotRaw[];
+  }
 }
 
 export type ImageViewerAction =

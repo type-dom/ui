@@ -1,22 +1,20 @@
 import { computed, signal, unref } from '@type-dom/signals';
 import {
-  AnyFn,
   arraySlot,
   inject,
-  ISlotRaw,
-  toValue,
   useSlots,
 } from '@type-dom/framework';
+import { AnyFn } from '@type-dom/utils';
 import { useDeprecated } from '../../../hooks/use-deprecated';
 import { useFormItem } from '../../form/td-form/hooks/use-form-item';
 import {
   useFormDisabled,
   useFormSize,
 } from '../../form/td-form/hooks/use-form-common-props';
+import { useGlobalConfig } from '../../configuration/td-config-provider';
 
 import { buttonGroupContextKey } from './constants';
 import { TdButtonProps } from './td-button.interface';
-import { useGlobalConfig } from '../../configuration/td-config-provider';
 
 export const useButton = (props: TdButtonProps, emit: AnyFn) => {
   useDeprecated(
@@ -33,7 +31,7 @@ export const useButton = (props: TdButtonProps, emit: AnyFn) => {
   const buttonGroupContext = inject(buttonGroupContextKey, undefined);
   const globalConfig = useGlobalConfig<'button', TdButtonProps>('button');
   const { form } = useFormItem();
-  const _size = useFormSize(computed(() => buttonGroupContext?.size));
+  const _size = useFormSize(computed(() => unref(buttonGroupContext?.size)));
   const _disabled = useFormDisabled();
   const _ref = signal<HTMLButtonElement>();
   const slots = useSlots();

@@ -1,23 +1,21 @@
-import { isArray, isNumber } from '@type-dom/utils';
+import { isArray } from '@type-dom/utils';
+import { computed, toRaw } from '@type-dom/signals';
 import {
   arraySlot,
   isFragment,
   isValidElementNode,
   ISlotItem,
-  Div,
   Span,
   TypeDiv,
   TypeNode,
   For,
-  TextNode,
   ISlotRaw,
 } from '@type-dom/framework';
 import { ITdSpace, SpaceProps } from './td-space.interface';
-import { SIZE_MAP, spaceProps } from './td-space.const';
+import { spaceProps } from './td-space.const';
 import { TdSpaceItem } from './td-space-item/td-space-item.class';
 import { useSpace } from './use-space';
 import './style/index';
-import { computed, toRaw } from '@type-dom/signals';
 
 export class TdSpace extends TypeDiv implements ITdSpace {
   className: 'TdSpace';
@@ -32,10 +30,10 @@ export class TdSpace extends TypeDiv implements ITdSpace {
   }
 
   override setup() {
-    console.log('td-space setup . ');
+    // console.log('td-space setup . ');
     const props = this.props;
     const { classes, containerStyle, itemStyle } = useSpace(props);
-
+    // console.warn('containerStyle is ', containerStyle);
     // retrieve the children out via a simple for loop
     // the edge case here is that when users uses directives like <v-for>, <v-if>
     // we need to go deeper until the child is not the Fragment type
@@ -44,7 +42,7 @@ export class TdSpace extends TypeDiv implements ITdSpace {
       parentKey = '',
       extractedChildren: TypeNode[] = []
     ) {
-      console.warn('extractChildren is ', children);
+      // console.warn('extractChildren is ', children);
       // const { prefixCls } = props
       children.forEach((child, loopKey) => {
         if (isFragment(child)) {
@@ -130,7 +128,7 @@ export class TdSpace extends TypeDiv implements ITdSpace {
     // loop the children, if current children is rendered via `renderList` or `<v-for>`
     if (isArray(children)) {
       let extractedChildren = extractChildren(children);
-      console.log('extractChildren is ', extractedChildren);
+      // console.log('extractChildren is ', extractedChildren);
       if (spacer) {
         // track the current rendering index, when encounters the last element
         // then no need to add a spacer after it.

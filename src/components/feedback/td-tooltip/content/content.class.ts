@@ -4,13 +4,12 @@ import {
   onBeforeUnmount,
   onClickOutside,
   TypeFragmentProps,
-  Teleport,
   Transition,
   TypeFragment,
 } from '@type-dom/framework';
 import { Signal, computed, signal, unref, watch } from '@type-dom/signals';
+import { composeEventHandlers } from '@type-dom/utils';
 import { usePopperContainerId } from '../../../../hooks/use-popper-container';
-import { composeEventHandlers } from '../../../../../../utils/src/ui/dom/event';
 import { useNamespace } from '../../../../hooks/use-namespace';
 import { TdTeleport } from '../../../base/td-teleport/td-teleport.class';
 import { tryFocus } from '../../td-focus-trap/utils';
@@ -30,7 +29,7 @@ export class TdTooltipContent
 
   constructor(params: TooltipContentProps & TypeFragmentProps = {}) {
     super();
-    console.log('TdTooltipContent params: ', params);
+    // console.log('TdTooltipContent params: ', params);
     this.className = 'TdTooltipContent';
     this.assignProps(tooltipContentProps); // TdTooltip中已经预加载了；
     this.props = this.useParams(params) as TooltipContentProps &
@@ -74,12 +73,12 @@ export class TdTooltipContent
     });
 
     const shouldRender = computed(() => {
-      console.log(
-        'shouldRender persistentRef is ',
-        persistentRef,
-        ' open is ',
-        open
-      );
+      // console.log(
+      //   'shouldRender persistentRef is ',
+      //   persistentRef,
+      //   ' open is ',
+      //   open
+      // );
       return unref(persistentRef) ? true : unref(open);
     });
 
@@ -88,7 +87,7 @@ export class TdTooltipContent
     });
 
     const appendTo = computed(() => {
-      console.warn('appendTo is ', props.appendTo, selector.get());
+      // console.warn('appendTo is ', props.appendTo, selector.get());
       return props.appendTo || selector.get();
     });
 
@@ -106,7 +105,7 @@ export class TdTooltipContent
       if (unref(controlled)) {
         return true;
       }
-      return undefined;
+      return;
     };
 
     const onContentEnter = composeEventHandlers(stopWhenControlled, () => {
@@ -134,7 +133,7 @@ export class TdTooltipContent
       onShow();
       stopHandle = onClickOutside(
         computed(() => {
-          return contentRef.get()?.popperContentRef;
+          return contentRef.get()?.popperContentRef.get();
         }),
         () => {
           if (unref(controlled)) return;
@@ -154,8 +153,7 @@ export class TdTooltipContent
 
     const isFocusInsideContent = (event?: FocusEvent) => {
       const popperContent: HTMLElement | undefined = contentRef
-        .get()
-        ?.popperContentRef.get();
+        .get()?.popperContentRef.get();
       const activeElement =
         (event?.relatedTarget as Node) || document.activeElement;
 
@@ -177,7 +175,7 @@ export class TdTooltipContent
     );
 
     watch(
-      () => props.content,
+      () => unref(props.content),
       () => {
         contentRef.get()?.updatePopper?.();
       }
@@ -226,12 +224,12 @@ export class TdTooltipContent
             enterable: props.enterable,
             pure: props.pure,
             popperClass: props.popperClass,
-            popperStyle: [props.popperStyle, contentStyle.get()],
+            popperStyle: [unref(props.popperStyle), contentStyle.get()],
             referenceEl: props.referenceEl,
             triggerTargetEl: props.triggerTargetEl,
             visible: shouldShow,
             attrObj: {
-              id: id.get(),
+              id: id,
               arialLabel: props.ariaLabel,
               ariaHidden: ariaHidden,
               zIndex: props.zIndex,
@@ -242,7 +240,7 @@ export class TdTooltipContent
               blur: onBlur,
               close: onClose,
             },
-            slot: props.slot,
+            slot: props.slot ?? props.slots?.default,
           }),
         }),
       })

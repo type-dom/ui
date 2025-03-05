@@ -15,13 +15,13 @@ export const useCheckboxModel = (props: CheckboxProps) => {
     checkboxGroupContextKey,
     undefined
   );
-  console.log('inject checkGroup is ', checkboxGroup);
+  // console.log('inject checkGroup is ', checkboxGroup);
   const isGroup = computed(() => isUndefined(checkboxGroup) === false);
   const isLimitExceeded = signal(false);
 
   const model = computed({
     get() {
-      console.log('get model value isGroup is  ', isGroup.get());
+      // console.log('get model value isGroup is  ', isGroup.get());
       return isGroup.get()
         ? checkboxGroup?.modelValue?.get()
         : // 这里的computed监听props.modelValue，与vuejs中的监听props.modelValue是不同的，
@@ -31,7 +31,7 @@ export const useCheckboxModel = (props: CheckboxProps) => {
           props.vModel?.get() ?? selfModel.get(); // : props.modelValue ?? selfModel.get();
     },
     set(val: unknown) {
-      console.log('set model value is ', val);
+      // console.log('set model value is ', val);
       if (isGroup.get() && isArray(val)) {
         isLimitExceeded.set(
           checkboxGroup?.max?.get() !== undefined &&

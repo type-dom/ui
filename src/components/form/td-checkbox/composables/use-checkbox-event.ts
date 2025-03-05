@@ -51,12 +51,12 @@ export const useCheckboxEvent = (
     checked: string | number | boolean,
     e?: InputEvent | MouseEvent
   ) {
-    console.warn('emitChangeEvent . checked is ', checked);
+    // console.warn('emitChangeEvent . checked is ', checked);
     emit('change', getLabeledValue(checked), e);
   }
 
   function handleChange(e?: Event) {
-    console.warn('handleChange . ');
+    // console.warn('handleChange . ');
     if (isLimitExceeded.get()) {
       return;
     }
@@ -68,8 +68,8 @@ export const useCheckboxEvent = (
   }
 
   async function onClickRoot(e?: MouseEvent) {
-    console.warn('onClickRoot . ');
-    console.warn('onClickRoot . model.get() is ', model.get());
+    // console.warn('onClickRoot . ');
+    // console.warn('onClickRoot . model.get() is ', model.get());
     if (isLimitExceeded.get()) return;
 
     if (!hasOwnLabel.get() && !isDisabled.get() && isLabeledByFormItem.get()) {

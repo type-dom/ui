@@ -1,10 +1,11 @@
 import { ITdEmpty, EmptyProps } from './td-empty.interface';
 import { Div, Img, P, TypeDiv } from '@type-dom/framework';
-import { emptyProps } from './td-empty.const';
-import { useNamespace } from '../../../hooks/use-namespace';
 import { computed } from '@type-dom/signals';
 import { IStyle } from '@type-dom/css-type';
 import { addUnit } from '@type-dom/utils';
+import { useNamespace } from '../../../hooks/use-namespace';
+import { useLocale } from '../../../hooks/use-locale';
+import { emptyProps } from './td-empty.const';
 import { ImgEmpty } from './img-empty.class';
 import './style/index';
 
@@ -23,10 +24,10 @@ export class TdEmpty extends TypeDiv implements ITdEmpty {
   override setup() {
     const props = this.props;
 
-    // const { t } = useLocale()
+    const { t } = useLocale()
     const ns = useNamespace('empty');
     const emptyDescription = computed(
-      () => props.description // todo || t('el.table.emptyText')
+      () => props.description || t('el.table.emptyText')
     );
 
     const imageStyle = computed<IStyle>(() => ({

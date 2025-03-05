@@ -1,14 +1,15 @@
-// @ts-nocheck
 // import { computed, getCurrentInstance, inject, toRaw, watch } from 'vue'
-import { computed, toRaw, watch } from '@type-dom/signals';
+import { computed, toRaw, unref, watch } from '@type-dom/signals';
 import { get } from 'lodash';
 import { ensureArray, escapeStringRegexp, isObject } from '@type-dom/utils';
 import { getCurrentInstance, inject } from '@type-dom/framework';
 import { selectGroupKey, selectKey } from '../td-select/token';
+import { OptionStates, TdOptionProps } from './td-option.interface';
+import { TdOption } from './td-option.class';
 
-export function useOption(props, states) {
+export function useOption(props: TdOptionProps, states: OptionStates) {
   // inject
-  const select = inject(selectKey);
+  const select = inject(selectKey)!;
   const selectGroup = inject(selectGroupKey, { disabled: false });
 
   // computed
@@ -20,9 +21,9 @@ export function useOption(props, states) {
     if (select.props.multiple) {
       const modelValue = ensureArray(select.props.modelValue ?? []);
       return (
-        !itemSelected.value &&
-        modelValue.length >= select.props.multipleLimit &&
-        select.props.multipleLimit > 0
+        !itemSelected.get() &&
+        modelValue.length >= select.props.multipleLimit! &&
+        select.props.multipleLimit! > 0
       );
     } else {
       return false;
@@ -38,16 +39,16 @@ export function useOption(props, states) {
   });
 
   const isDisabled = computed(() => {
-    return props.disabled || states.groupDisabled || limitReached.value;
+    return props.disabled || states.groupDisabled || limitReached.get();
   });
 
-  const instance = getCurrentInstance();
+  const instance = getCurrentInstance() as TdOption;
 
-  const contains = (arr = [], target) => {
+  const contains = (arr: any[] = [], target: any) => {
     if (!isObject(props.value)) {
       return arr && arr.includes(target);
     } else {
-      const valueKey = select.props.valueKey;
+      const valueKey = select.props.valueKey!;
       return (
         arr &&
         arr.some((item) => {
@@ -65,7 +66,7 @@ export function useOption(props, states) {
 
   const updateOption = (query: string) => {
     const regexp = new RegExp(escapeStringRegexp(query), 'i');
-    states.visible = regexp.test(currentLabel.value) || props.created;
+    states.visible = regexp.test(currentLabel.get() as string) || props.created;
   };
 
   watch(
@@ -76,10 +77,10 @@ export function useOption(props, states) {
   );
 
   watch(
-    () => props.value,
+    () => unref(props.value),
     (val, oldVal) => {
       if (!select) return;
-      const { remote, valueKey } = select?.props;
+      const { remote, valueKey } = select.props;
 
       if (val !== oldVal) {
         select.onOptionDestroy(oldVal, instance);
@@ -91,7 +92,7 @@ export function useOption(props, states) {
           valueKey &&
           isObject(val) &&
           isObject(oldVal) &&
-          val[valueKey] === oldVal[valueKey]
+          (val as any)[valueKey] === (oldVal as any)[valueKey]
         ) {
           return;
         }
