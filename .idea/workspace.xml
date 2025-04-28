@@ -4,7 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="3cb4a705-3e13-4db6-bc66-f1e3e55c861d" name="Changes" comment="" />
+    <list default="true" id="3cb4a705-3e13-4db6-bc66-f1e3e55c861d" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -34,7 +36,7 @@
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
     "git-widget-placeholder": "gh-pages",
-    "last_opened_file_path": "D:/GIT-LAB/congo/itas-frontend",
+    "last_opened_file_path": "D:/MY-GIT/ui",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -82,6 +84,7 @@
       <workItem from="1730252095956" duration="93000" />
       <workItem from="1741139788831" duration="1566000" />
       <workItem from="1741148819631" duration="5544000" />
+      <workItem from="1741162838099" duration="2143000" />
     </task>
     <servers />
   </component>
