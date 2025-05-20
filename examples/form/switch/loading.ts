@@ -4,7 +4,7 @@ import { signal } from '@type-dom/signals';
 
 export class SwitchLoadingExample extends TypeDiv {
   className: 'SwitchLoadingExample';
-  private loading: boolean;
+  loading: boolean;
 
   constructor() {
     super();

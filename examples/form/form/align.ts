@@ -1,6 +1,5 @@
 import { TypeDiv } from '@type-dom/framework';
 import {
-  ILabelPosition,
   TdForm,
   TdFormItem,
   TdInput,
@@ -35,7 +34,7 @@ export class FormAlignExample extends TypeDiv {
           }
         ],
         events: {
-          click: (evt, element: TdRadioGroup) => {
+          click: (evt, element) => {
             console.log('radio-group event ', evt);
             console.log('element.modelValue is ', element?.props.modelValue);
             const form = this.down<TdForm>('refId', 'form-ref');

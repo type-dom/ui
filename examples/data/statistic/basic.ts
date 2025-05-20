@@ -1,7 +1,7 @@
-import { createClass, Div, TypeDiv, useTransition, vHash } from '@type-dom/framework';
+import { createClass, Div, TypeDiv, useTransition } from '@type-dom/framework';
 import { ElChatLineRoundSvg, ElMaleSvg } from '@type-dom/svgs';
 import { TdCol, TdIcon, TdRow, TdStatistic } from '@type-dom/ui';
-import { effect, signal } from '@type-dom/signals';
+import { signal } from '@type-dom/signals';
 
 export class StatisticBasicExample extends TypeDiv {
   className = 'StatisticBasicExample';

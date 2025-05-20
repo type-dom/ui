@@ -11,7 +11,7 @@ export class PopoverNestedOperationExample extends TypeDiv {
     const visible = signal(false)
     this.addChildren(
       new TdPopover({
-        // visible: visible,
+        visible: visible,
         placement: 'top',
         width: 160,
         slot: [
@@ -29,7 +29,7 @@ export class PopoverNestedOperationExample extends TypeDiv {
                 text: true,
                 slot: 'cancel',
                 events: {
-                  click: (evt, element) => visible.set(false)
+                  click: () => visible.set(false)
                 }
               }),
               new TdButton({
@@ -37,7 +37,7 @@ export class PopoverNestedOperationExample extends TypeDiv {
                 type: 'primary',
                 slot: 'confirm',
                 events: {
-                  click: (evt, element) => visible.set(false)
+                  click: () => visible.set(false)
                 }
               })
             ]
@@ -47,7 +47,7 @@ export class PopoverNestedOperationExample extends TypeDiv {
           reference: new TdButton({
             slot: 'Delete',
             events: {
-              click: (evt, element) => {
+              click: () => {
                 visible.set(true);
               }
             }

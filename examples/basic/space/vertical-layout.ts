@@ -25,7 +25,7 @@ export class SpaceVerticalExample extends TypeDiv {
       new TdSpace({
         wrap: true,
         direction: 'vertical',
-        slot: genNumArr(2).map(i => new TdCard({
+        slot: genNumArr(2).map(() => new TdCard({
           class: 'box-card',
           styleObj: {
             width: '250px',

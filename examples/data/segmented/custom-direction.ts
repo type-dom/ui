@@ -1,5 +1,5 @@
-import { Br, Div, TypeDiv, TypeS, TypeSvg, TypeSvgSvg } from '@type-dom/framework';
-import { ComponentSize, SegmentedProps, TdIcon, TdSegmented } from '@type-dom/ui';
+import { Br, Div, TypeDiv, TypeSvgSvg } from '@type-dom/framework';
+import { ComponentSize, TdIcon, TdSegmented } from '@type-dom/ui';
 import { ElAppleSvg, ElCherrySvg, ElGrapeSvg, ElOrangeSvg, ElPearSvg, ElWatermelonSvg } from '@type-dom/svgs';
 import { computed, signal } from '@type-dom/signals';
 
@@ -81,7 +81,7 @@ export class SegmentedCustomDirectionExample extends TypeDiv {
         vModel: size,
         options: sizeOptions,
         styleObj: {
-          marginBottom: "1rem"
+          marginBottom: '1rem'
         }
       }),
       new Br(),
@@ -89,7 +89,7 @@ export class SegmentedCustomDirectionExample extends TypeDiv {
         vModel: direction,
         options: directionOptions,
         styleObj: {
-          marginBottom: "1rem"
+          marginBottom: '1rem'
         }
       }),
       new Br(),

@@ -7,10 +7,6 @@ export class TagBasicExample extends TypeDiv {
 
   constructor() {
     super();
-    const $item = {
-      marginTop: '10px',
-      marginRight: '30px'
-    };
     this.addChild(new Div({
       name: 'basic',
       styleObj: {

@@ -5,7 +5,7 @@ import { signal } from '@type-dom/signals';
 export class RateReadonly extends TypeDiv {
   className = 'RateReadonly';
 
-  setup() {
+ override  setup() {
     const value = signal(3.7)
     this.addChild(new TdRate({
       vModel: value,

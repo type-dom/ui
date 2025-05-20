@@ -1,5 +1,6 @@
 import { TypeDiv } from '@type-dom/framework';
 import { TdAlert } from '@type-dom/ui';
+import { ElBellSvg } from '@type-dom/svgs';
 
 export class AlertIconExample extends TypeDiv {
   className = 'AlertIconExample';
@@ -37,6 +38,15 @@ export class AlertIconExample extends TypeDiv {
         showIcon: true,
         styleObj: $item,
       }),
+      new TdAlert({
+        title: 'Error alert with custom icon',
+        type: 'error',
+        showIcon: true,
+        styleObj: $item,
+        slots: {
+          icon: new ElBellSvg()
+        }
+      })
     );
   }
 }

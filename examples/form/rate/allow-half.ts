@@ -5,8 +5,8 @@ import { signal } from '@type-dom/signals';
 export class RateAllowHalf extends TypeDiv {
   className = 'RateAllowHalf';
 
-  setup() {
-    const value = signal()
+ override  setup() {
+    const value = signal<number>()
     this.addChildren(
     new TdRate({
       vModel: value,

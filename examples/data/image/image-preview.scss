@@ -1,1 +1,12 @@
-.demo-image__error{.image-slot{font-size:30px;.el-icon{font-size:30px}}.el-image{height:200px;width:100%}}
+.demo-image__error {
+  .image-slot {
+    font-size: 30px;
+    .el-icon {
+      font-size: 30px;
+    }
+  }
+  .el-image {
+      width: 100%;
+      height: 200px;
+    }
+}

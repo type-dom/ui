@@ -1,4 +1,4 @@
-import { Div, TypeDiv, TypeS, TypeSvg, TypeSvgSvg } from '@type-dom/framework';
+import { Div, TypeDiv, TypeSvgSvg } from '@type-dom/framework';
 import { TdIcon, TdSegmented } from '@type-dom/ui';
 import { ElAppleSvg, ElCherrySvg, ElGrapeSvg, ElOrangeSvg, ElPearSvg, ElWatermelonSvg } from '@type-dom/svgs';
 import { signal } from '@type-dom/signals';

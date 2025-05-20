@@ -25,7 +25,7 @@ export class TagEditableExample extends TypeDiv {
     const showInput = () => {
       inputVisible.set(true);
       nextTick(() => {
-        InputRef.get()!.input!.get().focus()
+        InputRef.get()!.input!.get()?.focus?.()
       })
     }
 

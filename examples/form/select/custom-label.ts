@@ -1,5 +1,5 @@
 import { Span, TypeDiv, TypeElement } from '@type-dom/framework';
-import { CheckboxValueType, TdButton, TdCheckbox, TdInput, TdOption, TdSelect } from '@type-dom/ui';
+import { TdOption, TdSelect } from '@type-dom/ui';
 import { signal } from '@type-dom/signals';
 
 export class SelectCustomLabelExample extends TypeDiv {
@@ -89,7 +89,7 @@ export class SelectCustomLabelExample extends TypeDiv {
         styleObj: {
           width: 240,
         },
-        init: (element) => {
+        init: () => {
           const slot: TypeElement[] = [];
           for (const opt of options) {
             slot.push(

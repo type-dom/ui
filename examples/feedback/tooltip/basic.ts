@@ -7,10 +7,10 @@ export class TooltipBasicExample extends TypeDiv {
 
   constructor() {
     super();
-    this.attr.addClass("tooltip-base-box");
+    this.attr.addClass('tooltip-base-box');
     this.addChildren(
       new Div({
-        class: "row center",
+        class: 'row center',
         slot: [
           new TdTooltip({
             class: 'box-item',

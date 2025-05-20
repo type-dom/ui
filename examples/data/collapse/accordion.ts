@@ -14,7 +14,7 @@ export class CollapseAccordionExample extends TypeDiv {
         vModel: activeNames,
         accordion: true,
         events: {
-          click: (event) => {
+          click: () => {
             this.handleChange();
           }
         },

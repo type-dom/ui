@@ -5,7 +5,7 @@ import { ElBellSvg, ElElementPlusSvg } from '@type-dom/svgs';
 export class Mixed extends TypeDiv {
   className = 'Mixed';
 
-  setup() {
+ override  setup() {
     this.addChild(new TdSpace({
       direction: 'vertical',
       slot: [

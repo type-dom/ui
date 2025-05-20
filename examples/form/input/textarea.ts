@@ -2,8 +2,8 @@ import { TdInput } from '@type-dom/ui';
 import { TypeDiv } from '@type-dom/framework';
 import { signal } from '@type-dom/signals';
 
-export class FormInputTextareaExample extends TypeDiv {
-  className = 'FormInputTextareaExample';
+export class InputTextareaExample extends TypeDiv {
+  className = 'InputTextareaExample';
 
   constructor() {
     super();

@@ -5,6 +5,7 @@ export class ButtonTagExamples extends TypeDiv {
   className: 'ButtonTagExamples'
   constructor() {
     super();
+    this.className = 'ButtonTagExamples';
     this.addChildren(
       new TdButton({
         slot: 'button',

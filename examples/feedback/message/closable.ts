@@ -34,6 +34,13 @@ export class MessageClosableExample extends TypeDiv {
         type: 'error',
       })
     }
+    const open5 = () => {
+      TdMessage({
+        showClose: true,
+        message: 'Oops, this is a message that does not automatically close.',
+        duration: 0,
+      })
+    }
 
     this.addChildren(
       new TdButton({
@@ -64,6 +71,13 @@ export class MessageClosableExample extends TypeDiv {
           click: open4
         }
       }),
+      new TdButton({
+        slot:'Won\'t close automatically',
+        plain: true,
+        events: {
+          click: open5
+        }
+      })
     );
   }
 }

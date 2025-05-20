@@ -38,7 +38,7 @@ export class DialogBasicExample extends TypeDiv {
         }),
         slots: {
           footer: new Div({
-            class: "dialog-footer",
+            class: 'dialog-footer',
             slot: [
               new TdButton({
                 slot: 'Cancel',

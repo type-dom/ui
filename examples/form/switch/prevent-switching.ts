@@ -5,7 +5,7 @@ import { TdMessage, TdSwitch } from '@type-dom/ui';
 export class PreventSwitching extends TypeDiv {
   className = 'PreventSwitching';
 
-  setup() {
+ override  setup() {
 
     const value1 = signal(false)
     const value2 = signal(false)

@@ -1,1 +1,11 @@
-.td-popper.is-customized{background:linear-gradient(90deg,#9fe597,#cce581);padding:6px 12px}.td-popper.is-customized .td-popper__arrow:before{background:linear-gradient(45deg,#b2e68d,#bce689);right:0}
+
+.td-popper.is-customized {
+  /* Set padding to ensure the height is 32px */
+  padding: 6px 12px;
+  background: linear-gradient(90deg, rgb(159, 229, 151), rgb(204, 229, 129));
+}
+
+.td-popper.is-customized .td-popper__arrow::before {
+  background: linear-gradient(45deg, #b2e68d, #bce689);
+  right: 0;
+}

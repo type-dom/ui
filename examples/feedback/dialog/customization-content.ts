@@ -1,5 +1,5 @@
 import { Div, Span, Table, TableDataCell, TableRow, TypeDiv } from '@type-dom/framework';
-import { TdButton, TdDialog, TdForm, TdFormItem, TdInput, TdOption, TdSelect } from '@type-dom/ui';
+import { TdButton, TdDialog, TdForm, TdFormItem, TdInput } from '@type-dom/ui';
 import { signal, toRefs } from '@type-dom/signals';
 
 export class DialogCustomizationContentExample extends TypeDiv {
@@ -23,28 +23,28 @@ export class DialogCustomizationContentExample extends TypeDiv {
       desc: '',
     })
 
-    const gridData = [
-      {
-        date: '2016-05-02',
-        name: 'John Smith',
-        address: 'No.1518,  Jinshajiang Road, Putuo District',
-      },
-      {
-        date: '2016-05-04',
-        name: 'John Smith',
-        address: 'No.1518,  Jinshajiang Road, Putuo District',
-      },
-      {
-        date: '2016-05-01',
-        name: 'John Smith',
-        address: 'No.1518,  Jinshajiang Road, Putuo District',
-      },
-      {
-        date: '2016-05-03',
-        name: 'John Smith',
-        address: 'No.1518,  Jinshajiang Road, Putuo District',
-      },
-    ]
+    // const gridData = [
+    //   {
+    //     date: '2016-05-02',
+    //     name: 'John Smith',
+    //     address: 'No.1518,  Jinshajiang Road, Putuo District',
+    //   },
+    //   {
+    //     date: '2016-05-04',
+    //     name: 'John Smith',
+    //     address: 'No.1518,  Jinshajiang Road, Putuo District',
+    //   },
+    //   {
+    //     date: '2016-05-01',
+    //     name: 'John Smith',
+    //     address: 'No.1518,  Jinshajiang Road, Putuo District',
+    //   },
+    //   {
+    //     date: '2016-05-03',
+    //     name: 'John Smith',
+    //     address: 'No.1518,  Jinshajiang Road, Putuo District',
+    //   },
+    // ]
 
     this.addChildren(
       new TdButton({

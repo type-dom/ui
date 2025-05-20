@@ -1,5 +1,6 @@
-import * as dayjs from 'dayjs';
-import { createClass, Div, TextNode, TypeDiv } from '@type-dom/framework';
+import dayjs from 'dayjs';
+import { Dayjs } from 'dayjs';
+import { createClass, Div, TypeDiv } from '@type-dom/framework';
 import { TdButton, TdCol, TdCountDown, TdIcon, TdRow } from '@type-dom/ui';
 import { ElCalendarSvg } from '@type-dom/svgs';
 import { signal } from '@type-dom/signals';
@@ -11,11 +12,11 @@ export class CountDownExample extends TypeDiv {
     super();
     const value = signal(Date.now() + 1000 * 60 * 60 * 7);
     const value1 = signal(Date.now() + 1000 * 60 * 60 * 24 * 2);
-    const value2 = signal(dayjs().add(1, 'month').startOf('month') as dayjs.Dayjs);
+    const value2 = signal(dayjs().add(1, 'month').startOf('month') as Dayjs);
 
-    function reset() {
-      value1.set(Date.now() + 1000 * 60 * 60 * 24 * 2);
-    }
+    // function reset() {
+    //   value1.set(Date.now() + 1000 * 60 * 60 * 24 * 2);
+    // }
     createClass('td-col', {
       textAlign: 'center',
     })
@@ -76,7 +77,7 @@ export class CountDownExample extends TypeDiv {
                         },
                         slot: new ElCalendarSvg()
                       }),
-                      'Still to go until next month'
+                      'Still to go until preview month'
                     ]
                   })
                 }

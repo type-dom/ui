@@ -7,7 +7,7 @@ import {
   TdRadioGroup, TdSelect,
   TdSwitch
 } from '@type-dom/ui';
-import { toRefs, toSignals } from '@type-dom/signals';
+import { toSignals } from '@type-dom/signals';
 
 export class FormBasicExample extends TypeDiv {
   className = 'FormBasicExample';

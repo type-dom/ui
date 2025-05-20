@@ -1,0 +1,31 @@
+.common-layout {
+  .td-header,
+  .td-footer,
+  .td-main,
+  .td-aside {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .td-header,
+  .td-footer {
+    background-color: var(--td-color-primary-light-7);
+    color: var(--td-text-color-primary);
+    text-align: center;
+  }
+
+  .td-aside {
+    background-color: var(--td-color-primary-light-8);
+    color: var(--td-text-color-primary);
+    text-align: center;
+  }
+
+  .td-main {
+    background-color: var(--td-color-primary-light-9);
+    color: var(--td-text-color-primary);
+    text-align: center;
+
+    height: 150px;
+  }
+}

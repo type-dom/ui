@@ -12,7 +12,7 @@ export class DialogAlignCenterExample extends TypeDiv {
       new TdButton({
         slot: 'Click to open the Dialog',
         events: {
-          click: (evt, element) =>
+          click: () =>
             centerDialogVisible.set(true)
         }
       }),

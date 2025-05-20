@@ -1,4 +1,4 @@
-import { TextNode, TypeDiv } from '@type-dom/framework';
+import { TypeDiv } from '@type-dom/framework';
 import { TdCard } from '@type-dom/ui';
 
 export class CardShadowExample extends TypeDiv {

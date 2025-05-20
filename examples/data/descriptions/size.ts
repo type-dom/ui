@@ -1,12 +1,12 @@
-import { IStyle } from '@type-dom/css-type';
-import { Div, TextNode, TypeDiv } from '@type-dom/framework';
+import { Div, TypeDiv, createStyle } from '@type-dom/framework';
 import {
-  ComponentSize as ISize,
+  ComponentSize,
   TdButton,
   TdDescriptions,
   TdDescriptionsItem,
   TdIcon,
   TdRadioGroup,
+  TdRadio,
   TdTag
 } from '@type-dom/ui';
 import { ElIphoneSvg, ElLocationSvg, ElOfficeBuildingSvg, ElTicketsSvg, ElUserSvg } from '@type-dom/svgs';
@@ -15,16 +15,12 @@ import { computed, signal } from '@type-dom/signals';
 export class DescriptionsSizeExample extends TypeDiv {
   className = 'DescriptionsSizeExample';
 
-  constructor() {
-    super();
-    const $cellItem: IStyle = {
-      display: 'flex',
-      alignItems: 'center'
-    };
-    const size = signal<ISize>('default');
+  override setup() {
+    const size = signal<ComponentSize>('default');
 
     const iconStyle = computed(() => {
       const marginMap = {
+        '':  '6px',
         large: '8px',
         default: '6px',
         small: '4px'
@@ -35,6 +31,7 @@ export class DescriptionsSizeExample extends TypeDiv {
     });
     const blockMargin = computed(() => {
       const marginMap = {
+        '': '28px',
         large: '32px',
         default: '28px',
         small: '24px'
@@ -43,34 +40,38 @@ export class DescriptionsSizeExample extends TypeDiv {
         marginTop: marginMap[size.get()] || marginMap.default
       };
     });
+    createStyle(`
+      .el-descriptions {
+        margin-top: 20px;
+      }
+      .cell-item {
+        display: flex;
+        align-items: center;
+      }
+      .margin-top {
+        margin-top: 20px;
+      }
+    `)
     this.addChildren(
       new TdRadioGroup({
-        modelValue: size,
-        options: [
-          { label: 'Large', value: 'large' },
-          { label: 'Default', value: 'default' },
-          { label: 'Small', value: 'small' }
+        vModel: size,
+        slot: [
+          new TdRadio({
+            value: 'large',
+            slot: 'Large',
+          }),
+          new TdRadio({
+            value: 'default',
+            slot: 'Default',
+          }),
+          new TdRadio({
+            value: 'small',
+            slot: 'Small',
+          })
         ],
-        events: {
-          click: (evt, element: TdRadioGroup) => {
-            // 1. 获取到当前选中的值
-            const value = element.props.modelValue as ISize;
-            size.set(element.props.modelValue as ISize);
-            // 2. 设置大小
-            this.childNodes.forEach((child) => {
-              if (child instanceof TdDescriptions) {
-                child.setSize(value);
-              }
-            });
-          }
-        },
-        emits: {
-          change: (value) => {
-            console.log('radio group clicked . ', value);
-          }
-        }
       }),
       new TdDescriptions({
+        class: 'margin-top',
         title: 'With border',
         column: 3,
         size: size,
@@ -86,14 +87,13 @@ export class DescriptionsSizeExample extends TypeDiv {
             slot: 'kooriookami',
             slots: {
               label: new Div({
-                name: 'cell-item',
-                styleObj: $cellItem,
+                class: 'cell-item',
                 slot: [
                   new TdIcon({
                     styleObj: iconStyle,
                     slot: new ElUserSvg()
                   }),
-                  new TextNode('Username')
+                  'Username'
                 ]
               })
             }
@@ -102,14 +102,13 @@ export class DescriptionsSizeExample extends TypeDiv {
             slot: '18100000000',
             slots: {
               label: new Div({
-                name: 'cell-item',
-                styleObj: $cellItem,
+                class: 'cell-item',
                 slot: [
                   new TdIcon({
                     styleObj: iconStyle,
                     slot: new ElIphoneSvg()
                   }),
-                  new TextNode('Telephone')
+                  'Telephone'
                 ]
               })
             }
@@ -118,14 +117,13 @@ export class DescriptionsSizeExample extends TypeDiv {
             slot: 'Suzhou',
             slots: {
               label: new Div({
-                name: 'cell-item',
-                styleObj: $cellItem,
+                class: 'cell-item',
                 slot: [
                   new TdIcon({
                     styleObj: iconStyle,
                     slot: new ElLocationSvg()
                   }),
-                  new TextNode('Place')
+                  'Place'
                 ]
               })
             }
@@ -133,14 +131,13 @@ export class DescriptionsSizeExample extends TypeDiv {
           new TdDescriptionsItem({
             slots: {
               label: new Div({
-                name: 'cell-item',
-                styleObj: $cellItem,
+                class: 'cell-item',
                 slot: [
                   new TdIcon({
                     styleObj: iconStyle,
                     slot: new ElTicketsSvg()
                   }),
-                  new TextNode('Remarks')
+                  'Remarks'
                 ]
               })
             },
@@ -150,18 +147,16 @@ export class DescriptionsSizeExample extends TypeDiv {
             })
           }),
           new TdDescriptionsItem({
-            label: '',
             slot: 'No.1188, Wuzhong Avenue, Wuzhong District, Suzhou, Jiangsu Province',
             slots: {
               label: new Div({
-                name: 'cell-item',
-                styleObj: $cellItem,
+                class: 'cell-item',
                 slot: [
                   new TdIcon({
                     styleObj: iconStyle,
                     slot: new ElOfficeBuildingSvg()
                   }),
-                  new TextNode('Address')
+                  'Address'
                 ]
               })
             }
@@ -170,6 +165,7 @@ export class DescriptionsSizeExample extends TypeDiv {
       }),
 
       new TdDescriptions({
+        class: 'margin-top',
         title: 'Without border',
         column: 3,
         size: size,

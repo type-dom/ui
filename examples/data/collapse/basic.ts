@@ -7,8 +7,8 @@ export class CollapseBasicExample extends TypeDiv {
 
   constructor() {
     super();
-    const activeNames = signal(['1'])
-    const handleChange = (evt?: Event, element?: TdCollapseItem, val?: CollapseModelValue) => {
+    const activeNames = signal<CollapseModelValue>(['1'])
+    const handleChange = (val?: CollapseModelValue) => {
       console.log(val)
     }
 
@@ -17,7 +17,7 @@ export class CollapseBasicExample extends TypeDiv {
     this.addChild(
       new TdCollapse({
         vModel: activeNames,
-        events: {
+        emits: {
           change: handleChange
         },
         slot: [

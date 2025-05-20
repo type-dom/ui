@@ -1,6 +1,5 @@
 import { Div, TypeDiv } from '@type-dom/framework';
 import { TdAvatar, TdIcon } from '@type-dom/ui';
-import { IStyle } from '@type-dom/css-type';
 import { ElUserFilledSvg } from '@type-dom/svgs';
 import './types.scss';
 
@@ -8,10 +7,6 @@ export class AvatarTypesExample extends TypeDiv {
   className = 'AvatarTypesExample';
   constructor() {
     super();
-    const $div: IStyle = {
-      flex: 1,
-      textAlign: 'center',
-    };
     this.addChild(new Div({
       class: 'demo-type',
       slot: [

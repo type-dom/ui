@@ -1,5 +1,5 @@
 import { Div, Span, TypeDiv } from '@type-dom/framework';
-import { $dialogFooterStyle, TdButton, TdDialog } from '@type-dom/ui';
+import { TdButton, TdDialog } from '@type-dom/ui';
 import { signal } from '@type-dom/signals';
 
 export class DialogNestedExample extends TypeDiv {
@@ -14,7 +14,7 @@ export class DialogNestedExample extends TypeDiv {
         slot: 'Open the outer Dialog',
         // styleObj: $item,
         events: {
-          click: (evt, element) => {
+          click: () => {
             outerVisible.set(true)
           }
         }
@@ -44,7 +44,7 @@ export class DialogNestedExample extends TypeDiv {
               new TdButton({
                 slot: 'Cancel',
                 events: {
-                  click: (evt, element) => {
+                  click: () => {
                     outerVisible.set(false)
                   }
                 }
@@ -53,7 +53,7 @@ export class DialogNestedExample extends TypeDiv {
                 type: 'primary',
                 slot: ' Open the inner Dialog',
                 events: {
-                  click: (evt, element) => {
+                  click: () => {
                     console.log('Open the inner Dialog');
                     innerVisible.set(true);
                   }

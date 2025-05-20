@@ -1,5 +1,5 @@
 import { P, I, Span, TypeDiv } from '@type-dom/framework';
-import { TdButton, TdDialog, TdMessage, TdMessageBox } from '@type-dom/ui';
+import { TdButton, TdMessage, TdMessageBox } from '@type-dom/ui';
 import { isRef, signal } from '@type-dom/signals';
 
 export class MessageBoxCustomizationExample extends TypeDiv {

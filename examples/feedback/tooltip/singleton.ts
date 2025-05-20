@@ -18,11 +18,11 @@ export class TooltipSingletonExample extends TypeDiv {
     this.addChildren(
       new For({
         data: [1, 2, 3],
-        getter: (item, index) => new TdButton({
+        getter: () => new TdButton({
           slot: `Click to open tooltip`,
           events: {
             mouseover: (evt) => {
-              buttonRef.set(evt.currentTarget as unknown as Measurable);
+              buttonRef.set(evt?.currentTarget as unknown as Measurable);
             },
             click: () => visible.set(!visible.get()),
           }

@@ -18,7 +18,7 @@ export class MessageBoxCenteredContentExample extends TypeDiv {
           center: true,
         }
       )
-        .then(({ action }) => {
+        .then(() => {
           TdMessage({
             type: 'success',
             message: 'Delete completed',

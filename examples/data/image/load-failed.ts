@@ -1,4 +1,4 @@
-import { createClass, Div, Img, Span, TypeDiv } from '@type-dom/framework';
+import { createClass, Div, Span, TypeDiv } from '@type-dom/framework';
 import { TdIcon, TdImage } from '@type-dom/ui';
 import { ElPictureSvg } from '@type-dom/svgs';
 import './load-failed.scss';
@@ -6,7 +6,7 @@ import './load-failed.scss';
 export class ImageLoadFailedExample extends TypeDiv {
   className = 'ImageLoadFailedExample';
 
-  setup() {
+ override  setup() {
     this.attr.addClass('demo-image__error');
     this.addChildren(
       new Div({
@@ -57,13 +57,13 @@ export class ImageLoadFailedExample extends TypeDiv {
   //     marginBottom: '20px',
   //   })
   //
-  //   createClass('demo-image__error td-image', {
-  //     padding: '0 5px',
-  //     maxWidth: '300px',
-  //     maxHeight: '200px',
-  //     width: '100%',
-  //     height: '200px',
-  //   })
+    createClass('demo-image__error td-image', {
+      padding: '0 5px',
+      maxWidth: '300px',
+      maxHeight: '200px',
+      width: '100%',
+      height: '200px',
+    })
   //
   //   createClass('demo-image__error image-slot', {
   //     display: 'flex',

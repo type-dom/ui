@@ -1,11 +1,11 @@
-import { createClass, TypeDiv } from '@type-dom/framework';
+import { TypeDiv } from '@type-dom/framework';
 import { TdImage } from '@type-dom/ui';
 import './image-preview.scss';
 
 export class ImagePreviewExample extends TypeDiv {
   className = 'ImagePreviewExample';
 
-  setup() {
+ override  setup() {
     const url =
       'https://fuss10.elemecdn.com/a/3f/3302e58f9a181d2509f3dc0fa68b0jpeg.jpeg'
     const srcList = [
@@ -20,7 +20,7 @@ export class ImagePreviewExample extends TypeDiv {
     this.attr.addClass('demo-image__preview');
     this.addChild(new TdImage({
       styleObj: {
-        width: 100, // todo 100 为什么无效
+        width: '100px',
         height: '100px',
       },
       src: url,
@@ -28,6 +28,7 @@ export class ImagePreviewExample extends TypeDiv {
       maxScale: 7,
       minScale: 0.2,
       previewSrcList: srcList,
+      showProgress: true,
       initialIndex: 4,
       fit: 'cover'
     }));

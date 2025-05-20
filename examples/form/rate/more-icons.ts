@@ -6,8 +6,8 @@ import { ElChatDotRoundSvg, ElChatLineRoundSvg, ElChatRoundSvg } from '@type-dom
 export class RateMoreIcons extends TypeDiv {
   className = 'RateMoreIcons';
 
-  setup() {
-    const value = signal()
+ override  setup() {
+    const value = signal<number>()
     const icons = [ElChatRoundSvg, ElChatLineRoundSvg, ElChatDotRoundSvg] // same as { 2: ChatRound, 4: { value: ChatLineRound, excluded: true }, 5: ChatDotRound }
 
     this.addChild(new TdRate({

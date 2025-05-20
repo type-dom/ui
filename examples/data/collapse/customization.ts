@@ -1,4 +1,4 @@
-import { Div, TextNode, TypeDiv } from '@type-dom/framework';
+import { Div, TypeDiv } from '@type-dom/framework';
 import { TdCollapse, TdCollapseItem, TdIcon } from '@type-dom/ui';
 import { ElInfoFilledSvg } from '@type-dom/svgs';
 
@@ -13,7 +13,7 @@ export class CollapseCustomizationExample extends TypeDiv {
       new TdCollapse({
         modelValue: activeNames,
         events: {
-          click: (event) => {
+          click: () => {
             this.handleChange();
           }
         },
@@ -32,13 +32,16 @@ export class CollapseCustomizationExample extends TypeDiv {
               })
             ],
             slots: {
-              title: [
-                new TextNode('Consistency'),
-                new TdIcon({
-                  name: 'header-icon',
-                  slot: new ElInfoFilledSvg(),
-                })
-              ]
+              title: ({ isActive }) => new Div({
+                class: ['title-wrapper', { 'is-active': isActive }],
+                slot: [
+                  'Consistency',
+                  new TdIcon({
+                    name: 'header-icon',
+                    slot: new ElInfoFilledSvg(),
+                  })
+                ]
+              })
             }
           }),
           new TdCollapseItem({

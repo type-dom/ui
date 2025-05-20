@@ -9,7 +9,7 @@ export class AffixBasicExample extends TypeDiv {
 
   constructor() {
     super();
-    this.addChildren(
+    this.addChild(
       new TdAffix({
         name: 'td-affix',
         offset: 120,

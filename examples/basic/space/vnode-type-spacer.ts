@@ -1,12 +1,12 @@
-import { Div, Span, TypeDiv } from '@type-dom/framework';
-import { TdButton, TdCard, TdDivider, TdSpace } from '@type-dom/ui';
+import { Div, TypeDiv } from '@type-dom/framework';
+import { TdButton, TdDivider, TdSpace } from '@type-dom/ui';
 import { genNumArr } from '@type-dom/utils';
 import { signal } from '@type-dom/signals';
 
 export class SpaceNodeTypeSpacer extends TypeDiv {
   className = 'SpaceNodeTypeSpacer';
 
-  setup() {
+ override  setup() {
     const size = signal(10)
     const spacer = new TdDivider({ direction: 'vertical' })
     this.addChild(new TdSpace({

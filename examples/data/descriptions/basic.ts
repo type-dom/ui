@@ -6,14 +6,14 @@ export class DescriptionsBasicExample extends TypeDiv {
 
   constructor() {
     super();
-    const $item = {
-      marginTop: '10px',
-      marginRight: '30px'
-    };
-    this.slotChildren(
+    // const $item = {
+    //   marginTop: '10px',
+    //   marginRight: '30px'
+    // };
+    this.addChildren(
       new TdDescriptions({
         title: 'User Info',
-        styleObj: $item,
+        // styleObj: $item,
         slot: [
           new TdDescriptionsItem({
             label: 'Username',

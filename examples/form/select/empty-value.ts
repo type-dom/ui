@@ -1,6 +1,5 @@
 import { TypeDiv } from '@type-dom/framework';
 import { TdMessage, TdOption, TdSelect } from '@type-dom/ui';
-import * as handlebars from 'handlebars';
 import { signal } from '@type-dom/signals';
 
 export class SelectEmptyValueExample extends TypeDiv {

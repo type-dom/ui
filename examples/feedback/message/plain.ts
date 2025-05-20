@@ -1,15 +1,14 @@
 import { TypeDiv } from '@type-dom/framework';
 import { TdButton, TdMessage } from '@type-dom/ui';
-import { IStyle } from '@type-dom/css-type';
 
 export class MessagePlainExample extends TypeDiv {
   className = 'MessagePlainExample';
 
   constructor() {
     super();
-    const $itemStyle: IStyle = {
-      marginLeft: '20px',
-    };
+    // const $itemStyle: IStyle = {
+    //   marginLeft: '20px',
+    // };
 
     const open1 = () => {
       TdMessage({

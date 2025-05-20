@@ -5,7 +5,7 @@ import { TdRate } from '@type-dom/ui';
 export class RateSizes extends TypeDiv {
   className = 'RateSizes';
 
-  setup() {
+ override  setup() {
     const value = signal(0);
     this.addChildren(
       new TdRate({

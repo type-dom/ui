@@ -16,7 +16,7 @@ export class ButtonBasicExample extends TypeDiv {
     super();
   }
 
-  setup() {
+ override  setup() {
     this.addChildren(
       this.createNormalButton(),
       this.createPlainButton(),
@@ -38,7 +38,7 @@ export class ButtonBasicExample extends TypeDiv {
             margin: '3px 10px'
           },
           events: {
-            click: (evt, element) => {
+            click: () => {
               console.log('td-button click . ');
 
             }
@@ -52,7 +52,7 @@ export class ButtonBasicExample extends TypeDiv {
             margin: '3px 10px'
           },
           events: {
-            click: (evt, element) => {
+            click: () => {
               console.log('td-button click . ');
             }
           }

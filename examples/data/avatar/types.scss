@@ -1,1 +1,11 @@
-.demo-type{display:flex}.demo-type>div{flex:1;text-align:center}.demo-type>div:not(:last-child){border-right:1px solid var(--td-border-color)}
+.demo-type {
+  display: flex;
+}
+.demo-type > div {
+  flex: 1;
+  text-align: center;
+}
+
+.demo-type > div:not(:last-child) {
+  border-right: 1px solid var(--td-border-color);
+}

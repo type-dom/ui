@@ -1,46 +1,48 @@
 import { TypeDiv } from '@type-dom/framework';
-import { ComponentSize as ISize, TdDescriptions, TdDescriptionsItem, TdRadioGroup, TdTag } from '@type-dom/ui';
+import { computed, signal } from '@type-dom/signals';
+import { ComponentSize, TdDescriptions, TdDescriptionsItem, TdRadioGroup, TdRadio, TdTag } from '@type-dom/ui';
 
 export class DescriptionsVerticalExample extends TypeDiv {
   className = 'DescriptionsVerticalExample';
 
-  constructor() {
-    super();
-    const $item = {
-      marginTop: '10px',
-      marginRight: '30px'
-    };
+  override setup() {
+
+    const size = signal<ComponentSize>('default')
+
+    const blockMargin = computed(() => {
+      const marginMap = {
+        '': '28px',
+        large: '32px',
+        default: '28px',
+        small: '24px',
+      }
+      return {
+        marginTop: marginMap[size.get()] || marginMap.default,
+      }
+    })
     this.addChildren(
       new TdRadioGroup({
-        modelValue: 'default',
-        options: [
-          { label: 'Large', value: 'large' },
-          { label: 'Default', value: 'default' },
-          { label: 'Small', value: 'small' },
+        vModel: size,
+        slot: [
+          new TdRadio({
+            value: 'large',
+            slot: 'Large',
+          }),
+          new TdRadio({
+            value: 'default',
+            slot: 'Default',
+          }),
+          new TdRadio({
+            value: 'small',
+            slot: 'Small',
+          })
         ],
-        events: {
-          click: (evt, element: TdRadioGroup) => {
-            // 1. 获取到当前选中的值
-            const value = element.props.modelValue as ISize;
-            // 2. 设置大小
-            this.childNodes.forEach((child) => {
-              if (child instanceof TdDescriptions) {
-                child.setSize(value);
-              }
-            });
-          }
-        },
-        emits: {
-          change: (value) => {
-            console.log('radio group clicked . ', value);
-          }
-        }
       }),
       new TdDescriptions({
         title: 'Vertical list with border',
-        styleObj: $item,
         direction: 'vertical',
         column: 4,
+        size: size,
         border: true,
         slot: [
           new TdDescriptionsItem({
@@ -53,6 +55,7 @@ export class DescriptionsVerticalExample extends TypeDiv {
           }),
           new TdDescriptionsItem({
             label: 'Place',
+            span: 2,
             slot: 'Suzhou'
           }),
           new TdDescriptionsItem({
@@ -71,9 +74,10 @@ export class DescriptionsVerticalExample extends TypeDiv {
 
       new TdDescriptions({
         title: 'Vertical list without border',
-        styleObj: $item,
-        direction: 'vertical',
         column: 4,
+        size: size,
+        direction: 'vertical',
+        styleObj: blockMargin,
         slot: [
           new TdDescriptionsItem({
             label: 'Username',
@@ -85,6 +89,7 @@ export class DescriptionsVerticalExample extends TypeDiv {
           }),
           new TdDescriptionsItem({
             label: 'Place',
+            span: 2,
             slot: 'Suzhou'
           }),
           new TdDescriptionsItem({

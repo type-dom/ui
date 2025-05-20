@@ -1,4 +1,4 @@
-import { createClass, Div, TypeDiv } from '@type-dom/framework';
+import { Div, TypeDiv } from '@type-dom/framework';
 import { TdAvatar, TdCol, TdRow } from '@type-dom/ui';
 import './basic.scss';
 
@@ -90,13 +90,13 @@ export class AvatarBasicExample extends TypeDiv {
             slot: [
               new Div({
                 name: 'title',
-                class: "sub-title",
+                class: 'sub-title',
                 // styleObj: $subTitle,
                 slot: 'circle'
               }),
               new Div({
                 name: 'circle',
-                class: "demo-basic--circle",
+                class: 'demo-basic--circle',
                 // styleObj: $circleSquare,
                 slot: [
                   new Div({
@@ -119,12 +119,12 @@ export class AvatarBasicExample extends TypeDiv {
               new Div({
                 name: 'title',
                 slot: 'square',
-                class: "sub-title"
+                class: 'sub-title'
                 // styleObj: $subTitle,
               }),
               new Div({
                 name: 'square',
-                class: "demo-basic--circle",
+                class: 'demo-basic--circle',
                 // styleObj: $circleSquare,
                 slot: [
                   new Div({

@@ -7,7 +7,7 @@ import { genNumArr } from '@type-dom/utils';
 export class SpaceLiteralTypeSpacer extends  TypeDiv {
   className = 'SpaceLiteralTypeSpacer';
 
-  setup() {
+ override  setup() {
     const size = signal(10)
     this.addChild(new TdSpace({
       size: size,

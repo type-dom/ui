@@ -14,7 +14,7 @@ export class DialogCustomizationHeaderExample extends TypeDiv {
         slot: 'Open Dialog with customized header',
         plain: true,
         events: {
-          click: (evt, element) => visible.set(true),
+          click: () => visible.set(true),
         },
       }),
       new TdDialog({

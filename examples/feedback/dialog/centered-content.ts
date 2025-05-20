@@ -1,5 +1,5 @@
 import { Div, Span, TypeDiv } from '@type-dom/framework';
-import { $dialogFooterStyle, TdButton, TdDialog } from '@type-dom/ui';
+import { TdButton, TdDialog } from '@type-dom/ui';
 import { signal } from '@type-dom/signals';
 
 export class DialogCenteredContentExample extends TypeDiv {
@@ -14,7 +14,7 @@ export class DialogCenteredContentExample extends TypeDiv {
         plain: true,
         slot: 'Click to open the Dialog',
         events: {
-          click: (evt, element) =>
+          click: () =>
             centerDialogVisible.set(true)
         }
       }),
@@ -30,7 +30,7 @@ export class DialogCenteredContentExample extends TypeDiv {
         ],
         slots: {
           footer: new Div({
-            class: "dialog-footer",
+            class: 'dialog-footer',
             slot: [
               new TdButton({
                 slot: 'Cancel',

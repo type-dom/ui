@@ -9,11 +9,11 @@ export class ScrollbarBasicExample extends TypeDiv {
     super();
     this.className = 'ScrollbarBasicExample';
     this.attr.addName('scrollbar-basic-example');
-    this.style.addObj({
-      width: '100%',
-      height: '100%',
-      overflow: 'auto',
-    });
+    // this.style.addObj({
+    //   width: '100%',
+    //   height: '100%',
+    //   overflow: 'auto',
+    // });
     const scrollbarItem: IStyle = {
       display: 'flex',
       alignItems: 'center',
@@ -31,7 +31,7 @@ export class ScrollbarBasicExample extends TypeDiv {
     for (let i = 0; i < 20; i++) {
       contents.push(
         new P({
-          slot: 'item ' + (i + 1),
+          slot: i + 1,
           styleObj: scrollbarItem,
         })
       );

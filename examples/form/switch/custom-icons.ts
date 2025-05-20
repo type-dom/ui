@@ -1,4 +1,4 @@
-import { Br, Div, TypeDiv } from '@type-dom/framework';
+import { Br, TypeDiv } from '@type-dom/framework';
 import { TdSwitch } from '@type-dom/ui';
 import { ElCheckSvg, ElCloseSvg } from '@type-dom/svgs';
 import { signal } from '@type-dom/signals';

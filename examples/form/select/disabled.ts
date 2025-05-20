@@ -35,6 +35,7 @@ export class SelectDisabledExample extends TypeDiv {
     this.addChildren(
       new TdSelect({
         vModel: value,
+        disabled: true,
         placeholder: 'Select',
         size: 'large',
         styleObj: {

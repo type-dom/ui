@@ -31,21 +31,21 @@ export class MessageDifferentTypesExample extends TypeDiv {
 
     this.addChildren(
       new TdButton({
-        slot:'Success',
+        slot:'Message',
         plain: true,
         events: {
           click: open1
         }
       }),
       new TdButton({
-        slot:'Warning',
+        slot:'Success',
         plain: true,
         events: {
           click: open2
         }
       }),
       new TdButton({
-        slot:'Message',
+        slot:'Warning',
         plain: true,
         events: {
           click: open3

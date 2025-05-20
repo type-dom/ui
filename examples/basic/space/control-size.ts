@@ -39,7 +39,7 @@ export class SpaceSizeExample extends TypeDiv {
           new TdSpace({
             wrap: true,
             size: size,
-            slot: genNumArr(3).map(i => {
+            slot: genNumArr(3).map(() => {
               return new TdCard({
                 class: 'box-card',
                 styleObj: {

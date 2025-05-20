@@ -1,10 +1,11 @@
 import { P, TypeDiv } from '@type-dom/framework';
 import { $colorPrimary, $colors, TdButton, TdScrollbar } from '@type-dom/ui';
 import { IStyle } from '@type-dom/css-type';
+import { computed, signal } from '@type-dom/signals';
 
 export class ScrollbarMaxHeightExample extends TypeDiv {
   className: 'ScrollbarMaxHeightExample';
-  count: number;
+
   constructor() {
     super();
     this.className = 'ScrollbarMaxHeightExample';
@@ -14,7 +15,22 @@ export class ScrollbarMaxHeightExample extends TypeDiv {
       height: '100%',
       overflow: 'auto',
     });
-    this.count = 3;
+
+  }
+
+ override  setup() {
+    const count = signal(3)
+
+    const add = () => {
+      // console.log('count is ', count);
+      count.set(count.get() + 1)
+    }
+    const onDelete = () => {
+      if (count.get() > 0) {
+        count.set(count.get() - 1)
+      }
+    }
+
     const scrollbarItem: IStyle = {
       display: 'flex',
       alignItems: 'center',
@@ -28,42 +44,35 @@ export class ScrollbarMaxHeightExample extends TypeDiv {
       // color: var(--el-color-primary),
       color: $colorPrimary,
     };
-    const contents: P[] = [];
-    for (let i = 0; i < this.count; i++) {
-      contents.push(
-        new P({
-          slot: 'item ' + (i + 1),
-          styleObj: scrollbarItem,
-        })
-      );
-    }
+
     this.addChildren(
       new TdButton({
         slot: 'Add Item',
         events: {
-          click: this.add,
-        }
+          click: add,
+        },
       }),
       new TdButton({
         slot: 'Delete Item',
         events: {
-          click: this.onDelete,
-        }
+          click: onDelete,
+        },
       }),
       new TdScrollbar({
-        height: 400,
-        slot: contents,
+        maxHeight: 400,
+        slot: computed(() => {
+          const contents: P[] = [];
+          for (let i = 0; i < count.get(); i++) {
+            contents.push(
+              new P({
+                slot: i + 1,
+                styleObj: scrollbarItem,
+              })
+            );
+          }
+          return contents;
+        }),
       })
     );
-  }
-
-  add = () => {
-    this.count++
-  }
-
-  onDelete = () => {
-    if (this.count > 0) {
-      this.count--
-    }
   }
 }

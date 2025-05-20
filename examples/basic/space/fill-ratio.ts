@@ -1,12 +1,12 @@
 import { Div, Span, TypeDiv } from '@type-dom/framework';
-import { SpaceProps, TdButton, TdCard, TdRadio, TdSlider, TdSpace } from '@type-dom/ui';
+import { TdButton, TdCard, TdRadio, TdSlider, TdSpace } from '@type-dom/ui';
 import { signal } from '@type-dom/signals';
 import { genNumArr } from '@type-dom/utils';
 
 export class SpaceFillRatio extends TypeDiv {
   className = 'SpaceFillRatio';
 
-  setup() {
+ override  setup() {
     const direction = signal<'horizontal' | 'vertical'>('horizontal')
     const fillRatio = signal(30)
     this.addChildren(
@@ -47,7 +47,7 @@ export class SpaceFillRatio extends TypeDiv {
         styleObj: {
           width: '100%',
         },
-        slot: genNumArr(5).map(i => new TdCard({
+        slot: genNumArr(5).map(() => new TdCard({
           class: 'box-card',
           slot: genNumArr(4).map(o => new Div({
             class: 'text item',

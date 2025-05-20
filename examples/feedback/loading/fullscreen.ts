@@ -10,11 +10,6 @@ export class LoadingFullscreenExample extends TypeDiv {
       new TdButton({
         slot: 'Open the outer Dialog',
         // styleObj: $item,
-        events: {
-          click: (evt, element) => {
-
-          }
-        }
       }),
       new TdDialog({
         title: 'Outer Dialog',
@@ -41,10 +36,6 @@ export class LoadingFullscreenExample extends TypeDiv {
             slot: [
               new TdButton({
                 slot: 'Cancel',
-                events: {
-                  click: (evt, element) => {
-                  }
-                }
               }),
               new TdButton({
                 type: 'primary',
@@ -52,10 +43,6 @@ export class LoadingFullscreenExample extends TypeDiv {
                 styleObj: {
                   marginLeft: '12px'
                 },
-                events: {
-                  click: (evt, element) => {
-                  }
-                }
               })
             ]
           })

@@ -14,10 +14,6 @@ export class LoadingBasicExample extends TypeDiv {
       new TdButton({
         slot: 'Click to open the Dialog',
         // styleObj: $item,
-        events: {
-          click: (evt, element) => {
-          }
-        }
       }),
       new TdDialog({
         title: 'Tips',
@@ -31,11 +27,6 @@ export class LoadingBasicExample extends TypeDiv {
             slot: [
               new TdButton({
                 slot: 'Cancel',
-                events: {
-                  click: (evt, element) => {
-
-                  }
-                }
               }),
               new TdButton({
                 type: 'primary',
@@ -43,11 +34,6 @@ export class LoadingBasicExample extends TypeDiv {
                 styleObj: {
                   marginLeft: '12px'
                 },
-                events: {
-                  click: (evt, element) => {
-
-                  }
-                }
               })
             ]
           })

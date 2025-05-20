@@ -1,5 +1,5 @@
 import { Div, TypeDiv } from '@type-dom/framework';
-import { TdBadge, TdButton, TdTag } from '@type-dom/ui';
+import { TdTag } from '@type-dom/ui';
 
 export class TagSizesExample extends TypeDiv {
   className = 'TagSizesExample';

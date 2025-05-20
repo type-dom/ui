@@ -53,33 +53,33 @@ export class SelectBasicUsageExample extends TypeDiv {
           value: opt.value,
         })),
       }),
-      // new TdSelect({
-      //   name: 'second-select',
-      //   vModel: value,
-      //   placeholder: 'Select',
-      //   styleObj: {
-      //     width: 240,
-      //     marginLeft: '6px'
-      //   },
-      //   slot: options.map(opt => new TdOption({
-      //     label: opt.label,
-      //     value: opt.value,
-      //   })),
-      // }),
-      // new TdSelect({
-      //   name: 'third-select',
-      //   vModel: value,
-      //   placeholder: 'Select',
-      //   size: 'small',
-      //   styleObj: {
-      //     width: 240,
-      //     marginLeft: '6px'
-      //   },
-      //   slot: options.map(opt => new TdOption({
-      //     label: opt.label,
-      //     value: opt.value,
-      //   })),
-      // })
+      new TdSelect({
+        name: 'second-select',
+        vModel: value,
+        placeholder: 'Select',
+        styleObj: {
+          width: 240,
+          marginLeft: '6px'
+        },
+        slot: options.map(opt => new TdOption({
+          label: opt.label,
+          value: opt.value,
+        })),
+      }),
+      new TdSelect({
+        name: 'third-select',
+        vModel: value,
+        placeholder: 'Select',
+        size: 'small',
+        styleObj: {
+          width: 240,
+          marginLeft: '6px'
+        },
+        slot: options.map(opt => new TdOption({
+          label: opt.label,
+          value: opt.value,
+        })),
+      })
     );
   }
 }

@@ -1,12 +1,11 @@
 import { Div, For, Span, TypeDiv } from '@type-dom/framework';
 import { TdButton, TdCard, TdSpace, TdSwitch } from '@type-dom/ui';
 import { signal } from '@type-dom/signals';
-import { genNumArr } from '@type-dom/utils';
 
 export class SpaceFill extends TypeDiv {
   className = 'SpaceFill';
 
-  setup() {
+ override  setup() {
     const fill = signal(true)
     this.addChildren(
       new Div({
@@ -25,7 +24,7 @@ export class SpaceFill extends TypeDiv {
         wrap: true,
         slot: new For({
           data: [1, 2, 3],
-          getter: (o) => new TdCard({
+          getter: () => new TdCard({
             class: 'box-card',
             slot: new For({
               data: [1, 2, 3, 4],

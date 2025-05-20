@@ -1,5 +1,5 @@
-import { Div, Span, P, TypeDiv } from '@type-dom/framework';
-import { CheckboxValueType, TdButton, TdCheckbox, TdInput, TdOption, TdSelect } from '@type-dom/ui';
+import { Div, P, TypeDiv } from '@type-dom/framework';
+import { TdOption, TdSelect } from '@type-dom/ui';
 import { signal } from '@type-dom/signals';
 
 interface ListItem {

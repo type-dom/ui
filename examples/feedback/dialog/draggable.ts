@@ -1,5 +1,5 @@
 import { Div, Span, TypeDiv } from '@type-dom/framework';
-import { $dialogFooterStyle, TdButton, TdDialog } from '@type-dom/ui';
+import { TdButton, TdDialog } from '@type-dom/ui';
 import { signal } from '@type-dom/signals';
 
 export class DialogDraggableExample extends TypeDiv {
@@ -15,7 +15,7 @@ export class DialogDraggableExample extends TypeDiv {
         plain: true,
         slot: 'Open a draggable Dialog',
         events: {
-          click: (evt, element) => {
+          click: () => {
             dialogVisible.set(true);
           }
         }
@@ -24,7 +24,7 @@ export class DialogDraggableExample extends TypeDiv {
         plain: true,
         slot: 'Open a overflow draggable Dialog',
         events: {
-          click: (evt, element) => {
+          click: () => {
             dialogOverflowVisible.set(true)
           }
         }
@@ -44,7 +44,7 @@ export class DialogDraggableExample extends TypeDiv {
               new TdButton({
                 slot: 'Cancel',
                 events: {
-                  click: (evt, element) => {
+                  click: () => {
                     dialogVisible.set(false);
                   }
                 }
@@ -53,7 +53,7 @@ export class DialogDraggableExample extends TypeDiv {
                 type: 'primary',
                 slot: 'Confirm',
                 events: {
-                  click: (evt, element) => {
+                  click: () => {
                     dialogVisible.set(false);
                   }
                 }
@@ -78,7 +78,7 @@ export class DialogDraggableExample extends TypeDiv {
               new TdButton({
                 slot: 'Cancel',
                 events: {
-                  click: (evt, element) => {
+                  click: () => {
                     dialogOverflowVisible.set(false);
                   }
                 }
@@ -87,7 +87,7 @@ export class DialogDraggableExample extends TypeDiv {
                 type: 'primary',
                 slot: 'Confirm',
                 events: {
-                  click: (evt, element) => {
+                  click: () => {
                     dialogOverflowVisible.set(false);
                   }
                 }

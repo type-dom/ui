@@ -1,19 +1,21 @@
-import { TypeDiv } from '@type-dom/framework';
-import { $colors, TdDescriptions, TdDescriptionsItem, TdTag } from '@type-dom/ui';
+import { TypeDiv, createStyle } from '@type-dom/framework';
+import { TdDescriptions, TdDescriptionsItem, TdTag } from '@type-dom/ui';
 
 export class DescriptionsCustomExample extends TypeDiv {
   className = 'DescriptionsCustomExample';
 
-  constructor() {
-    super();
-    const $item = {
-      marginTop: '10px',
-      marginRight: '30px'
-    };
+  override setup() {
+    createStyle(`
+      .my-label {
+        background: var(--td-color-success-light-9) !important;
+      }
+      .my-content {
+        background: var(--td-color-danger-light-9);
+      }
+    `);
     this.addChildren(
       new TdDescriptions({
         title: 'Customized style list',
-        styleObj: $item,
         column: 3,
         border: true,
         slot: [
@@ -21,16 +23,10 @@ export class DescriptionsCustomExample extends TypeDiv {
             label: 'Username',
             labelAlign: 'right',
             align: 'center',
-            // labelClassName: 'my-label',
-            labelStyle: {
-              backgroundColor: $colors.success['light-9']
-            },
+            labelClassName: 'my-label',
+            className: 'my-content',
             width: '150px',
             slot: 'kooriookami',
-            // className: 'my-content',
-            contentStyle: {
-              backgroundColor: $colors.danger['light-9']
-            }
           }),
           new TdDescriptionsItem({
             label: 'Telephone',

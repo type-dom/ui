@@ -1,5 +1,5 @@
 import { Div, Span, TypeDiv } from '@type-dom/framework';
-import { TdButton, TdDialog, TdMessageBox } from '@type-dom/ui';
+import { TdButton, TdDialog } from '@type-dom/ui';
 import { signal } from '@type-dom/signals';
 
 export class DialogFullScreenExample extends TypeDiv {

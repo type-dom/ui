@@ -1,80 +1,87 @@
-import { Div, P, TypeDiv } from '@type-dom/framework';
-import { $colorPrimary, $colors, TdScrollbar } from '@type-dom/ui';
-import { IStyle } from '@type-dom/css-type';
+import { createStyle, Div, nextFrame, onMounted, P, TypeDiv } from '@type-dom/framework';
+import { TdScrollbar, TdSlider } from '@type-dom/ui';
+import { signal } from '@type-dom/signals';
+import { genNumArr } from '@type-dom/utils';
+
+type Arrayable<T> = T | T[];
 
 export class ScrollbarManualExample extends TypeDiv {
   className: 'ScrollbarManualExample';
-  private inner: Div;
 
   constructor() {
     super();
     this.className = 'ScrollbarManualExample';
     this.attr.addName('scrollbar-manual-example');
-    this.style.addObj({
-      width: '100%',
-      height: '100%',
-      overflow: 'auto',
-    });
-    const scrollbarItem: IStyle = {
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      height: '50px',
-      margin: '10px',
-      textAlign: 'center',
-      borderRadius: '4px',
-      // background: var(--el-color-primary-light-9),
-      background: $colors.primary['light-9'],
-      // color: var(--el-color-primary),
-      color: $colorPrimary,
-    };
-    const contents: P[] = [];
-    for (let i = 0; i < 20; i++) {
-      contents.push(
-        new P({
-          slot: 'item ' + (i + 1),
-          styleObj: scrollbarItem,
-        })
-      );
-    }
-    this.inner =  new Div({
-      slot: contents
-    });
-    this.addChildren(
-      new TdScrollbar({
-        refId: 'scrollbar',
-        height: 400,
-        always: true,
-        slot: this.inner,
-        events: {
-          // scroll: ({ scrollTop }) => {
-          //   value = scrollTop
-          // }
-        }
-      }),
-      // new TdSlider({
-      //
-      // })
-    );
   }
   override setup() {
-    let max = 0;
-    let value = 0;
-    const innerRef = this.inner.dom;
-    const scrollbarRef = this.down<TdScrollbar>('refId', 'scrollbar');
 
-    this.onMounted(() => {
-      max = innerRef.clientHeight - 380
+    const max = signal(0)
+    const value = signal(0)
+    const innerRef = signal<HTMLDivElement>()
+    const scrollbarRef = signal<TdScrollbar>()
+
+    onMounted(() => {
+      nextFrame(() => {
+        // console.warn('innerRef is ', innerRef);
+        max.set(innerRef.get().clientHeight - 380)
+        // console.warn('max is ', max);
+      })
     })
 
-    const inputSlider = (value: number) => {
-      scrollbarRef.setScrollTop(value)
+    const inputSlider = (value: Arrayable<number>) => {
+      // console.error('inputSlider value is ', value);
+      scrollbarRef.get()!.setScrollTop?.(value);
     }
-    const scroll = ({ scrollTop }) => {
-      value = scrollTop
+    const scroll = ({ scrollTop }: { scrollTop: number }) => {
+      // console.warn('scrollTop', scrollTop);
+      value.set(Math.round(scrollTop))
     }
     const formatTooltip = (value: number) => {
-      return `${value} px`
+      return `${value}px`
     }
+
+    createStyle(`
+      .scrollbar-demo-item {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 50px;
+        margin: 10px;
+        text-align: center;
+        border-radius: 4px;
+        background: var(--td-color-primary-light-9);
+        color: var(--td-color-primary);
+      }
+      .el-slider {
+        margin-top: 20px;
+      }`, true);
+
+    this.addChildren(
+      new TdScrollbar({
+        refEl: scrollbarRef,
+        height: 400,
+        always: true,
+        slot: new Div({
+          refDom: innerRef,
+          slot: genNumArr(20).map(item => {
+            return new P({
+              slot: item,
+              class: 'scrollbar-demo-item',
+            })
+          })
+        }),
+        emits: {
+          scroll: scroll
+        }
+      }),
+      new TdSlider({
+        vModel: value,
+        max: 810,
+        formatTooltip: formatTooltip,
+        emits: {
+          input: inputSlider
+        }
+      })
+    );
   }
 }

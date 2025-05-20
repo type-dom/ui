@@ -1,12 +1,11 @@
 import { Div, For, Span, TypeDiv } from '@type-dom/framework';
 import { TdButton, TdCard, TdSlider, TdSpace } from '@type-dom/ui';
 import { signal } from '@type-dom/signals';
-import { genNumArr } from '@type-dom/utils';
 
 export class SpaceCustomizedSize extends TypeDiv {
   className = 'SpaceCustomizedSize';
 
-  setup() {
+ override  setup() {
     const size = signal(20)
     this.addChildren(
       new TdSlider({
@@ -16,13 +15,13 @@ export class SpaceCustomizedSize extends TypeDiv {
         size: size,
         slot: new For({
           data: [1, 2],
-          getter: (item, index) => new TdCard({
+          getter: () => new TdCard({
             class: 'box-card',
             styleObj: {
               width: '250px'
             },
             slot: new For({
-              data: [1, 2, 3],
+              data: [1, 2, 3, 4],
               getter: (i) => new Div({
                 class: 'text item',
                 slot: `List item ${i}`

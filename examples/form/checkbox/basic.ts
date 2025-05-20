@@ -57,7 +57,7 @@ export class CheckboxBasicExample extends TypeDiv {
         ]
       }),
     );
-    watch(checked1, newVal => {
+    watch(() => checked1.get(), newVal => {
       console.warn('checked1 newVal is ', newVal);
     })
   }

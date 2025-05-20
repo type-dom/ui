@@ -1,6 +1,6 @@
-import { Div, Span, TextNode, TypeDiv } from '@type-dom/framework';
-import { CollapseModelValue, TdCollapse, TdCollapseItem, TdIcon } from '@type-dom/ui';
-import { ElCaretRightSvg, ElInfoFilledSvg } from '@type-dom/svgs';
+import { Div, Span, TypeDiv } from '@type-dom/framework';
+import { CollapseModelValue, TdCollapse, TdCollapseItem } from '@type-dom/ui';
+import { ElCaretRightSvg } from '@type-dom/svgs';
 import { computed, signal } from '@type-dom/signals';
 
 export class CollapseCustomIconExample extends TypeDiv {
@@ -11,13 +11,13 @@ export class CollapseCustomIconExample extends TypeDiv {
     this.attr.addName('demo-collapse-custom-icon');
 
     const activeNames = signal(['1']);
-    const handleChange = (evt?: Event, element?: TdCollapseItem, val?: CollapseModelValue) => {
+    const handleChange = (val?: CollapseModelValue) => {
       console.log(val)
     }
     this.addChild(
       new TdCollapse({
         vModel: activeNames,
-        events: {
+        emits: {
           change: handleChange
         },
         slot: [

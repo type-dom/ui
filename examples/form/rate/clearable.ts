@@ -5,7 +5,7 @@ import { signal } from '@type-dom/signals';
 export class RateClearable extends TypeDiv {
   className = 'RateClearable';
 
-  setup() {
+ override  setup() {
     const value = signal(3)
     this.addChild(new TdRate({
       vModel: value,

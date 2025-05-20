@@ -12,7 +12,6 @@ export class TooltipControlledExample extends TypeDiv {
       new TdTooltip({
         visible: visible,
         placement: 'bottom',
-        effect: 'light',
         slot: new TdButton({
           slot: 'Hover me',
           events: {
@@ -20,7 +19,7 @@ export class TooltipControlledExample extends TypeDiv {
               console.log('controlled mouseenter ');
               visible.set(true);
             },
-            mouseleave: (evt, element) => {
+            mouseleave: () => {
               visible.set(false);
             }
           }

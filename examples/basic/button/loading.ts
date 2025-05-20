@@ -1,6 +1,6 @@
 import { Div, SvgPath, TypeDiv } from '@type-dom/framework';
 import { $button, TdButton } from '@type-dom/ui';
-import { ElElemeSvg, ElLoadingSvg, SvgSvg } from '@type-dom/svgs';
+import { ElElemeSvg, SvgSvg } from '@type-dom/svgs';
 
 export class ButtonLoadingExample extends TypeDiv {
   className = 'ButtonLoadingExample';

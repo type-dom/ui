@@ -1,11 +1,10 @@
 import { createClass, Div, For, Span, TypeDiv } from '@type-dom/framework';
-import { $borderColor, $textColor, ImageProps, TdImage } from '@type-dom/ui';
-import { IStyle } from '@type-dom/css-type';
+import { ImageProps, TdImage } from '@type-dom/ui';
 
 export class ImageBasicExample extends TypeDiv {
   className = 'ImageBasicExample';
 
-  setup() {
+ override  setup() {
     const fits = [
       'fill',
       'contain',

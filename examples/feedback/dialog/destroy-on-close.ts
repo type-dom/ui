@@ -1,5 +1,5 @@
 import { Div, Span, Strong, TypeDiv } from '@type-dom/framework';
-import { $dialogFooterStyle, TdButton, TdDialog } from '@type-dom/ui';
+import { TdButton, TdDialog } from '@type-dom/ui';
 import { signal } from '@type-dom/signals';
 
 export class DialogDestroyOnCloseExample extends TypeDiv {
@@ -51,7 +51,7 @@ export class DialogDestroyOnCloseExample extends TypeDiv {
                 type: 'primary',
                 slot: 'Confirm',
                 events: {
-                  click: (evt, element) => {
+                  click: () => {
                     centerDialogVisible.set(false)
                   }
                 }

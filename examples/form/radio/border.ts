@@ -1,4 +1,4 @@
-import { Br, Div, TypeDiv } from '@type-dom/framework';
+import { Div, TypeDiv } from '@type-dom/framework';
 import { TdRadio, TdRadioGroup } from '@type-dom/ui';
 import { signal } from '@type-dom/signals';
 

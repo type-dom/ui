@@ -1,16 +1,16 @@
 import { TypeDiv } from '@type-dom/framework';
-import { signal } from '@type-dom/signals';
+import { computed, signal } from '@type-dom/signals';
 import { TdSwitch, TdTooltip } from '@type-dom/ui';
 
 export class ExtendedValueTypes extends TypeDiv {
   className = 'ExtendedValueTypes';
 
-  setup() {
+ override  setup() {
     const value = signal('100');
 
     this.addChild(
       new TdTooltip({
-        content: 'Switch value: ' + value.get(),
+        content: computed(() => 'Switch value: ' + value.get()),
         placement: 'top',
         slot: new TdSwitch({
           vModel: value,

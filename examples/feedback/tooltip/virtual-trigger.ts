@@ -1,21 +1,12 @@
-import { onMounted, onUnmounted, TypeDiv, TypeHtml } from '@type-dom/framework';
+import { onMounted, onUnmounted, TypeDiv } from '@type-dom/framework';
 import { Measurable, TdButton, TdTooltip } from '@type-dom/ui';
 import { signal } from '@type-dom/signals';
 
-// todo
 export class TooltipVirtualTriggerExample extends TypeDiv {
   className = 'TooltipVirtualTriggerExample';
 
-  constructor() {
-    super();
-
+ override  setup() {
     const visible = signal(false)
-    const triggerRef = signal<Measurable>({
-      getBoundingClientRect() {
-        return position.get()
-      },
-    })
-
     const position = signal({
       top: 0,
       left: 0,
@@ -23,10 +14,12 @@ export class TooltipVirtualTriggerExample extends TypeDiv {
       right: 0,
     } as DOMRect)
 
-    const mousemoveHandler = (e) => {
+    const triggerRef = signal<Measurable>({
+      getBoundingClientRect: () => position.get()
+    })
+
+    const mousemoveHandler = (e: MouseEvent) => {
       position.set(DOMRect.fromRect({
-        width: 0,
-        height: 0,
         x: e.clientX,
         y: e.clientY
       }));
@@ -41,18 +34,24 @@ export class TooltipVirtualTriggerExample extends TypeDiv {
     });
     this.addChildren(
       new TdTooltip({
-        vModel: visible,
+        visible: visible,
         content: 'Bottom center',
         placement: 'bottom',
         effect: 'light',
         trigger: 'click',
         virtualTriggering: true,
-        virtualRef: triggerRef
+        virtualRef: triggerRef,
+        emits: {
+          'update:visible': (val) => {
+            console.log('update:visible is ', val);
+            visible.set(val);
+          }
+        }
       }),
       new TdButton({
         slot: 'test',
         events: {
-          click: (evt, element) =>  visible.set(!visible.get())
+          click: () =>  visible.set(!visible.get())
         }
       })
     );

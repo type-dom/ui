@@ -76,7 +76,7 @@ export class TabsCustomizedTriggerExample extends TypeDiv {
     );
   }
 
-  addTab(targetName: string) {
+  addTab(_targetName: string) {
     const newTabName = `${++this.tabIndex}`;
     this.editableTabs.push({
       title: 'New Tab',

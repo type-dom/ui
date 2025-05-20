@@ -1,4 +1,4 @@
-import { Div, Head, Span, TextNode, TypeDiv } from '@type-dom/framework';
+import { Div, Head, TextNode, TypeDiv } from '@type-dom/framework';
 import { $dialogTitleStyle, TdButton, TdDialog, TdIcon } from '@type-dom/ui';
 import { ElCircleCloseSvg } from '@type-dom/svgs';
 
@@ -11,11 +11,11 @@ export class LoadingCustomizationExample extends TypeDiv {
       new TdButton({
         slot: 'Open Dialog with customized header',
         plain: true,
-        events: {
-          click: (evt, element) => {
-
-          }
-        }
+        // events: {
+        //   click: (evt, element) => {
+        //
+        //   }
+        // }
       }),
       new TdDialog({
         title: 'Tips',
@@ -46,11 +46,6 @@ export class LoadingCustomizationExample extends TypeDiv {
               }),
               new TdButton({
                 type: 'danger',
-                events: {
-                  click: (evt, element) => {
-
-                  }
-                },
                 slot: [
                   new TdIcon({
                     slot: new ElCircleCloseSvg(),

@@ -7,7 +7,7 @@ export class LayoutMixinExample extends TypeDiv {
   constructor() {
     super();
     const $purple = '#d3dce6';
-    const $purpleDark = '#99a9bf';
+    // const $purpleDark = '#99a9bf';
     const $purpleLight = '#e5e9f2';
     this.addChildren(
       new TdRow({

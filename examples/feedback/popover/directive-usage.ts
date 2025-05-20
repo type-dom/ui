@@ -1,18 +1,19 @@
 import { TypeDiv, Span } from '@type-dom/framework';
-import { TdButton, TdPopover, TdTooltip } from '@type-dom/ui';
+import { TdButton, TdPopover } from '@type-dom/ui';
+import { signal } from '@type-dom/signals';
 
 // 不再推荐
 export class PopoverDirectiveUsageExample extends TypeDiv {
   className = 'PopoverDirectiveUsageExample';
   constructor() {
     super();
-    let visible = false;
+    const visible = signal(false);
     this.addChildren(
       new TdButton({
         slot: 'Click me',
         events: {
-          click: (evt, element) => {
-            visible = true;
+          click: () => {
+            visible.set(true);
           }
         }
       }),
@@ -20,7 +21,7 @@ export class PopoverDirectiveUsageExample extends TypeDiv {
         refId: 'popoverRef',
         trigger: 'click',
         title: 'With title',
-        // virtualTriggering: true, // 没有这个属性 ？？？
+        virtualTriggering: true, // 没有这个属性 ？？？
         persistent: true,
         slot: new Span({
           slot: 'Some content',
