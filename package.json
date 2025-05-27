@@ -23,11 +23,12 @@
     "@rollup/plugin-terser": "^0.4.4",
     "@rollup/plugin-typescript": "^12.1.2",
     "@testing-library/react": "^16.2.0",
-    "@types/lodash": "^4.17.16",
+    "@types/lodash-es": "^4.17.12",
     "autoprefixer": "^10.4.20",
     "eslint": "^9.21.0",
     "eslint-config-prettier": "^10.0.1",
     "eslint-plugin-import": "^2.31.0",
+    "lodash-es": "^4.17.21",
     "prettier": "^3.5.2",
     "rollup": "^4.34.8",
     "rollup-plugin-copy": "^3.5.0",
@@ -39,16 +40,15 @@
     "vitest": "^3.0.0"
   },
   "dependencies": {
-    "lodash": "^4.17.21",
     "dayjs": "^1.11.13",
-    "@type-dom/async-validator": "^0.1.0",
-    "@type-dom/css-type": "^0.0.2",
-    "@type-dom/color": "^0.1.0",
-    "@type-dom/framework": "0.2.0",
-    "@type-dom/popper": "^0.0.1",
-    "@type-dom/router": "^0.1.0",
-    "@type-dom/signals": "^0.4.0",
-    "@type-dom/svgs": "^0.1.8",
-    "@type-dom/utils": "^0.1.0"
+    "@type-dom/async-validator": "^0.4.0",
+    "@type-dom/css-type": "^0.1.0",
+    "@type-dom/color": "^0.3.0",
+    "@type-dom/framework": "0.4.0",
+    "@type-dom/popper": "^0.2.0",
+    "@type-dom/router": "^0.3.0",
+    "@type-dom/signals": "^0.6.1",
+    "@type-dom/svgs": "^0.3.0",
+    "@type-dom/utils": "^0.3.0"
   }
 }
