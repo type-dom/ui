@@ -1,4 +1,4 @@
-import '@element-plus/components/base/style/css';
+import '../../../base/style/css';
 import '@element-plus/theme-chalk/el-container.css';
 import '@element-plus/theme-chalk/el-aside.css';
 import '@element-plus/theme-chalk/el-footer.css';

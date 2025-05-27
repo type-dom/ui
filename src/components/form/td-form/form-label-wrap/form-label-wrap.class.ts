@@ -85,7 +85,7 @@ export class FormLabelWrap extends TypeFragment {
     });
     onUpdated(() => updateLabelWidthFn());
 
-    watch(computedWidth, (val, oldVal) => {
+    watch(() => computedWidth.get(), (val, oldVal) => {
       if (props.updateAll) {
         formContext?.registerLabelWidth(val, oldVal);
       }
@@ -93,7 +93,7 @@ export class FormLabelWrap extends TypeFragment {
 
     useResizeObserver(
       computed(
-        () => (el.get()?.firstElementChild ?? null) as HTMLElement | null
+        () => (el.get()?.firstElementChild) as HTMLElement
       ),
       updateLabelWidthFn
     );

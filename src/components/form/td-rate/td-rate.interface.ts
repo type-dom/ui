@@ -1,11 +1,10 @@
 import {
   ITypeDiv,
   TypeDivProps,
-  TypeNode,
   TypeSvgSvg,
 } from '@type-dom/framework';
 import { ComponentSize } from '../../../constants/size';
-import { MaybeRef } from '@type-dom/signals';
+import { MaybeRef, Ref } from '@type-dom/signals';
 
 export interface ITdRate extends ITypeDiv {
   className: 'TdRate';
@@ -17,6 +16,7 @@ export interface RateProps extends TypeDivProps {
    *     default: 0,
    */
   modelValue?: number;
+  vModel?: Ref<number>;
   /**
    * @description native `id` attribute
    */

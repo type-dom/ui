@@ -1,5 +1,5 @@
 import { ITypeDiv, TypeDivProps } from '@type-dom/framework';
-import { Computed, MaybeRef, Signal } from '@type-dom/signals';
+import { MaybeRef } from '@type-dom/signals';
 
 import { ComponentSize } from '../../../constants/size';
 import { RadioProps } from '../td-radio/td-radio.interface';

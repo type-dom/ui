@@ -6,9 +6,10 @@ import {
   nextTick,
   defineExpose,
 } from '@type-dom/framework';
-import { computed, Signal, toRefs, toSignals, unref } from '@type-dom/signals';
-import { useNamespace } from '../../../hooks/use-namespace';
+import { Computed, Signal, signal, computed, unref } from '@type-dom/signals';
+import { useNamespace, UseNamespaceReturn } from '../../../hooks/use-namespace';
 import { useId } from '../../../hooks/use-id';
+import { SelectContext } from '../td-select/td-select.interface';
 import { useOption } from './useOption';
 import { ITdOption, OptionStates, TdOptionProps } from './td-option.interface';
 import './style/index';
@@ -16,8 +17,20 @@ import './style/index';
 export class TdOption extends TypeLI implements ITdOption {
   className: 'TdOption';
   override props: TdOptionProps;
-  visible?: Signal<boolean>;
-  value?: string;
+  value: string | number | boolean | object;
+  ns?: UseNamespaceReturn;
+  // override id?: Ref<string>;
+  containerKls?:  Computed<string[]>;
+  currentLabel?: Computed<string | number | boolean | undefined>;
+  itemSelected?: Computed<boolean>;
+  isDisabled?: Computed<boolean>;
+  select?: SelectContext;
+  hoverItem?: () => void;
+  updateOption?: (query: string) => void;
+  visible?: Signal<boolean | undefined>;
+  hover?: Signal<boolean>;
+  selectOptionClick?: () => void;
+  states?: OptionStates;
 
   constructor(params: TdOptionProps = {}) {
     super();
@@ -27,7 +40,7 @@ export class TdOption extends TypeLI implements ITdOption {
       role: 'option',
     });
 
-    this.value = ''
+    this.value = params.value ?? params.label ?? '';
     this.props = this.useParams(params);
   }
 
@@ -45,10 +58,10 @@ export class TdOption extends TypeLI implements ITdOption {
     ]);
 
     const states: OptionStates = {
-      index: -1,
-      groupDisabled: false,
-      visible: true,
-      hover: false,
+      index: signal(-1),
+      groupDisabled: signal(false),
+      visible: signal(true),
+      hover: signal(false),
     };
 
     const {
@@ -60,40 +73,48 @@ export class TdOption extends TypeLI implements ITdOption {
       updateOption,
     } = useOption(props, states);
 
-    const { visible, hover } = toSignals(states);
+    const { visible, hover } = states; // toSignals(states);
 
-    // todo
-    const vm = getCurrentInstance() as TdOption //.proxy as unknown as SelectOptionProxy
-
-    select.onOptionCreate(vm);
+    // todo  vm is this
+    const vm = getCurrentInstance() as TdOption; //.proxy as unknown as SelectOptionProxy
+    // console.warn('td-option then onOptionCreate vm ', vm);
+    select.onOptionCreate(this);
 
     onBeforeUnmount(() => {
-      const key = unref(vm.props.value)
-      const { selected: selectedOptions } = select.states
+      const key = unref(props.value);
+      const { selected: selectedOptions } = select.states;
       const doesSelected = selectedOptions.some((item: any) => {
-        return item.value === unref(vm.props.value)
-      })
+        return item.value === unref(props.value);
+      });
       // if option is not selected, remove it from cache
       nextTick(() => {
-        if (select.states.cachedOptions.get(key) === vm && !doesSelected) {
-          select.states.cachedOptions.delete(key)
+        if (select.states.cachedOptions.get(key) === this && !doesSelected) {
+          select.states.cachedOptions.delete(key);
         }
-      })
-      select.onOptionDestroy(key, vm)
+      });
+      select.onOptionDestroy(key, this);
     });
 
     function selectOptionClick() {
       if (!isDisabled.get()) {
-        select.handleOptionSelect(vm)
+        select.handleOptionSelect(vm);
       }
     }
     defineExpose({
-      visible,
-      hover,
-      selectOptionClick,
-      states,
+      ns,
+      id,
+      containerKls,
+      currentLabel,
+      itemSelected,
       isDisabled,
       select,
+      visible,
+      hover,
+      states,
+
+      hoverItem,
+      updateOption,
+      selectOptionClick,
     });
 
     this.assignProps({
@@ -109,6 +130,7 @@ export class TdOption extends TypeLI implements ITdOption {
     this.addEvents({
       mousemove: hoverItem,
       click: (evt) => {
+        console.warn('td-option click . ');
         selectOptionClick();
         evt?.stopPropagation();
       },

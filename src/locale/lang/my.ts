@@ -181,4 +181,4 @@ export default {
       indicator: 'ကာရူဆယ် အညွှန်း {index} သို့ ပြောင်းရန်',
     },
   },
-};
+}

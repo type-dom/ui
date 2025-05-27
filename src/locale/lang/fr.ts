@@ -177,4 +177,4 @@ export default {
       indicator: 'Passer au carrousel index {index}',
     },
   },
-};
+}

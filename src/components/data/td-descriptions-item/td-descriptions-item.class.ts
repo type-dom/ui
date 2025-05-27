@@ -1,8 +1,7 @@
 import { TextNode, TypeFragment, TypeNode } from '@type-dom/framework';
-import {
-  ITdDescriptionsItem,
-  DescriptionsItemProps,
-} from './td-descriptions-item.interface';
+import { ITdDescriptionsItem, DescriptionsItemProps, } from './td-descriptions-item.interface';
+import { descriptionsItemProps } from './td-descriptions-item.const';
+import './style/index';
 
 export class TdDescriptionsItem
   extends TypeFragment
@@ -16,6 +15,7 @@ export class TdDescriptionsItem
   constructor(params: DescriptionsItemProps = {}) {
     super();
     this.className = 'TdDescriptionsItem';
+    this.assignProps(descriptionsItemProps);
     this.props = this.useParams(params);
   }
 }

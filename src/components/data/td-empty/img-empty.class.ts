@@ -93,7 +93,6 @@ export class ImgEmpty extends TypeSvgSvg {
     this.addChild(
       new SvgG({
         attrObj: {
-          id: 'Illustrations',
           stroke: 'none',
           strokeWidth: '1',
           fill: 'none',
@@ -102,26 +101,22 @@ export class ImgEmpty extends TypeSvgSvg {
         slot: [
           new SvgG({
             attrObj: {
-              id: 'B-type',
               transform: 'translate(-1268.000000, -535.000000)',
             },
             slot: [
               new SvgG({
                 attrObj: {
-                  id: 'Group-2',
                   transform: 'translate(1268.000000, 535.000000)',
                 },
                 slot: [
                   new SvgPath({
                     attrObj: {
-                      id: 'Oval-Copy-2',
                       d: 'M39.5,86 C61.3152476,86 79,83.9106622 79,81.3333333 C79,78.7560045 57.3152476,78 35.5,78 C13.6847524,78 0,78.7560045 0,81.3333333 C0,83.9106622 17.6847524,86 39.5,86 Z',
                       fill: `var(${ns.cssVarBlockName('fill-color-3')})`,
                     },
                   }),
                   new SvgPolygon({
                     attrObj: {
-                      id: 'Rectangle-Copy-14',
                       fill: `var(${ns.cssVarBlockName('fill-color-7')})`,
                       transform:
                         'translate(27.500000, 51.500000) scale(1, -1) translate(-27.500000, -51.500000) ',
@@ -130,14 +125,12 @@ export class ImgEmpty extends TypeSvgSvg {
                   }),
                   new SvgG({
                     attrObj: {
-                      id: 'Group-Copy',
                       transform:
                         'translate(34.500000, 31.500000) scale(-1, 1) rotate(-25.000000) translate(-34.500000, -31.500000) translate(7.000000, 10.000000)',
                     },
                     slot: [
                       new SvgPolygon({
                         attrObj: {
-                          id: 'Rectangle-Copy-10',
                           fill: `var(${ns.cssVarBlockName('fill-color-7')})`,
                           transform:
                             'translate(11.500000, 5.000000) scale(1, -1) translate(-11.500000, -5.000000) ',
@@ -146,7 +139,6 @@ export class ImgEmpty extends TypeSvgSvg {
                       }),
                       new SvgPolygon({
                         attrObj: {
-                          id: 'Rectangle-Copy-11',
                           fill: `var(${ns.cssVarBlockName('fill-color-5')})`,
                           points:
                             '-3.69149156e-15 7 38 7 38 43 -3.69149156e-15 43',
@@ -154,7 +146,6 @@ export class ImgEmpty extends TypeSvgSvg {
                       }),
                       new SvgRect({
                         attrObj: {
-                          id: 'Rectangle-Copy-12',
                           fill: 'url(#linearGradient-1-' + id.get() + ')',
                           transform:
                             'translate(46.500000, 25.000000) scale(-1, 1) translate(-46.500000, -25.000000) ',
@@ -166,7 +157,6 @@ export class ImgEmpty extends TypeSvgSvg {
                       }),
                       new SvgPolygon({
                         attrObj: {
-                          id: 'Rectangle-Copy-13',
                           fill: `var(${ns.cssVarBlockName('fill-color-2')})`,
                           transform:
                             'translate(39.500000, 3.500000) scale(-1, 1) translate(-39.500000, -3.500000) ',
@@ -178,7 +168,6 @@ export class ImgEmpty extends TypeSvgSvg {
                   }),
                   new SvgRect({
                     attrObj: {
-                      id: 'Rectangle-Copy-15',
                       fill: 'url(#linearGradient-2-' + id.get() + ')',
                       x: 13,
                       y: 45,
@@ -188,13 +177,11 @@ export class ImgEmpty extends TypeSvgSvg {
                   }),
                   new SvgG({
                     attrObj: {
-                      id: 'Rectangle-Copy-17',
                       transform: 'translate(53.000000, 45.000000)',
                     },
                     slot: [
                       new SvgUse({
                         attrObj: {
-                          id: 'Mask',
                           fill: `var(${ns.cssVarBlockName('fill-color-8')})`,
                           transform:
                             'translate(8.500000, 18.000000) scale(-1, 1) translate(-8.500000, -18.000000) ',
@@ -203,7 +190,6 @@ export class ImgEmpty extends TypeSvgSvg {
                       }),
                       new SvgPolygon({
                         attrObj: {
-                          id: 'Rectangle-Copy',
                           fill: `var(${ns.cssVarBlockName('fill-color-9')})`,
                           mask: 'url(#mask-4-' + id.get() + ')',
                           transform:
@@ -215,7 +201,6 @@ export class ImgEmpty extends TypeSvgSvg {
                   }),
                   new SvgPolygon({
                     attrObj: {
-                      id: 'Rectangle-Copy-18',
                       fill: `var(${ns.cssVarBlockName('fill-color-2')})`,
                       transform:
                         'translate(66.000000, 51.500000) scale(-1, 1) translate(-66.000000, -51.500000) ',

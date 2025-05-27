@@ -56,7 +56,7 @@ export interface PaginationProps extends TypeFragmentProps {
    */
   layout?: string;
   //   default: (
-  //     ['prev', 'pager', 'next', 'jumper', '->', 'total'] as LayoutKey[]
+  //     ['prev', 'pager', 'preview', 'jumper', '->', 'total'] as LayoutKey[]
   //   ).join(', '),
   // },
   /**
@@ -80,12 +80,12 @@ export interface PaginationProps extends TypeFragmentProps {
    */
   prevIcon: typeof TypeSvgSvg;
   /**
-   * @description text for the next button
+   * @description text for the preview button
    *     default: '',
    */
   nextText?: string;
   /**
-   * @description icon for the next button, higher priority of `next-text`
+   * @description icon for the preview button, higher priority of `preview-text`
    *     default: () => ArrowRight,
    */
   nextIcon?: typeof TypeSvgSvg;

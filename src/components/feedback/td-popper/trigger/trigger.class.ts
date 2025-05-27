@@ -72,7 +72,7 @@ export class TdPopperTrigger extends TypeFragment implements ITdPopperTrigger {
     onMounted(() => {
       watch(
         () => unref(props.virtualRef),
-        (virtualEl, prevEl) => {
+        (virtualEl) => {
           // console.warn('virtualEl, prevEl is ', virtualEl, prevEl);
           if (virtualEl) {
             triggerRef?.set(unrefElement(virtualEl as HTMLElement));
@@ -84,7 +84,7 @@ export class TdPopperTrigger extends TypeFragment implements ITdPopperTrigger {
       );
 
       watch(
-        triggerRef,
+        () => triggerRef.get(),
         (el, prevEl) => {
           // console.warn('triggerRef , prevEl is ', el, prevEl);
           virtualTriggerAriaStopWatch?.();
@@ -121,9 +121,11 @@ export class TdPopperTrigger extends TypeFragment implements ITdPopperTrigger {
                     'aria-haspopup',
                     'aria-expanded',
                   ].forEach((key, idx) => {
-                    isNil(watches[idx])
-                      ? el.removeAttribute(key)
-                      : el.setAttribute(key, watches[idx]!);
+                    if (isNil(watches[idx]!)) {
+                      el.removeAttribute(key)
+                    } else {
+                      el.setAttribute(key, watches[idx]!);
+                    }
                   });
                 },
                 { immediate: true }
@@ -169,11 +171,12 @@ export class TdPopperTrigger extends TypeFragment implements ITdPopperTrigger {
        */
       triggerRef,
     });
-
+    // console.warn('td-popper-trigger , then add child . ');
     this.addChild(
       new TdOnlyChild({
         vIf: !props.virtualTriggering,
         // v-bind: $attrs
+        class: props.class,
         attrObj: {
           ariaControls: ariaControls,
           ariaDescribedby: ariaDescribedby,

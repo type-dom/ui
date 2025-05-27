@@ -4,13 +4,13 @@ import {
   useMutationObserver,
   onMounted,
 } from '@type-dom/framework';
+import { computed, signal, watch, unref } from '@type-dom/signals';
+import { isArray } from '@type-dom/utils';
+import { IStyle } from '@type-dom/css-type';
 import { ITdWatermark, WatermarkProps } from './td-watermark.interface';
 import { watermarkProps } from './td-watermark.const';
 import { getPixelRatio, getStyleStr, reRendering } from './utils';
-import { computed, signal, watch } from '@type-dom/signals';
 import useClips, { FontGap } from './useClips';
-import { isArray } from '@type-dom/utils';
-import { IStyle } from '@type-dom/css-type';
 
 export class TdWatermark extends TypeDiv implements ITdWatermark {
   className: 'TdWatermark';
@@ -29,24 +29,24 @@ export class TdWatermark extends TypeDiv implements ITdWatermark {
     };
 
     const props = this.props;
-    const color = computed(() => props.font?.color ?? 'rgba(0,0,0,.15)');
-    const fontSize = computed(() => props.font?.fontSize ?? 16);
-    const fontWeight = computed(() => props.font?.fontWeight ?? 'normal');
-    const fontStyle = computed(() => props.font?.fontStyle ?? 'normal');
-    const fontFamily = computed(() => props.font?.fontFamily ?? 'sans-serif');
+    const color = computed(() => unref(props.font?.color) ?? 'rgba(0,0,0,.15)');
+    const fontSize = computed(() => unref(props.font?.fontSize) ?? 16);
+    const fontWeight = computed(() => unref(props.font?.fontWeight) ?? 'normal');
+    const fontStyle = computed(() => unref(props.font?.fontStyle) ?? 'normal');
+    const fontFamily = computed(() => unref(props.font?.fontFamily) ?? 'sans-serif');
     const textAlign = computed(() => props.font?.textAlign ?? 'center');
     const textBaseline = computed(() => props.font?.textBaseline ?? 'hanging');
 
-    const gapX = computed(() => props.gap?.[0]);
-    const gapY = computed(() => props.gap?.[1]);
+    const gapX = computed(() => unref(unref(props.gap)?.[0]));
+    const gapY = computed(() => unref(unref(props.gap)?.[1]));
     const gapXCenter = computed(() => gapX.get()! / 2);
     const gapYCenter = computed(() => gapY.get()! / 2);
-    const offsetLeft = computed(() => props.offset?.[0] ?? gapXCenter.get());
-    const offsetTop = computed(() => props.offset?.[1] ?? gapYCenter.get());
+    const offsetLeft = computed(() => unref(unref(props.offset)?.[0]) ?? gapXCenter.get());
+    const offsetTop = computed(() => unref(unref(props.offset)?.[1]) ?? gapYCenter.get());
 
     const getMarkStyle = () => {
       const markStyle: IStyle = {
-        zIndex: props.zIndex,
+        zIndex: unref(props.zIndex),
         position: 'absolute',
         left: 0,
         top: 0,
@@ -75,7 +75,7 @@ export class TdWatermark extends TypeDiv implements ITdWatermark {
     };
 
     const containerRef = signal<HTMLDivElement | undefined>(undefined);
-    const watermarkRef = signal<HTMLDivElement>();
+    const watermarkRef = signal<HTMLDivElement | undefined>();
     const stopObservation = signal(false);
 
     const destroyWatermark = () => {
@@ -111,9 +111,9 @@ export class TdWatermark extends TypeDiv implements ITdWatermark {
       let defaultWidth = 120;
       let defaultHeight = 64;
       const image = props.image;
-      const content = props.content;
-      const width = props.width;
-      const height = props.height;
+      const content = unref(props.content);
+      const width = unref(props.width);
+      const height = unref(props.height);
       if (!image && ctx.measureText) {
         ctx.font = `${Number(fontSize.get())}px ${fontFamily.get()}`;
         const contents = isArray(content) ? content : [content];
@@ -144,8 +144,8 @@ export class TdWatermark extends TypeDiv implements ITdWatermark {
       const canvas = document.createElement('canvas');
       const ctx = canvas.getContext('2d');
       const image = props.image;
-      const content = props.content;
-      const rotate = props.rotate;
+      const content = unref(props.content);
+      const rotate = unref(props.rotate);
 
       if (ctx) {
         if (!watermarkRef.get()) {
@@ -164,8 +164,8 @@ export class TdWatermark extends TypeDiv implements ITdWatermark {
             drawContent || '',
             rotate!,
             ratio,
-            markWidth,
-            markHeight,
+            unref(markWidth)!,
+            unref(markHeight),
             {
               color: color.get(),
               fontSize: fontSize.get(),
@@ -204,8 +204,9 @@ export class TdWatermark extends TypeDiv implements ITdWatermark {
     });
 
     watch(
-      () => props,
+      () => unref(props.font?.fontSize), // todo deepSignal
       () => {
+        console.warn('watch props.font.fontSize . ');
         renderWatermark();
       },
       {
@@ -241,5 +242,6 @@ export class TdWatermark extends TypeDiv implements ITdWatermark {
     });
 
     this.style.addObj(style);
+    this.slotChildren(props.slot ?? props.slots?.default);
   }
 }

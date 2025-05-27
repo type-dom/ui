@@ -29,7 +29,7 @@ export interface TdInputProps extends TypeDivProps {
   /**
    * @description whether to disable
    */
-  disabled?: MaybeRef<boolean>;
+  disabled?: MaybeRef<boolean | undefined>;
   /**
    * @description binding value
    */
@@ -136,7 +136,7 @@ export interface TdInputProps extends TypeDivProps {
   autofocus?: boolean;
   rows?: number;
 
-  vModel?: Ref<string | number | null | undefined>;
+  vModel?: Ref<string | number | null | undefined | (number | string | null | undefined)[]>;
   // $slot
   prepend?: boolean;
   append?: boolean;

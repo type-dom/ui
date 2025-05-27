@@ -1,10 +1,10 @@
 import { TypeSpan, TypeSpanProps } from '@type-dom/framework';
 import { isArray } from '@type-dom/utils';
-import { computed, signal, watch } from '@type-dom/signals';
-import { isEqual } from 'lodash';
+import { signal, watch } from '@type-dom/signals';
+import { isEqual } from 'lodash-es';
 import { ComponentSize } from '../../../../constants/size';
 import { useNamespace } from '../../../../hooks/use-namespace';
-import { useLocale } from '../../../../hooks/use-locale';
+// import { useLocale } from '../../../../hooks/use-locale';
 import { TdSelect } from '../../../form/td-select/td-select.class';
 import { usePagination } from '../usePagination';
 
@@ -37,7 +37,7 @@ export class PaginationSizes extends TypeSpan {
   override setup() {
     const props = this.props;
     const emit = this.emit;
-    const { t } = useLocale();
+    // const { t } = useLocale();
     const ns = useNamespace('pagination');
     const pagination = usePagination();
     const innerPageSize = signal<number>(props.pageSize!);
@@ -62,7 +62,7 @@ export class PaginationSizes extends TypeSpan {
       }
     );
 
-    const innerPageSizes = computed(() => props.pageSizes);
+    // const innerPageSizes = computed(() => props.pageSizes);
 
     function handleChange(val: string | number) {
       if (val !== innerPageSize.get()) {

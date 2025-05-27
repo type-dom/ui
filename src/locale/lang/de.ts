@@ -141,4 +141,4 @@ export default {
       indicator: 'Karussell zu Index {index} wechseln',
     },
   },
-};
+}

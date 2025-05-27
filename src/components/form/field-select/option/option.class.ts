@@ -4,7 +4,7 @@ import { ISelectOption } from './option.interface';
 
 export class SelectOption extends TypeOption implements ISelectOption {
   className: 'SelectOption';
-  override parent?: FieldSelect;
+  override parent?: FieldSelect = undefined;
   override childNodes: TypeNode[];
 
   constructor() {

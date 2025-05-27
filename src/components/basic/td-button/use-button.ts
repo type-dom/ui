@@ -1,16 +1,9 @@
 import { computed, signal, unref } from '@type-dom/signals';
-import {
-  arraySlot,
-  inject,
-  useSlots,
-} from '@type-dom/framework';
+import { arraySlot, inject, useSlots, } from '@type-dom/framework';
 import { AnyFn } from '@type-dom/utils';
 import { useDeprecated } from '../../../hooks/use-deprecated';
 import { useFormItem } from '../../form/td-form/hooks/use-form-item';
-import {
-  useFormDisabled,
-  useFormSize,
-} from '../../form/td-form/hooks/use-form-common-props';
+import { useFormDisabled, useFormSize } from '../../form/td-form/hooks/use-form-common-props';
 import { useGlobalConfig } from '../../configuration/td-config-provider';
 
 import { buttonGroupContextKey } from './constants';
@@ -37,14 +30,22 @@ export const useButton = (props: TdButtonProps, emit: AnyFn) => {
   const slots = useSlots();
 
   const _type = computed(
-    () => props.type || unref(buttonGroupContext?.type) || ''
-  );
+    () =>
+      props.type || unref(buttonGroupContext?.type) || globalConfig.get()?.type || ''
+  )
   const autoInsertSpace = computed(
     () =>
       props.autoInsertSpace ??
       (globalConfig.get() as any)?.autoInsertSpace ??
       false
   );
+
+  const _plain = computed(
+    () => props.plain ?? globalConfig.get()?.plain ?? false
+  )
+  const _round = computed(
+    () => props.round ?? globalConfig.get()?.round ?? false
+  )
 
   const _props = computed(() => {
     if (props.tag === 'button') {
@@ -79,7 +80,7 @@ export const useButton = (props: TdButtonProps, emit: AnyFn) => {
     if (props.nativeType === 'reset') {
       form?.resetFields();
     }
-    // emit('click', evt)
+    emit('click', evt)
   };
 
   return {
@@ -88,6 +89,8 @@ export const useButton = (props: TdButtonProps, emit: AnyFn) => {
     _type,
     _ref,
     _props,
+    _plain,
+    _round,
     shouldAddSpace,
     handleClick,
   };

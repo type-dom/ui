@@ -3,9 +3,11 @@ import {
   Button,
   defineExpose,
   Div,
-  nextFrame,
   TypeDiv,
+  Span,
 } from '@type-dom/framework';
+import { SvgSvg } from '@type-dom/svgs';
+import { isFunction } from 'lodash-es';
 import { Computed } from '@type-dom/signals';
 import { TdIcon } from '../../basic/td-icon/td-icon.class';
 import { TdCollapseTransition } from '../td-collapse-transition/td-collapse-transition.class';
@@ -19,7 +21,6 @@ import {
 } from './td-collapse-item.interface';
 import { collapseItemProps } from './td-collapse-item.const';
 import './style/index';
-import { SvgSvg } from '@type-dom/svgs';
 
 export class TdCollapseItem extends TypeDiv implements ITdCollapseItem {
   className: 'TdCollapseItem';
@@ -51,6 +52,7 @@ export class TdCollapseItem extends TypeDiv implements ITdCollapseItem {
       arrowKls,
       headKls,
       rootKls,
+      itemTitleKls,
       itemWrapperKls,
       itemContentKls,
       scopedContentId,
@@ -87,7 +89,11 @@ export class TdCollapseItem extends TypeDiv implements ITdCollapseItem {
           blur: () => focusing.set(false),
         },
         slot: [
-          ...arraySlot(props.slots?.title ?? props.title),
+          new Span({
+            class: itemTitleKls,
+            slot: isFunction(props.slots?.title) ? props.slots.title({ isActive }) : props.title,
+          }),
+          // ...arraySlot(props.slots?.title ?? props.title),
           ...arraySlot(
             props.slots?.icon ??
               new TdIcon({

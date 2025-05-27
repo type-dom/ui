@@ -46,8 +46,8 @@ export class PaginationNext extends TypeButton {
     this.attr.addObj({
       disabled: internalDisabled,
       type: 'button',
-      class: 'btn-next',
-      ariaLabel: props.nextText || t('el.pagination.next'),
+      class: 'btn-preview',
+      ariaLabel: props.nextText || t('el.pagination.preview'),
       ariaDisabled: internalDisabled,
     });
     this.addEmits({

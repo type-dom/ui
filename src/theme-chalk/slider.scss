@@ -7,12 +7,12 @@
 
 $slider-height: () !default;
 $slider-height: map.merge(
-                (
-                        'large': 40px,
-                        'default': 32px,
-                        'small': 24px,
-                ),
-                $slider-height
+  (
+    'large': 40px,
+    'default': 32px,
+    'small': 24px,
+  ),
+  $slider-height
 );
 
 @include b(slider) {

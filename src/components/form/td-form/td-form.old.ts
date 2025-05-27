@@ -1,6 +1,6 @@
 import { TypeForm } from '@type-dom/framework';
 import { ITdForm, FormProps } from './td-form.interface';
-import { formContextKey, formEmits } from './td-form.const';
+import { formEmits } from './td-form.const';
 import { TdFormItem } from '../td-form-item/td-form-item.class';
 
 /**
@@ -12,7 +12,7 @@ export class TdForm extends TypeForm implements ITdForm {
   className: 'TdForm';
   override childNodes: TdFormItem[];
   override props: FormProps;
-  private model?: object;
+  model?: object;
 
   /**
    * 构造函数，初始化表单配置。

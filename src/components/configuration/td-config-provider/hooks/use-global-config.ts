@@ -35,7 +35,7 @@ import {
   zIndexContextKey,
 } from '../../../../hooks/use-z-index';
 import { SIZE_INJECTION_KEY } from '../../../../hooks/use-size';
-import { emptyValuesContextKey } from '../../../../hooks/use-empty-values';
+import { EmptyValuesContext, emptyValuesContextKey } from '../../../../hooks/use-empty-values';
 import type { ConfigProviderContext } from '../constants';
 import { configProviderContextKey } from '../constants';
 
@@ -133,10 +133,13 @@ export const provideGlobalConfig = (
     size: computed(() => context.get().size || ''),
   });
 
-  provideFn(emptyValuesContextKey, {
-    emptyValues: context?.get()?.emptyValues,
-    valueOnClear: context?.get()?.valueOnClear,
-  });
+  provideFn(
+    emptyValuesContextKey,
+    computed(() => ({
+      emptyValues: context?.get()?.emptyValues,
+      valueOnClear: context?.get()?.valueOnClear,
+    })) as Ref<EmptyValuesContext>
+  );
 
   if (global || !globalConfig.get()) {
     globalConfig.set(context.get());

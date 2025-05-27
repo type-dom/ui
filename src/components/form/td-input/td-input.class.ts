@@ -1,56 +1,19 @@
 import { isClient, debugWarn, isNil, isObject, NOOP } from '@type-dom/utils';
-import {
-  Div,
-  Fragment,
-  Input,
-  Span,
-  Textarea,
-  TypeDiv,
-  useAttrs as useRawAttrs,
-  defineExpose,
-  nextTick,
-  onMounted,
-  useResizeObserver,
-  useSlots, StyleValue
-} from '@type-dom/framework';
-import {
-  Computed,
-  computed,
-  Ref,
-  signal,
-  toRef,
-  unref,
-  watch,
-} from '@type-dom/signals';
+import { Div, Fragment, Input, Span, Textarea, TypeDiv, useAttrs as useRawAttrs, defineExpose, nextTick, onMounted, useResizeObserver, useSlots, } from '@type-dom/framework';
+import { Computed, computed, Ref, signal, toRef, unref, watch, } from '@type-dom/signals';
 import { IStyle } from '@type-dom/css-type';
-import {
-  ElCircleCloseSvg,
-  ElHideSvg,
-  ElViewSvg,
-  ValidateComponentsMap,
-} from '@type-dom/svgs';
-import { INPUT_EVENT, UPDATE_MODEL_EVENT } from '../../../constants/event';
-import { useAttrs } from '../../../hooks/use-attrs';
+import { ElCircleCloseSvg, ElHideSvg, ElViewSvg, ValidateComponentsMap, } from '@type-dom/svgs';
+import { CHANGE_EVENT, INPUT_EVENT, UPDATE_MODEL_EVENT } from '../../../constants/event';
+// import { useAttrs } from '../../../hooks/use-attrs';
 import { useFocusController } from '../../../hooks/use-focus-controller/index';
 import { useComposition } from '../../../hooks/use-composition';
 import { useNamespace } from '../../../hooks/use-namespace';
 import { useCursor } from '../../../hooks/use-cursor';
 import { TdIcon } from '../../basic/td-icon/td-icon.class';
-import {
-  useFormItem,
-  useFormItemInputId,
-} from '../td-form/hooks/use-form-item';
-import {
-  useFormDisabled,
-  useFormSize,
-} from '../td-form/hooks/use-form-common-props';
+import { useFormItem, useFormItemInputId, } from '../td-form/hooks/use-form-item';
+import { useFormDisabled, useFormSize, } from '../td-form/hooks/use-form-common-props';
 import { calcTextareaHeight } from './utils';
-import {
-  ITdInput,
-  TdInputProps,
-  TargetElement,
-  InputAutoSize,
-} from './td-input.interface';
+import { ITdInput, TdInputProps, TargetElement, InputAutoSize, } from './td-input.interface';
 import { inputEmits, inputProps } from './td-input.const';
 import './style/index';
 
@@ -87,7 +50,7 @@ export class TdInput extends TypeDiv implements ITdInput {
     const props = this.props;
     const emit = this.emit;
     const rawAttrs = useRawAttrs()
-    const attrs = useAttrs();
+    // const attrs = useAttrs();
     const slots = useSlots();
 
     const containerKls = computed(() => [
@@ -161,10 +124,10 @@ export class TdInput extends TypeDiv implements ITdInput {
     const passwordIcon = computed(() =>
       passwordVisible.get() ? new ElViewSvg() : new ElHideSvg()
     );
-    const containerStyle = computed<StyleValue>(() => [
-      rawAttrs?.style as StyleValue,
+    const containerStyle = computed(() => [
+      rawAttrs?.style as IStyle,
     ])
-    const textareaStyle = computed<StyleValue>(() => [
+    const textareaStyle = computed(() => [
         props.inputStyle,
         textareaCalcStyle.get(),
         {
@@ -252,7 +215,7 @@ export class TdInput extends TypeDiv implements ITdInput {
 
         // If the scrollbar is displayed, the height of the textarea needs more space than the calculated height.
         // If set textarea height in this case, the scrollbar will not hide.
-        // So we need to hide scrollbar first, and reset it in next tick.
+        // So we need to hide scrollbar first, and reset it in preview tick.
         // see https://github.com/element-plus/element-plus/issues/8825
         textareaCalcStyle.set({
           overflowY: 'hidden',
@@ -261,7 +224,8 @@ export class TdInput extends TypeDiv implements ITdInput {
 
         nextTick(() => {
           // NOTE: Force repaint to make sure the style set above is applied.
-          textarea.get()!.offsetHeight;
+          // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+          textarea.get()?.offsetHeight;
           textareaCalcStyle.set(textareaStyle);
         });
       } else {
@@ -306,8 +270,8 @@ export class TdInput extends TypeDiv implements ITdInput {
 
       let { value } = event?.target as TargetElement;
 
-      if (props.formatter) {
-        value = props.parser ? props.parser(value) : value;
+      if (props.formatter && props.parser) {
+        value = props.parser(value);
       }
 
       // should not emit input during composition
@@ -335,7 +299,12 @@ export class TdInput extends TypeDiv implements ITdInput {
     };
 
     const handleChange = (event?: Event) => {
-      emit('change', (event?.target as TargetElement).value);
+      let { value } = event?.target as TargetElement
+
+      if (props.formatter && props.parser) {
+        value = props.parser(value)
+      }
+      emit(CHANGE_EVENT, value)
     };
 
     const {
@@ -377,7 +346,7 @@ export class TdInput extends TypeDiv implements ITdInput {
     const clear = () => {
       // console.warn('clear . ');
       emit(UPDATE_MODEL_EVENT, '');
-      emit('change', '');
+      emit(CHANGE_EVENT, '');
       emit('clear');
       emit(INPUT_EVENT, '');
     };
@@ -395,7 +364,7 @@ export class TdInput extends TypeDiv implements ITdInput {
     // native input value is set explicitly
     // do not use v-model / :value in template
     // see: https://github.com/ElemeFE/element/issues/14521
-    watch(nativeInputValue, () => setNativeInputValue());
+    watch(() => nativeInputValue.get(), () => setNativeInputValue());
 
     // when change between <input> and <textarea>,
     // update DOM dependent value and styles
@@ -430,7 +399,7 @@ export class TdInput extends TypeDiv implements ITdInput {
       /** @description style of textarea. */
       textareaStyle,
 
-      /** @description from props (used on unit test) */
+      /** @description from props (used on unit test-dts) */
       autosize: toRef(props, 'autosize'),
 
       /** @description is input composing */
@@ -508,7 +477,7 @@ export class TdInput extends TypeDiv implements ITdInput {
                     ? passwordVisible.get()
                       ? 'text'
                       : 'password'
-                    : props.type
+                    : props.type as string
                 ),
                 disabled: inputDisabled,
                 readonly: props.readonly,

@@ -40,7 +40,7 @@ export class TdInputField extends FieldInput implements ITdInputField {
     // console.log('this.dom is ', this.dom);
   }
 
-  reset(value?: string): void {
+  reset(_value?: string): void {
     // console.log('value is ', value);
     // if (value !== undefined) {
     //   OfdEditor.selectedControl?.resetLabelText(this.content.dom.value);

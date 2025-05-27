@@ -28,6 +28,7 @@ export const useCheckboxStatus = (
     return props.label;
   });
   const isChecked = computed<boolean>(() => {
+    // console.warn('computed isChecked . ');
     const value = model.get();
     if (isBoolean(value)) {
       return value;

@@ -3,9 +3,8 @@ import {
   StyleValue,
   TypeFragmentProps,
 } from '@type-dom/framework';
-import { IStyle } from '@type-dom/css-type';
 import { Dayjs } from 'dayjs';
-import { MaybeRef, Signal } from '@type-dom/signals';
+import { MaybeRef } from '@type-dom/signals';
 
 export interface ITdCountDown extends ITypeFragment {
   className: 'TdCountDown';

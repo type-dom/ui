@@ -1,25 +1,22 @@
 import { cAF, isUndefined, rAF } from '@type-dom/utils';
-import { ITdCountDown, CountDownProps } from './td-count-down.interface';
-import { formatTime, getTime } from './utils';
 import {
   defineExpose,
   onBeforeUnmount,
   onMounted,
-  TextNode,
-  toValue,
   TypeFragment,
-  TypeNode,
 } from '@type-dom/framework';
-import { countdownEmits, countdownProps } from './td-count-down.const';
 import {
   Computed,
   computed,
-  Signal,
   signal,
   unref,
   watch,
 } from '@type-dom/signals';
+import { CHANGE_EVENT } from '../../../constants/event';
 import { TdStatistic } from '../td-statistic/td-statistic.class';
+import { ITdCountDown, CountDownProps } from './td-count-down.interface';
+import { formatTime, getTime } from './utils';
+import { countdownEmits, countdownProps } from './td-count-down.const';
 
 export class TdCountDown extends TypeFragment implements ITdCountDown {
   className: 'TdCountDown';
@@ -62,7 +59,7 @@ export class TdCountDown extends TypeFragment implements ITdCountDown {
       const timestamp = getTime(value);
       const frameFunc = () => {
         let diff = timestamp - Date.now();
-        emit('change', diff);
+        emit(CHANGE_EVENT, diff);
         if (diff <= 0) {
           diff = 0;
           stopTimer();

@@ -9,35 +9,17 @@
 //   shift,
 //   hide,
 // } from '@type-dom/popper';
-import {
-  defineExpose,
-  provide,
-  Fragment,
-  Span,
-  TypeFragment,
-} from '@type-dom/framework';
+import { defineExpose, provide, Fragment, Span, TypeFragment, } from '@type-dom/framework';
 import { isBoolean } from '@type-dom/utils';
-import {
-  computed,
-  readonly,
-  Signal,
-  signal, toRaw,
-  toRef,
-  unref,
-  watch
-} from '@type-dom/signals';
+import { computed, Signal, signal, toRaw, unref, watch } from '@type-dom/signals';
 import { useDelayedToggle } from '../../../hooks/use-delayed-toggle';
 import { usePopperContainer } from '../../../hooks/use-popper-container';
 import { useId } from '../../../hooks/use-id';
+import { useNamespace } from '../../../hooks/use-namespace/index';
 import { TdPopper } from '../td-popper/td-popper.class';
 import { TdPopperArrow } from '../td-popper/arrow/arrow.class';
 import { ITdTooltip, TooltipProps } from './td-tooltip.interface';
-import {
-  TOOLTIP_INJECTION_KEY,
-  tooltipEmits,
-  tooltipProps,
-  useTooltipModelToggle,
-} from './td-tooltip.const';
+import { TOOLTIP_INJECTION_KEY, tooltipProps, useTooltipModelToggle, } from './td-tooltip.const';
 import { TdTooltipContent } from './content/content.class';
 import { TdTooltipTrigger } from './trigger/trigger.class';
 
@@ -71,6 +53,7 @@ export class TdTooltip extends TypeFragment implements ITdTooltip {
 
     usePopperContainer();
 
+    const ns = useNamespace('tooltip')
     const id = useId();
     const popperRef = signal<TdPopper>();
     const contentRef = signal<TdTooltipContent>();
@@ -100,12 +83,14 @@ export class TdTooltip extends TypeFragment implements ITdTooltip {
     });
 
     const controlled = computed(() => {
-      // console.warn('controlled . isBoolean(unref(props.visible)) is ', isBoolean(unref(props.visible)));
-      // console.warn('props.visible is ', props.visible);
-      // console.warn('toRaw(props.visible) is ', toRaw(props.visible));
+      // console.warn('controlled computed . );
       // console.warn('!hasUpdateHandler.get() is ', !hasUpdateHandler.get());
       return isBoolean(toRaw(props.visible)) && !hasUpdateHandler.get(); // todo
     });
+
+    const kls = computed(() => {
+      return [ns.b(), unref(props.popperClass)!];
+    })
 
     provide(TOOLTIP_INJECTION_KEY, {
       controlled,
@@ -213,10 +198,11 @@ export class TdTooltip extends TypeFragment implements ITdTooltip {
             gpuAcceleration: props.gpuAcceleration,
             offset: props.offset,
             persistent: props.persistent,
-            popperClass: props.popperClass,
+            popperClass: kls,
             popperStyle: props.popperStyle,
             placement: props.placement,
             popperOptions: props.popperOptions,
+            arrowOffset: props.arrowOffset,
             pure: props.pure,
             rawContent: props.rawContent,
             referenceEl: props.referenceEl,
@@ -246,7 +232,6 @@ export class TdTooltip extends TypeFragment implements ITdTooltip {
               }),
               new TdPopperArrow({
                 vIf: props.showArrow,
-                arrowOffset: props.arrowOffset,
               }),
             ],
           }),

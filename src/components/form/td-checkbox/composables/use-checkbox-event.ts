@@ -12,12 +12,10 @@
 // } from '../composables'
 
 import { getCurrentInstance, inject, nextTick } from '@type-dom/framework';
-import { computed, unref, watch } from '@type-dom/signals';
+import { computed, watch } from '@type-dom/signals';
 import { debugWarn } from '@type-dom/utils';
-import {
-  useFormItem,
-  useFormItemInputId,
-} from '../../td-form/hooks/use-form-item';
+import { useFormItem, useFormItemInputId } from '../../td-form/hooks/use-form-item';
+import { CHANGE_EVENT } from '../../../../constants/event';
 import { checkboxGroupContextKey } from '../td-checkbox.const';
 import { CheckboxProps } from '../td-checkbox.interface';
 import { CheckboxModel } from './use-checkbox-model';
@@ -52,7 +50,7 @@ export const useCheckboxEvent = (
     e?: InputEvent | MouseEvent
   ) {
     // console.warn('emitChangeEvent . checked is ', checked);
-    emit('change', getLabeledValue(checked), e);
+    emit(CHANGE_EVENT, getLabeledValue(checked), e);
   }
 
   function handleChange(e?: Event) {
@@ -64,7 +62,7 @@ export const useCheckboxEvent = (
       return;
     } // add by me
     const target = e?.target as HTMLInputElement;
-    emit('change', getLabeledValue(target.checked), e);
+    emit(CHANGE_EVENT, getLabeledValue(target.checked), e);
   }
 
   async function onClickRoot(e?: MouseEvent) {
@@ -97,7 +95,7 @@ export const useCheckboxEvent = (
   );
 
   watch(
-    () => unref(props.modelValue),
+    () => props.vModel?.get(),
     () => {
       if (validateEvent.get()) {
         formItem?.validate('change').catch((err) => debugWarn(err));

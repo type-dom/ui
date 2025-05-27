@@ -80,8 +80,8 @@
 
     @include m(outside) {
       bottom: calc(
-              getCssVar('carousel-indicator-height') +
-              getCssVar('carousel-indicator-padding-vertical') * 2
+        getCssVar('carousel-indicator-height') +
+          getCssVar('carousel-indicator-padding-vertical') * 2
       );
       text-align: center;
       position: static;
@@ -131,11 +131,13 @@
 
     @include m(horizontal) {
       display: inline-block;
-      padding: getCssVar('carousel-indicator-padding-vertical') getCssVar('carousel-indicator-padding-horizontal');
+      padding: getCssVar('carousel-indicator-padding-vertical')
+        getCssVar('carousel-indicator-padding-horizontal');
     }
 
     @include m(vertical) {
-      padding: getCssVar('carousel-indicator-padding-horizontal') getCssVar('carousel-indicator-padding-vertical');
+      padding: getCssVar('carousel-indicator-padding-horizontal')
+        getCssVar('carousel-indicator-padding-vertical');
 
       .#{$namespace}-carousel__button {
         width: getCssVar('carousel-indicator-height');

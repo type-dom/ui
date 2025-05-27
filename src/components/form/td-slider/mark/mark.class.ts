@@ -1,4 +1,4 @@
-import { TextNode, TypeDiv } from '@type-dom/framework';
+import { TypeDiv } from '@type-dom/framework';
 import { computed } from '@type-dom/signals';
 import { isString } from '@type-dom/utils';
 import { useNamespace } from '../../../../hooks/use-namespace';

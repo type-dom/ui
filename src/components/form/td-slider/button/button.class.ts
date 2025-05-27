@@ -2,10 +2,6 @@ import { defineExpose, Div, Span, TypeDiv } from '@type-dom/framework';
 import { computed, Ref, toRefs } from '@type-dom/signals';
 import { TdTooltip } from '../../../feedback/td-tooltip/td-tooltip.class';
 import { useNamespace } from '../../../../hooks/use-namespace';
-import {
-  $sliderButtonStyle,
-  $sliderButtonWrapperStyle,
-} from '../td-slider.style';
 import { useSliderButton } from '../composables/use-slider-button';
 import { ITdSliderButton, SliderButtonInitData, SliderButtonProps } from './button.interface';
 import { sliderButtonEmits, sliderButtonProps } from './button.const';

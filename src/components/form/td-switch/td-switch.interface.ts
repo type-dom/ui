@@ -1,9 +1,9 @@
 import { ITypeDiv, TypeDivProps, TypeSvgSvg } from '@type-dom/framework';
-import {
-  CHANGE_EVENT,
-  INPUT_EVENT,
-  UPDATE_MODEL_EVENT,
-} from '../../../constants/event';
+// import {
+//   CHANGE_EVENT,
+//   INPUT_EVENT,
+//   UPDATE_MODEL_EVENT,
+// } from '../../../constants/event';
 import { MaybeRef, Signal } from '@type-dom/signals';
 
 export interface ITdSwitch extends ITypeDiv {

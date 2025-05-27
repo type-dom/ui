@@ -1,6 +1,5 @@
 import { IStyle } from '@type-dom/css-type';
 import {
-  $bgColor,
   $border,
   $borderColor,
   $borderRadius,

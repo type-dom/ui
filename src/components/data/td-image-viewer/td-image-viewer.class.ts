@@ -1,6 +1,12 @@
-import { throttle } from 'lodash';
+import { throttle } from 'lodash-es';
 import { IStyle } from '@type-dom/css-type';
-import { computed, effectScope, signal, unref, watch } from '@type-dom/signals';
+import {
+  computed,
+  signal,
+  unref,
+  watch,
+  effectScope
+} from '@type-dom/signals';
 import { keysOf } from '@type-dom/utils';
 import {
   nextTick,
@@ -80,7 +86,8 @@ export class TdImageViewer extends TypeFragment implements ITdImageViewer {
     const wrapper = signal<HTMLDivElement>();
     const imgRefs = signal<HTMLImageElement[]>([]);
 
-    const scopeEventListener = effectScope();
+    // const scopeEventListener = new EffectScope();
+    let scopeEventListener: () => void;
 
     const loading = signal(true);
     const activeIndex = signal(props.initialIndex!);
@@ -163,11 +170,12 @@ export class TdImageViewer extends TypeFragment implements ITdImageViewer {
     }
 
     function registerEventListener() {
+      console.error('registerEventListener . ');
       const keydownHandler = throttle((e: KeyboardEvent) => {
         switch (e.code) {
           // ESC
           case EVENT_CODE.esc:
-            props.closeOnPressEscape && hide();
+            if (props.closeOnPressEscape) hide();
             break;
           // SPACE
           case EVENT_CODE.space:
@@ -191,7 +199,8 @@ export class TdImageViewer extends TypeFragment implements ITdImageViewer {
             break;
         }
       });
-      const mousewheelHandler = throttle((e: WheelEvent) => {
+      const mousewheelHandler = throttle((e?: WheelEvent) => {
+        if (!e) return;
         const delta = e.deltaY || e.deltaX;
         handleActions(delta < 0 ? 'zoomIn' : 'zoomOut', {
           zoomRate: props.zoomRate,
@@ -199,14 +208,20 @@ export class TdImageViewer extends TypeFragment implements ITdImageViewer {
         });
       });
 
-      scopeEventListener.run(() => {
+      // scopeEventListener.run(() => {
+      //   useEventListener(document, 'keydown', keydownHandler)
+      //   useEventListener(document, 'wheel', mousewheelHandler)
+      // })
+
+      scopeEventListener = effectScope(() => {
         useEventListener(document, 'keydown', keydownHandler);
         useEventListener(document, 'wheel', mousewheelHandler);
       });
     }
 
     function unregisterEventListener() {
-      scopeEventListener.stop();
+      scopeEventListener?.();
+      // scopeEventListener.stop()
     }
 
     function handleImgLoad() {
@@ -282,7 +297,7 @@ export class TdImageViewer extends TypeFragment implements ITdImageViewer {
     }
 
     function next() {
-      // console.error('next . ');
+      // console.error('preview . ');
       if (isLast.get() && !props.infinite) return;
       setActiveItem(activeIndex.get() + 1);
     }
@@ -353,18 +368,18 @@ export class TdImageViewer extends TypeFragment implements ITdImageViewer {
       return undefined;
     }
 
-    watch(currentImg, () => {
+    watch(() => currentImg.get(), () => {
       nextTick(() => {
         // todo imgRefs.get()[0] has error , can not get nothing ;
         //      then loading always is true;
         const $img = imgRefs.get()[0];
         if (!$img?.complete) {
-          // loading.set(true) // todo reopen
+          loading.set(true) // todo reopen
         }
       });
     });
 
-    watch(activeIndex, (val) => {
+    watch(() => activeIndex.get(), (val) => {
       reset();
       emit('switch', val);
     });
@@ -406,7 +421,7 @@ export class TdImageViewer extends TypeFragment implements ITdImageViewer {
               class: ns.e('wrapper'),
             },
             styleObj: {
-              zIndex: zIndex,
+              zIndex: zIndex.get(),
             },
             slot: new TdFocusTrap({
               loop: true,
@@ -423,7 +438,7 @@ export class TdImageViewer extends TypeFragment implements ITdImageViewer {
                   events: {
                     click: (evt, ele) => {
                       if (evt?.target === ele?.dom) {
-                        props.hideOnClickModal && hide();
+                        if (props.hideOnClickModal) hide();
                       }
                     },
                   },
@@ -474,12 +489,13 @@ export class TdImageViewer extends TypeFragment implements ITdImageViewer {
                   class: [ns.e('btn'), ns.e('actions')],
                   slot: new Div({
                     class: ns.e('actions__inner'),
-                    slot: props.slots?.toolbar?.({
+                    slot: props.slots?.toolbar?.({ // todo 传参有问题
                       actions: handleActions,
                       prev: prev,
                       next: next,
                       reset: toggleMode,
                       activeIndex: activeIndex,
+                      setActiveItem: setActiveItem
                     }) ?? [
                       new TdIcon({
                         events: {
@@ -529,6 +545,7 @@ export class TdImageViewer extends TypeFragment implements ITdImageViewer {
                       new Img({
                         vShow: computed(() => i === activeIndex.get()),
                         // refDom: ((el) => (imgRefs.get()[i] = el as HTMLImageElement)), // todo ??? how todo
+                        refDom: imgRefs.get()[i],
                         attrObj: {
                           src: url || '',
                           class: ns.e('img'),

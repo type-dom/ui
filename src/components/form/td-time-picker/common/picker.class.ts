@@ -3,13 +3,12 @@ import {
   defineExpose,
   inject,
   nextTick,
-  useAttrs,
+  // useAttrs,
   onClickOutside,
   unrefElement,
   TypeNode,
   provide,
   onBeforeUnmount,
-  Transition,
   TypeFragmentProps,
 } from '@type-dom/framework';
 import { ComputePositionConfig as Options } from '@type-dom/popper';
@@ -37,8 +36,8 @@ import {
   TimePickerDefaultProps,
   type UserInput,
 } from './props';
-import { TdPopper } from '../../../feedback/td-popper/td-popper.class';
-import { ElCalendarSvg, ElClockSvg } from '@type-dom/svgs';
+// import { TdPopper } from '../../../feedback/td-popper/td-popper.class';
+// import { ElCalendarSvg, ElClockSvg } from '@type-dom/svgs';
 import { useFormSize } from '../../td-form/hooks/use-form-common-props';
 import { PickerRangeTrigger } from './picker-range-trigger.class';
 
@@ -58,13 +57,13 @@ export class Picker extends TypeFragment {
   override setup() {
     const props = this.props;
     const emit = this.emit;
-    const attrs = useAttrs();
+    // const attrs = useAttrs();
 
     const { lang } = useLocale();
 
     const nsDate = useNamespace('date');
-    const nsInput = useNamespace('input');
-    const nsRange = useNamespace('range');
+    // const nsInput = useNamespace('input');
+    // const nsRange = useNamespace('range');
 
     const { form, formItem } = useFormItem();
     const tdPopperOptions = inject('TdPopperOptions', {} as Options);
@@ -101,30 +100,30 @@ export class Picker extends TypeFragment {
           handleChange();
           pickerVisible.set(false);
           hasJustTabExitedInput = false;
-          props.validateEvent &&
+          if (props.validateEvent)
             formItem?.validate('blur').catch((err) => debugWarn(err));
         },
       }
     );
 
-    const rangeInputKls = computed(() => [
-      nsDate.b('editor'),
-      nsDate.bm('editor', props.type),
-      nsInput.e('wrapper'),
-      nsDate.is('disabled', pickerDisabled.get()),
-      nsDate.is('active', pickerVisible.get()),
-      nsRange.b('editor'),
-      pickerSize ? nsRange.bm('editor', pickerSize.get()) : '',
-      // attrs.class, // todo
-    ]);
+    // const rangeInputKls = computed(() => [
+    //   nsDate.b('editor'),
+    //   nsDate.bm('editor', props.type),
+    //   nsInput.e('wrapper'),
+    //   nsDate.is('disabled', pickerDisabled.get()),
+    //   nsDate.is('active', pickerVisible.get()),
+    //   nsRange.b('editor'),
+    //   pickerSize ? nsRange.bm('editor', pickerSize.get()) : '',
+    //   // attrs.class, // todo
+    // ]);
 
-    const clearIconKls = computed(() => [
-      nsInput.e('icon'),
-      nsRange.e('close-icon'),
-      !showClose.get() ? nsRange.e('close-icon--hidden') : '',
-    ]);
+    // const clearIconKls = computed(() => [
+    //   nsInput.e('icon'),
+    //   nsRange.e('close-icon'),
+    //   !showClose.get() ? nsRange.e('close-icon--hidden') : '',
+    // ]);
 
-    watch(pickerVisible, (val) => {
+    watch(() => pickerVisible.get(), (val) => {
       if (!val) {
         userInput.set(undefined);
         nextTick(() => {
@@ -145,7 +144,7 @@ export class Picker extends TypeFragment {
       // determine user real change only
       if (isClear || !valueEquals(val, valueOnOpen.get())) {
         emit('change', val);
-        props.validateEvent &&
+        if (props.validateEvent)
           formItem?.validate('change').catch((err) => debugWarn(err));
       }
     };
@@ -166,30 +165,30 @@ export class Picker extends TypeFragment {
       emit('keydown', e);
     };
 
-    const refInput = computed<HTMLInputElement[]>(() => {
-      if (inputRef) {
-        return Array.from<HTMLInputElement>(
-          inputRef.get()?.dom?.querySelectorAll?.('input')!
-        );
-      }
-      return [];
-    });
+    // const refInput = computed<HTMLInputElement[]>(() => {
+    //   if (inputRef) {
+    //     return Array.from<HTMLInputElement>(
+    //       inputRef.get()?.dom?.querySelectorAll?.('input')!
+    //     );
+    //   }
+    //   return [];
+    // });
 
-    const setSelectionRange = (
-      start: number,
-      end: number,
-      pos?: 'min' | 'max'
-    ) => {
-      const _inputs = refInput.get();
-      if (!_inputs.length) return;
-      if (!pos || pos === 'min') {
-        _inputs[0].setSelectionRange(start, end);
-        _inputs[0].focus();
-      } else if (pos === 'max') {
-        _inputs[1].setSelectionRange(start, end);
-        _inputs[1].focus();
-      }
-    };
+    // const setSelectionRange = (
+    //   start: number,
+    //   end: number,
+    //   pos?: 'min' | 'max'
+    // ) => {
+    //   const _inputs = refInput.get();
+    //   if (!_inputs.length) return;
+    //   if (!pos || pos === 'min') {
+    //     _inputs[0].setSelectionRange(start, end);
+    //     _inputs[0].focus();
+    //   } else if (pos === 'max') {
+    //     _inputs[1].setSelectionRange(start, end);
+    //     _inputs[1].focus();
+    //   }
+    // };
 
     const onPick = (date: any = '', visible = false) => {
       pickerVisible.set(visible);
@@ -234,7 +233,7 @@ export class Picker extends TypeFragment {
       let dayOrDays: DayOrDays;
       if (valueIsEmpty.get()) {
         if (pickerOptions.get().getDefaultValue) {
-          dayOrDays = pickerOptions.get().getDefaultValue?.()!;
+          dayOrDays = pickerOptions.get()!.getDefaultValue!()!;
         }
       } else {
         if (isArray(props.modelValue)) {
@@ -292,7 +291,7 @@ export class Picker extends TypeFragment {
       return '';
     });
 
-    const isTimeLikePicker = computed(() => props.type?.includes('time'));
+    // const isTimeLikePicker = computed(() => props.type?.includes('time'));
 
     const isTimePicker = computed(() => props.type?.startsWith('time'));
 
@@ -302,31 +301,31 @@ export class Picker extends TypeFragment {
 
     const isYearsPicker = computed(() => props.type === 'years');
 
-    const triggerIcon = computed(
-      () =>
-        props.prefixIcon ||
-        (isTimeLikePicker.get() ? ElClockSvg : ElCalendarSvg)
-    );
+    // const triggerIcon = computed(
+    //   () =>
+    //     props.prefixIcon ||
+    //     (isTimeLikePicker.get() ? ElClockSvg : ElCalendarSvg)
+    // );
 
     const showClose = signal(false);
 
-    const onClearIconClick = (event: MouseEvent) => {
-      if (props.readonly || pickerDisabled.get()) return;
-      if (showClose.get()) {
-        event.stopPropagation();
-        // When the handleClear Function was provided, emit undefined will be executed inside it
-        // There is no need for us to execute emit undefined twice. #14752
-        if (pickerOptions.get().handleClear) {
-          pickerOptions.get().handleClear?.();
-        } else {
-          emitInput(valueOnClear.get());
-        }
-        emitChange(valueOnClear.get(), true);
-        showClose.set(false);
-        onHide();
-      }
-      emit('clear');
-    };
+    // const onClearIconClick = (event: MouseEvent) => {
+    //   if (props.readonly || pickerDisabled.get()) return;
+    //   if (showClose.get()) {
+    //     event.stopPropagation();
+    //     // When the handleClear Function was provided, emit undefined will be executed inside it
+    //     // There is no need for us to execute emit undefined twice. #14752
+    //     if (pickerOptions.get().handleClear) {
+    //       pickerOptions.get().handleClear?.();
+    //     } else {
+    //       emitInput(valueOnClear.get());
+    //     }
+    //     emitChange(valueOnClear.get(), true);
+    //     showClose.set(false);
+    //     onHide();
+    //   }
+    //   emit('clear');
+    // };
 
     const valueIsEmpty = computed(() => {
       const { modelValue } = props;
@@ -485,7 +484,7 @@ export class Picker extends TypeFragment {
         pickerOptions.get().handleKeydownInput?.(event as KeyboardEvent);
       }
     };
-    const onUserInput = (e?: Event) => {
+    const onUserInput = () => {
       // userInput.set(e) // todo
       // Temporary fix when the picker is dismissed and the input box
       // is focused, just mimic the behavior of antdesign.
@@ -494,82 +493,81 @@ export class Picker extends TypeFragment {
       }
     };
 
-    const handleStartInput = (event?: Event) => {
-      const target = event?.target as HTMLInputElement;
-      if (userInput.get()) {
-        userInput.set([target.value, userInput?.get()?.[1]]);
-      } else {
-        userInput.set([target.value, undefined]);
-      }
-    };
-
-    const handleEndInput = (event?: Event) => {
-      const target = event?.target as HTMLInputElement;
-      if (userInput.get()) {
-        userInput.set([userInput.get()?.[0], target.value]);
-      } else {
-        userInput.set([undefined, target.value]);
-      }
-    };
-
-    const handleStartChange = () => {
-      const values = userInput.get() as string[];
-      const value = parseUserInputToDayjs(values && values[0]) as Dayjs;
-      const parsedVal = unref(parsedValue) as [Dayjs, Dayjs];
-      if (value && value.isValid()) {
-        userInput.set([
-          formatDayjsToString(value) as string,
-          displayValue.get()?.[1] || undefined,
-        ]);
-        const newValue = [
-          value,
-          parsedVal && (parsedVal[1] || undefined),
-        ] as DayOrDays;
-        if (isValidValue(newValue)) {
-          emitInput(dayOrDaysToDate(newValue));
-          userInput.set(undefined);
-        }
-      }
-    };
-
-    const handleEndChange = () => {
-      const values = unref(userInput) as string[];
-      const value = parseUserInputToDayjs(values && values[1]) as Dayjs;
-      const parsedVal = unref(parsedValue) as [Dayjs, Dayjs];
-      if (value && value.isValid()) {
-        userInput.set([
-          unref(displayValue)?.[0] || undefined,
-          formatDayjsToString(value) as string,
-        ]);
-        const newValue = [parsedVal && parsedVal[0], value] as DayOrDays;
-        if (isValidValue(newValue)) {
-          emitInput(dayOrDaysToDate(newValue));
-          userInput.set(undefined);
-        }
-      }
-    };
+    // const handleStartInput = (event?: Event) => {
+    //   const target = event?.target as HTMLInputElement;
+    //   if (userInput.get()) {
+    //     userInput.set([target.value, userInput?.get()?.[1]]);
+    //   } else {
+    //     userInput.set([target.value, undefined]);
+    //   }
+    // };
+    //
+    // const handleEndInput = (event?: Event) => {
+    //   const target = event?.target as HTMLInputElement;
+    //   if (userInput.get()) {
+    //     userInput.set([userInput.get()?.[0], target.value]);
+    //   } else {
+    //     userInput.set([undefined, target.value]);
+    //   }
+    // };
+    //
+    // const handleStartChange = () => {
+    //   const values = userInput.get() as string[];
+    //   const value = parseUserInputToDayjs(values && values[0]) as Dayjs;
+    //   const parsedVal = unref(parsedValue) as [Dayjs, Dayjs];
+    //   if (value && value.isValid()) {
+    //     userInput.set([
+    //       formatDayjsToString(value) as string,
+    //       displayValue.get()?.[1] || undefined,
+    //     ]);
+    //     const newValue = [
+    //       value,
+    //       parsedVal && (parsedVal[1] || undefined),
+    //     ] as DayOrDays;
+    //     if (isValidValue(newValue)) {
+    //       emitInput(dayOrDaysToDate(newValue));
+    //       userInput.set(undefined);
+    //     }
+    //   }
+    // };
+    //
+    // const handleEndChange = () => {
+    //   const values = unref(userInput) as string[];
+    //   const value = parseUserInputToDayjs(values && values[1]) as Dayjs;
+    //   const parsedVal = unref(parsedValue) as [Dayjs, Dayjs];
+    //   if (value && value.isValid()) {
+    //     userInput.set([
+    //       unref(displayValue)?.[0] || undefined,
+    //       formatDayjsToString(value) as string,
+    //     ]);
+    //     const newValue = [parsedVal && parsedVal[0], value] as DayOrDays;
+    //     if (isValidValue(newValue)) {
+    //       emitInput(dayOrDaysToDate(newValue));
+    //       userInput.set(undefined);
+    //     }
+    //   }
+    // };
 
     const pickerOptions = signal<Partial<PickerOptions>>({});
 
-    const onSetPickerOption = <T extends keyof PickerOptions>(
-      e: [T, PickerOptions[T]]
-    ) => {
-      pickerOptions.get()[e[0]] = e[1];
-      pickerOptions.get().panelReady = true;
-    };
+    // const onSetPickerOption = <T extends keyof PickerOptions>(
+    //   e: [T, PickerOptions[T]]
+    // ) => {
+    //   pickerOptions.get()[e[0]] = e[1];
+    //   pickerOptions.get().panelReady = true;
+    // };
+    //
+    // const onCalendarChange = (e: [Date, undefined | Date]) => {
+    //   emit('calendar-change', e);
+    // };
 
-    const onCalendarChange = (e: [Date, undefined | Date]) => {
-      emit('calendar-change', e);
-    };
-
-    // @ts-ignore
-    const onPanelChange = (
-      value: [Dayjs, Dayjs],
-      mode: 'month' | 'year',
-      view: unknown
-    ) => {
-      emit('panel-change', value, mode, view);
-    };
+    // const onPanelChange = (
+    //   value: [Dayjs, Dayjs],
+    //   mode: 'month' | 'year',
+    //   view: unknown
+    // ) => {
+    //   emit('panel-change', value, mode, view);
+    // };
 
     const focus = () => {
       inputRef.get()?.dom?.focus();

@@ -1,5 +1,5 @@
 import { ITypeDiv, TypeDivProps } from '@type-dom/framework';
-import { TabPaneProps } from '../td-tab-pane/td-tab-pane.interface';
+// import { TabPaneProps } from '../td-tab-pane/td-tab-pane.interface';
 import { TdTabs } from './td-tabs.class';
 import { TabPaneName } from './td-tabs.interface';
 import { TabsPaneContext } from './constants';

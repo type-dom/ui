@@ -36,7 +36,6 @@ $directions: rtl, ltr, ttb, btt;
     margin-bottom: 32px;
     padding: getCssVar('drawer-padding-primary');
     padding-bottom: 0;
-
     & > :first-child {
       flex: 1;
     }
@@ -63,7 +62,6 @@ $directions: rtl, ltr, ttb, btt;
     color: inherit;
     background-color: transparent;
     outline: none;
-
     &:focus,
     &:hover {
       i {
@@ -76,7 +74,6 @@ $directions: rtl, ltr, ttb, btt;
     flex: 1;
     padding: getCssVar('drawer-padding-primary');
     overflow: auto;
-
     & > * {
       box-sizing: border-box;
     }

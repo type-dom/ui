@@ -33,7 +33,7 @@ export class TdCollapse extends TypeDiv implements ITdCollapse {
 
     const { activeNames, setActiveNames } = useCollapse(props, emit);
 
-    const { rootKls } = useCollapseDOM();
+    const { rootKls } = useCollapseDOM(props);
 
     defineExpose({
       /** @description active names */

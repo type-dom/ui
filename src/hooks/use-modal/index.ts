@@ -24,7 +24,7 @@ const closeModal = (e: KeyboardEvent) => {
 };
 
 export const useModal = (instance: ModalInstance, visibleRef: Ref<boolean>) => {
-  watch(visibleRef, (val) => {
+  watch(() => visibleRef.get(), (val) => {
     if (val) {
       modalStack.push(instance);
     } else {

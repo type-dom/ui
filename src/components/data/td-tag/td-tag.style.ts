@@ -1,7 +1,6 @@
 import { IStyle } from '@type-dom/css-type';
 import { ComponentSize } from '../../../constants/size';
 import {
-  $borderWidth,
   $colors,
   $fillColor,
   $types,
@@ -86,7 +85,7 @@ export function genTheme(
     };
     // console.log('$tagTypes[type] is ', $tagTypes[type]);
   }
-  const hoverColor = returnVarList($hoverColorWeight, 'primary');
+  // const hoverColor = returnVarList($hoverColorWeight, 'primary');
   // console.log('hoverColor is ', hoverColor);
 }
 

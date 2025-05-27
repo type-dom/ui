@@ -15,9 +15,9 @@
 
   @include e(popper) {
     @include picker-popper(
-                    getCssVar('bg-color', 'overlay'),
-                    1px solid getCssVar('border-color', 'light'),
-                    getCssVar('box-shadow', 'light')
+      getCssVar('bg-color', 'overlay'),
+      1px solid getCssVar('border-color', 'light'),
+      getCssVar('box-shadow', 'light')
     );
   }
 }

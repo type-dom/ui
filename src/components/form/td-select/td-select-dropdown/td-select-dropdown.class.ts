@@ -6,15 +6,15 @@ import {
   TypeDiv,
   useResizeObserver,
 } from '@type-dom/framework';
-import { computed, signal } from '@type-dom/signals';
+import { computed, signal, unref } from '@type-dom/signals';
 import { useNamespace } from '../../../../hooks/use-namespace';
+import { selectKey } from '../token';
 import {
   ITdSelectDropdown,
   SelectDropdownProps,
 } from './td-select-dropdown.interface';
-import { selectKey } from '../token';
 
-export class TdSelectDropDown extends TypeDiv implements ITdSelectDropdown {
+export class TdSelectDropdown extends TypeDiv implements ITdSelectDropdown {
   className: 'TdSelectDropdown';
   override props: SelectDropdownProps;
 
@@ -27,13 +27,14 @@ export class TdSelectDropDown extends TypeDiv implements ITdSelectDropdown {
   override setup() {
     // console.log('TdSelectDropDown setup');
     const props = this.props;
+
     const select = inject(selectKey)!;
     const ns = useNamespace('select');
 
     // computed
-    const popperClass = computed(() => select.props.popperClass);
-    const isMultiple = computed(() => select.props.multiple);
-    const isFitInputWidth = computed(() => select.props.fitInputWidth);
+    const popperClass = computed(() => unref(select.props.popperClass));
+    const isMultiple = computed(() => unref(select.props.multiple));
+    const isFitInputWidth = computed(() => unref(select.props.fitInputWidth));
     const minWidth = signal('');
 
     function updateMinWidth() {
@@ -51,11 +52,11 @@ export class TdSelectDropDown extends TypeDiv implements ITdSelectDropdown {
       computed(() => [
         ns.b('dropdown'),
         ns.is('multiple', isMultiple.get()),
-        popperClass,
+        popperClass.get(),
       ])
     );
     this.style.addObj({
-      [isFitInputWidth ? 'width' : 'minWidth']: minWidth,
+      [isFitInputWidth.get() ? 'width' : 'minWidth']: minWidth,
     });
     this.addChildren(
       new Div({

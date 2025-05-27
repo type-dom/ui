@@ -23,11 +23,11 @@ export class PaginationJumper extends TypeSpan {
 
   override setup() {
     const props = this.props;
-    const emit = this.emit;
+    // const emit = this.emit;
     const { t } = useLocale();
     const ns = useNamespace('pagination');
     const { pageCount, disabled, currentPage, changeEvent } = usePagination();
-    const userInput = signal<number | string>();
+    const userInput = signal<number | string | undefined>();
     const innerValue = computed(() => userInput.get() ?? currentPage?.get());
 
     function handleInput(val: number | string) {

@@ -3,9 +3,6 @@ import {
   Div,
   Span,
   nextTick,
-  TextNode,
-  TypeElement,
-  U,
   TypeDiv,
   onMounted,
   useResizeObserver,
@@ -25,7 +22,7 @@ import { TdIcon } from '../../basic/td-icon/td-icon.class';
 
 import { Scrollable, ITdTabNav, TabNavProps } from './td-tab-nav.interface';
 import { TdTabBar } from './td-tab-bar.class';
-import { TdTabs } from './td-tabs.class';
+// import { TdTabs } from './td-tabs.class';
 import { tabsRootContextKey } from './constants';
 
 export class TdTabNav extends TypeDiv implements ITdTabNav {
@@ -81,7 +78,7 @@ export class TdTabNav extends TypeDiv implements ITdTabNav {
 
       const containerSize =
         navScroll$.get()?.[
-          `offset${capitalize(sizeName.get()) as 'Width' | 'Height'}`
+          `offset${capitalize(sizeName.get()!) as 'Width' | 'Height'}`
         ];
       const currentOffset = navOffset.get();
 
@@ -164,7 +161,7 @@ export class TdTabNav extends TypeDiv implements ITdTabNav {
     const update = () => {
       if (!nav$.get() || !navScroll$.get()) return;
 
-      props.stretch && tabBarRef.get()?.update();
+      if (props.stretch) tabBarRef.get()?.update?.();
 
       const navSize =
         nav$.get()?.[
@@ -231,14 +228,14 @@ export class TdTabNav extends TypeDiv implements ITdTabNav {
     };
     const removeFocus = () => isFocus.set(false);
 
-    watch(visibility, (visibility) => {
+    watch(() => visibility.get(), (visibility) => {
       if (visibility === 'hidden') {
         focusable.set(false);
       } else if (visibility === 'visible') {
         setTimeout(() => focusable.set(true), 50);
       }
     });
-    watch(focused, (focused) => {
+    watch(() => focused.get(), (focused) => {
       if (focused) {
         setTimeout(() => focusable.set(true), 50);
       } else {
@@ -265,7 +262,7 @@ export class TdTabNav extends TypeDiv implements ITdTabNav {
               ns.is('disabled', !scrollable.get()?.prev),
             ],
             events: {
-              click: (evt) => {
+              click: () => {
                 scrollPrev();
               },
             },
@@ -276,13 +273,13 @@ export class TdTabNav extends TypeDiv implements ITdTabNav {
             ],
           }),
           new Span({
-            name: 'nav-next',
+            name: 'nav-preview',
             class: [
-              ns.e('nav-next'),
+              ns.e('nav-preview'),
               ns.is('disabled', !scrollable.get()?.next),
             ],
             events: {
-              click: (evt) => {
+              click: () => {
                 scrollNext();
               },
             },

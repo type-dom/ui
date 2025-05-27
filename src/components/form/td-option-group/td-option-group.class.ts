@@ -1,15 +1,15 @@
 import {
   getCurrentInstance,
-  LI,
   onMounted,
   provide,
+  useMutationObserver,
   TypeNode,
   TypeUL,
+  LI,
   UL,
-  useMutationObserver,
 } from '@type-dom/framework';
 import { ensureArray } from '@type-dom/utils';
-import { computed, Signal, signal, toRefs } from '@type-dom/signals';
+import { Signal, signal, computed } from '@type-dom/signals';
 import { useNamespace } from '../../../hooks/use-namespace';
 import { selectGroupKey } from '../td-select/token';
 import { TdOption } from '../td-option/td-option.class';
@@ -32,8 +32,8 @@ export class TdOptionGroup extends TypeUL implements ITdOptionGroup {
   override setup() {
     const props = this.props;
     const ns = useNamespace('select');
-    const groupRef = signal(null);
-    const instance = getCurrentInstance();
+    const groupRef = signal<HTMLElement>();
+    const instance = getCurrentInstance()!;
     const children: Signal<TdOption[]> = signal([]);
 
     provide(selectGroupKey, props);
@@ -74,5 +74,23 @@ export class TdOptionGroup extends TypeUL implements ITdOptionGroup {
       subtree: true,
       childList: true,
     });
+
+    this.assignProps({
+      vShow: visible,
+      class: ns.be('group', 'wrap'),
+    });
+    this.addChildren(
+      new LI({
+        class: ns.be('group', 'title'),
+        slot: props.label,
+      }),
+      new LI({
+        class: ns.b('group'),
+        slot: new UL({
+          class: ns.b('group'),
+          slot: props.slot ?? props.slots?.default,
+        }),
+      })
+    )
   }
 }

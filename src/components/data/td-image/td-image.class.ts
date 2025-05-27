@@ -1,7 +1,7 @@
 import {
   Div,
   Img,
-  useAttrs as useRawAttrs,
+  // useAttrs as useRawAttrs,
   nextTick,
   onMounted,
   TypeDiv,
@@ -9,14 +9,9 @@ import {
   useThrottleFn,
   Fragment,
   ISlotRaw,
-  arraySlot,
-  ISlot,
-  ISlotItem,
-  defineExpose,
 } from '@type-dom/framework';
-import { computed, effect, signal, watch } from '@type-dom/signals';
+import { computed, signal, watch } from '@type-dom/signals';
 import {
-  fromPairs,
   getScrollContainer,
   isArray,
   isClient,
@@ -25,9 +20,8 @@ import {
   isInContainer,
   isString,
 } from '@type-dom/utils';
-import { FlDividerShortFilledSvg } from '@type-dom/svgs';
 import { IStyle } from '@type-dom/css-type';
-import { useAttrs } from '../../../hooks/use-attrs';
+// import { useAttrs } from '../../../hooks/use-attrs';
 import { useLocale } from '../../../hooks/use-locale';
 import { useNamespace } from '../../../hooks/use-namespace';
 import { ITdImage, ImageProps } from './td-image.interface';
@@ -59,7 +53,7 @@ export class TdImage extends TypeDiv implements ITdImage {
 
     const { t } = useLocale();
     const ns = useNamespace('image');
-    const rawAttrs = useRawAttrs();
+    // const rawAttrs = useRawAttrs();
 
     // todo
     // const containerAttrs = computed(() => {
@@ -70,19 +64,19 @@ export class TdImage extends TypeDiv implements ITdImage {
     //   );
     // });
 
-    const imgAttrs = useAttrs({
-      excludeListeners: true,
-      // excludeKeys: computed<string[]>(() => {
-      //   return Object.keys(containerAttrs.get());
-      // })
-    });
+    // const imgAttrs = useAttrs({
+    //   excludeListeners: true,
+    //   // excludeKeys: computed<string[]>(() => {
+    //   //   return Object.keys(containerAttrs.get());
+    //   // })
+    // });
 
     const imageSrc = signal<string | undefined>();
     const hasLoadError = signal(false);
     const isLoading = signal(true);
     const showViewer = signal(false);
     const container = signal<HTMLElement>();
-    const _scrollContainer = signal<HTMLElement | Window>();
+    const _scrollContainer = signal<HTMLElement | Window | undefined>();
 
     const supportLoading = isClient && 'loading' in HTMLImageElement.prototype;
     let stopScrollListener: (() => void) | undefined;
@@ -214,7 +208,7 @@ export class TdImage extends TypeDiv implements ITdImage {
     // () => props.src  这样也能监听到 props.src 赋值的。
     watch(
       () => props.src,
-      (newSrc, oldSrc) => {
+      () => {
         // console.warn('watch props.src is ', newSrc, oldSrc);
         if (isManual.get()) {
           // console.warn('watch isManual props.src is ', newSrc);
@@ -256,7 +250,7 @@ export class TdImage extends TypeDiv implements ITdImage {
         slot: computed(() => {
           if (hasLoadError.get()) {
             // console.warn('hasLoadError.get() is ', hasLoadError.get());
-            return props.slots?.error ?? new Div({
+            return props.slots?.error as ISlotRaw ?? new Div({
               class: ns.e('error'),
               slot: t('el.image.error'),
             })
@@ -270,6 +264,7 @@ export class TdImage extends TypeDiv implements ITdImage {
                   // ...imgAttrs.get(), // v-bind imgAttrs
                   src: imageSrc.get() ?? '', // must has src. other then trigger events ,eg. load error
                   crossorigin: props.crossorigin,
+                  alt: props.name ?? 'image'
                 },
                 styleObj: imageStyle,
                 events: {

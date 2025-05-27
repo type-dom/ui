@@ -43,7 +43,7 @@ export class TdProgress extends TypeDiv {
     };
 
     const props = this.props;
-    const emit = this.emit;
+    // const emit = this.emit;
 
     const ns = useNamespace('progress');
 

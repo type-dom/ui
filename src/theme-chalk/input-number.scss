@@ -22,7 +22,6 @@
       -moz-appearance: textfield;
       text-align: center;
       line-height: 1;
-
       &::-webkit-inner-spin-button,
       &::-webkit-outer-spin-button {
         margin: 0;
@@ -53,10 +52,12 @@
       color: getCssVar('color-primary');
 
       & ~ .#{$namespace}-input:not(.is-disabled) .#{$namespace}-input__wrapper {
-        box-shadow: 0 0 0 1px var(
-                        #{getCssVarName('input', 'focus-border-color')},
-                        map.get($input, 'focus-border-color')
-        ) inset;
+        box-shadow: 0 0 0 1px
+          var(
+            #{getCssVarName('input', 'focus-border-color')},
+            map.get($input, 'focus-border-color')
+          )
+          inset;
       }
     }
 
@@ -68,13 +69,15 @@
 
   @include e(increase) {
     right: 1px;
-    border-radius: 0 getCssVar('border-radius-base') getCssVar('border-radius-base') 0;
+    border-radius: 0 getCssVar('border-radius-base')
+      getCssVar('border-radius-base') 0;
     border-left: getCssVar('border');
   }
 
   @include e(decrease) {
     left: 1px;
-    border-radius: getCssVar('border-radius-base') 0 0 getCssVar('border-radius-base');
+    border-radius: getCssVar('border-radius-base') 0 0
+      getCssVar('border-radius-base');
     border-right: getCssVar('border');
   }
 
@@ -98,6 +101,14 @@
       @include e((increase, decrease)) {
         width: map.get($input-height, $size);
         font-size: map.get($input-font-size, $size);
+      }
+
+      @include when(controls-right) {
+        .#{$namespace}-input--#{$size} {
+          .#{$namespace}-input__wrapper {
+            padding-right: #{map.get($input-height, $size) + 7};
+          }
+        }
       }
 
       .#{$namespace}-input--#{$size} {
@@ -132,8 +143,8 @@
 
     @include e((increase, decrease)) {
       @include set-css-var-value(
-                              ('input', 'number-controls-height'),
-                      math.div(map.get($input-height, 'default') - 2, 2)
+        ('input', 'number-controls-height'),
+        math.div(map.get($input-height, 'default') - 2, 2)
       );
 
       height: getCssVar('input-number-controls-height');
@@ -165,8 +176,8 @@
         [class*='increase'],
         [class*='decrease'] {
           @include set-css-var-value(
-                                  ('input', 'number-controls-height'),
-                          math.div(map.get($input-height, $size) - 2, 2)
+            ('input', 'number-controls-height'),
+            math.div(map.get($input-height, $size) - 2, 2)
           );
         }
       }

@@ -6,14 +6,14 @@ import {
   ISlotItem,
   TypeElement,
 } from '@type-dom/framework';
-import { debugWarn, isObject, isString, NOOP } from '@type-dom/utils';
+import { isObject } from '@type-dom/utils';
 import {
   FORWARD_REF_INJECTION_KEY,
-  ForwardRefInjectionContext,
-  useForwardRef,
-  useForwardRefDirective,
+  // ForwardRefInjectionContext,
+  // useForwardRef,
+  // useForwardRefDirective,
 } from '../../../hooks/use-forward-ref';
-import { Computed, isRef, Signal } from '@type-dom/signals';
+// import { Computed, isRef, Signal } from '@type-dom/signals';
 import { useNamespace } from '../../../hooks/use-namespace';
 
 export class TdOnlyChild extends TypeFragment {
@@ -32,9 +32,9 @@ export class TdOnlyChild extends TypeFragment {
   override setup() {
     // console.log('TdOnlyChild.setup', this.props);
     const forwardRefInjection = this.inject(FORWARD_REF_INJECTION_KEY);
-    const forwardRefDirective = useForwardRefDirective(
-      forwardRefInjection?.setForwardRef ?? NOOP
-    );
+    // const forwardRefDirective = useForwardRefDirective(
+    //   forwardRefInjection?.setForwardRef ?? NOOP
+    // );
 
     // const defaultSlot = this.props.slots?.default || this.props.slot;
     // if (!defaultSlot) {
@@ -62,7 +62,10 @@ export class TdOnlyChild extends TypeFragment {
     // return null; // add by me todo
 
     const legitChild = findFirstLegitChild(this.childNodes);
+    // console.warn('TdOnlyChild.setup legitChild, this.props is ', this.props);
     if (legitChild instanceof TypeElement) {
+      legitChild.attr?.addClass(this.props.class); // td-tooltip-trigger 组件要传 class 的设置；
+      legitChild.attr?.addObj(this.props.attrObj);
       legitChild?.onMounted(() => {
         forwardRefInjection?.setForwardRef(legitChild.dom);
       });

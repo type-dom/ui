@@ -181,4 +181,4 @@ export default {
       indicator: 'سوئیچ چرخان به شاخص {index}',
     },
   },
-};
+}

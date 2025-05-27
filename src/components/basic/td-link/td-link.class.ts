@@ -28,11 +28,11 @@ export class TdLink extends TypeA implements ITdLink {
       ns.is('disabled', props.disabled),
       ns.is('underline', props.underline && !props.disabled),
     ]);
-    const emit = this.emit;
+    // const emit = this.emit;
 
-    function handleClick(event: MouseEvent) {
+    function handleClick(_event: MouseEvent) {
       if (!props.disabled) {
-        // emit('click', event);
+        // emit('click', event); // todo
       }
     }
 

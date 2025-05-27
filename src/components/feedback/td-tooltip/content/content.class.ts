@@ -2,6 +2,7 @@ import {
   defineExpose,
   inject,
   onBeforeUnmount,
+  // computedEager,
   onClickOutside,
   TypeFragmentProps,
   Transition,
@@ -43,6 +44,8 @@ export class TdTooltipContent
     const ns = useNamespace('tooltip');
 
     const contentRef = signal<TdPopperContent>();
+    // const popperContentRef = computedEager(() => contentRef.get()?.popperContentRef)
+    const popperContentRef = computed(() => contentRef.get()?.popperContentRef.get())
     let stopHandle: ReturnType<typeof onClickOutside>;
     const {
       controlled,
@@ -88,7 +91,7 @@ export class TdTooltipContent
 
     const appendTo = computed(() => {
       // console.warn('appendTo is ', props.appendTo, selector.get());
-      return props.appendTo || selector.get();
+      return unref(props.appendTo) || selector.get();
     });
 
     const contentStyle = computed(() => props.style ?? {});
@@ -97,7 +100,7 @@ export class TdTooltipContent
 
     const onTransitionLeave = () => {
       onHide();
-      isFocusInsideContent() && tryFocus(document.body);
+      if (isFocusInsideContent()) tryFocus(document.body);
       ariaHidden.set(true);
     };
 
@@ -132,9 +135,10 @@ export class TdTooltipContent
     const onAfterShow = () => {
       onShow();
       stopHandle = onClickOutside(
-        computed(() => {
-          return contentRef.get()?.popperContentRef.get();
-        }),
+        // computed(() => {
+        //   return contentRef.get()?.popperContentRef.get();
+        // }),
+        popperContentRef,
         () => {
           if (unref(controlled)) return;
           const $trigger = unref(trigger);
@@ -219,6 +223,7 @@ export class TdTooltipContent
             offset: props.offset,
             placement: props.placement,
             popperOptions: props.popperOptions,
+            arrowOffset: props.arrowOffset,
             strategy: props.strategy,
             effect: props.effect,
             enterable: props.enterable,

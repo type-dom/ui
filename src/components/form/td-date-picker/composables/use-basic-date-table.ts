@@ -1,6 +1,6 @@
 // // import { computed, nextTick, ref, unref, watch } from 'vue'
 // import dayjs from 'dayjs';
-// import { flatten } from 'lodash';
+// import { flatten } from 'lodash-es';
 // // import { useLocale, useNamespace } from '@element-plus/hooks'
 // // import { castArray, isArray } from '@element-plus/utils'
 // //
@@ -120,7 +120,7 @@
 //         cell.text = count;
 //       } else {
 //         cell.text = count - dateCountOfMonth!;
-//         cell.type = 'next-month';
+//         cell.type = 'preview-month';
 //       }
 //       return true;
 //     }
@@ -371,7 +371,7 @@
 //       newDate = newDate.subtract(1, 'month');
 //     }
 //
-//     if (cell.type === 'next-month') {
+//     if (cell.type === 'preview-month') {
 //       newDate = newDate.add(1, 'month');
 //     }
 //

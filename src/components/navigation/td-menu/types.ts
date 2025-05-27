@@ -1,32 +1,30 @@
-// import type { Ref } from 'vue'
-import { Computed, Ref, Signal } from '@type-dom/signals';
-// import type { RouteLocationRaw } from 'vue-router'
+import { Ref, Signal, Computed, ToRefs } from '@type-dom/signals';
+import { RouteRecordRaw } from '@type-dom/router';
 import { MenuProps } from './td-menu.interface';
-import { IRoute } from '@type-dom/framework';
 
 export interface MenuItemRegistered {
   index: string,
-  indexPath: string[]; // | Computed<string[]>
-  active: boolean; // | Computed<boolean>
+  indexPath: Computed<string[]>
+  active: Computed<boolean>
 }
 export interface MenuItemClicked {
   index: string;
   indexPath: string[];
-  route?: IRoute; // RouteLocationRaw
+  route?: RouteRecordRaw; // RouteLocationRaw
 }
 
 export interface MenuProvider {
-  openedMenus: Signal<string[]>
-  items: Record<string, MenuItemRegistered>
-  subMenus: Record<string, MenuItemRegistered>
-  activeIndex?: string;
-  isMenuPopup?: boolean
-  props: MenuProps
+  openedMenus: Signal<string[]>;
+  items: Signal<Record<string, MenuItemRegistered>>;
+  subMenus: Signal<Record<string, MenuItemRegistered>>;
+  activeIndex?: Signal<string>;
+  isMenuPopup?: Computed<boolean>
+  props: ToRefs<MenuProps>
 
-  addMenuItem: (item: Signal<MenuItemRegistered>) => void
-  removeMenuItem: (item: Signal<MenuItemRegistered>) => void
-  addSubMenu: (item: Signal<MenuItemRegistered>) => void
-  removeSubMenu: (item: Signal<MenuItemRegistered>) => void
+  addMenuItem: (item: MenuItemRegistered) => void
+  removeMenuItem: (item: MenuItemRegistered) => void
+  addSubMenu: (item: MenuItemRegistered) => void
+  removeSubMenu: (item: MenuItemRegistered) => void
 
   openMenu: (index: string, indexPath: string[]) => void
   closeMenu: (index: string, indexPath: string[]) => void
@@ -36,8 +34,8 @@ export interface MenuProvider {
 }
 
 export interface SubMenuProvider {
-  addSubMenu: (item: Signal<MenuItemRegistered>) => void
-  removeSubMenu: (item: Signal<MenuItemRegistered>) => void
+  addSubMenu: (item: MenuItemRegistered) => void
+  removeSubMenu: (item: MenuItemRegistered) => void
   handleMouseleave?: (deepDispatch: boolean) => void
   mouseInChild: Ref<boolean>
   level: number

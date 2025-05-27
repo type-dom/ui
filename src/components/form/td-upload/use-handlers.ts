@@ -17,7 +17,7 @@
 // } from './upload'
 
 import { debugWarn, isNil, throwError } from '@type-dom/utils';
-import { Ref, Signal, toRaw, unref, watch } from '@type-dom/signals';
+import { Signal, toRaw, unref, watch } from '@type-dom/signals';
 import {
   UploadFile,
   UploadFiles,
@@ -61,14 +61,14 @@ export const useHandlers = (
     states: UploadStatus[] = ['ready', 'uploading', 'success', 'fail']
   ) {
     uploadFiles.set(uploadFiles.get().filter(
-      (row) => !states.includes(row.status!))
+      (row: UploadFile) => !states.includes(row.status!))
     )
   }
 
   function removeFile(file: UploadFile) {
     console.warn('removeFile file is ', file);
     uploadFiles.set(uploadFiles.get().filter(
-      (uploadFile) => uploadFile.uid !== file.uid
+      (uploadFile: UploadFile) => uploadFile.uid !== file.uid
     ))
   }
 
@@ -156,7 +156,7 @@ export const useHandlers = (
 
   function submit() {
     console.warn('submit');
-    uploadFiles.get()
+    (uploadFiles.get() as UploadFiles)
       .filter(({ status }) => status === 'ready')
       .forEach(({ raw }) => raw && uploadRef.get()?.upload?.(raw))
   }
@@ -185,7 +185,7 @@ export const useHandlers = (
   )
 
   watch(
-    uploadFiles,
+    () => uploadFiles.get(),
     (files) => {
       if (!files) return;
       for (const file of unref(files)) {
@@ -193,7 +193,7 @@ export const useHandlers = (
         file.status ||= 'success'
       }
     },
-    // { immediate: true, deep: true }
+    { immediate: true, deep: true }
   )
 
   return {

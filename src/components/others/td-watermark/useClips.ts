@@ -1,7 +1,8 @@
 // import { isArray } from '@element-plus/utils'
 
-import type { WatermarkProps } from './td-watermark.interface';
 import { isArray } from '@type-dom/utils';
+import { unref } from '@type-dom/signals';
+import type { WatermarkProps } from './td-watermark.interface';
 
 export const FontGap = 3;
 
@@ -66,13 +67,13 @@ export default function useClips() {
       const mergedFontSize = Number(fontSize) * ratio;
 
       ctx.font = `${fontStyle} normal ${fontWeight} ${mergedFontSize}px/${height}px ${fontFamily}`;
-      ctx.fillStyle = color;
+      ctx.fillStyle = unref(color);
       ctx.textAlign = textAlign;
       ctx.textBaseline = textBaseline;
       const contents = isArray(content) ? content : [content];
       contents?.forEach((item, index) => {
         ctx.fillText(
-          item ?? '',
+          unref(item) as string ?? '',
           contentWidth / 2,
           index * (mergedFontSize + FontGap * ratio)
         );

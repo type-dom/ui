@@ -140,7 +140,7 @@ export const useSlide = (
   const handleSliderPointerEvent = (
     event?: MouseEvent | TouchEvent
   ): Ref<TdSliderButton | undefined> | undefined => {
-    if (sliderDisabled.get() || initData.dragging) return
+    if (sliderDisabled.get() || initData.dragging.get()) return
     resetSize()
     let newPercent = 0
     if (props.vertical) {
@@ -185,7 +185,7 @@ export const useSlide = (
   }
 
   const onSliderMarkerDown = (position: number) => {
-    if (sliderDisabled.get() || initData.dragging) return
+    if (sliderDisabled.get() || initData.dragging.get()) return
     setPosition(position)
   }
 

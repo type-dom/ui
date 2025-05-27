@@ -125,11 +125,11 @@ export const $overlayColor = {
 };
 
 // mask
-const $maskColor = {
-  '': 'rgba(255, 255, 255, 0.9)',
-  default: 'rgba(255, 255, 255, 0.9)',
-  extraLight: 'rgba(255, 255, 255, 0.3)',
-};
+// const $maskColor = {
+//   '': 'rgba(255, 255, 255, 0.9)',
+//   default: 'rgba(255, 255, 255, 0.9)',
+//   extraLight: 'rgba(255, 255, 255, 0.3)',
+// };
 
 export const $colors: {
   white: string;

@@ -5,3 +5,5 @@
 //    * @description value of option
 //    */
 // }
+
+export const COMPONENT_NAME = 'TdOption'

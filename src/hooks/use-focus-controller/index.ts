@@ -74,7 +74,7 @@ export function useFocusController<T extends { focus: () => void }>(
     }
   };
   // todo
-  watch(wrapperRef, (el) => {
+  watch(() => wrapperRef.get(), (el) => {
     if (el) {
       el.setAttribute('tabindex', '-1');
     }
@@ -85,7 +85,7 @@ export function useFocusController<T extends { focus: () => void }>(
   useEventListener(wrapperRef, 'blur', handleBlur, true);
   useEventListener(wrapperRef, 'click', handleClick, true);
 
-  // only for test
+  // only for test-dts
   if (process.env.NODE_ENV === 'test') {
     onMounted(() => {
       const targetEl = isElement(target.get())

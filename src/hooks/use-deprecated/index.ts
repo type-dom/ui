@@ -12,7 +12,7 @@ type DeprecationParam = {
 
 export const useDeprecated = (
   { from, replacement, scope, version, ref, type = 'API' }: DeprecationParam,
-  condition: MaybeRef<boolean>
+  condition: MaybeRef<boolean | undefined>
 ) => {
   watch(
     () => unref(condition),

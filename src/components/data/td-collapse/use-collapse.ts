@@ -12,7 +12,7 @@
 // } from './collapse'
 
 import { AnyFn, ensureArray } from '@type-dom/utils';
-import { computed, signal, watch } from '@type-dom/signals';
+import { computed, signal } from '@type-dom/signals';
 import { provide } from '@type-dom/framework';
 import { useNamespace } from '../../../hooks/use-namespace';
 import { CHANGE_EVENT, UPDATE_MODEL_EVENT } from '../../../constants/event';
@@ -20,7 +20,12 @@ import { collapseContextKey } from './constants';
 import { CollapseActiveName, CollapseProps } from './td-collapse.interface';
 
 export const useCollapse = (props: CollapseProps, emit: AnyFn) => {
-  const activeNames = signal(ensureArray(props.vModel?.get()));
+  const activeNames = signal<CollapseActiveName[]>([])
+
+  const computedActiveNames = computed(() => {
+    const activeKeys = props.vModel?.get() ?? activeNames.get()
+    return ensureArray(activeKeys) as CollapseActiveName[]
+  })
 
   const setActiveNames = (_activeNames: CollapseActiveName[]) => {
     activeNames.set(_activeNames);
@@ -31,9 +36,10 @@ export const useCollapse = (props: CollapseProps, emit: AnyFn) => {
 
   const handleItemClick = (name: CollapseActiveName) => {
     if (props.accordion) {
-      setActiveNames([activeNames.get()[0] === name ? '' : name]);
+      setActiveNames([computedActiveNames.get()[0] === name ? '' : name])
     } else {
-      const _activeNames: CollapseActiveName[] = [...activeNames.get()];
+      // const _activeNames: CollapseActiveName[] = [...activeNames.get()];
+      const _activeNames = [...computedActiveNames.get()] as CollapseActiveName[];
       const index = _activeNames.indexOf(name);
 
       if (index > -1) {
@@ -45,26 +51,30 @@ export const useCollapse = (props: CollapseProps, emit: AnyFn) => {
     }
   };
 
-  watch(
-    () => props.vModel?.get(), // props.vModel 是数组，
-    () => activeNames.set(ensureArray(props.vModel?.get()))
-    // { deep: true }
-  );
+  // watch(
+  //   () => props.vModel?.get(), // props.vModel 是数组，
+  //   (newValue, oldValue) => newValue && activeNames.set(ensureArray(newValue))
+  //   // { deep: true }
+  // );
 
   provide(collapseContextKey, {
-    activeNames,
+    activeNames: computedActiveNames,
     handleItemClick,
   });
   return {
-    activeNames,
+    activeNames: computedActiveNames,
     setActiveNames,
   };
 };
 
-export const useCollapseDOM = () => {
-  const ns = useNamespace('collapse');
+export const useCollapseDOM = (props: CollapseProps) => {
+  const ns = useNamespace('collapse')
 
-  const rootKls = computed(() => ns.b());
+  const rootKls = computed(() => [
+    ns.b(),
+    ns.b(`icon-position-${props.expandIconPosition}`),
+  ])
+
   return {
     rootKls,
   };

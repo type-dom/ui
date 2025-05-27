@@ -1,16 +1,15 @@
 import {
   Div,
-  For,
   Input,
   Label,
   TypeFragment,
+  Fragment,
   onMounted,
   useActiveElement,
-  useResizeObserver, Fragment, nextTick
+  useResizeObserver,
 } from '@type-dom/framework';
 import {
   computed,
-  effect,
   signal,
   toSignals,
   unref,
@@ -29,7 +28,7 @@ import {
   useFormItemInputId,
 } from '../../form/td-form/hooks/use-form-item';
 import { ITdSegmented, SegmentedProps, Option } from './td-segmented.interface';
-import { segmentedEmits, segmentedProps } from './td-segmented.const';
+import { defaultProps, segmentedEmits, segmentedProps } from './td-segmented.const';
 import './style/index';
 
 export class TdSegmented extends TypeFragment implements ITdSegmented {
@@ -46,7 +45,7 @@ export class TdSegmented extends TypeFragment implements ITdSegmented {
   }
 
   override setup() {
-    // console.log('TdSegmented created');
+    console.log('TdSegmented setup . ');
     const props = this.props;
     const emit = this.emit;
 
@@ -77,16 +76,16 @@ export class TdSegmented extends TypeFragment implements ITdSegmented {
       emit(UPDATE_MODEL_EVENT, value);
       emit(CHANGE_EVENT, value);
     };
-
+    const aliasProps = computed(() => ({ ...defaultProps, ...props.props }))
     const getValue = (item: Option) => {
-      return isObject(item) ? item.value : item;
+      return isObject(item) ? item[aliasProps.get().value] : item;
     };
 
     const getLabel = (item: Option) => {
-      return isObject(item) ? item.label : (item as string);
+      return isObject(item) ? item[aliasProps.get().label] : item;
     };
 
-    const getDisabled = (item: Option) => {
+    const getDisabled = (item?: Option) => {
       return !!(_disabled.get() || (isObject(item) ? item.disabled : false));
     };
 
@@ -142,7 +141,7 @@ export class TdSegmented extends TypeFragment implements ITdSegmented {
         state.translateX.set(selectedItem.offsetLeft);
       }
       try {
-        // This will failed in test
+        // This will failed in test-dts
         state.focusVisible.set(selectedItemInput.matches(':focus-visible'));
       } catch(err) {
         console.error('selectedItemInput.matches is not supported', err);
@@ -231,7 +230,7 @@ export class TdSegmented extends TypeFragment implements ITdSegmented {
                     new Div({
                       class: ns.e('item-label'),
                       slot:
-                        isObject(item) && item.slot ? item.slot : getLabel(item),
+                        (isObject(item) && item.slot) ? item.slot : getLabel(item),
                     }),
                   ],
                 });
@@ -242,29 +241,24 @@ export class TdSegmented extends TypeFragment implements ITdSegmented {
       })
     );
 
-    useResizeObserver(segmentedRef.get()?.dom, updateSelect);
-
-    watch(activeElement, updateSelect);
-
     onMounted(() => {
       // console.error('onMounted . ');
-      // add by me
-      // 不加初始化时选中样式不加载
-      nextTick(() => {
-        updateSelect();
-      })
+      useResizeObserver(segmentedRef.get()?.dom, updateSelect);
+
+      watch(() => activeElement.get(), updateSelect);
+
+      watch(() => props.vModel?.get(),
+        () => {
+          updateSelect();
+          if (props.validateEvent) {
+            formItem?.validate?.('change').catch((err) => debugWarn(err));
+          }
+        },
+        {
+          immediate: true,
+        }
+      );
     });
 
-    watch(props.vModel,
-      () => {
-        updateSelect();
-        if (props.validateEvent) {
-          formItem?.validate?.('change').catch((err) => debugWarn(err));
-        }
-      },
-      {
-        immediate: true,
-      }
-    );
   }
 }

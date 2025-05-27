@@ -10,7 +10,7 @@ interface Params {
 const DEFAULT_EXCLUDE_KEYS = ['class', 'style'];
 const LISTENER_PREFIX = /^on[A-Z]/;
 
-export const useAttrs = (params: Params = {}): Computed => {
+export const useAttrs = (params: Params = {}) => {
   const { excludeListeners = false, excludeKeys } = params;
   const allExcludeKeys = computed<string[]>(() => {
     return (excludeKeys?.get() || []).concat(DEFAULT_EXCLUDE_KEYS);

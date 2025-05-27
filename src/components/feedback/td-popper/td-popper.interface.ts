@@ -1,7 +1,6 @@
 import {
   ITypeFragment,
   TypeFragmentProps,
-  TypeNode,
 } from '@type-dom/framework';
 import { Computed, Signal } from '@type-dom/signals';
 import { IStyle } from '@type-dom/css-type';
@@ -52,6 +51,6 @@ export type TdPopperInjectionContext = {
 
 export type TdPopperContentInjectionContext = {
   arrowRef?: Signal<HTMLElement | undefined>;
-  arrowOffset?: Signal<number | undefined>;
+  // arrowOffset?: Signal<number | undefined>;
   arrowStyle: Computed<IStyle>;
 };

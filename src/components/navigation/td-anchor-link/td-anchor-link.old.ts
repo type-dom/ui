@@ -4,7 +4,7 @@ import { ITdAnchorLink, AnchorLinkProps } from './td-anchor-link.interface';
 export class TdAnchorLink extends TypeDiv implements ITdAnchorLink {
   className: 'TdAnchorLink';
   private href: A;
-  private list?: Div;
+  list?: Div;
 
   constructor(params: AnchorLinkProps = {}) {
     super();

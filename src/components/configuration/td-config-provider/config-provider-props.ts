@@ -6,8 +6,7 @@
 // import type { ButtonConfigContext } from '@element-plus/components/button'
 // import type { MessageConfigContext } from '@element-plus/components/message'
 
-// eslint-disable-next-line @typescript-eslint/no-empty-object-type
-import { TypeFragmentProps, TypeProps } from '@type-dom/framework';
+import { TypeFragmentProps } from '@type-dom/framework';
 import { Language } from '../../../locale';
 import { ButtonConfigContext } from '../../basic/td-button/td-button.const';
 import { UseEmptyValuesProps } from '../../../hooks/use-empty-values';

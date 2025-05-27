@@ -16,8 +16,8 @@ import { isBoolean, isClient, isFunction } from '@type-dom/utils';
 import { computed, watch, Ref, unref } from '@type-dom/signals';
 
 const _prop: boolean | null = null;
-const _event = (val: boolean) => {
-  //
+const _event = (_val: boolean) => {
+  // nothing
 };
 
 export type UseModelTogglePropsRaw<T extends string> = {

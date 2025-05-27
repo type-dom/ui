@@ -1,5 +1,13 @@
-import { defineExpose, Div, For, Fragment, provide, TypeDiv, useEventListener } from '@type-dom/framework';
-import { computed, signal, toRaw, toRefs, unref, watch } from '@type-dom/signals';
+import {
+  defineExpose,
+  Div,
+  For,
+  Fragment,
+  provide,
+  TypeDiv,
+  useEventListener,
+} from '@type-dom/framework';
+import { computed, signal, unref, watch } from '@type-dom/signals';
 import { useNamespace } from '../../../hooks/use-namespace';
 import { useLocale } from '../../../hooks/use-locale';
 import { INPUT_EVENT, UPDATE_MODEL_EVENT } from '../../../constants';
@@ -42,16 +50,16 @@ export class TdSlider extends TypeDiv implements ITdSlider {
     const props = this.props;
     const emit = this.emit;
 
-    const ns = useNamespace('slider')
-    const { t } = useLocale()
+    const ns = useNamespace('slider');
+    const { t } = useLocale();
 
     const initData: SliderInitData = {
       firstValue: signal(0),
       secondValue: signal(0),
       oldValue: 0,
-      dragging: false,
+      dragging: signal(false),
       sliderSize: signal(1),
-    }
+    };
 
     const {
       tdFormItem,
@@ -71,18 +79,23 @@ export class TdSlider extends TypeDiv implements ITdSlider {
       onSliderMarkerDown,
       setFirstValue,
       setSecondValue,
-    } = useSlide(props, initData, emit)
+    } = useSlide(props, initData, emit);
 
-    const { stops, getStopStyle } = useStops(props, initData, minValue, maxValue)
+    const { stops, getStopStyle } = useStops(
+      props,
+      initData,
+      minValue,
+      maxValue
+    );
 
     const { inputId, isLabeledByFormItem } = useFormItemInputId(props, {
       formItemContext: tdFormItem,
-    })
+    });
 
-    const sliderWrapperSize = useFormSize()
+    const sliderWrapperSize = useFormSize();
     const sliderInputSize = computed(
       () => props.inputSize || sliderWrapperSize.get()
-    )
+    );
 
     const groupLabel = computed<string>(() => {
       return (
@@ -91,75 +104,88 @@ export class TdSlider extends TypeDiv implements ITdSlider {
           min: unref(props.min)!,
           max: unref(props.max)!,
         })
-      )
-    })
+      );
+    });
 
     const firstButtonLabel = computed<string>(() => {
       if (props.range) {
-        return props.rangeStartLabel || t('el.slider.defaultRangeStartLabel')
+        return props.rangeStartLabel || t('el.slider.defaultRangeStartLabel');
       } else {
-        return groupLabel.get()
+        return groupLabel.get();
       }
-    })
+    });
 
     const firstValueText = computed<string>(() => {
       return props.formatValueText
         ? props.formatValueText(firstValue.get())
-        : `${firstValue.get()}`
-    })
+        : `${firstValue.get()}`;
+    });
 
     const secondButtonLabel = computed<string>(() => {
-      return props.rangeEndLabel || t('el.slider.defaultRangeEndLabel')
-    })
+      return props.rangeEndLabel || t('el.slider.defaultRangeEndLabel');
+    });
 
     const secondValueText = computed<string>(() => {
       return props.formatValueText
         ? props.formatValueText(secondValue.get())
-        : `${secondValue.get()}`
-    })
+        : `${secondValue.get()}`;
+    });
 
     const sliderKls = computed(() => [
       ns.b(),
       ns.m(sliderWrapperSize.get()),
       ns.is('vertical', props.vertical),
       { [ns.m('with-input')]: props.showInput },
-    ])
+    ]);
 
-    const markList = useMarks(props)
+    const markList = useMarks(props);
 
-    useWatch(props, initData, minValue, maxValue, emit, tdFormItem!)
-    const { firstValue, secondValue, sliderSize } = initData
+    useWatch(props, initData, minValue, maxValue, emit, tdFormItem!);
+    const { firstValue, secondValue, sliderSize } = initData;
     // console.warn('then initData sliderSize is ', initData, sliderSize)
 
-    watch(firstValue, (newVal) => { // add by me
-      emit(UPDATE_MODEL_EVENT, newVal);
-    })
-    watch(props.vModel, (newVal) => { // add by me
-      firstValue.set(newVal as number);
-      emit(INPUT_EVENT, newVal);
-    })
-
+    watch(
+      () => firstValue.get(),
+      (newVal) => { // add by me
+        // console.warn('watch firstValue newVal is ', newVal);
+        emit(UPDATE_MODEL_EVENT, newVal);
+      },
+      {
+        immediate: true,
+      }
+    );
+    watch(
+      props.vModel,
+      (newVal) => { // add by me
+        // console.warn('watch props.vModel newVal is ', newVal);
+        firstValue.set(newVal as number);
+        emit(INPUT_EVENT, newVal);
+      },
+      { immediate: true }
+    );
 
     const precision = computed(() => {
-      const precisions = [unref(props.min), unref(props.max), props.step].map((item) => {
-        const decimal = `${item}`.split('.')[1]
-        return decimal ? decimal.length : 0
-      })
-      return Math.max.apply(null, precisions)
-    })
+      const precisions = [unref(props.min), unref(props.max), props.step].map(
+        (item) => {
+          const decimal = `${item}`.split('.')[1];
+          return decimal ? decimal.length : 0;
+        }
+      );
+      return Math.max.apply(null, precisions);
+    });
 
-    const { sliderWrapper } = useLifecycle(props, initData, resetSize)
+    const { sliderWrapper } = useLifecycle(props, initData, resetSize);
 
     const updateDragging = (val: boolean) => {
-      initData.dragging = val
-    }
+      initData.dragging.set(val);
+    };
 
     useEventListener(sliderWrapper, 'touchstart', onSliderWrapperPrevent, {
       passive: false,
-    })
+    });
     useEventListener(sliderWrapper, 'touchmove', onSliderWrapperPrevent, {
       passive: false,
-    })
+    });
 
     // console.warn('then props is ', props);
     provide(sliderContextKey, {
@@ -170,11 +196,11 @@ export class TdSlider extends TypeDiv implements ITdSlider {
       emitChange,
       resetSize,
       updateDragging,
-    })
+    });
 
     defineExpose({
       onSliderClick,
-    })
+    });
 
     this.assignProps({
       refDom: sliderWrapper,
@@ -183,140 +209,159 @@ export class TdSlider extends TypeDiv implements ITdSlider {
       id: props.range ? inputId.get() : undefined,
       class: sliderKls,
       role: props.range ? 'group' : undefined,
-      ariaLabel: props.range && !isLabeledByFormItem.get() ? groupLabel.get() : undefined,
-      ariaLabelledby: props.range && isLabeledByFormItem.get() ? tdFormItem?.labelId : undefined
-    })
+      ariaLabel:
+        props.range && !isLabeledByFormItem.get()
+          ? groupLabel.get()
+          : undefined,
+      ariaLabelledby:
+        props.range && isLabeledByFormItem.get()
+          ? tdFormItem?.labelId
+          : undefined,
+    });
     this.style.addObj({
       height: props.height,
-    })
+    });
     this.addChild(
       new Div({
-          refDom: slider,
-          class: [
-            ns.e('runway'),
-            { 'show-input': props.showInput && !props.range },
-            ns.is('disabled', unref(sliderDisabled)),
-          ],
-          styleObj: runwayStyle,
-          events: {
-            mousedown: onSliderDown,
-            touchstart: onSliderDown,
-          },
-          slot: [
-            new Div({
-              class: ns.e('bar'),
-              styleObj: barStyle,
-            }),
-            new TdSliderButton({
-              refEl: firstButton,
-              vModel: firstValue,
-              vertical: props.vertical,
-              tooltipClass: props.tooltipClass,
-              placement: props.placement,
-              emits: {
-                'update:model-value': setFirstValue
+        refDom: slider,
+        class: [
+          ns.e('runway'),
+          { 'show-input': props.showInput && !props.range },
+          ns.is('disabled', unref(sliderDisabled)),
+        ],
+        styleObj: runwayStyle,
+        events: {
+          mousedown: onSliderDown,
+          touchstart: onSliderDown,
+        },
+        slot: [
+          new Div({
+            class: ns.e('bar'),
+            styleObj: barStyle,
+          }),
+          new TdSliderButton({
+            refEl: firstButton,
+            vModel: firstValue,
+            vertical: props.vertical,
+            tooltipClass: props.tooltipClass,
+            placement: props.placement,
+            emits: {
+              'update:model-value': setFirstValue,
+            },
+            attrObj: {
+              id: !props.range ? inputId.get() : undefined,
+              role: 'slider',
+              ariaLabel:
+                props.range || !isLabeledByFormItem.get()
+                  ? firstButtonLabel
+                  : undefined,
+              ariaLabelledby:
+                !props.range && isLabeledByFormItem.get()
+                  ? tdFormItem?.labelId
+                  : undefined,
+              ariaValuemin: props.min,
+              ariaValuemax: props.range ? unref(secondValue) : unref(props.max),
+              ariaValuenow: firstValue,
+              ariaValuetext: firstValueText,
+              ariaOrientation: props.vertical ? 'vertical' : 'horizontal',
+              ariaDisabled: sliderDisabled,
+            },
+          }),
+          new TdSliderButton({
+            vIf: props.range,
+            refEl: secondButton,
+            vModel: secondValue,
+            vertical: props.vertical,
+            tooltipClass: props.tooltipClass,
+            placement: props.placement,
+            attrObj: {
+              role: 'slider',
+              ariaLabel: secondButtonLabel,
+              ariaValuemin: firstValue,
+              ariaValuemax: unref(props.max),
+              ariaValuenow: secondValue,
+              ariaValuetext: secondValueText,
+              ariaOrientation: props.vertical ? 'vertical' : 'horizontal',
+              ariaDisabled: sliderDisabled,
+            },
+            emits: {
+              'update:model-value': setSecondValue,
+            },
+          }),
+          new Div({
+            vIf: props.showStops,
+            slot: new For({
+              data: stops,
+              getter: (item) => {
+                return new Div({
+                  class: ns.e('stop'),
+                  styleObj: getStopStyle(item as number),
+                });
               },
-              attrObj: {
-                 id: !props.range ? inputId.get() : undefined,
-                 role: 'slider',
-                 ariaLabel:
-                   props.range || !isLabeledByFormItem.get() ? firstButtonLabel : undefined,
-                 ariaLabelledby:
-                   !props.range && isLabeledByFormItem.get() ? tdFormItem?.labelId : undefined,
-                 ariaValuemin: props.min,
-                 ariaValuemax: props.range ? unref(secondValue) : unref(props.max),
-                 ariaValuenow: firstValue,
-                 ariaValuetext: firstValueText,
-                 ariaOrientation: props.vertical ? 'vertical' : 'horizontal',
-                 ariaDisabled: sliderDisabled,
-               }
             }),
-            new TdSliderButton({
-              vIf: props.range,
-              refEl: secondButton,
-              vModel: secondValue,
-              vertical: props.vertical,
-              tooltipClass: props.tooltipClass,
-              placement: props.placement,
-              attrObj: {
-                role: 'slider',
-                ariaLabel: secondButtonLabel,
-                ariaValuemin: firstValue,
-                ariaValuemax: unref(props.max),
-                ariaValuenow: secondValue,
-                ariaValuetext: secondValueText,
-                ariaOrientation: props.vertical ? 'vertical' : 'horizontal',
-                ariaDisabled: sliderDisabled,
-              },
-              emits: {
-                'update:model-value': setSecondValue
-              }
-            }),
-            new Div({
-              vIf: props.showStops,
-              slot: new For({
-                data: stops,
-                getter: (item) => {
-                  return new Div({
-                    class: ns.e('stop'),
-                    styleObj: getStopStyle(item as number)
-                  })
-                }
-              })
-            }),
-            new Fragment({
-              vIf: computed(() => markList.get().length > 0),
-              slot: [
-                new Div({
-                  slot: new For({
-                    data: markList,
-                    getter: (item) => {
-                      return new Div({
-                        styleObj: getStopStyle((item as unknown as Mark).position as number),
-                        class: [ns.e('stop'), ns.e('marks-stop')],
-                      })
-                    }
-                  })
+          }),
+          new Fragment({
+            vIf: computed(() => markList.get().length > 0),
+            slot: [
+              new Div({
+                slot: new For({
+                  data: markList,
+                  getter: (item) => {
+                    return new Div({
+                      styleObj: getStopStyle(
+                        (item as unknown as Mark).position as number
+                      ),
+                      class: [ns.e('stop'), ns.e('marks-stop')],
+                    });
+                  },
                 }),
-                new Div({
-                  class: ns.e('marks'),
-                  slot:  new For({
-                    data: markList,
-                    getter: (item) => {
-                      return new TdSliderMarker({
-                        mark: (item as unknown as Mark).mark,
-                        styleObj: getStopStyle((item as unknown as Mark).position),
-                        events: {
-                          mousedown: (evt) => {
-                            onSliderMarkerDown((item as unknown as Mark).position);
-                            evt?.stopPropagation?.();
-                          }
-                        }
-                      })
-                    }
-                  })
-                })
-              ]
-            })
-          ]
-        }));
-    this.addChild(new TdInputNumber({
-      vIf: props.showInput && !props.range,
-      // ref: input,
-      vModel: firstValue,
-      class: ns.e('input'),
-      step: props.step,
-      disabled: sliderDisabled.get(),
-      controls: props.showInputControls,
-      min: unref(props.min),
-      max: unref(props.max),
-      precision: precision.get(),
-      // debounce: props.debounce,
-      size: sliderInputSize.get(),
-      emits: {
-        'update:model-value': setFirstValue,
-        change: emitChange,
-      }
-    }));
+              }),
+              new Div({
+                class: ns.e('marks'),
+                slot: new For({
+                  data: markList,
+                  getter: (item) => {
+                    return new TdSliderMarker({
+                      mark: (item as unknown as Mark).mark,
+                      styleObj: getStopStyle(
+                        (item as unknown as Mark).position
+                      ),
+                      events: {
+                        mousedown: (evt) => {
+                          onSliderMarkerDown(
+                            (item as unknown as Mark).position
+                          );
+                          evt?.stopPropagation?.();
+                        },
+                      },
+                    });
+                  },
+                }),
+              }),
+            ],
+          }),
+        ],
+      })
+    );
+    this.addChild(
+      new TdInputNumber({
+        vIf: props.showInput && !props.range,
+        // ref: input,
+        vModel: firstValue,
+        class: ns.e('input'),
+        step: props.step,
+        disabled: sliderDisabled.get(),
+        controls: props.showInputControls,
+        min: unref(props.min),
+        max: unref(props.max),
+        precision: precision.get(),
+        // debounce: props.debounce,
+        size: sliderInputSize.get(),
+        emits: {
+          'update:model-value': setFirstValue,
+          change: emitChange,
+        },
+      })
+    );
   }
 }

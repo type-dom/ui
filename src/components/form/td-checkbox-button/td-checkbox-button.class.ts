@@ -2,10 +2,8 @@ import { computed } from '@type-dom/signals';
 import { IStyle } from '@type-dom/css-type';
 import {
   Input,
-  TypeProps,
   TypeLabelProps,
   Span,
-  TextNode,
   TypeLabel,
   useSlots,
 } from '@type-dom/framework';
@@ -151,14 +149,20 @@ export class TdCheckboxButton extends TypeLabel implements ITdCheckboxButton {
     // add by me
     this.addEmits({
       change: (newValue) => {
-        // console.warn('change emit , newValue is ', newValue);
+        console.warn('change emit , newValue is ', newValue);
         const selected = model.get();
         // todo 数组 还时 值
         if (isArray(selected)) {
-          model?.set(
+          model.set(
             selected.includes(actualValue.get())
-              ? selected.filter((item) => item !== actualValue.get())
-              : [...selected, actualValue.get()]
+              ? selected.filter((item) => {
+                if (newValue) {
+                  return true;
+                } else {
+                  return item !== actualValue.get();
+                }
+              })
+              : newValue ? [...selected, actualValue.get()] : [...selected]
           );
         } else {
           model.set(newValue);

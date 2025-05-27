@@ -1,4 +1,4 @@
-import { InjectionKey, TypeElement, TypeHtml } from '@type-dom/framework';
+import { InjectionKey,  } from '@type-dom/framework';
 import {
   TdPopperContentInjectionContext,
   TdPopperInjectionContext,

@@ -2,6 +2,7 @@ import { IStyle } from '@type-dom/css-type';
 import { Placement, Strategy } from '@type-dom/popper';
 import { TypeProps, ITypeDiv, StyleValue } from '@type-dom/framework';
 import { MaybeRef } from '@type-dom/signals';
+import { PopperArrowProps } from '../arrow/arrow.interface';
 import { popperContentEmits } from './content.const';
 
 export interface ITdPopperContent extends ITypeDiv {
@@ -50,7 +51,7 @@ export interface PopperCoreConfigProps extends TypeProps {
   // },
 }
 
-export interface PopperContentProps extends PopperCoreConfigProps {
+export interface PopperContentBaseProps  {
   id?: MaybeRef<string>;
   contentStyle?: IStyle; // add by me todo
   style?: StyleValue;
@@ -65,7 +66,7 @@ export interface PopperContentProps extends PopperCoreConfigProps {
   pure?: boolean;
   focusOnShow?: boolean; // default: false,
   trapping?: boolean; // default: false,
-  popperClass?: ClassType;
+  popperClass?: MaybeRef<ClassType>;
   //   type: definePropType<ClassType>([String, Array, Object]),
   // },
   popperStyle?: StyleValue;
@@ -81,5 +82,5 @@ export interface PopperContentProps extends PopperCoreConfigProps {
   // emits?: ITdPopperContentEmits;
   // slot?:  (arg?: any) => ISlotRaw | ISlotRaw[];
 }
-
+export type PopperContentProps = PopperCoreConfigProps & PopperArrowProps & PopperContentBaseProps;
 export type PopperContentEmits = typeof popperContentEmits;

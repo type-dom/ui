@@ -15,13 +15,13 @@
 
     // remove icon when show checkbox
     .#{$namespace}-tree-node.is-checked
-    > .#{$namespace}-tree-node__content
-    .#{$namespace}-select-dropdown__item.selected::after {
+      > .#{$namespace}-tree-node__content
+      .#{$namespace}-select-dropdown__item.selected::after {
       content: none;
     }
 
     .#{$namespace}-select-dropdown__list
-    > .#{$namespace}-select-dropdown__item {
+      > .#{$namespace}-select-dropdown__item {
       padding-left: 32px;
     }
 

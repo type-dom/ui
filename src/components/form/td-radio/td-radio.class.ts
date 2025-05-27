@@ -1,11 +1,11 @@
 import { Input, nextTick, Span, TypeLabel } from '@type-dom/framework';
 import { computed } from '@type-dom/signals';
 import { useNamespace } from '../../../hooks/use-namespace';
+import { CHANGE_EVENT } from '../../../constants/event';
 import { radioEmits } from './td-radio.const';
 import { ITdRadio, RadioProps } from './td-radio.interface';
 import { useRadio } from './use-radio';
 import './style/index';
-import { isArray } from '@type-dom/utils';
 
 export class TdRadio extends TypeLabel implements ITdRadio {
   className: 'TdRadio';
@@ -40,7 +40,7 @@ export class TdRadio extends TypeLabel implements ITdRadio {
       // console.warn('handleChange . modelValue.get() is ', modelValue.get());
       modelValue.set(actualValue.get()); // add by me todo refine  value绑定的问题
       // todo 值没有变
-      nextTick(() => emit('change', modelValue.get()));
+      nextTick(() => emit(CHANGE_EVENT, modelValue.get()));
     }
 
     this.attr.addClass(

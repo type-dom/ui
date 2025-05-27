@@ -9,11 +9,17 @@ export * from './field-item/field-item.interface';
 export { RadioGroup } from './radio-group/radio-group.class';
 export { RadioOption } from './radio-group/radio-option/radio-option.class';
 
+export { TdAutocomplete } from './td-autocomplete/td-autocomplete.class';
+export type * from './td-autocomplete/td-autocomplete.interface';
+
 export { TdCheckbox } from './td-checkbox/td-checkbox.class';
 export type * from './td-checkbox/td-checkbox.interface';
 export { TdCheckboxGroup } from './td-checkbox-group/td-checkbox-group.class';
 export type { ITdCheckboxGroupConfig } from './td-checkbox-group/td-checkbox-group.interface';
 export { TdCheckboxButton } from './td-checkbox-button/td-checkbox-button.class';
+
+export { TdColorPicker } from './td-color-picker/td-color-picker.class';
+export type * from './td-color-picker/td-color-picker.interface';
 
 export { TdForm } from './td-form/td-form.class';
 export type { ITdForm } from './td-form/td-form.interface';

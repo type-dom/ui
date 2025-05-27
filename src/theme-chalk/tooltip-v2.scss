@@ -8,8 +8,8 @@
     --#{$namespace}-tooltip-v2-border-radius: 4px;
 
     @include css-var-from-global(
-                            ('tooltip-v2', 'border-color'),
-                            ('border-color')
+      ('tooltip-v2', 'border-color'),
+      ('border-color')
     );
 
     border-radius: getCssVar('tooltip-v2-border-radius');
@@ -21,10 +21,10 @@
     $content-selector: &;
 
     $sides: (
-            'top': 'bottom',
-            'bottom': 'top',
-            'left': 'right',
-            'right': 'left',
+      'top': 'bottom',
+      'bottom': 'top',
+      'left': 'right',
+      'right': 'left',
     );
 
     @include e(arrow) {
@@ -40,7 +40,8 @@
         content: '';
         width: 0;
         height: 0;
-        border: var(--#{$namespace}-tooltip-v2-arrow-border-width) solid transparent;
+        border: var(--#{$namespace}-tooltip-v2-arrow-border-width) solid
+          transparent;
         position: absolute;
       }
 
@@ -48,7 +49,8 @@
         content: '';
         width: 0;
         height: 0;
-        border: var(--#{$namespace}-tooltip-v2-arrow-border-width) solid transparent;
+        border: var(--#{$namespace}-tooltip-v2-arrow-border-width) solid
+          transparent;
         position: absolute;
       }
 
@@ -60,7 +62,7 @@
         #{$content-selector}[data-side^='#{$side}'] &::before {
           border-#{$side}-color: var(--#{$namespace}-color-white);
           border-#{$side}-width: var(
-                          --#{$namespace}-tooltip-v2-arrow-border-width
+            --#{$namespace}-tooltip-v2-arrow-border-width
           );
           border-#{$opposite}: 0;
           #{$side}: calc(100% - 1px);
@@ -69,7 +71,7 @@
         #{$content-selector}[data-side^='#{$side}'] &::after {
           border-#{$side}-color: var(--#{$namespace}-border-color);
           border-#{$side}-width: var(
-                          --#{$namespace}-tooltip-v2-arrow-border-width
+            --#{$namespace}-tooltip-v2-arrow-border-width
           );
           border-#{$opposite}: 0;
           #{$side}: 100%;

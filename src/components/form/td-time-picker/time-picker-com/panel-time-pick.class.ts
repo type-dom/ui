@@ -1,15 +1,15 @@
 import { inject, TypeFragmentProps, TypeFragment } from '@type-dom/framework';
 import dayjs, { Dayjs } from 'dayjs';
 import { computed, signal } from '@type-dom/signals';
-import { isUndefined } from '@type-dom/utils';
+// import { isUndefined } from '@type-dom/utils';
 import { EVENT_CODE } from '../../../../constants/aria';
-import { useNamespace } from '../../../../hooks/use-namespace';
+// import { useNamespace } from '../../../../hooks/use-namespace';
 import { useLocale } from '../../../../hooks/use-locale';
 import { useTimePanel } from '../composables/use-time-panel';
 import { PanelTimePickerProps } from '../props/panel-time-picker';
 import {
   buildAvailableTimeSlotGetter,
-  useOldValue,
+  // useOldValue,
 } from '../composables/use-time-picker';
 
 export class PanelTimePick extends TypeFragment {
@@ -32,7 +32,7 @@ export class PanelTimePick extends TypeFragment {
     // Injections
     const pickerBase = inject('EP_PICKER_BASE') as any;
     const {
-      arrowControl,
+      // arrowControl,
       disabledHours,
       disabledMinutes,
       disabledSeconds,
@@ -45,51 +45,51 @@ export class PanelTimePick extends TypeFragment {
         disabledSeconds
       );
 
-    const ns = useNamespace('time');
-    const { t, lang } = useLocale();
+    // const ns = useNamespace('time');
+    const { lang } = useLocale();
     // data
     const selectionRange = signal([0, 2]);
-    const oldValue = useOldValue(props);
+    // const oldValue = useOldValue(props);
     // computed
-    const transitionName = computed(() => {
-      return isUndefined(props.actualVisible)
-        ? `${ns.namespace.get()}-zoom-in-top`
-        : '';
-    });
+    // const transitionName = computed(() => {
+    //   return isUndefined(props.actualVisible)
+    //     ? `${ns.namespace.get()}-zoom-in-top`
+    //     : '';
+    // });
     const showSeconds = computed(() => {
       return props.format?.includes('ss');
     });
-    const amPmMode = computed(() => {
-      if (props.format?.includes('A')) return 'A';
-      if (props.format?.includes('a')) return 'a';
-      return '';
-    });
+    // const amPmMode = computed(() => {
+    //   if (props.format?.includes('A')) return 'A';
+    //   if (props.format?.includes('a')) return 'a';
+    //   return '';
+    // });
     // method
     const isValidValue = (_date: Dayjs) => {
       const parsedDate = dayjs(_date).locale(lang.get());
       const result = getRangeAvailableTime(parsedDate);
       return parsedDate.isSame(result);
     };
-    const handleCancel = () => {
-      emit('pick', oldValue.get(), false);
-    };
-    const handleConfirm = (visible = false, first = false) => {
-      if (first) return;
-      emit('pick', props.parsedValue, visible);
-    };
-    const handleChange = (_date: Dayjs) => {
-      // visible avoids edge cases, when use scrolls during panel closing animation
-      if (!props.visible) {
-        return;
-      }
-      const result = getRangeAvailableTime(_date).millisecond(0);
-      emit('pick', result, true);
-    };
+    // const handleCancel = () => {
+    //   emit('pick', oldValue.get(), false);
+    // };
+    // const handleConfirm = (visible = false, first = false) => {
+    //   if (first) return;
+    //   emit('pick', props.parsedValue, visible);
+    // };
+    // const handleChange = (_date: Dayjs) => {
+    //   // visible avoids edge cases, when use scrolls during panel closing animation
+    //   if (!props.visible) {
+    //     return;
+    //   }
+    //   const result = getRangeAvailableTime(_date).millisecond(0);
+    //   emit('pick', result, true);
+    // };
 
-    const setSelectionRange = (start: number, end: number) => {
-      emit('select-range', start, end);
-      selectionRange.set([start, end]);
-    };
+    // const setSelectionRange = (start: number, end: number) => {
+    //   emit('select-range', start, end);
+    //   selectionRange.set([start, end]);
+    // };
 
     const changeSelectionRange = (step: number) => {
       const list = [0, 3].concat(showSeconds.get() ? [6] : []);
@@ -121,7 +121,7 @@ export class PanelTimePick extends TypeFragment {
       }
     };
 
-    const { timePickerOptions, onSetOption, getAvailableTime } = useTimePanel({
+    const { timePickerOptions, getAvailableTime } = useTimePanel({
       getAvailableHours,
       getAvailableMinutes,
       getAvailableSeconds,

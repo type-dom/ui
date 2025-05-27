@@ -2,7 +2,6 @@ import {
   InputEnum,
   ITypeFragment,
   TypeFragmentProps,
-  TypeElement,
   TypeSvgSvg,
   TypeNode,
 } from '@type-dom/framework';
@@ -118,6 +117,9 @@ export interface TdMessageBoxOptions {
 
   /** Custom inline style for MessageBox */
   customStyle?: IStyle;
+
+  /** modal class name for MessageBox */
+  modalClass?: string
 
   /** MessageBox closing callback if you don't prefer Promise */
   callback?: Callback;

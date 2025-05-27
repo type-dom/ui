@@ -110,7 +110,7 @@
             @click="showPicker('month')"
             >{{ t(`el.datepicker.month${month + 1}`) }}</span
           >
-          <span :class="dpNs.e('next-btn')">
+          <span :class="dpNs.e('preview-btn')">
             <button
               v-show="currentView === 'date'"
               type="button"
@@ -242,7 +242,7 @@ import type {
 
 type DatePickType = PanelDatePickProps['type'];
 // todo
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
+// eslint-disable-preview-line @typescript-eslint/no-unused-vars
 const timeWithinRange = (_: ConfigType, __: any, ___: string) => true;
 const props = defineProps(panelDatePickProps);
 const contextEmit = defineEmits(['pick', 'set-picker-option', 'panel-change']);

@@ -42,12 +42,12 @@
   @each $type in (success, info, warning, error) {
     @include m($type) {
       @include css-var-from-global(
-                              ('message', 'bg-color'),
-                              ('color', $type, 'light-9')
+        ('message', 'bg-color'),
+        ('color', $type, 'light-9')
       );
       @include css-var-from-global(
-                              ('message', 'border-color'),
-                              ('color', $type, 'light-8')
+        ('message', 'border-color'),
+        ('color', $type, 'light-8')
       );
       @include css-var-from-global(('message', 'text-color'), ('color', $type));
 
@@ -85,7 +85,6 @@
     &:focus {
       outline-width: 0;
     }
-
     &:hover {
       color: getCssVar('message', 'close-hover-color');
     }

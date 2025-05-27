@@ -40,7 +40,7 @@ export interface FormMetaProps {
   /**
    * @description Whether to disable all components in this form. If set to `true`, it will override the `disabled` prop of the inner component.
    */
-  disabled?: MaybeRef<boolean>;
+  disabled?: MaybeRef<boolean | undefined>;
 }
 
 export interface FormProps extends FormMetaProps, TypeFormProps {
@@ -107,6 +107,7 @@ export interface FormProps extends FormMetaProps, TypeFormProps {
   scrollToError?: boolean;
   /**
    * @description When validation fails, it scrolls to the first error item based on the scrollIntoView option.
+   *     default: true,
    */
   scrollIntoViewOptions?: object | boolean;
 

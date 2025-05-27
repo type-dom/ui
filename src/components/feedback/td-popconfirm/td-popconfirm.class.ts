@@ -1,4 +1,4 @@
-import { Div, StyleValue, SvgSvg, TypeFragment, TypeProps } from '@type-dom/framework';
+import { Div, StyleValue, SvgSvg, TypeFragment } from '@type-dom/framework';
 import { computed, signal } from '@type-dom/signals';
 import { addUnit, isFunction } from '@type-dom/utils';
 import { useLocale } from '../../../hooks/use-locale';
@@ -65,6 +65,7 @@ export class TdPopconfirm extends TypeFragment implements ITdPopconfirm {
         trigger: 'click',
         effect: 'light',
         // v-bind="$attrs"
+        placement: props.placement, // add by me base on attr
         popperClass: `${ns.namespace.get()}-popover`,
         popperStyle: style as StyleValue,
         teleported: props.teleported,

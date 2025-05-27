@@ -1,134 +1,291 @@
-## 项目说明
+以下是针对 [TypeDom UI 组件库 GitHub 仓库](https://github.com/type-dom/ui) 的详细说明和使用指南：
 
-> 这是一个基于前端框架TypeDom创建的UI组件库。
-> 框架基于TypeDom框架开发，TypeDom框架基于TypeScript开发。
-> 对标 element-plus 的组件开发。
+---
 
-## 安装
+### **一、TypeDom UI 组件库简介**
+#### **1. 项目定位**
+- **核心目标**：
+    - 基于 **TypeDom 框架** 开发的 UI 组件库，对标 [Element Plus](https://element-plus.org/)，提供丰富的前端组件。
+    - 适用于 **TypeScript + 面向对象开发** 的企业级项目，支持模块化、可复用的组件设计。
+- **适用场景**：
+    - 需要强类型约束的复杂管理系统、企业级应用、跨平台组件复用等场景。
 
-> npm install @type-dom/ui
+#### **2. 核心特性**
+- **技术栈**：
+    - **TypeDom 框架**：基于 TypeScript 的 OOP 前端框架。
+    - **Webpack**：模块打包工具。
+    - **TypeScript**：强类型语言保障代码健壮性。
+- **组件分类**：
+    - **基础组件**（如按钮、布局、图标）、**数据组件**（表格、树形控件）、**表单组件**（输入框、选择器）、**反馈组件**（弹窗、加载）、**导航组件**（菜单、分页）等。
+- **模块化设计**：
+    - 支持按需引入组件，减少打包体积。
+    - 提供主题定制能力（通过 `theme-chalk` 目录）。
 
-## 框架介绍
+---
 
-    1、技术栈
-        –	type-dom框架
-        –	webpack
-        –	typescript
-        –	抽象类
-        –	实体类
-    2、项目结构
-        –	src
-            –	components
-                -   basic
-                -   data
-                -   feedback
-                -   form
-                -   navigation
-                -   other
-            –   constants
-            -   hooks
-            - locale
-            - styles
-            - theme-chalk   
-            - utils
-            - index.ts
-        -   test
+### **二、快速上手指南**
+#### **1. 安装与依赖**
+```bash
+npm install @type-dom/ui
+# 或使用 pnpm/yarn
+```
+- **依赖要求**：
+    - 已安装 `type-dom/framework`（TypeDom 核心框架）。
+    - 项目需支持 TypeScript 和 Webpack 构建流程。
 
-# type-dom UI组件库
+#### **2. 目录结构解析**
+```
+src/
+├── components/        # 所有 UI 组件
+│   ├── basic/           # 基础组件（按钮、布局、图标等）
+│   ├── data/            # 数据展示组件（表格、树形控件等）
+│   ├── feedback/        # 反馈组件（弹窗、加载等）
+│   ├── form/            # 表单组件（输入框、选择器等）
+│   ├── navigation/      # 导航组件（菜单、分页等）
+│   └── other/           # 其他组件（分割线、水印等）
+├── constants/           # 常量定义（如主题配置）
+├── hooks/               # 自定义 Hook（状态管理相关）
+├── locale/              # 多语言支持
+├── styles/              # 样式文件
+├── theme-chalk/         # 主题定制（SCSS 变量）
+├── utils/               # 工具函数
+├── index.ts             # 入口文件（导出所有组件）
+└── test/                # 单元测试
+```
 
-## basic 基础组件
+#### **3. 使用示例**
+##### **步骤1：引入组件**
+```typescript
+import { TypeDiv } from '@type-dom/framework';
+import { TdButton } from '@type-dom/ui';
+```
 
-    Button 按钮
-    Border 边框
-    Color 色彩
-    Container 容器
-        td-header
-        td-aside
-        td-main
-        td-footer
-    Icon 图标
-    Layout 布局
-    Link 链接
-    Text 文本
-    Scrollbar 滚动条
-    Space 间距
-    Ttyography 排版
+##### **步骤2：创建页面组件**
+```typescript
+class MyPage extends TypeDiv {
+  constructor() {
+    super();
+    this.className = 'MyPage';
+    
+    this.addChild(new TdButton({
+      slot: '点击我',
+      emits: {
+        click: () => { 
+          alert('按钮被点击！');
+        }
+      }
+    }));
+  }
+}
+```
 
-## data 数据组件
+##### **步骤3：挂载到 DOM**
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>TypeDom UI Example</title>
+</head>
+<body>
+  <div id="app"></div>
+  <script src="dist/bundle.js"></script>
+</body>
+</html>
+```
 
-    Avatar 头像
-    Badge 徽章
-    Calendar 日历
-    Card 卡片
-    Carousel 走马灯
-    Collapse 折叠面板
-    Descriptions 描述列表
-    Empty 空状态
-    Image 图片
-    Infinite Scroll 无限滚动
-    Pagination 分页
-    Progress 进度条
-    Result 结果
-    Skeleton 骨架屏
-    Table 表格
-    Virtualized Table 虚拟化表
-    Tag 标签
-    Timeline 时间线
-    Tree 树形控件
-    TreeSelect 树形选择
-    Virtualized Tree 虚拟化树形控件
-    Statistic 统计组件
-    Segmented 分段控制器
+---
 
-## form 表单组件
+### **三、核心组件分类与功能**
 
-    Autocomplete 自动补全输入框
-    Cascader 级联选择器
-    Checkbox 多选框
-    ColorPicker 颜色选择器
-    DatePicker 日期选择器
-    DateTimePicker 日期时间选择器
-    Form 表单
-    Input 输入框
-    Input Number 数字输入框
-    Radio 单选框
-    Rate 评分
-    Select 选择器
-    Virtualized Select 虚拟化选择器
-    Slider 滑块
-    Switch 开关
-    TimePicker 时间选择器
-    TimeSelect 时间选择
-    Transfer 穿梭框
-    Upload 上传
+---
+#### **1. 基础组件（Basic）（共8项，完成8项）**
+| 组件名 | 状态 | 说明 | 功能描述 |
+|--------|------|------|----------|
+| `Button` | ✔️ | 已完成 | 支持多种样式（默认、主要、文本）、禁用状态、图标按钮、加载状态、不同尺寸（small/medium/large）。 |
+| `Container` | ✔️ | 已完成（含 `td-header`, `td-aside`, `td-main`, `td-footer`） | 布局容器，支持响应式布局和嵌套。 |
+| `Icon` | ✔️ | 已完成 | 图标组件，支持 SVG 图标、Unicode 字符、图标库扩展（如 Font Awesome 集成）。 |
+| `Layout` | ✔️ | 已完成（含 `Row`, `Col`） | 基于栅格系统实现响应式布局，支持间距控制、对齐方式。 |
+| `Link` | ✔️ | 已完成 | 超链接组件，支持不同颜色主题、禁用状态、自定义图标。 |
+| `Text` | ✔️ | 已完成 | 支持标题、段落、加粗、斜体、颜色（success/warning/error）、动态省略号。 |
+| `Scrollbar` | ✔️ | 已完成 | 自定义滚动条，兼容虚拟滚动场景，支持横向/纵向滚动、滚动事件监听。 |
+| `Space` | ✔️ | 已完成 | 通过 `gap` 属性控制子元素水平/垂直间距，支持响应式配置。 |
 
+---
 
-## feedback 反馈组件
+#### **2. 数据组件（Data）（共23项，完成12项）**
+| 组件名 | 状态 | 说明 | 功能描述 |
+|--------|------|------|----------|
+| `Avatar` | ✔️ | 已完成 | 头像组件，支持图片、图标、文字头像、圆形/方形样式、悬浮效果。 |
+| `Badge` | ✔️ | 已完成 | 徽章组件，支持数字、状态点、自定义颜色和内容，可与标签、菜单结合使用。 |
+| `Calendar` | ❌ | 未开始 | 日历组件，支持月/周视图切换、日期范围选择、自定义渲染日期单元格。 |
+| `Card` | ✔️ | 已完成 | 卡片组件，支持标题、操作区、阴影效果、响应式布局、折叠动画。 |
+| `Carousel` | ❌ | 未开始 | 轮播图，支持自动播放、分页器、垂直/水平方向切换、自定义导航按钮。 |
+| `Collapse` | ✔️ | 已完成 | 折叠面板，支持手风琴模式、自定义标题图标、动态展开/收起。 |
+| `Descriptions` | ✔️ | 已完成 | 描述列表，用于展示结构化数据（如详情页），支持水平/垂直排列、标签宽度自定义。 |
+| `Empty` | ✔️ | 已完成 | 空状态组件，支持自定义图标、文本、操作按钮，适用于无数据场景。 |
+| `Image` | ✔️ | 已完成 | 图片组件，支持懒加载、放大镜、预览弹窗、加载失败占位符。 |
+| `Infinite Scroll` | ❌ | 未开始 | 无限滚动组件，支持触底加载数据，适用于长列表、瀑布流场景。 |
+| `Pagination` | ❌ | 未开始 | 分页器，支持自定义页码数量、跳转、显示总条数、小型化模式。 |
+| `Progress` | ✔️ | 已完成 | 进度条组件，支持百分比显示、颜色渐变、环形进度条、动态更新。 |
+| `Result` | ✔️ | 已完成 | 结果提示组件，支持成功/失败/警告状态，内置图标和操作按钮。 |
+| `Skeleton` | ❌ | 未开始 | 骨架屏组件，支持模拟文本、图片、卡片的占位加载效果，提升用户体验。 |
+| `Table` | ❌ | 未开始 | 表格组件，支持固定列、排序、分页、虚拟滚动（Virtualized Table）、行展开。 |
+| `Virtualized Table` | ❌ | 未开始 | 虚拟化表格，仅渲染可视区域内的行，优化大数据量场景的性能。 |
+| `Tag` | ✔️ | 已完成 | 标签组件，支持不同颜色（success/warning/error）、可关闭标签、动态添加。 |
+| `Timeline` | ❌ | 未开始 | 时间轴组件，支持水平/垂直方向、自定义节点图标和内容。 |
+| `Tree` | ❌ | 未开始 | 树形控件，支持懒加载、复选框、虚拟滚动（Virtualized Tree）、拖拽排序。 |
+| `TreeSelect` | ❌ | 未开始 | 树形选择器，结合 Select 和 Tree 组件，支持多级菜单选择、搜索过滤。 |
+| `Virtualized Tree` | ❌ | 未开始 | 虚拟化树形控件，优化大数据量场景下的渲染性能，支持动态加载节点。 |
+| `Statistic` | ✔️ | 已完成 | 统计组件，支持数字滚动动画、时间格式化、自定义前缀/后缀。 |
+| `Segmented` | ✔️ | 已完成 | 分段控制器，支持水平/垂直排列，常用于切换视图或选项卡。 |
 
-    Alert 提示
-    Dialog 对话框
-    Drawer 抽屉
-    Loading 加载
-    Message 消息提示
-    Message Box 消息弹出框
-    Notification 通知
-    Popconfirm 气泡确认框
-    Popover 弹出框
-    Tooltip 文字提示
+---
 
-## navigation 导航组件
+#### **3. 表单组件（Form）（共20项，完成7项）**
+| 组件名 | 状态 | 说明 | 功能描述 |
+|--------|------|------|----------|
+| `Autocomplete` | ❌ | 未开始 | 自动补全输入框，支持异步搜索、自定义选项渲染、键盘导航。 |
+| `Cascader` | ❌ | 未开始 | 级联选择器，支持多级联动选择（如省市区），动态加载子级数据。 |
+| `Checkbox` | ✔️ | 已完成 | 复选框组件，支持单选、多选、全选模式、自定义图标。 |
+| `ColorPicker` | ❌ | 未开始 | 颜色选择器，支持色板、输入框手动输入、透明度调节。 |
+| `DatePicker` | ❌ | 未开始 | 日期选择器，支持范围选择、快捷选项、日期格式化、禁用特定日期。 |
+| `DateTimePicker` | ❌ | 未开始 | 日期时间选择器，结合日期和时间选择，支持格式化输出。 |
+| `Form` | ⚠️ | 部分完成（需完善校验规则） | 表单容器，支持校验规则（如必填、正则）、提交/重置按钮、错误提示。 |
+| `Input` | ✔️ | 已完成 | 输入框，支持密码模式、前缀/后缀图标、清除按钮、多行文本（textarea）。 |
+| `Input Number` | ✔️ | 已完成 | 数字输入框，支持步长调节、最小/最大值限制、格式化输入。 |
+| `Input Tag` | ❌ | 未开始 | 标签输入框，支持动态添加/删除标签，回车或逗号分隔输入。 |
+| `Radio` | ✔️ | 已完成 | 单选框组件，支持按钮组样式、禁用状态、横向排列。 |
+| `Rate` | ✔️ | 已完成 | 评分组件，支持星星评分、半星评分、自定义图标和颜色。 |
+| `Select` | 🔄 | 开发中 | 下拉选择器，支持搜索、多选、虚拟滚动（Virtualized Select）、分组选项。 |
+| `Virtualized Select` | ❌ | 未开始 | 虚拟化选择器，优化大数据量场景下的下拉菜单性能，支持懒加载。 |
+| `Slider` | ✔️ | 已完成 | 滑块组件，支持范围选择、步长调节、工具提示、垂直方向。 |
+| `Switch` | ✔️ | 已完成 | 开关组件，支持自定义开/关文本、颜色、禁用状态。 |
+| `TimePicker` | ❌ | 未开始 | 时间选择器，支持小时/分钟选择、格式化输出、禁用时间段。 |
+| `TimeSelect` | ❌ | 未开始 | 时间段选择器，支持固定时间点选择（如 09:00-12:00）。 |
+| `Transfer` | ❌ | 未开始 | 穿梭框组件，支持左右两侧数据转移、搜索过滤、自定义渲染。 |
+| `Upload` | ⚠️ | 部分完成（需完善文件预览） | 文件上传组件，支持拖拽上传、多文件、进度条、预览和删除操作。 |
 
-    Affix 固钉
-    Anchor 锚点
-    Backtop 回到顶部
-    Breadcrumb 面包屑
-    Dropdown 下拉菜单
-    Menu 菜单
-    Page Header 页头
-    Steps 步骤条
-    Tabs 标签页
+---
 
-## other 其它组件
+#### **4. 反馈组件（Feedback）（共10项，完成8项）**
+| 组件名 | 状态 | 说明 | 功能描述 |
+|--------|------|------|----------|
+| `Alert` | ✔️ | 已完成 | 警告提示，支持成功/警告/错误类型、可关闭、自定义图标和操作按钮。 |
+| `Dialog` | ✔️ | 已完成 | 对话框，支持自定义标题、底部按钮、遮罩层关闭、拖拽移动。 |
+| `Drawer` | ❌ | 未开始 | 抽屉组件，支持从左侧/右侧/顶部/底部滑出内容，遮罩层点击关闭。 |
+| `Loading` | ❌ | 未开始 | 加载指示器，支持全局加载、局部加载、自定义文本和动画。 |
+| `Message` | ✔️ | 已完成 | 轻量提示，支持成功/警告/错误类型、自定义持续时间、位置（top/bottom）。 |
+| `MessageBox` | ✔️ | 已完成 | 消息弹出框，支持确认/取消操作，常用于表单提交或删除确认。 |
+| `Notification` | ✔️ | 已完成 | 通知弹窗，支持图标、关闭按钮、点击关闭、自定义超时时间。 |
+| `Popconfirm` | ✔️ | 已完成 | 气泡确认框，点击触发二次确认操作（如删除），支持自定义内容和位置。 |
+| `Popover` | ✔️ | 已完成 | 弹出框组件，支持点击/悬停触发、自定义内容和位置。 |
+| `Tooltip` | ✔️ | 已完成 | 文字提示组件，支持多种定位策略（top/bottom/left/right）、自定义内容。 |
 
-    Divider 分割线
-    Watermark 水印
+---
+
+### **5. 导航组件 (navigation)（共9项，完成2项）**
+| 组件名 | 状态 | 说明 | 功能描述 |
+|--------|------|------|----------|
+| `Affix` | ⚠️ | 部分完成（需完善滚动检测） | 固钉组件，支持元素在滚动时固定到页面顶部/底部，常用于导航栏。 |
+| `Anchor` | ⚠️ | 部分完成（需完善锚点高亮） | 锚点导航，支持页面内快速定位，高亮当前滚动位置对应的锚点。 |
+| `Backtop` | ✔️ | 已完成 | 回到顶部按钮，支持自定义触发阈值、滚动动画、目标位置。 |
+| `Breadcrumb` | ✔️ | 已完成 | 面包屑导航，支持自定义分隔符、路由跳转、可点击路径。 |
+| `Dropdown` | ❌ | 未开始 | 下拉菜单，支持点击/悬停触发、菜单项分组、图标和快捷键支持。 |
+| `Menu` | 🔄 | 开发中 | 导航菜单，支持横向/垂直模式、子菜单展开、图标支持、路由集成。 |
+| `Page Header` | ❌ | 未开始 | 页头组件，用于展示页面标题、副标题、操作按钮，增强页面导航感。 |
+| `Steps` | ❌ | 未开始 | 步骤条组件，支持水平/垂直方向、当前步骤高亮、图标自定义。 |
+| `Tabs` | 🔄 | 开发中 | 标签页组件，支持顶部/底部/左侧/右侧方向、可关闭标签页、懒加载内容。 |
+
+---
+
+### **6.  其它组件 (other) (共2项，完成2项）**
+| 组件名 | 状态 | 说明 | 功能描述 |
+|--------|------|------|----------|
+| `Divider` | ✔️ | 已完成 | 分割线组件，支持水平/垂直方向、自定义颜色和间距。 |
+| `Watermark` |  ✔️ | 已完成  | 水印组件，支持文字/图片水印、透明度调节、全屏覆盖。 |
+
+---
+
+### **状态标记说明**
+- **✔️**：已完全实现并测试通过
+- **⚠️**：功能部分实现（需补充细节或修复问题）
+- **🔄**：开发中（核心功能已实现，但未完全测试）
+- **❌**：未开始
+
+---
+
+### **总结**
+- **已完成**：基础组件（basic）、部分数据组件（data）、反馈组件（feedback）
+- **待完善**：表单组件（form）、导航组件（navigation）、高级数据组件（如虚拟化表格/树）
+- **建议**：优先完善核心表单组件（如 `Select`, `Form`）和导航组件（如 `Menu`, `Tabs`），以提升框架完整性。
+
+---
+
+### **四、主题定制与样式管理**
+#### **1. 修改主题变量**
+- 在 `theme-chalk` 目录下覆盖默认 SCSS 变量：
+  ```scss
+  // 自定义主题变量
+  $--color-primary: #409EFF; // 主色调
+  $--font-size: 14px;       // 基础字体大小
+  ```
+
+#### **2. 按需加载组件**
+- 使用 `babel-plugin-import` 实现按需引入：
+  ```bash
+  npm install babel-plugin-import --save-dev
+  ```
+  ```javascript
+  // .babelrc 配置
+  {
+    "plugins": [
+      ["import", {
+        "libraryName": "@type-dom/ui",
+        "libraryDirectory": "src/components"
+      }]
+    ]
+  }
+  ```
+
+---
+
+### **五、开发与调试建议**
+#### **1. 本地开发**
+- **启动开发服务器**：
+  ```bash
+  npm run dev
+  ```
+- **构建生产版本**：
+  ```bash
+  npm run build
+  ```
+
+#### **2. 单元测试**
+- 使用 Vitest 编写测试用例：
+  ```bash
+  npm run test
+  ```
+
+---
+
+### **六、常见问题与解答**
+#### **Q1：如何解决组件样式冲突？**
+- **方法**：
+    - 使用 `theme-chalk` 自定义变量，避免全局样式污染。
+    - 通过 `scoped` 样式或 Shadow DOM 隔离组件内部样式。
+
+#### **Q2：是否支持 SSR（服务端渲染）？**
+- **答案**：
+    - TypeDom UI 未支持。
+
+#### **Q3：文档和社区支持**
+- **官方文档**：访问 [deepwiki.type-dom/ui](https://deepwiki.com/type-dom/ui) 查看组件 API 和示例。
+- **社区反馈**：
+    - 提交 Issue 或在论坛讨论：[GitHub Issues](https://github.com/type-dom/ui/issues)。
+
+---
+
+### **七、总结**
+TypeDom UI 是一个 **基于 OOP 设计、面向 TypeScript 项目** 的 UI 组件库，适合需要强类型约束和模块化开发的企业级应用。通过按需引入和主题定制，开发者可以灵活适配不同项目需求。建议从简单组件（如 `Button`、`Layout`）开始实践，逐步探索复杂组件（如 `Table`、`Tree`）的高级功能。
+

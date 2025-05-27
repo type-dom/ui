@@ -1,6 +1,4 @@
-import { isBoolean } from '@type-dom/utils';
 import { ITypeElement, TypeFragmentProps } from '@type-dom/framework';
-import { UPDATE_MODEL_EVENT } from '../../../constants/event';
 import { DialogContentProps } from '../td-dialog-content/td-dialog-content.interface';
 
 export interface ITdDialog extends ITypeElement {

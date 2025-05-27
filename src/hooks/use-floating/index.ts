@@ -31,13 +31,13 @@ export type UseFloatingProps = ToRefs<{
 type ElementRef = Parameters<typeof unrefElement>['0'];
 
 const unrefReference = (
-  elRef: ElementRef | Ref<VirtualElement | undefined>
+  elRef: ElementRef | Ref<Element | VirtualElement>
 ) => {
   if (!isClient) return;
   if (!elRef) return elRef;
   const unrefEl = unrefElement(elRef as ElementRef);
   if (unrefEl) return unrefEl;
-  return isRef(elRef) ? unrefEl : (elRef as VirtualElement);
+  return isRef(elRef as unknown) ? unrefEl : elRef;
 };
 
 export const getPositionDataWithUnit = <T extends Record<string, number>>(

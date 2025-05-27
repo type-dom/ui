@@ -4,8 +4,10 @@ import { signal } from '@type-dom/signals';
 import { useNamespace } from '../../../../hooks/use-namespace';
 import { useFormDisabled } from '../../td-form/hooks/use-form-common-props';
 import { uploadContextKey } from '../constants';
+import type { UploadRawFile } from '../td-upload.interface'
 import { ITdUploadDrag, UploadDragProps } from './upload-dragger.interface';
 import { uploadDragEmits, uploadDragProps } from './upload-dragger.const';
+
 
 export class TdUploadDrag extends TypeDiv implements ITdUploadDrag {
   className: 'TdUploadDrag';
@@ -44,7 +46,15 @@ export class TdUploadDrag extends TypeDiv implements ITdUploadDrag {
 
       e?.stopPropagation()
 
-      const files = Array.from(e!.dataTransfer!.files)
+      const files = Array.from(e!.dataTransfer!.files) as UploadRawFile[]
+      const items = e?.dataTransfer!.items || []
+      files.forEach((file, index) => {
+        const item = items[index]
+        const entry = item?.webkitGetAsEntry?.()
+        if (entry) {
+          file.isDirectory = entry.isDirectory
+        }
+      })
       emit('file', files)
     }
 

@@ -1,6 +1,6 @@
 import { Input, Span, TypeHtml, useSlots } from '@type-dom/framework';
 import { isArray } from '@type-dom/utils';
-import { computed, unref } from '@type-dom/signals';
+import { computed } from '@type-dom/signals';
 import { useNamespace } from '../../../hooks/use-namespace';
 import { useCheckbox } from './composables/use-checkbox';
 import { ITdCheckbox, CheckboxProps } from './td-checkbox.interface';
@@ -96,10 +96,10 @@ export class TdCheckbox extends TypeHtml implements ITdCheckbox {
                 handleChange(ev);
                 ev?.stopPropagation();
               },
-              focus: (evt) => {
+              focus: () => {
                 isFocused.set(true);
               },
-              blur: (evt) => {
+              blur: () => {
                 isFocused.set(false);
               },
             },
@@ -132,16 +132,31 @@ export class TdCheckbox extends TypeHtml implements ITdCheckbox {
       click: onClickRoot,
     });
     // add by me todo why should add ???
+    // console.warn('then this.addEmits . ');
     this.addEmits({
       change: (newValue) => {
         // console.warn('change emit , newValue is ', newValue);
+        // 应该根据newValue是否为选中状态判断来看是否要过滤。
         const selected = model.get();
         // todo 数组 还是 值
         if (isArray(selected)) {
+          // model.set(
+          //   selected.includes(actualValue.get())
+          //     ? selected.filter((item) => {
+          //         if (newValue) {
+          //           return true;
+          //         } else {
+          //           return item !== actualValue.get();
+          //         }
+          //       })
+          //     : newValue ? [...selected, actualValue.get()] : [...selected]
+          // );
+          const value = actualValue.get();
+          const shouldAdd = !selected.includes(value);
           model.set(
-            selected.includes(actualValue.get())
-              ? selected.filter((item) => item !== actualValue.get())
-              : [...selected, actualValue.get()]
+            shouldAdd
+              ? newValue ? [...selected, value] : [...selected]
+              : selected.filter(item => newValue || item !== value)
           );
         } else {
           model.set(newValue);

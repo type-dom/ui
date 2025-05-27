@@ -1,5 +1,5 @@
 import { getCurrentInstance } from '@type-dom/framework';
-import { Computed, computed, toRef } from '@type-dom/signals';
+import { Computed, toRef } from '@type-dom/signals';
 
 export const useProp = <T>(name: string): Computed<T> => {
   const vm = getCurrentInstance();

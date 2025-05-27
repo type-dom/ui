@@ -64,9 +64,11 @@
 
     &.show-close {
       padding-right: calc(
-              getCssVar('messagebox-padding-primary') +
-              var(#{getCssVarName('message-close-size')},
-                      map.get($message, 'close-size'))
+        getCssVar('messagebox-padding-primary') +
+          var(
+            #{getCssVarName('message-close-size')},
+            map.get($message, 'close-size')
+          )
       );
     }
   }
@@ -88,8 +90,8 @@
     outline: none;
     background: transparent;
     font-size: var(
-                    #{getCssVarName('message-close-size')},
-                    map.get($message, 'close-size')
+      #{getCssVarName('message-close-size')},
+      map.get($message, 'close-size')
     );
     cursor: pointer;
 

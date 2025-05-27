@@ -124,8 +124,8 @@
 }
 
 .#{$namespace}-picker-panel
-*[slot='sidebar']
-+ .#{$namespace}-picker-panel__body,
+  *[slot='sidebar']
+  + .#{$namespace}-picker-panel__body,
 .#{$namespace}-picker-panel__sidebar + .#{$namespace}-picker-panel__body {
   margin-left: 110px;
 }

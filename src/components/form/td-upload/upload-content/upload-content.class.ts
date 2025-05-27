@@ -1,14 +1,14 @@
 import { defineExpose, Fragment, Input, TypeDiv } from '@type-dom/framework';
-import { ITdUploadContent, UploadContentProps } from './upload-content.interface';
-import { uploadContentProps } from './upload-content.const';
+import { entriesOf, isFunction, isPlainObject } from '@type-dom/utils';
+import { cloneDeep, isEqual } from 'lodash-es';
+import { signal, unref } from '@type-dom/signals';
 import { useNamespace } from '../../../../hooks/use-namespace';
 import { useFormDisabled } from '../../td-form/hooks/use-form-common-props';
-import { signal, unref } from '@type-dom/signals';
 import { UploadFile, UploadHooks, UploadRawFile, UploadRequestOptions } from '../td-upload.interface';
 import { genFileId } from '../td-upload.const';
-import { AnyFn, entriesOf, isFunction, isPlainObject } from '@type-dom/utils';
-import { cloneDeep, isEqual } from 'lodash';
 import { TdUploadDrag } from '../upload-dragger/upload-dragger.class';
+import { ITdUploadContent, UploadContentProps } from './upload-content.interface';
+import { uploadContentProps } from './upload-content.const';
 
 export class TdUploadContent extends TypeDiv implements ITdUploadContent {
   className: 'TdUploadContent';
@@ -26,7 +26,7 @@ export class TdUploadContent extends TypeDiv implements ITdUploadContent {
   override setup() {
     console.log('TdUploadContent setup');
     const props = this.props;
-    const emit = this.emit;
+    // const emit = this.emit;
     const ns = useNamespace('upload')
     const disabled = useFormDisabled()
 

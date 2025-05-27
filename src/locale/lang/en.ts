@@ -109,7 +109,7 @@ export default {
       pageClassifier: '',
       page: 'Page',
       prev: 'Go to previous page',
-      next: 'Go to next page',
+      next: 'Go to preview page',
       currentPage: 'page {pager}',
       prevPages: 'Previous {pager} pages',
       nextPages: 'Next {pager} pages',
@@ -179,4 +179,4 @@ export default {
       indicator: 'Carousel switch to index {index}',
     },
   },
-};
+}

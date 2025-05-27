@@ -10,7 +10,7 @@
 import { TypeNode, unrefElement } from '@type-dom/framework';
 import { MaybeRef } from '@type-dom/signals';
 // todo floatingui 的 api 变了
-import { detectOverflow, flip, Middleware, offset, PopperOptions } from '@type-dom/popper';
+import { flip, Middleware, offset, PopperOptions } from '@type-dom/popper';
 import { isClient } from '@type-dom/utils';
 import { PopperCoreConfigProps } from './content/content.interface';
 import { Measurable } from './td-popper.interface';
@@ -42,7 +42,7 @@ export const unwrapMeasurableEl = (
 // todo api 变了
 //   应该对应新的 middleWare
 function genMiddleware(options: PopperCoreConfigProps): Middleware[] {
-  const { gpuAcceleration, fallbackPlacements } = options;
+  const { fallbackPlacements } = options;
   return [
     offset(options.offset ?? 12),
     // {

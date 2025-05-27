@@ -1,8 +1,9 @@
 // 基于router创建的菜单
-import { IRoute, TypeProps, Router, TypeDiv } from '@type-dom/framework';
+import { TypeProps, TypeDiv } from '@type-dom/framework';
+import { Router, RouteRecordRaw } from '@type-dom/router';
 import { Menu } from './menu';
 
-export interface IMenusConfig extends TypeProps {
+export interface MenusProps extends TypeProps {
   router?: Router;
 }
 
@@ -11,7 +12,7 @@ export class Menus extends TypeDiv {
   selectedMenu?: Menu;
   private router?: Router;
 
-  constructor(params: IMenusConfig = {}) {
+  constructor(params: MenusProps = {}) {
     super();
     this.className = 'Menus';
     this.attr.addName('menus');
@@ -28,7 +29,19 @@ export class Menus extends TypeDiv {
     this.router = params.router;
     // console.log('ui-doc routerUI.routes is ', this.router);
     if (this.router) {
-      this.createMenus(this, this.router.routes, this.router);
+      // console.error('this.router.getRoutes() is ', this.router.getRoutes());
+      // 递归过滤函数
+      const filterRoutes = (routes?: RouteRecordRaw[]) => {
+        return routes?.filter(route => !route.meta?.isHidden)  // 隐藏标记优先
+          // 过滤当前层级
+          .map(route => {
+              route.children = filterRoutes(route.children);
+              return route;
+            }
+          )
+      };
+      const routes = filterRoutes(this.router.routes as RouteRecordRaw[]);
+      this.createMenus(this, routes, this.router);
     }
     // console.log('menus is ', this);
   }
@@ -37,32 +50,15 @@ export class Menus extends TypeDiv {
     return this;
   }
 
-  override mounted() {
-    // console.warn('menus mounted . ');
-    // hash路由和history路由要分别判断
-    let path;
-    if (this.router?.mode === 'hash') {
-      path = window.location.hash.slice(1);
-    } else if (this.router?.mode === 'history') {
-      path = window.location.pathname;
-    }
-    if (path === '/') {
-      path = '/home';
-    }
-    const menuItem = this.down('route.path', path) as Menu;
-    // 当前路由与菜单绑定路由一致，则选中状态
-    this.setSelectedMenu(menuItem);
-  }
-
   // /home '' '/' 首页菜单要单独处理
-  createMenus(parent: Menus | Menu, routes: IRoute[], router: Router) {
-    // console.log('createMenus . ');
-    routes.forEach((route) => {
-      if (route.hidden) {
+  createMenus(parent: Menus | Menu, routes?: readonly RouteRecordRaw[], router?: Router) {
+    // console.log('createMenus . routes is ', routes);
+    routes?.forEach((route) => {
+      if (route.meta?.isHidden) {
         return;
       }
       if (route?.path === '/' && route.redirect) {
-        route = route.children!.find((item) => item.path === route.redirect)!;
+        // route = route.children!.find((item) => item.path === route.redirect)!;
         //   todo 没有的话，要报错的。
       }
       // 创建菜单项

@@ -1,7 +1,7 @@
-import '@element-plus/components/base/style/css';
-import '@element-plus/components/tag/style/css';
-import '@element-plus/components/option/style/css';
-import '@element-plus/components/option-group/style/css';
-import '@element-plus/components/scrollbar/style/css';
-import '@element-plus/components/popper/style/css';
-import '@element-plus/theme-chalk/el-select.css';
+import '../../../base/style/css';
+import '../../../data/td-tag/style/css';
+import '../../../form/td-option/style/css';
+import '../../../form/td-option-group/style/css';
+import '../../../basic/td-scrollbar/style/css';
+import '../../../feedback/td-popper/style/css';
+import '@type-dom/theme-chalk/el-select.css';

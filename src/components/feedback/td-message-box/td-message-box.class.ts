@@ -139,7 +139,7 @@ export class TdMessageBox extends TypeFragment implements ITdMessageBox {
     const inputRef = signal<TdInput>();
     const confirmRef = signal<TypeElement>();
 
-    const confirmButtonClasses = computed(() => state.confirmButtonClass);
+    // const confirmButtonClasses = computed(() => state.confirmButtonClass);
 
     watch(
       () => state.inputValue?.get(),
@@ -518,7 +518,7 @@ export class TdMessageBox extends TypeFragment implements ITdMessageBox {
                               class: ns.e('errormsg'),
                               styleObj: {
                                 visibility: computed(() =>
-                                  !!state.editorErrorMessage?.get()
+                                  state.editorErrorMessage?.get()
                                     ? 'visible'
                                     : 'hidden'
                                 ),

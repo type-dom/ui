@@ -177,4 +177,4 @@ export default {
       indicator: '幻灯片切换至索引 {index}',
     },
   },
-};
+}

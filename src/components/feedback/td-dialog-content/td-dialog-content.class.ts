@@ -16,7 +16,7 @@ import { useLocale } from '../../../hooks/use-locale';
 import { useDraggable } from '../../../hooks/use-draggable';
 import { TdIcon } from '../../basic/td-icon/td-icon.class';
 import { dialogInjectionKey } from '../td-dialog/constants';
-import { FOCUS_TRAP_INJECTION_KEY } from '../td-focus-trap/tokens';
+// import { FOCUS_TRAP_INJECTION_KEY } from '../td-focus-trap/tokens';
 import { DialogProps } from '../td-dialog/td-dialog.interface';
 import {
   ITdDialogContent,
@@ -26,7 +26,7 @@ import {
   dialogContentEmits,
   dialogContentProps,
 } from './td-dialog-content.const';
-import { composeRefs } from '../../../utils/refs';
+// import { composeRefs } from '../../../utils/refs';
 
 export class TdDialogContent extends TypeDiv implements ITdDialogContent {
   className: 'TdDialogContent';
@@ -49,7 +49,7 @@ export class TdDialogContent extends TypeDiv implements ITdDialogContent {
 
     const { dialogRef, headerRef, bodyId, ns, style } =
       inject(dialogInjectionKey)!;
-    const { focusTrapRef } = inject(FOCUS_TRAP_INJECTION_KEY)!;
+    // const { focusTrapRef } = inject(FOCUS_TRAP_INJECTION_KEY)!;
 
     const dialogKls = computed(() => [
       ns.b(),
@@ -59,7 +59,7 @@ export class TdDialogContent extends TypeDiv implements ITdDialogContent {
       { [ns.m('center')]: props.center },
     ]);
 
-    const composedDialogRef = composeRefs(focusTrapRef, dialogRef);
+    // const composedDialogRef = composeRefs(focusTrapRef, dialogRef);
 
     const draggable = computed(() => unref(props.draggable));
     // console.log('draggable is ', draggable.get());
@@ -114,7 +114,7 @@ export class TdDialogContent extends TypeDiv implements ITdDialogContent {
               ariaLabel: t('el.dialog.close'),
             },
             events: {
-              click: (evt, element) => {
+              click: () => {
                 emit('close');
               },
             },

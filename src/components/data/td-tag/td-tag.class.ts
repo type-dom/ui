@@ -1,4 +1,4 @@
-import { Span, Transition, TypeFragment, TypeNode } from '@type-dom/framework';
+import { Span, Transition, TypeFragment } from '@type-dom/framework';
 import { computed } from '@type-dom/signals';
 import { ElCloseSvg } from '@type-dom/svgs';
 import { useNamespace } from '../../../hooks/use-namespace';
@@ -50,13 +50,13 @@ export class TdTag extends TypeFragment implements ITdTag {
       emit('click', event);
     };
 
-    const handleVNodeMounted = (vnode: TypeNode) => {
-      // // @ts-ignore
-      // if (vnode?.component?.subTree?.component?.bum) {
-      //   // @ts-ignore
-      //   vnode.component.subTree.component.bum = null;
-      // }
-    };
+    // const handleVNodeMounted = (vnode: TypeNode) => {
+    //   // // @ts-ignore
+    //   // if (vnode?.component?.subTree?.component?.bum) {
+    //   //   // @ts-ignore
+    //   //   vnode.component.subTree.component.bum = null;
+    //   // }
+    // };
 
     if (props.disableTransitions) {
       this.addChild(

@@ -1,8 +1,6 @@
-import { isClient, Mutable } from '@type-dom/utils';
 import {
   ITypeFragment,
   TypeFragmentProps,
-  TypeElement,
   TypeSvgSvg,
   TypeNode,
 } from '@type-dom/framework';
@@ -132,6 +130,7 @@ export type MessageTypedFn = (
 ) => MessageHandler;
 
 export interface Message extends MessageFn {
+  primary: MessageTypedFn
   success: MessageTypedFn;
   warning: MessageTypedFn;
   info: MessageTypedFn;

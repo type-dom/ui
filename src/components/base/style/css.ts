@@ -1,1 +1,1 @@
-import '../../theme/base.css';
+import '@type-dom/theme-chalk/base.css';

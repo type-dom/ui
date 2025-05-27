@@ -3,7 +3,6 @@ import { DisabledTimeListsProps } from '../props/shared';
 
 // import type { ExtractPropTypes } from 'vue'
 import type { Dayjs } from 'dayjs';
-import { TypeDivProps } from '@type-dom/framework';
 
 export interface BasicTimeSpinnerProps extends DisabledTimeListsProps {
   role?: string; //required: true,

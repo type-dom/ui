@@ -7,8 +7,6 @@ import {
 } from '../../../styles/var';
 import { AlertProps } from './td-alert.interface';
 
-// import '../../../styles/base/style/index'
-// import '../../../theme-chalk/src/alert.scss'
 
 export const $alert = {
   padding: '8px 16px',

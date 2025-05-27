@@ -1,7 +1,7 @@
-import { formatFloat, isNumber, isObject } from '@type-dom/utils';
+import { isNumber, isObject } from '@type-dom/utils';
 import { IStyle } from '@type-dom/css-type';
 import { computed } from '@type-dom/signals';
-import { inject, TypeDiv, TypeElement } from '@type-dom/framework';
+import { inject, TypeDiv } from '@type-dom/framework';
 import { useNamespace } from '../../../../hooks/use-namespace';
 import { rowContextKey } from '../td-row/td-row.const';
 import { TdRow } from '../td-row/td-row.class';
@@ -11,7 +11,7 @@ import './style/index';
 
 export class TdCol extends TypeDiv implements ITdCol {
   className: 'TdCol';
-  override parent?: TdRow;
+  override parent?: TdRow = undefined;
   override props: ColProps;
 
   constructor(params: ColProps = {}) {

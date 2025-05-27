@@ -166,13 +166,13 @@ export class BasicTimeSpinner extends TypeDiv {
       return 0;
     };
 
-    const onIncrement = () => {
-      scrollDown(1);
-    };
-
-    const onDecrement = () => {
-      scrollDown(-1);
-    };
+    // const onIncrement = () => {
+    //   scrollDown(1);
+    // };
+    //
+    // const onDecrement = () => {
+    //   scrollDown(-1);
+    // };
 
     const scrollDown = (step: number) => {
       if (!currentScrollbar.get()) {
@@ -285,16 +285,16 @@ export class BasicTimeSpinner extends TypeDiv {
 
     onMounted(() => {
       nextTick(() => {
-        !props.arrowControl && bindScrollEvent();
+        if (!props.arrowControl) bindScrollEvent();
         adjustSpinners();
         // set selection on the first hour part
         if (props.role === 'start') emitSelectRange('hours');
       });
     });
 
-    const setRef = (scrollbar: TdScrollbar | null, type: TimeUnit) => {
-      listRefsMap[type].set(scrollbar ?? undefined);
-    };
+    // const setRef = (scrollbar: TdScrollbar | null, type: TimeUnit) => {
+    //   listRefsMap[type].set(scrollbar ?? undefined);
+    // };
 
     emit('set-option', [`${props.role}_scrollDown`, scrollDown]);
     emit('set-option', [`${props.role}_emitSelectRange`, emitSelectRange]);
@@ -315,7 +315,7 @@ export class BasicTimeSpinner extends TypeDiv {
       ]),
     });
     if (!props.arrowControl) {
-      for (const item of spinnerItems.get()) {
+      for (const item of spinnerItems!.get()!) {
         this.addChild(
           new TdScrollbar({
             // ref: (scrollbar: unknown) => setRef(scrollbar as any, item), // todo
@@ -325,10 +325,10 @@ export class BasicTimeSpinner extends TypeDiv {
             noresize: true,
             tag: 'ul',
             events: {
-              mouseenter: (evt) => emitSelectRange(item),
-              mousemove: (evt) => adjustCurrentSpinner(item),
+              mouseenter: () => emitSelectRange(item),
+              mousemove: () => adjustCurrentSpinner(item),
             },
-            slot: timeList.get()[item].map((disabled, key) => {
+            slot: timeList.get()?.[item].map((disabled, key) => {
               return new LI({
                 class: [
                   ns.be('spinner', 'item'),
@@ -350,7 +350,7 @@ export class BasicTimeSpinner extends TypeDiv {
         );
       }
     } else {
-      for (const item of spinnerItems.get()) {
+      for (const item of spinnerItems.get()!) {
         // 这样就没有双向绑定的效果了
         this.addChild(
           new Div({
@@ -371,12 +371,12 @@ export class BasicTimeSpinner extends TypeDiv {
               }),
               new UL({
                 class: ns.be('spinner', 'list'),
-                slot: arrowControlTimeList.get()[item].map((time, key) => {
+                slot: arrowControlTimeList.get()?.[item].map((time, key) => {
                   return new LI({
                     class: [
                       ns.be('spinner', 'item'),
                       ns.is('active', key === timePartials.get()?.[item]),
-                      ns.is('disabled', timeList.get()[item][time!]),
+                      ns.is('disabled', timeList.get()?.[item][time!]),
                     ],
                     slot: new Fragment({
                       vIf: isNumber(item),

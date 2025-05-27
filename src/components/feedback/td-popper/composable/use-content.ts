@@ -5,13 +5,13 @@
 // import type { Modifier } from '@popperjs/core'
 // import type { PartialOptions } from '@element-plus/hooks'
 
-import { Computed, Ref, computed, signal, unref, watch, toRaw } from '@type-dom/signals';
+import { Ref, computed, signal, unref, watch } from '@type-dom/signals';
 import { arrow, FloatingElement, Middleware } from '@type-dom/popper';
-import { isUndefined, setStyle } from '@type-dom/utils';
-import { onMounted, inject, nextTick } from '@type-dom/framework';
+import { isUndefined } from '@type-dom/utils';
+import { onMounted, inject } from '@type-dom/framework';
 import { PartialOptions, usePopper } from '../../../../hooks/use-popper';
-import { usePopperContainerId } from '../../../../hooks/use-popper-container';
-import { TOOLTIP_INJECTION_KEY } from '../../td-tooltip/td-tooltip.const';
+// import { usePopperContainerId } from '../../../../hooks/use-popper-container';
+// import { TOOLTIP_INJECTION_KEY } from '../../td-tooltip/td-tooltip.const';
 import { buildPopperOptions, unwrapMeasurableEl } from '../utils';
 import { PopperContentProps } from '../content/content.interface';
 import { POPPER_INJECTION_KEY } from '../constants';
@@ -26,19 +26,19 @@ export const usePopperContent = (props: PopperContentProps) => {
   )!;
 
   const arrowRef = signal<HTMLElement>();
-  const arrowOffset = signal<number>(5);
+  const arrowOffset = computed(() => props.arrowOffset?.get());
 
-  const eventListenerMiddleware = computed(() => {
-    return {
-      name: 'eventListeners',
-      // enabled: !!props.visible,
-      fn: (state) => {
-        if (toRaw(props.visible)) {
-          // update();
-        }
-      },
-    } as Middleware
-  })
+  // const eventListenerMiddleware = computed(() => {
+  //   return {
+  //     name: 'eventListeners',
+  //     // enabled: !!props.visible,
+  //     fn: (state) => {
+  //       if (toRaw(props.visible)) {
+  //         // update();
+  //       }
+  //     },
+  //   } as Middleware
+  // })
   // middleWare
   const arrowMiddleware = computed<Middleware>(() => {
     // console.log('arrowMiddleware', arrowRef, arrowOffset);
@@ -76,14 +76,14 @@ export const usePopperContent = (props: PopperContentProps) => {
     } as PartialOptions;
   });
 
-  const computedReference: Computed = computed(
+  const computedReference = computed(
     () => (unwrapMeasurableEl(props.referenceEl) || unref(triggerRef))!
   );
 
   const { attributes, state, styles, instanceRef, update, forceUpdate } =
     usePopper(computedReference, contentRef as Ref<FloatingElement>, options);
 
-  watch(instanceRef, (instance) => popperInstanceRef.set(instance));
+  watch(() => instanceRef.get(), (instance) => popperInstanceRef.set(instance));
 
   onMounted(() => {
     watch(

@@ -2,14 +2,12 @@ import {
   defineExpose,
   Div,
   Fragment,
-  ISlotRaw,
-  ISlotRef,
   TypeFragment,
 } from '@type-dom/framework';
 import { addUnit } from '@type-dom/utils';
-import { computed, Computed, signal, Signal, unref } from '@type-dom/signals';
+import { computed, Computed, signal, unref } from '@type-dom/signals';
 import { useNamespace } from '../../../hooks/use-namespace';
-import { TdPopper } from '../td-popper/td-popper.class';
+// import { TdPopper } from '../td-popper/td-popper.class';
 import { TdTooltip } from '../td-tooltip/td-tooltip.class';
 import { popoverEmits, popoverProps } from './td-popper.const';
 import { ITdPopover, PopoverProps } from './td-popover.interface';
@@ -56,7 +54,7 @@ export class TdPopover extends TypeFragment implements ITdPopover {
     });
 
     const kls = computed(() => {
-      return [ns.b(), props.popperClass!, { [ns.m('plain')]: !!props.content }];
+      return [ns.b(), unref(props.popperClass)!, { [ns.m('plain')]: !!props.content }];
     });
 
     const gpuAcceleration = computed(() => {
@@ -111,7 +109,7 @@ export class TdPopover extends TypeFragment implements ITdPopover {
         showArrow: props.showArrow,
         effect: props.effect,
         enterable: props.enterable,
-        popperClass: kls.get(),
+        popperClass: kls,
         popperStyle: style.get(),
         teleported: props.teleported,
         persistent: props.persistent,

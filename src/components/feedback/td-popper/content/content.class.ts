@@ -1,12 +1,11 @@
 import {
   Computed,
   Signal,
-  signal,
   unref,
   watch,
   WatchStopHandle,
 } from '@type-dom/signals';
-import { isElement, isNil, NOOP, setStyle } from '@type-dom/utils';
+import { isElement, isNil, NOOP } from '@type-dom/utils';
 import {
   defineExpose,
   onBeforeUnmount,
@@ -86,12 +85,12 @@ export class TdPopperContent extends TypeDiv implements ITdPopperContent {
       formItemContextKey,
       undefined
     );
-    const arrowOffset = signal<number>();
+    // const arrowOffset = signal<number>();
 
     this.provide(POPPER_CONTENT_INJECTION_KEY, {
       arrowStyle,
       arrowRef,
-      arrowOffset,
+      // arrowOffset,
     });
 
     if (formItemContext) {
@@ -108,7 +107,9 @@ export class TdPopperContent extends TypeDiv implements ITdPopperContent {
     const updatePopper = async (shouldUpdateZIndex = true) => {
       // console.warn('updatePopper . ');
       update()
-      shouldUpdateZIndex && updateZIndex();
+      if (shouldUpdateZIndex) {
+        updateZIndex();
+      }
     };
 
     const togglePopperAlive = () => {
@@ -142,9 +143,11 @@ export class TdPopperContent extends TypeDiv implements ITdPopperContent {
               (watches) => {
                 ['role', 'aria-label', 'aria-modal', 'id'].forEach(
                   (key, idx) => {
-                    isNil(watches[idx])
-                      ? el.removeAttribute(key)
-                      : el.setAttribute(key, watches[idx]! as string);
+                    if (isNil(watches[idx])) {
+                      el.removeAttribute(key);
+                    } else {
+                      el.setAttribute(key, watches[idx]! as string);
+                    }
                   }
                 );
               },

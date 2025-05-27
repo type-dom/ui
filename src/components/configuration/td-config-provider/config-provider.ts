@@ -1,12 +1,9 @@
 // import { defineComponent, renderSlot, watch } from 'vue'
 import { provideGlobalConfig } from './hooks/use-global-config';
-import {
-  ConfigProviderProps,
-  configProviderProps,
-} from './config-provider-props';
-import { MessageConfigContext } from '../../feedback/td-message/td-message.interface';
-import { TypeFragment, TypeNode } from '@type-dom/framework';
+import { TypeFragment } from '@type-dom/framework';
 import { watch } from '@type-dom/signals';
+import { MessageConfigContext } from '../../feedback/td-message/td-message.interface';
+import { ConfigProviderProps, } from './config-provider-props';
 
 // import type { MessageConfigContext } from '@element-plus/components/message'
 
@@ -38,6 +35,10 @@ export class ConfigProvider extends TypeFragment {
     const slot = props.slot || slots?.default;
     // todo slot config
     this.slotChildren(slot);
+    this.childNodes.forEach((child) => { // 全局配置
+      child.assignProps({  config: config?.get() });
+    })
+
   }
 }
 

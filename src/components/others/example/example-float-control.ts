@@ -6,7 +6,7 @@ import { Example } from './example';
 
 export class ExampleFloatControl extends TypeDiv {
   className: 'ExampleFloatControl';
-  override parent!: Example;
+  override parent?: Example = undefined;
 
   constructor(params: TypeProps) {
     super();
@@ -61,7 +61,7 @@ export class ExampleFloatControl extends TypeDiv {
       click: () => {
         // 隐藏 代码
         this.style.hide();
-        this.parent.sourceWrapper.style.hide();
+        this.parent?.sourceWrapper.style.hide();
       },
     });
   }

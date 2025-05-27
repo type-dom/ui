@@ -6,7 +6,6 @@ import {
   throwError,
 } from '@type-dom/utils';
 import {
-  arraySlot,
   defineExpose,
   nextTick,
   onMounted,
@@ -14,7 +13,7 @@ import {
   Input,
   ISlotRaw,
   Span,
-  TypeDiv,
+  TypeDiv, rawSlot
 } from '@type-dom/framework';
 import { Computed, computed, signal, unref, watch } from '@type-dom/signals';
 import { IStyle } from '@type-dom/css-type';
@@ -34,8 +33,8 @@ import {
   useFormItem,
   useFormItemInputId,
 } from '../td-form/hooks/use-form-item';
-import { ITdSwitch, SwitchProps, SwitchContext } from './td-switch.interface';
-import { switchEmits, switchKey, switchProps } from './td-switch.const';
+import { ITdSwitch, SwitchProps } from './td-switch.interface';
+import { switchEmits, switchProps } from './td-switch.const';
 import './style/index';
 
 export class TdSwitch extends TypeDiv implements ITdSwitch {
@@ -95,15 +94,22 @@ export class TdSwitch extends TypeDiv implements ITdSwitch {
         ? props.switchOnColor
         : props.switchOffColor,
     }));
-
+    // 使用watch时，必须加上immediate，否则没有了绑定效果。与使用watch不同，watch时不需要加 immediate；
     watch(
       () => props.vModel?.get(),
       () => {
+        // console.warn('props.vModel newValue is ', newValue);
+        // console.warn('isControlled.get() is ', isControlled.get());
         isControlled.set(true);
+      },
+      {
+        immediate: true,
       }
     );
 
     const actualValue = computed(() => {
+      // console.warn('actualValue computed. props.vModel.get() is ', props.vModel?.get());
+      // console.warn('isControlled.get() is ', isControlled.get());
       return isControlled.get() ? props.vModel?.get() : false;
     });
 
@@ -115,7 +121,8 @@ export class TdSwitch extends TypeDiv implements ITdSwitch {
       emit(INPUT_EVENT, props.inactiveValue);
     }
 
-    watch(checked, (val) => {
+    watch(() => checked.get(), (val) => {
+      // console.warn('checked newValue is ', val);
       if (input.get()) {
         input.get()!.checked = val;
       }
@@ -126,6 +133,7 @@ export class TdSwitch extends TypeDiv implements ITdSwitch {
     });
 
     const handleChange = () => {
+      // console.warn('handleChange . ');
       const val = checked.get() ? props.inactiveValue : props.activeValue;
       emit(UPDATE_MODEL_EVENT, val);
       emit(CHANGE_EVENT, val);
@@ -136,6 +144,7 @@ export class TdSwitch extends TypeDiv implements ITdSwitch {
     };
 
     const switchValue = () => {
+      // console.warn('switchValue . ');
       if (switchDisabled.get()) return;
 
       const { beforeChange } = props;
@@ -177,6 +186,7 @@ export class TdSwitch extends TypeDiv implements ITdSwitch {
     };
 
     onMounted(() => {
+      // console.warn('onMounted . ');
       input.get()!.checked = checked.get();
     });
 
@@ -194,6 +204,7 @@ export class TdSwitch extends TypeDiv implements ITdSwitch {
     this.attr.addClass(switchKls);
     this.addEvents({
       click: (evt) => {
+        // console.warn('click . ');
         switchValue();
         evt?.preventDefault();
       },
@@ -285,7 +296,7 @@ export class TdSwitch extends TypeDiv implements ITdSwitch {
                 });
               } else if (checked.get()) {
                 if (props.slots?.activeAction) {
-                  return props.slots.activeAction;
+                  return rawSlot(props.slots.activeAction);
                 } else {
                   if (props.activeActionIcon) {
                     return new TdIcon({
@@ -295,7 +306,7 @@ export class TdSwitch extends TypeDiv implements ITdSwitch {
                 }
               } else if (!checked.get()) {
                 if (props.slots?.inactiveAction) {
-                  return props.slots.inactiveAction;
+                  return rawSlot(props.slots.inactiveAction);
                 } else {
                   if (props.inactiveActionIcon) {
                     return new TdIcon({

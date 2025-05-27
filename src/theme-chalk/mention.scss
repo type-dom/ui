@@ -10,10 +10,14 @@
 
   @include e(popper) {
     @include picker-popper(
-                    map.get($mention, 'bg-color'),
-                    map.get($mention, 'border'),
-                    map.get($mention, 'shadow')
+      map.get($mention, 'bg-color'),
+      map.get($mention, 'border'),
+      map.get($mention, 'shadow')
     );
+  }
+
+  @include when(disabled) {
+    pointer-events: none;
   }
 }
 

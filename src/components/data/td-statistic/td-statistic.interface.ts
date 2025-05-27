@@ -4,7 +4,7 @@ import {
   StyleValue,
   TypeDivProps,
 } from '@type-dom/framework';
-import { Computed, MaybeRef, Signal } from '@type-dom/signals';
+import { MaybeRef } from '@type-dom/signals';
 import { Dayjs } from 'dayjs';
 
 export interface ITdStatistic extends ITypeDiv {
@@ -35,7 +35,7 @@ export interface StatisticProps extends TypeDivProps {
    * @description Numerical content
    *     default: 0,
    */
-  value?: MaybeRef<number | Dayjs>;
+  value?: MaybeRef<number | number[] | Dayjs>;
   //   type: definePropType<number | Dayjs>([Number, Object]),
   // },
   /**

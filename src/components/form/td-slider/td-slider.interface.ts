@@ -1,4 +1,4 @@
-import { TypeProps, ITypeDiv, TypeDivProps } from '@type-dom/framework';
+import { ITypeDiv, TypeDivProps } from '@type-dom/framework';
 import { Placement } from '@type-dom/popper';
 import { MaybeRef, Ref, Signal } from '@type-dom/signals';
 import { AnyFn, Arrayable, isArray, isNumber } from '@type-dom/utils';
@@ -21,7 +21,7 @@ export interface SliderInitData {
   firstValue: Signal<number>;
   secondValue: Signal<number>;
   oldValue: Arrayable<number>;
-  dragging: boolean;
+  dragging: Signal<boolean>;
   sliderSize: Signal<number>;
 }
 
@@ -123,11 +123,11 @@ export interface SliderProps extends TypeDivProps {
   validateEvent?: boolean;
   /**
    * @description when slider tooltip inactive and `persistent` is `false` , popconfirm will be destroyed. `persistent` always be `false` when `show-tooltip ` is `false`
+   *    default: true,
    */
   persistent?: boolean,
-  //   default: true,
-  // },
   // ...useAriaProps(['ariaLabel']),
+  arialLabel?: string;
 }
 
 const isValidValue = (value: Arrayable<number>) =>

@@ -1,9 +1,6 @@
 import {
   Div,
   Input,
-  TypeDivProps,
-  nextTick,
-  onClickOutside,
   Span,
   TypeDiv,
   provide,
@@ -11,35 +8,45 @@ import {
   For,
 } from '@type-dom/framework';
 import { isArray, isFunction } from '@type-dom/utils';
-import { Computed, computed, Ref, unref } from '@type-dom/signals';
+import { Computed, computed, ToRefs, toRefs, unref } from '@type-dom/signals';
 import { useCalcInputWidth } from '../../../hooks/use-calc-input-width';
 import { TdTag } from '../../data/td-tag/td-tag.class';
 import { TdIcon } from '../../basic/td-icon/td-icon.class';
 import { TdTooltip } from '../../feedback/td-tooltip/td-tooltip.class';
 import { TdScrollbar } from '../../basic/td-scrollbar/td-scrollbar.class';
 import { TdOption } from '../td-option/td-option.class';
-import { TdSelectDropDown } from './td-select-dropdown/td-select-dropdown.class';
-import { selectProps } from './td-select.const';
+import { OptionValue } from '../td-option/td-option.interface';
+import { TdSelectDropdown } from './td-select-dropdown/td-select-dropdown.class';
+import { TdOptions } from './td-options/td-options.class';
+import { selectEmits, selectProps } from './td-select.const';
 import { selectKey } from './token';
 import { useSelect } from './useSelect';
-import { ITdSelect, TdSelectProps, SelectContext } from './td-select.interface';
+import { ITdSelect, TdSelectProps } from './td-select.interface';
 import './style';
-import { TdOptions } from './td-options/td-options.class';
 
 export class TdSelect extends TypeDiv implements ITdSelect {
   className: 'TdSelect';
   override props: TdSelectProps;
+  selectedLabel?: string | Computed<string | number | boolean | (string | number | boolean | undefined)[] | undefined>;
 
   constructor(params = {} as TdSelectProps) {
     super();
     this.className = 'TdSelect';
+    this.addEmits(selectEmits);
     this.assignProps(selectProps);
     this.props = this.useParams(params);
   }
 
   override setup() {
+    console.log('TdSelect setup. ');
+    const props = this.props;
+    const emit = this.emit;
+
     const modelValue = computed(() => {
-      const { modelValue: rawModelValue, multiple } = props;
+      // const { modelValue: rawModelValue, multiple } = props;
+      const rawModelValue = props.vModel?.get() as  OptionValue | OptionValue[];
+      const multiple = props.multiple;
+      console.warn('rawModelValue is ', rawModelValue)
       const fallback = multiple ? [] : undefined;
       // When it is array, we check if this is multi-select.
       // Based on the result we get
@@ -49,8 +56,14 @@ export class TdSelect extends TypeDiv implements ITdSelect {
 
       return multiple ? fallback : rawModelValue;
     });
-    const props = this.props;
-    const API = useSelect(props, this.emit);
+
+    const _props: ToRefs<TdSelectProps> = {
+      ...toRefs(props),
+      modelValue: modelValue,
+    }
+
+
+    const API = useSelect(_props, emit);
     const { nsSelect, nsInput, states } = API;
     const { calculatorRef, inputStyle } = useCalcInputWidth();
 
@@ -58,22 +71,22 @@ export class TdSelect extends TypeDiv implements ITdSelect {
       selectKey,
       // reactive(
       {
-        props: props,
-        states: API.states,
+        props: _props,
+        states: states,
         optionsArray: API.optionsArray.get(),
         handleOptionSelect: API.handleOptionSelect,
         onOptionCreate: API.onOptionCreate,
         onOptionDestroy: API.onOptionDestroy,
         selectRef: API.selectRef,
         setSelected: API.setSelected,
-      } as SelectContext
+      }
     );
 
-    const selectedLabel = computed(() => {
+    this.selectedLabel = computed(() => {
       if (!props.multiple) {
-        return API.states.selectedLabel;
+        return unref(states.selectedLabel);
       }
-      return API.states.selected.map((i: any) => i.currentLabel as string);
+      return states.selected.map((i) => i.currentLabel?.get());
     });
 
     this.assignProps({
@@ -83,17 +96,16 @@ export class TdSelect extends TypeDiv implements ITdSelect {
     this.attr.addClass(
       computed(() => [nsSelect.b(), nsSelect.m(API.selectSize.get())])
     );
-    this.addEmits({
-      [API.mouseEnterEventName.get()!]: () => (API.states.inputHovering = true),
-      mouseleave: () => (API.states.inputHovering = false),
+    // console.warn('API.mouseEnterEventName.get() is ', API.mouseEnterEventName.get());
+    this.addEvents({
+      [API.mouseEnterEventName.get()!]: () => states.inputHovering.set(true),
+      mouseleave: () => states.inputHovering.set(false),
     });
-
-    // console.warn('API.states.options.size > 0 && !unref(props.loading) is ', API.states.options.size > 0 && !unref(props.loading));
 
     this.addChild(
       new TdTooltip({
         refEl: API.tooltipRef,
-        // visible: API.dropdownMenuVisible, // TODO not show ???
+        visible: API.dropdownMenuVisible,
         placement: props.placement,
         teleported: props.teleported,
         popperClass: [nsSelect.e('popper'), props.popperClass],
@@ -111,19 +123,20 @@ export class TdSelect extends TypeDiv implements ITdSelect {
         offset: props.offset,
         emits: {
           beforeShow: API.handleMenuEnter,
-          hide: () => (API.states.isBeforeHide = false),
+          hide: () => (states.isBeforeHide = false),
         },
         slot: new Div({
           refDom: API.wrapperRef,
-          class: [
+          class: computed(() => [
             nsSelect.e('wrapper'),
             nsSelect.is('focused', API.isFocused.get()),
-            nsSelect.is('hovering', API.states.inputHovering),
+            nsSelect.is('hovering', states.inputHovering.get()),
             nsSelect.is('filterable', props.filterable),
-            nsSelect.is('disabled', API.selectDisabled.get()),
-          ],
+            nsSelect.is('disabled', unref(API.selectDisabled)),
+          ]),
           events: {
             click: (evt?: MouseEvent) => {
+              // console.warn('click . ');
               API.toggleMenu();
               evt?.preventDefault();
             },
@@ -144,110 +157,110 @@ export class TdSelect extends TypeDiv implements ITdSelect {
                   'near',
                   props.multiple &&
                     !props.slots?.prefix &&
-                    !!API.states.selected.length
+                    !!states.selected.length
                 ),
               ],
               slot: [
-                new Fragment({
-                  vIf: props.multiple,
-                  slot: [
-                    new For({
-                      data: API.showTagList,
-                      getter: (item: any) =>
-                        new Div({
-                          // key: API.getValueKey(item),
-                          class: nsSelect.e('selected-item'),
-                          slot: new TdTag({
-                            closable:
-                              !API.selectDisabled && !(item as any).isDisabled,
-                            size: API.collapseTagSize.get(),
-                            type: props.tagType,
-                            effect: props.tagEffect,
-                            disableTransitions: true,
-                            // style: API.tagStyle.get(),
-                            events: {
-                              close: (evt) => {
-                                API.deleteTag(evt, item);
-                              },
-                            },
-                            slot: new Span({
-                              class: nsSelect.e('tags-text'),
-                              slot: props.slots?.label ?? item.currentLabel,
-                            }),
-                          }),
-                        }),
-                    }),
-                    new TdTooltip({
-                      vIf:
-                        props.collapseTags &&
-                        API.states.selected.length > props.maxCollapseTags!,
-                      refEl: API.tagTooltipRef,
-                      disabled:
-                        API.dropdownMenuVisible || !props.collapseTagsTooltip,
-                      fallbackPlacements: ['bottom', 'top', 'right', 'left'],
-                      effect: props.effect,
-                      placement: 'bottom',
-                      teleported: props.teleported,
-                      slots: {
-                        default: new Div({
-                          refDom: API.collapseItemRef,
-                          class: nsSelect.e('selected-item'),
-                          slot: new TdTag({
-                            closable: false,
-                            size: API.collapseTagSize.get(),
-                            type: props.tagType,
-                            effect: props.tagEffect,
-                            disableTransitions: true,
-                            styleObj: API.collapseTagStyle.get(),
-                            slot: new Span({
-                              class: nsSelect.e('tags-text'),
-                              slot: `+${
-                                API.states.selected.length -
-                                props.maxCollapseTags!
-                              }`,
-                            }),
-                          }),
-                        }),
-                        content: new Div({
-                          refDom: API.tagMenuRef,
-                          class: nsSelect.e('selection'),
-                          slot: new For({
-                            data: API.collapseTagList,
-                            getter: (item: any) =>
-                              new Div({
-                                // key: API.getValueKey(item),
-                                class: nsSelect.e('selected-item'),
-                                slot: new TdTag({
-                                  class: 'in-tooltip',
-                                  closable:
-                                    !API.selectDisabled &&
-                                    !(item as any).isDisabled,
-                                  size: API.collapseTagSize.get(),
-                                  type: props.tagType,
-                                  effect: props.tagEffect,
-                                  disableTransitions: true,
-                                  events: {
-                                    close: (evt) => {
-                                      API.deleteTag(evt, item);
-                                    },
+                props.multiple
+                  ? new Fragment({
+                      slot: props.slots?.tag ?? [
+                        new For({
+                          data: API.showTagList,
+                          getter: (item) =>
+                            new Div({
+                              // key: API.getValueKey(item),
+                              class: nsSelect.e('selected-item'),
+                              slot: new TdTag({
+                                closable: !API.selectDisabled && !item.isDisabled,
+                                size: API.collapseTagSize.get(),
+                                type: props.tagType,
+                                effect: props.tagEffect,
+                                disableTransitions: true,
+                                styleObj: API.tagStyle.get(),
+                                emits: {
+                                  close: (evt) => {
+                                    API.deleteTag(evt, item);
                                   },
-                                  slot: new Span({
-                                    class: nsSelect.e('tags-text'),
-                                    slot: isFunction(props.slots?.label)
-                                      ? props.slots.label(
-                                          item.currentLabel,
-                                          item.vlaue
-                                        )
-                                      : item.currentLabel,
-                                  }),
+                                },
+                                slot: new Span({
+                                  class: nsSelect.e('tags-text'),
+                                  slot:
+                                    props.slots?.label?.(
+                                      item.currentLabel,
+                                      item.value
+                                    ) ?? item.currentLabel,
                                 }),
                               }),
-                          }),
+                            }),
                         }),
-                      },
-                    }),
-                  ],
-                }),
+                        new TdTooltip({
+                          vIf:
+                            props.collapseTags &&
+                            states.selected.length > props.maxCollapseTags!,
+                          refEl: API.tagTooltipRef,
+                          disabled:
+                            API.dropdownMenuVisible || !props.collapseTagsTooltip,
+                          fallbackPlacements: ['bottom', 'top', 'right', 'left'],
+                          effect: props.effect,
+                          placement: 'bottom',
+                          teleported: props.teleported,
+                          slots: {
+                            default: new Div({
+                              refDom: API.collapseItemRef,
+                              class: nsSelect.e('selected-item'),
+                              slot: new TdTag({
+                                closable: false,
+                                size: API.collapseTagSize.get(),
+                                type: props.tagType,
+                                effect: props.tagEffect,
+                                disableTransitions: true,
+                                styleObj: API.collapseTagStyle,
+                                slot: new Span({
+                                  class: nsSelect.e('tags-text'),
+                                  slot: `+${states.selected.length - props.maxCollapseTags!}`,
+                                }),
+                              }),
+                            }),
+                            content: new Div({
+                              refDom: API.tagMenuRef,
+                              class: nsSelect.e('selection'),
+                              slot: new For({
+                                data: API.collapseTagList,
+                                getter: (item: any) =>
+                                  new Div({
+                                    // key: API.getValueKey(item),
+                                    class: nsSelect.e('selected-item'),
+                                    slot: new TdTag({
+                                      class: 'in-tooltip',
+                                      closable:
+                                        !API.selectDisabled && !item.isDisabled,
+                                      size: API.collapseTagSize.get(),
+                                      type: props.tagType,
+                                      effect: props.tagEffect,
+                                      disableTransitions: true,
+                                      emits: {
+                                        close: (evt) => {
+                                          API.deleteTag(evt, item);
+                                        },
+                                      },
+                                      slot: new Span({
+                                        class: nsSelect.e('tags-text'),
+                                        slot: isFunction(props.slots?.label)
+                                          ? props.slots?.label(
+                                              item.currentLabel,
+                                              item.vlaue
+                                            )
+                                          : item.currentLabel,
+                                      }),
+                                    }),
+                                  }),
+                              }),
+                            }),
+                          },
+                        }),
+                      ],
+                    })
+                  : undefined,
                 new Div({
                   class: [
                     nsSelect.e('selected-item'),
@@ -257,23 +270,19 @@ export class TdSelect extends TypeDiv implements ITdSelect {
                   slot: [
                     new Input({
                       refDom: API.inputRef,
-                      vModel: API.states.inputValue,
+                      vModel: states.inputValue,
                       attrObj: {
                         id: API.inputId.get(),
                         type: 'text',
                         name: props.name,
-                        class: [
-                          nsSelect.e('input'),
-                          nsSelect.is(API.selectSize.get()),
-                        ],
+                        class: [nsSelect.e('input'), nsSelect.is(API.selectSize.get())],
                         disabled: API.selectDisabled,
                         autocomplete: props.autocomplete,
                         tabindex: props.tabindex,
                         role: 'combobox',
                         readonly: !props.filterable,
                         spellcheck: false,
-                        ariaActivedescendant:
-                          (API.hoverOption.get() as any)?.id || '',
+                        ariaActivedescendant: (API.hoverOption.get() as any)?.id || '',
                         ariaControls: API.contentId.get(),
                         ariaExpanded: API.dropdownMenuVisible,
                         ariaLabel: props.ariaLabel,
@@ -325,7 +334,7 @@ export class TdSelect extends TypeDiv implements ITdSelect {
                       attrObj: {
                         ariaHidden: true,
                       },
-                      slot: API.states.inputValue,
+                      slot: states.inputValue,
                     }),
                   ],
                 }),
@@ -336,22 +345,29 @@ export class TdSelect extends TypeDiv implements ITdSelect {
                     nsSelect.e('placeholder'),
                     nsSelect.is(
                       'transparent',
-                      !API.hasModelValue ||
-                        (API.expanded.get() && !API.states.inputValue.get())
+                      !API.hasModelValue.get() ||
+                        (API.expanded.get() && !states.inputValue.get())
                     ),
                   ]),
-                  slot: API.hasModelValue
-                    ? props.slots?.label
-                      ? props.slots?.label?.(
-                          API.currentPlaceholder.get(),
-                          props.modelValue as string
-                        )
-                      : new Span({
-                          slot: API.currentPlaceholder,
-                        })
-                    : new Span({
-                        slot: API.currentPlaceholder,
-                      }),
+                  slot: computed(() => {
+                    console.warn('API.hasModelValue.get() is ', API.hasModelValue.get());
+                    if (API.hasModelValue.get()) {
+                      if (props.slots?.label) {
+                        return props.slots?.label?.(
+                          unref(API.currentPlaceholder),
+                          modelValue.get()
+                        );
+                      } else {
+                        return new Span({
+                          slot: API.currentPlaceholder.get(),
+                        });
+                      }
+                    } else {
+                      return new Span({
+                        slot: API.currentPlaceholder.get(),
+                      });
+                    }
+                  }),
                 }),
               ],
             }),
@@ -368,14 +384,19 @@ export class TdSelect extends TypeDiv implements ITdSelect {
                     nsSelect.e('icon'),
                     API.iconReverse,
                   ],
-                  slot: API.iconComponent.get() && new (API.iconComponent.get() as any)(),
+                  slot:
+                    API.iconComponent.get() &&
+                    new (API.iconComponent.get() as any)(),
                 }),
                 new TdIcon({
-                  vIf: computed(() => API.showClose.get() && props.clearIcon),
+                  vIf: computed(() => {
+                    console.warn('API.showClose.get() is ', API.showClose.get())
+                    return API.showClose.get() && props.clearIcon;
+                  }),
                   class: [
                     nsSelect.e('caret'),
                     nsSelect.e('icon'),
-                    API.iconReverse,
+                    nsSelect.e('clear'),
                   ],
                   slot: new (props.clearIcon as any)(),
                   events: {
@@ -392,10 +413,7 @@ export class TdSelect extends TypeDiv implements ITdSelect {
                   class: [
                     nsInput.e('icon'),
                     nsInput.e('validateIcon'),
-                    nsInput.is(
-                      'loading',
-                      API.validateState.get() === 'validating'
-                    ),
+                    nsInput.is('loading', API.validateState.get() === 'validating'),
                   ],
                   slot:
                     API.validateIcon.get() &&
@@ -406,7 +424,7 @@ export class TdSelect extends TypeDiv implements ITdSelect {
           ],
         }),
         slots: {
-          content: new TdSelectDropDown({
+          content: new TdSelectDropdown({
             refDom: API.menuRef,
             slot: [
               new Div({
@@ -418,18 +436,26 @@ export class TdSelect extends TypeDiv implements ITdSelect {
                 },
               }),
               new TdScrollbar({
-                // vShow: computed(
-                //   () => API.states.options.size > 0 && !unref(props.loading) // todo
-                // ),
-                refEl: API.scrollbarRef as Computed<TdScrollbar>,
+                vShow: computed(
+                  () => {
+                    // console.error('API.states.options.get().size > 0 && !unref(props.loading) is ',
+                    //   states.options.get().size);
+                    return (
+                      states.options.get().size > 0 && !unref(props.loading)
+                    );
+                  } // todo
+                ),
+                refEl: API.scrollbarRef,
                 tag: 'ul',
                 wrapClass: nsSelect.be('dropdown', 'wrap'),
                 viewClass: nsSelect.be('dropdown', 'list'),
                 class: [
-                  nsSelect.is('empty', API.filteredOptionsCount.get() === 0),
+                  computed(() =>
+                    nsSelect.is('empty', API.filteredOptionsCount.get() === 0)
+                  ),
                 ],
                 attrObj: {
-                  id: unref(API.contentId),
+                  id: API.contentId,
                   role: 'listbox',
                   ariaLabel: props.ariaLabel,
                   ariaOrientation: 'vertical',
@@ -440,29 +466,30 @@ export class TdSelect extends TypeDiv implements ITdSelect {
                 slot: [
                   new TdOption({
                     vIf: API.showNewOption,
-                    value: API.states.inputValue,
+                    value: states.inputValue, // 这里的value是会变的，是选中的值
                     created: true,
                   }),
-                  new TdOptions({ // todo
-                    slot: props.slot
-                  })
+                  new TdOptions({
+                    // todo
+                    slot: props.slot, // 这里面的 TdOption的value的值是不变的。
+                  }),
                 ],
               }),
-              (props.slots?.loading && props.loading)
+              props.slots?.loading && unref(props.loading)
                 ? new Div({
-                  class: nsSelect.be('dropdown', 'loading'),
-                  slot: props.slots?.loading,
-                })
-                : ((props.loading || API.filteredOptionsCount.get() === 0))
-                  ? new Div({
-                      class: nsSelect.be('dropdown', 'empty'),
-                      slot:
-                        props.slots?.empty ??
-                        new Span({
-                          slot: API.emptyText,
-                        }),
-                    })
-                  : undefined,
+                    class: nsSelect.be('dropdown', 'loading'),
+                    slot: props.slots?.loading,
+                  })
+                : unref(props.loading) || API.filteredOptionsCount.get() === 0
+                ? new Div({
+                    class: nsSelect.be('dropdown', 'empty'),
+                    slot:
+                      props.slots?.empty ??
+                      new Span({
+                        slot: API.emptyText,
+                      }),
+                  })
+                : undefined,
               new Div({
                 vIf: props.slots?.footer,
                 class: nsSelect.be('dropdown', 'footer'),

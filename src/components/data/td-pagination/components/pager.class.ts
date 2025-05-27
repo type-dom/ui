@@ -40,43 +40,43 @@ export class PaginationPager extends TypeUL {
     const quickNextHover = signal(false);
     const quickPrevFocus = signal(false);
     const quickNextFocus = signal(false);
-    const pagers = computed(() => {
-      const pagerCount = props.pagerCount!;
-      const halfPagerCount = (pagerCount! - 1) / 2;
-      const currentPage = Number(props.currentPage);
-      const pageCount = Number(props.pageCount);
-      let showPrevMore = false;
-      let showNextMore = false;
-      if (pageCount > pagerCount) {
-        if (currentPage > pagerCount - halfPagerCount) {
-          showPrevMore = true;
-        }
-        if (currentPage < pageCount - halfPagerCount) {
-          showNextMore = true;
-        }
-      }
-      const array: number[] = [];
-      if (showPrevMore && !showNextMore) {
-        const startPage = pageCount - (pagerCount - 2);
-        for (let i = startPage; i < pageCount; i++) {
-          array.push(i);
-        }
-      } else if (!showPrevMore && showNextMore) {
-        for (let i = 2; i < pagerCount; i++) {
-          array.push(i);
-        }
-      } else if (showPrevMore && showNextMore) {
-        const offset = Math.floor(pagerCount / 2) - 1;
-        for (let i = currentPage - offset; i <= currentPage + offset; i++) {
-          array.push(i);
-        }
-      } else {
-        for (let i = 2; i < pageCount; i++) {
-          array.push(i);
-        }
-      }
-      return array;
-    });
+    // const pagers = computed(() => {
+    //   const pagerCount = props.pagerCount!;
+    //   const halfPagerCount = (pagerCount! - 1) / 2;
+    //   const currentPage = Number(props.currentPage);
+    //   const pageCount = Number(props.pageCount);
+    //   let showPrevMore = false;
+    //   let showNextMore = false;
+    //   if (pageCount > pagerCount) {
+    //     if (currentPage > pagerCount - halfPagerCount) {
+    //       showPrevMore = true;
+    //     }
+    //     if (currentPage < pageCount - halfPagerCount) {
+    //       showNextMore = true;
+    //     }
+    //   }
+    //   const array: number[] = [];
+    //   if (showPrevMore && !showNextMore) {
+    //     const startPage = pageCount - (pagerCount - 2);
+    //     for (let i = startPage; i < pageCount; i++) {
+    //       array.push(i);
+    //     }
+    //   } else if (!showPrevMore && showNextMore) {
+    //     for (let i = 2; i < pagerCount; i++) {
+    //       array.push(i);
+    //     }
+    //   } else if (showPrevMore && showNextMore) {
+    //     const offset = Math.floor(pagerCount / 2) - 1;
+    //     for (let i = currentPage - offset; i <= currentPage + offset; i++) {
+    //       array.push(i);
+    //     }
+    //   } else {
+    //     for (let i = 2; i < pageCount; i++) {
+    //       array.push(i);
+    //     }
+    //   }
+    //   return array;
+    // });
 
     const prevMoreKls = computed(() => [
       'more',
@@ -84,12 +84,12 @@ export class PaginationPager extends TypeUL {
       nsIcon.b(),
       nsPager.is('disabled', props.disabled),
     ]);
-    const nextMoreKls = computed(() => [
-      'more',
-      'btn-quicknext',
-      nsIcon.b(),
-      nsPager.is('disabled', props.disabled),
-    ]);
+    // const nextMoreKls = computed(() => [
+    //   'more',
+    //   'btn-quicknext',
+    //   nsIcon.b(),
+    //   nsPager.is('disabled', props.disabled),
+    // ]);
 
     const tabindex = computed(() => (props.disabled ? -1 : 0));
     effect(() => {

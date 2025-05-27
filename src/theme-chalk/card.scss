@@ -26,7 +26,8 @@
   }
 
   @include e(header) {
-    padding: calc(#{getCssVar('card', 'padding')} - 2px) getCssVar('card', 'padding');
+    padding: calc(#{getCssVar('card', 'padding')} - 2px)
+      getCssVar('card', 'padding');
     border-bottom: 1px solid getCssVar('card', 'border-color');
     box-sizing: border-box;
   }
@@ -36,7 +37,8 @@
   }
 
   @include e(footer) {
-    padding: calc(#{getCssVar('card', 'padding')} - 2px) getCssVar('card', 'padding');
+    padding: calc(#{getCssVar('card', 'padding')} - 2px)
+      getCssVar('card', 'padding');
     border-top: 1px solid getCssVar('card', 'border-color');
     box-sizing: border-box;
   }

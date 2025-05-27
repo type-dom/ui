@@ -2,15 +2,15 @@ import { Code, TypeDivProps, Pre, TypeDiv } from '@type-dom/framework';
 import { Signal } from '@type-dom/signals';
 import { $fillColor } from '../../../styles';
 
-export interface IExampleSourceWrapperConfig extends TypeDivProps {
+export interface ExampleSourceWrapperProps extends TypeDivProps {
   sourceWrapper: string | Signal<string>;
 }
 
 export class ExampleSourceWrapper extends TypeDiv {
   className: 'ExampleSourceWrapper';
-  override props: IExampleSourceWrapperConfig;
+  override props: ExampleSourceWrapperProps;
 
-  constructor(params: IExampleSourceWrapperConfig) {
+  constructor(params: ExampleSourceWrapperProps) {
     super();
     this.className = 'ExampleSourceWrapper';
     this.attr.addName('example-source-wrapper');

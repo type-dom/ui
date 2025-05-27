@@ -173,7 +173,7 @@ export class TdInputNumber extends TypeDiv implements TdInputNumber {
       if (stepStrictly) {
         newVal = toPrecision(Math.round(newVal! / step!) * step!, precision)
         if (newVal !== value) {
-          update && emit(UPDATE_MODEL_EVENT, newVal)
+          if (update) emit(UPDATE_MODEL_EVENT, newVal)
         }
       }
       if (!isUndefined(precision)) {
@@ -181,7 +181,7 @@ export class TdInputNumber extends TypeDiv implements TdInputNumber {
       }
       if (newVal! > max! || newVal! < min!) {
         newVal = newVal! > max! ? max : min
-        update && emit(UPDATE_MODEL_EVENT, newVal)
+        if (update) emit(UPDATE_MODEL_EVENT, newVal)
       }
       return newVal
     }

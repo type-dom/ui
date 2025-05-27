@@ -1,5 +1,5 @@
 import { Property } from '@type-dom/css-type';
-import { ITypeDiv, TypeDivProps } from '@type-dom/framework';
+import { ClassValue, ITypeDiv, TypeDivProps } from '@type-dom/framework';
 
 export interface ITdOverlay extends ITypeDiv {
   className: 'TdOverlay';
@@ -8,10 +8,10 @@ export interface ITdOverlay extends ITypeDiv {
 export interface OverlayProps extends TypeDivProps {
   mask?: boolean; // default: true,
   customMaskEvent?: boolean; // default: false,
-  overlayClass?:
-    | string
-    | (string | undefined)[]
-    | Record<string, boolean | unknown>;
+  overlayClass?: ClassValue;
+    // | string
+    // | (string | undefined)[]
+    // | Record<string, boolean | unknown>;
   //   type: definePropType<string | string[] | Record<string, boolean>>([ String, Array, Object ]),
   // },
   zIndex?: Property.ZIndex;

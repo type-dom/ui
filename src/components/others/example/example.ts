@@ -7,7 +7,7 @@ import { ExampleSourceWrapper } from './example-source-wrapper';
 import { OpBtns } from './op-btns';
 import { ExampleFloatControl } from './example-float-control';
 
-export interface IExampleConfig extends TypeDivProps {
+export interface ExampleProps extends TypeDivProps {
   showcase: TypeElement[];
   sourceWrapper: string | Signal<string>; // | XProxy<IJsonData>;
 }
@@ -18,9 +18,9 @@ export class Example extends TypeDiv {
   sourceWrapper: ExampleSourceWrapper;
   floatControl: ExampleFloatControl;
   // override params: IExampleConfig;
-  override props: IExampleConfig;
+  override props: ExampleProps;
 
-  constructor(params: IExampleConfig) {
+  constructor(params: ExampleProps) {
     super();
     this.className = 'Example';
     this.attr.addName('example');
@@ -30,11 +30,11 @@ export class Example extends TypeDiv {
       // border-radius: var(--el-border-radius-base);
       borderRadius: $borderRadius.base,
     });
-    const exampleShowcase = new ExampleShowcase({
+
+    this.addChild(new ExampleShowcase({
       parent: this,
-    });
-    exampleShowcase.addChildren(...params.showcase);
-    this.addChild(exampleShowcase);
+      slot: params.showcase,
+    }));
     this.addChild(
       new TdDivider({
         styleObj: {
@@ -42,10 +42,8 @@ export class Example extends TypeDiv {
         },
       })
     );
-    const opBtns = new OpBtns({
-      parent: this,
-    });
-    this.addChild(opBtns);
+
+    this.addChild(new OpBtns());
     this.sourceWrapper = new ExampleSourceWrapper({
       parent: this,
       styleObj: {

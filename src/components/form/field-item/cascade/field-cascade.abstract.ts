@@ -20,7 +20,7 @@ export abstract class PropertyCascade extends FieldItem {
   secondStageSelectObj: FieldSelect;
 
   cascadeConfig?: IOptionSetting;
-  override settings?: IOptionSetting;
+  override settings?: IOptionSetting = undefined;
 
   abstract reset(value?: string): void;
 

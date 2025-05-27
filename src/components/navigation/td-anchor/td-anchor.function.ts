@@ -5,22 +5,22 @@ import {
   getOffsetTopDistance,
   getScrollElement,
 } from '@type-dom/utils';
-import { AnchorLinkState, AnchorProps } from './td-anchor.interface';
+import { AnchorProps } from './td-anchor.interface';
 
 const currentAnchor = signal<string | null>(null);
 const containerEl = signal<HTMLElement | Window | null>(null); // ref<HTMLElement | Window>()
-const links: Record<string, HTMLElement> = {};
+// const links: Record<string, HTMLElement> = {};
 
-let isScrolling = false;
+// let isScrolling = false;
 const currentScrollTop = 0;
 
-const addLink = (state: AnchorLinkState) => {
-  links[state.href] = state.el;
-};
-
-const removeLink = (href: string) => {
-  delete links[href];
-};
+// const addLink = (state: AnchorLinkState) => {
+//   links[state.href] = state.el;
+// };
+//
+// const removeLink = (href: string) => {
+//   delete links[href];
+// };
 
 const setCurrentAnchor = (href: string) => {
   const activeHref = currentAnchor.get();
@@ -37,7 +37,7 @@ const scrollToAnchor = (href: string, props?: AnchorProps) => {
   const target = getElement(href);
   if (!target) return;
   if (clearAnimate) clearAnimate();
-  isScrolling = true;
+  // isScrolling = true;
   const scrollEle = getScrollElement(target, containerEl.get()!);
   const distance = getOffsetTopDistance(target, scrollEle);
   const max = scrollEle.scrollHeight - scrollEle.clientHeight;
@@ -50,7 +50,7 @@ const scrollToAnchor = (href: string, props?: AnchorProps) => {
     () => {
       // make sure it is executed after throttleByRaf's handleScroll
       setTimeout(() => {
-        isScrolling = false;
+        // isScrolling = false;
       }, 20);
     }
   );
@@ -89,16 +89,16 @@ export const scrollTo = (href?: string, config?: AnchorProps) => {
 //       href
 //     });
 //   }
-//   anchorTopList.sort((prev, next) => prev.top - next.top);
+//   anchorTopList.sort((prev, preview) => prev.top - preview.top);
 //
 //   for (let i = 0; i < anchorTopList.length; i++) {
 //     const item = anchorTopList[i];
-//     const next = anchorTopList[i + 1];
+//     const preview = anchorTopList[i + 1];
 //
 //     if (i === 0 && scrollTop === 0) {
 //       return '';
 //     }
-//     if (item.top <= scrollTop && (!next || next.top > scrollTop)) {
+//     if (item.top <= scrollTop && (!preview || preview.top > scrollTop)) {
 //       return item.href;
 //     }
 //   }

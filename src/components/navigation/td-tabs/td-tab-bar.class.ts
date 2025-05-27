@@ -11,7 +11,7 @@ import {
 } from '@type-dom/framework';
 import { ITdTabBar, TabBarProps } from './td-tab-bar.interface';
 
-import { TdTabs } from './td-tabs.class';
+// import { TdTabs } from './td-tabs.class';
 import { Signal, signal, watch } from '@type-dom/signals';
 import { tabsRootContextKey } from './constants';
 import { useNamespace } from '../../../hooks/use-namespace';
@@ -20,7 +20,7 @@ export class TdTabBar extends TypeDiv implements ITdTabBar {
   className: 'TdTabBar';
   override props: TabBarProps;
   ref?: Signal<HTMLElement | undefined>;
-  updateTabBar?: () => void;
+  update?: () => void;
 
   constructor(params: TabBarProps) {
     super();
@@ -85,7 +85,7 @@ export class TdTabBar extends TypeDiv implements ITdTabBar {
       };
     };
 
-    const updateTabBar = () => barStyle.set(getBarStyle());
+    const update = () => barStyle.set(getBarStyle());
 
     const saveObserver = [] as ReturnType<typeof useResizeObserver>[];
     const observerTabs = () => {
@@ -99,7 +99,7 @@ export class TdTabBar extends TypeDiv implements ITdTabBar {
         if (key.startsWith('tab-')) {
           const _el = list[key];
           if (_el) {
-            saveObserver.push(useResizeObserver(_el, updateTabBar));
+            saveObserver.push(useResizeObserver(_el, update));
           }
         }
       }
@@ -109,13 +109,13 @@ export class TdTabBar extends TypeDiv implements ITdTabBar {
       () => props.tabs,
       async () => {
         await nextTick();
-        updateTabBar();
+        update();
 
         observerTabs();
       },
       { immediate: true }
     );
-    const barObserever = useResizeObserver(barRef, () => updateTabBar());
+    const barObserever = useResizeObserver(barRef, () => update());
 
     onBeforeUnmount(() => {
       saveObserver.forEach((observer) => observer.stop());
@@ -127,7 +127,7 @@ export class TdTabBar extends TypeDiv implements ITdTabBar {
       /** @description tab root html element */
       ref: barRef,
       /** @description method to manually update tab bar style */
-      updateTabBar,
+      update,
     });
 
     this.assignProps({

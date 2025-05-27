@@ -1,28 +1,6 @@
-// import {
-//   computed,
-//   nextTick,
-//   onMounted,
-//   reactive,
-//   ref,
-//   watch,
-//   watchEffect,
-// } from 'vue'
-
-import {
-  Ref,
-  Computed,
-  signal,
-  computed,
-  watch,
-  effect, unref
-} from '@type-dom/signals';
-import { nextTick, onMounted, TypeElement, useResizeObserver } from '@type-dom/framework';
-import {
-  findLastIndex,
-  get,
-  isEqual,
-  debounce as lodashDebounce,
-} from 'lodash';
+import { findLastIndex, get, isEqual, debounce as lodashDebounce } from 'lodash-es';
+import { ToRefs, signal, computed,watch, effect, unref, Signal } from '@type-dom/signals';
+import { nextTick, onMounted, useResizeObserver } from '@type-dom/framework';
 import {
   isClient,
   isIOS,
@@ -37,14 +15,9 @@ import {
   scrollIntoView,
   AnyFn
 } from '@type-dom/utils';
-import { IStyle } from '@type-dom/css-type';
 import { ValidateComponentsMap } from '@type-dom/svgs';
 
-import {
-  CHANGE_EVENT,
-  EVENT_CODE,
-  UPDATE_MODEL_EVENT,
-} from '../../../constants';
+import { CHANGE_EVENT, EVENT_CODE, UPDATE_MODEL_EVENT, } from '../../../constants';
 import {
   EmptyValuesContext,
   useComposition,
@@ -53,118 +26,33 @@ import {
   useId,
   useLocale,
   useNamespace,
-  UseNamespaceReturn,
 } from '../../../hooks';
 import { TdTooltip } from '../../feedback/td-tooltip/td-tooltip.class';
 import { TdScrollbar } from '../../basic/td-scrollbar/td-scrollbar.class';
 import { useFormItem, useFormItemInputId, useFormSize } from '../td-form';
 import { TdOption } from '../td-option/td-option.class';
-import { SelectOptionProxy, TdSelectProps } from './td-select.interface';
-// import type { ISelectProps, SelectOptionProxy } from './token';
+import { IUseFormItemInputCommonProps } from '../td-form/hooks/use-form-item';
+import { OptionBasic, TdOptionProps } from '../td-option/td-option.interface';
+import { SelectStates, TdSelectProps } from './td-select.interface';
 
-type useSelectType = (
-  props: TdSelectProps,
-  emit: any
-) => {
-  inputId: Ref<string | undefined>;
-  contentId: Ref<string | undefined>;
-  nsSelect: UseNamespaceReturn;
-  nsInput: UseNamespaceReturn;
-  states: Record<string, any>;
-  isFocused: Ref<boolean>;
-  expanded: Ref<boolean>;
-  optionsArray: Computed<any[]>;
-  hoverOption: Ref<unknown>;
-  selectSize: Computed<'' | 'default' | 'small' | 'large'>;
-  filteredOptionsCount: Computed<number>;
-  resetCalculatorWidth: () => void;
-  updateTooltip: () => void;
-  updateTagTooltip: () => void;
-  debouncedOnInputChange: () => void; // DebouncedFunc<() => void>;
-  onInput: (event?: Event) => void;
-  deletePrevTag: (event?: Event) => void;
-  deleteTag: (event?: Event, tag?: any) => void;
-  deleteSelected: (event?: Event) => void;
-  handleOptionSelect: (option: any) => void;
-  scrollToOption: (option: any) => void;
-  hasModelValue: Computed<boolean>;
-  shouldShowPlaceholder: Computed<boolean>;
-  currentPlaceholder: Computed<string>;
-  mouseEnterEventName: Ref<string | null>;
-  needStatusIcon: Computed<boolean>;
-  showClose: Computed<boolean>;
-  iconComponent: Computed<string>;
-  iconReverse: Computed<boolean>;
-  validateState: Computed<string>;
-  popupScroll: (data: { scrollTop: number; scrollLeft: number }) => void;
-
-  validateIcon: Computed<unknown>;
-  showNewOption: Computed<boolean>;
-  updateOptions: () => void;
-  collapseTagSize: Computed<'default' | 'small'>;
-  setSelected: () => void;
-  selectDisabled: Computed<boolean>;
-  emptyText: Computed<string | null>;
-  handleCompositionStart: (e?: Event) => void;
-  handleCompositionUpdate: (e?: Event) => void;
-  handleCompositionEnd: (e?: Event) => void;
-  onOptionCreate: (vm: TdOption) => void;
-  onOptionDestroy: (key: any, vm: TdOption) => void;
-  handleMenuEnter: () => void;
-  focus: () => void;
-  blur: () => void;
-  handleClearClick: (event?: Event) => void;
-  handleClickOutside: (event?: Event) => void;
-  handleEsc: () => void;
-  toggleMenu: () => void;
-  selectOption: () => void;
-  getValueKey: (item: any) => any;
-  navigateOptions: (direction: string) => void;
-  dropdownMenuVisible: Computed<boolean>;
-  showTagList: Computed<unknown[]>;
-  collapseTagList: Computed<unknown[]>;
-  tagStyle: Computed<unknown>;
-  collapseTagStyle: Computed<IStyle>;
-  inputStyle: Computed<unknown>;
-  popperRef: Computed<unknown>;
-  inputRef: Ref<HTMLInputElement | undefined>;
-  tooltipRef: Ref<TdTooltip | undefined>;
-  tagTooltipRef: Ref<TdTooltip | undefined>;
-  calculatorRef: Ref<HTMLElement>;
-  prefixRef: Ref<HTMLElement>;
-  suffixRef: Ref<HTMLElement>;
-  selectRef: Ref<HTMLElement>;
-  wrapperRef: Ref<HTMLElement>;
-  selectionRef: Ref<HTMLElement>;
-  scrollbarRef: Ref<
-    | {
-        handleScroll: () => void;
-      }
-    | undefined
-  >;
-  menuRef: Ref<HTMLElement>;
-  tagMenuRef: Ref<HTMLElement>;
-  collapseItemRef: Ref<HTMLElement>;
-};
-
-export const useSelect = (props: TdSelectProps, emit: AnyFn) => {
+export const useSelect = (props: ToRefs<TdSelectProps>, emit: AnyFn) => {
   const { t } = useLocale();
   const contentId = useId();
   const nsSelect = useNamespace('select');
   const nsInput = useNamespace('input');
 
-  const states = {
+  const states = { // todo  reactive({
     inputValue: signal(''),
-    options: new Map(),
-    cachedOptions: new Map(),
-    optionValues: [] as any[], // sorted value of options
-    selected: [] as any[],
+    options: signal(new Map<string | number | boolean | object | undefined, TdOption>()),
+    cachedOptions: new Map<string | number | boolean | object | undefined, TdOption>(),
+    optionValues: [] as TdOptionProps[], // sorted value of options
+    selected: [] as OptionBasic[],
     selectionWidth: 0,
     collapseItemWidth: 0 as number | undefined,
-    selectedLabel: '',
+    selectedLabel: signal('') as Signal<string | number | boolean >,
     hoveringIndex: -1,
     previousQuery: null as string | null,
-    inputHovering: false,
+    inputHovering: signal(false),
     menuVisibleOnFocus: false,
     isBeforeHide: false,
   };
@@ -193,10 +81,10 @@ export const useSelect = (props: TdSelectProps, emit: AnyFn) => {
 
   const { wrapperRef, isFocused, handleBlur } = useFocusController(inputRef, {
     beforeFocus() {
-      return unref(selectDisabled.get());
+      return selectDisabled.get();
     },
     afterFocus() {
-      if (props.automaticDropdown && !expanded.get()) {
+      if (props.automaticDropdown?.get() && !expanded.get()) {
         expanded.set(true);
         states.menuVisibleOnFocus = true;
       }
@@ -218,66 +106,69 @@ export const useSelect = (props: TdSelectProps, emit: AnyFn) => {
   const hoverOption = signal();
 
   const { form, formItem } = useFormItem();
-  const { inputId } = useFormItemInputId(props, {
+  const { inputId } = useFormItemInputId(props as unknown as Partial<IUseFormItemInputCommonProps>, {
     formItemContext: formItem,
   });
-  const { valueOnClear, isEmptyValue } = useEmptyValues(props as EmptyValuesContext);
+  const { valueOnClear, isEmptyValue } = useEmptyValues(props as unknown as EmptyValuesContext);
 
-  const selectDisabled = computed(() => props.disabled || unref(form?.disabled));
+  const selectDisabled = computed(() => unref(props.disabled) || unref(form?.disabled));
 
   const hasModelValue = computed(() => {
-    return isArray(props.modelValue)
-      ? props.modelValue.length > 0
-      : !isEmptyValue(props.modelValue);
+    // console.warn('hasModelValue computed . ');
+    const modelValue = unref(props.modelValue);
+    return isArray(modelValue)
+      ? modelValue.length > 0
+      : !isEmptyValue(modelValue);
   });
 
   const needStatusIcon = computed(() => form?.statusIcon ?? false);
 
   const showClose = computed(() => {
+    console.warn('showClose computed . ');
     return (
-      props.clearable &&
+      props.clearable?.get() &&
       !selectDisabled.get() &&
-      states.inputHovering &&
+      states.inputHovering.get() &&
       hasModelValue.get()
     );
   });
   const iconComponent = computed(() =>
-    props.remote && props.filterable && !props.remoteShowSuffix
+    unref(props.remote) && unref(props.filterable) && !unref(props.remoteShowSuffix)
       ? ''
-      : props.suffixIcon
+      : unref(props.suffixIcon)
   );
   const iconReverse = computed(() =>
     nsSelect.is('reverse', iconComponent.get() && expanded.get())
   );
 
-  const validateState = computed(() => formItem?.validateState || '');
+  const validateState = computed(() => unref(formItem?.validateState) || '');
   const validateIcon = computed(
     () => ValidateComponentsMap[validateState.get() as keyof typeof ValidateComponentsMap]
   );
 
-  const debounce = computed(() => (props.remote ? 300 : 0));
+  const debounce = computed(() => (unref(props.remote) ? 300 : 0));
 
   const isRemoteSearchEmpty = computed(
-    () => props.remote && !states.inputValue.get() && states.options.size === 0
+    () => unref(props.remote) && !states.inputValue.get() && states.options.get().size === 0
   );
 
   const emptyText = computed(() => {
-    if (props.loading) {
-      return props.loadingText || t('el.select.loading');
+    if (unref(props.loading)) {
+      return unref(props.loadingText) || t('el.select.loading');
     } else {
       if (
-        props.filterable &&
+        unref(props.filterable) &&
         states.inputValue.get() &&
-        states.options.size > 0 &&
+        states.options.get().size > 0 &&
         filteredOptionsCount.get() === 0
       ) {
-        return props.noMatchText || t('el.select.noMatch');
+        return unref(props.noMatchText) || t('el.select.noMatch');
       }
-      if (states.options.size === 0) {
-        return props.noDataText || t('el.select.noData');
+      if (states.options.get().size === 0) {
+        return unref(props.noDataText) || t('el.select.noData');
       }
     }
-    return null;
+    return undefined;
   });
 
   const filteredOptionsCount = computed(
@@ -285,10 +176,10 @@ export const useSelect = (props: TdSelectProps, emit: AnyFn) => {
   );
 
   const optionsArray = computed(() => {
-    const list = Array.from(states.options.values());
-    const newList: any[] = [];
+    const list = Array.from(states.options.get().values());
+    const newList: TdOption[] = [];
     states.optionValues.forEach((item) => {
-      const index = list.findIndex((i) => i.value === item);
+      const index = list.findIndex((i) => i.props.value === item.value); // todo  .props.value === item.value edit by me
       if (index > -1) {
         newList.push(list[index]);
       }
@@ -301,27 +192,32 @@ export const useSelect = (props: TdSelectProps, emit: AnyFn) => {
   );
 
   const showNewOption = computed(() => {
-    const hasExistingOption = optionsArray
-      .get()
-      .filter((option) => {
-        return !option.created;
+    // console.warn('showNewOption . optionsArray and states.inputValue is ', optionsArray,  states.inputValue);
+    const hasExistingOption = optionsArray.get()?.filter((option: TdOption) => {
+        // console.warn('showNewOption . option.props.created is ', option.props.created);
+        return !option.props.created;
       })
       .some((option) => {
-        return option.currentLabel === states.inputValue.get();
+        return option.currentLabel?.get() === states.inputValue.get();
       });
+    // console.warn('showNewOption . hasExistingOption is ', hasExistingOption);
     return (
-      props.filterable &&
-      props.allowCreate &&
+      unref(props.filterable) &&
+      unref(props.allowCreate) &&
       states.inputValue.get() !== '' &&
       !hasExistingOption
     );
   });
 
   const updateOptions = () => {
-    if (props.filterable && isFunction(props.filterMethod)) return;
-    if (props.filterable && props.remote && isFunction(props.remoteMethod))
+    if (unref(props.filterable) && isFunction(props.filterMethod)) return;
+    if (
+      unref(props.filterable) &&
+      unref(props.remote) &&
+      isFunction(unref(props.remoteMethod))
+    )
       return;
-    optionsArray.get().forEach((option) => {
+    optionsArray.get()?.forEach((option) => {
       option.updateOption?.(states.inputValue.get());
     });
   };
@@ -332,34 +228,42 @@ export const useSelect = (props: TdSelectProps, emit: AnyFn) => {
     ['small'].includes(selectSize.get()) ? 'small' : 'default'
   );
 
-  const dropdownMenuVisible = computed({
-    get() {
+  const dropdownMenuVisible = computed(
+    () => {
+      // console.warn('dropdownMenuVisible . expanded.get() is ',
+      //   expanded.get() && !isRemoteSearchEmpty.get(),
+      //   ' and !isRemoteSearchEmpty.get() is ', !isRemoteSearchEmpty.get());
       return expanded.get() && !isRemoteSearchEmpty.get();
     },
-    set(val: boolean) {
+    (val: boolean) => {
+      // console.warn('dropdownMenuVisible , val is ', val);
       expanded.set(val);
-    },
-  });
+    }
+  );
 
   const shouldShowPlaceholder = computed(() => {
-    if (props.multiple && !isUndefined(props.modelValue)) {
+    if (unref(props.multiple) && !isUndefined(unref(props.modelValue))) {
       return (
-        ensureArray(props.modelValue).length === 0 && !states.inputValue.get()
+        ensureArray(unref(props.modelValue)).length === 0 && !states.inputValue.get()
       );
     }
-    const value = isArray(props.modelValue)
-      ? props.modelValue[0]
-      : props.modelValue;
-    return props.filterable || isUndefined(value)
+    const value = isArray(unref(props.modelValue))
+      ? (unref(props.modelValue) as Array<any>)[0]
+      : unref(props.modelValue);
+    return unref(props.filterable) || isUndefined(value)
       ? !states.inputValue.get()
       : true;
   });
 
   const currentPlaceholder = computed(() => {
-    const _placeholder = props.placeholder ?? t('el.select.placeholder');
-    return props.multiple || !hasModelValue.get()
+    // console.warn('currentPlaceholder . ');
+    const _placeholder = unref(props.placeholder) ?? t('el.select.placeholder');
+    // console.warn('_placeholder is ', _placeholder);
+    const label = states.selectedLabel.get();
+    // console.warn('label is ', label);
+    return unref(props.multiple) || !hasModelValue.get()
       ? _placeholder
-      : states.selectedLabel;
+      : label;
   });
 
   // iOS Safari does not handle click events when a mouseenter event is registered and a DOM-change happens in a child
@@ -368,121 +272,77 @@ export const useSelect = (props: TdSelectProps, emit: AnyFn) => {
   // Github Issue: https://github.com/vuejs/vue/issues/9859
   const mouseEnterEventName = computed(() => (isIOS ? null : 'mouseenter'));
 
-  const setSelected = () => {
-    if (!props.multiple) {
-      const value = isArray(props.modelValue)
-        ? props.modelValue[0]
-        : props.modelValue;
-      const option = getOption(value);
-      states.selectedLabel = option.currentLabel;
-      states.selected = [option];
-      return;
-    } else {
-      states.selectedLabel = '';
-    }
-    const result: any[] = [];
-    if (!isUndefined(props.modelValue)) {
-      ensureArray(props.modelValue).forEach((value) => {
-        result.push(getOption(value));
-      });
-    }
-    states.selected = result;
-  };
-
-  const getOption = (value: any) => {
-    let option;
-    const isObjectValue = isPlainObject(value);
-
-    for (let i = states.cachedOptions.size - 1; i >= 0; i--) {
-      const cachedOption = cachedOptionsArray.get()[i];
-      const isEqualValue = isObjectValue
-        ? get(cachedOption.value, props.valueKey!) === get(value, props.valueKey!)
-        : cachedOption.value === value;
-      if (isEqualValue) {
-        option = {
-          value,
-          currentLabel: cachedOption.currentLabel,
-          get isDisabled() {
-            return cachedOption.isDisabled;
-          },
-        };
-        break;
-      }
-    }
-    if (option) return option;
-    const label = isObjectValue ? value.label : value ?? '';
-    const newOption = {
-      value,
-      currentLabel: label,
-    };
-    return newOption;
-  };
-
-  watch(
-    () => props.modelValue,
-    (val, oldVal) => {
-      if (props.multiple) {
-        if (props.filterable && !props.reserveKeyword) {
-          states.inputValue.set('');
-          handleQueryChange('');
+  onMounted(() => {
+    watch(
+      () => unref(props.modelValue),
+      (val, oldVal) => {
+        // console.warn('watch props.modelValue , val is ', val, ' and oldVal is ', oldVal);
+        if (unref(props.multiple)) {
+          if (unref(props.filterable) && !unref(props.reserveKeyword)) {
+            states.inputValue.set('');
+            handleQueryChange('');
+          }
         }
+        setSelected();
+        if (!isEqual(val, oldVal) && unref(props.validateEvent)) {
+          formItem?.validate('change').catch((err) => debugWarn(err));
+        }
+      },
+      {
+        flush: 'post',
+        deep: true,
       }
-      setSelected();
-      if (!isEqual(val, oldVal) && props.validateEvent) {
-        formItem?.validate('change').catch((err) => debugWarn(err));
+    );
+
+    watch(
+      () => expanded.get(),
+      (val) => {
+        // console.warn('watch expanded.get() , val is ', val);
+        if (val) {
+          handleQueryChange(states.inputValue.get());
+        } else {
+          states.inputValue.set('');
+          states.previousQuery = null;
+          states.isBeforeHide = true;
+        }
+        emit('visible-change', val);
       }
-    },
-    {
-      flush: 'post',
-      deep: true,
-    }
-  );
+    );
+
+    watch(
+      // fix `Array.prototype.push/splice/..` cannot trigger non-deep watcher
+      // https://github.com/vuejs/vue-next/issues/2116
+      () => states.options.get().entries(),
+      () => {
+        // console.error('watch states.options.get().entries(), val is ', val);
+        if (!isClient) return;
+        // tooltipRef.value?.updatePopper?.()
+        setSelected();
+        if (
+          unref(props.defaultFirstOption) &&
+          (unref(props.filterable) || unref(props.remote)) &&
+          filteredOptionsCount.get()
+        ) {
+          checkDefaultFirstOption();
+        }
+      },
+      {
+        flush: 'post',
+      }
+    );
+  })
 
   watch(
-    () => expanded.get(),
-    (val) => {
-      if (val) {
-        handleQueryChange(states.inputValue.get());
-      } else {
-        states.inputValue.set('');
-        states.previousQuery = null;
-        states.isBeforeHide = true;
-      }
-      emit('visible-change', val);
-    }
-  );
-
-  watch(
-    // fix `Array.prototype.push/splice/..` cannot trigger non-deep watcher
-    // https://github.com/vuejs/vue-next/issues/2116
-    () => states.options.entries(),
-    () => {
-      if (!isClient) return;
-      // tooltipRef.value?.updatePopper?.()
-      setSelected();
-      if (
-        props.defaultFirstOption &&
-        (props.filterable || props.remote) &&
-        filteredOptionsCount.get()
-      ) {
-        checkDefaultFirstOption();
-      }
-    },
-    {
-      flush: 'post',
-    }
-  );
-
-  watch(
-    () => states.hoveringIndex,
-    (val) => {
+    () => [states.hoveringIndex, optionsArray.get()],
+    ([val]) => {
+      // console.warn('watch [states.hoveringIndex, optionsArray.get()] , [val] is ', val);
       if (isNumber(val) && val > -1) {
         hoverOption.set(optionsArray.get()[val] || {});
       } else {
         hoverOption.set({});
       }
       optionsArray.get().forEach((option) => {
-        option.hover = hoverOption.get() === option;
+        option.hover?.set(hoverOption.get() === option);
       });
     }
   );
@@ -499,18 +359,18 @@ export const useSelect = (props: TdSelectProps, emit: AnyFn) => {
       return;
     }
     states.previousQuery = val;
-    if (props.filterable && isFunction(props.filterMethod)) {
-      props.filterMethod(val);
+    if (unref(props.filterable) && isFunction(unref(props.filterMethod))) {
+      unref(props.filterMethod)?.(val);
     } else if (
-      props.filterable &&
-      props.remote &&
-      isFunction(props.remoteMethod)
+      unref(props.filterable) &&
+      unref(props.remote) &&
+      isFunction(unref(props.remoteMethod))
     ) {
-      props.remoteMethod(val);
+      unref(props.remoteMethod)?.(val);
     }
     if (
-      props.defaultFirstOption &&
-      (props.filterable || props.remote) &&
+      unref(props.defaultFirstOption) &&
+      (unref(props.filterable) || unref(props.remote)) &&
       filteredOptionsCount.get()
     ) {
       nextTick(checkDefaultFirstOption);
@@ -532,7 +392,7 @@ export const useSelect = (props: TdSelectProps, emit: AnyFn) => {
   const checkDefaultFirstOption = () => {
     const optionsInDropdown = optionsArray
       .get()
-      .filter((n) => n.visible && !n.disabled && !n.states.groupDisabled);
+      .filter((n) => n.visible && !n.props.disabled && !n.states?.groupDisabled);
     const userCreatedOption = optionsInDropdown.find((n) => n.created);
     const firstOriginOption = optionsInDropdown[0];
     const valueList = optionsArray.get().map((item) => item.value);
@@ -540,6 +400,60 @@ export const useSelect = (props: TdSelectProps, emit: AnyFn) => {
       valueList,
       userCreatedOption || firstOriginOption
     );
+  };
+
+  const setSelected = () => {
+    // console.warn('setSelected . ');
+    if (!unref(props.multiple)) {
+      const modelValue = unref(props.modelValue);
+      const value = isArray(modelValue)
+        ? modelValue[0]
+        : modelValue;
+      const option = getOption(value);
+      // console.warn('setSelected . option.currentLabel is ', option.currentLabel);
+      states.selectedLabel.set(unref(option.currentLabel) ?? '');
+      states.selected = [option];
+      return;
+    } else {
+      states.selectedLabel.set('');
+    }
+    const result: SelectStates['selected'] = [];
+    if (!isUndefined(unref(props.modelValue))) {
+      ensureArray(unref(props.modelValue)).forEach((value) => {
+        result.push(getOption(value!));
+      });
+    }
+    states.selected = result;
+  };
+
+  const getOption = (value: string | number | boolean | object) => {
+    // console.warn('getOption . value is ', value);
+    let option: OptionBasic | undefined = undefined;
+    const isObjectValue = isPlainObject(value);
+
+    for (let i = states.cachedOptions.size - 1; i >= 0; i--) {
+      const cachedOption = cachedOptionsArray.get()[i];
+      const isEqualValue = isObjectValue
+        ? get(cachedOption.value, unref(props.valueKey)!) === get(value, unref(props.valueKey)!)
+        : cachedOption?.value === value;
+      if (isEqualValue) {
+        option = {
+          value,
+          currentLabel: cachedOption?.currentLabel,
+          get isDisabled() {
+            return cachedOption.isDisabled;
+          },
+        };
+        break;
+      }
+    }
+    if (option) return option;
+    const label = isObjectValue ? (value as Record<string, any>).label : value ?? '';
+    const newOption = {
+      value,
+      currentLabel: computed(() => label),
+    };
+    return newOption as OptionBasic;
   };
 
   const updateHoveringIndex = () => {
@@ -553,7 +467,9 @@ export const useSelect = (props: TdSelectProps, emit: AnyFn) => {
   };
 
   const resetSelectionWidth = () => {
-    states.selectionWidth = selectionRef.get()!.getBoundingClientRect().width!;
+    states.selectionWidth = Number.parseFloat(
+      window.getComputedStyle(selectionRef.get()!).width
+    )
   };
 
   const resetCollapseItemWidth = () => {
@@ -579,7 +495,7 @@ export const useSelect = (props: TdSelectProps, emit: AnyFn) => {
 
   const onInput = (event?: Event) => {
     states.inputValue.set((event?.target as any).value);
-    if (props.remote) {
+    if (unref(props.remote)) {
       debouncedOnInputChange();
     } else {
       return onInputChange();
@@ -591,22 +507,23 @@ export const useSelect = (props: TdSelectProps, emit: AnyFn) => {
   }, debounce.get());
 
   const emitChange = (val: any) => {
-    if (!isEqual(props.modelValue, val)) {
+    console.warn('emitChange . val is ', val);
+    // if (!isEqual(unref(props.modelValue), val)) {
       emit(CHANGE_EVENT, val);
-    }
+    // }
   };
 
   const getLastNotDisabledIndex = (value: any[]) =>
     findLastIndex(value, (it) => {
       const option = states.cachedOptions.get(it);
-      return option && !option.disabled && !option.states.groupDisabled;
+      return option && !option.props.disabled && !option.states?.groupDisabled;
     });
 
   const deletePrevTag = (e: KeyboardEvent) => {
-    if (!props.multiple) return;
+    if (!unref(props.multiple)) return;
     if (e.code === EVENT_CODE.delete) return;
     if ((e.target as any)?.value.length <= 0) {
-      const value = ensureArray(props.modelValue).slice();
+      const value = ensureArray(unref(props.modelValue)).slice();
       const lastNotDisabledIndex = getLastNotDisabledIndex(value);
       if (lastNotDisabledIndex < 0) return;
       const removeTagValue = value[lastNotDisabledIndex];
@@ -620,7 +537,7 @@ export const useSelect = (props: TdSelectProps, emit: AnyFn) => {
   const deleteTag = (event?: Event, tag?: any) => {
     const index = states.selected.indexOf(tag);
     if (index > -1 && !selectDisabled.get()) {
-      const value = ensureArray(props.modelValue).slice();
+      const value = ensureArray(unref(props.modelValue)).slice();
       value.splice(index, 1);
       emit(UPDATE_MODEL_EVENT, value);
       emitChange(value);
@@ -632,8 +549,8 @@ export const useSelect = (props: TdSelectProps, emit: AnyFn) => {
 
   const deleteSelected = (event?: Event) => {
     event?.stopPropagation();
-    const value: string | any[] = props.multiple ? [] : valueOnClear.get();
-    if (props.multiple) {
+    const value: string | any[] = unref(props.multiple) ? [] : valueOnClear.get();
+    if (unref(props.multiple)) {
       for (const item of states.selected) {
         if (item.isDisabled) (value as Array<any>).push(item.value);
       }
@@ -646,29 +563,32 @@ export const useSelect = (props: TdSelectProps, emit: AnyFn) => {
     focus();
   };
 
-  const handleOptionSelect = (option: any) => {
-    if (props.multiple) {
-      const value = ensureArray(props.modelValue ?? []).slice();
+  const handleOptionSelect = (option: TdOption) => {
+    console.warn('handleOptionSelect . option is ', option);
+    if (unref(props.multiple)) {
+      const value = ensureArray(unref(props.modelValue) ?? []).slice();
       const optionIndex = getValueIndex(value, option);
       if (optionIndex > -1) {
         value.splice(optionIndex, 1);
       } else if (
-        props.multipleLimit! <= 0 ||
-        value.length < props.multipleLimit!
+        unref(props.multipleLimit)! <= 0 ||
+        unref(value.length) < unref(props.multipleLimit)!
       ) {
-        value.push(option.value);
+        value.push(unref(option.props.value!));
       }
       emit(UPDATE_MODEL_EVENT, value);
       emitChange(value);
       if (option.created) {
         handleQueryChange('');
       }
-      if (props.filterable && !props.reserveKeyword) {
+      if (unref(props.filterable) && !unref(props.reserveKeyword)) {
         states.inputValue.set('');
       }
     } else {
-      emit(UPDATE_MODEL_EVENT, option.value);
-      emitChange(option.value);
+      // states.selectedLabel?.set(option.props.label ?? ''); // add by me todo
+      // option.currentLabel?.set(option.props.label);
+      emit(UPDATE_MODEL_EVENT, option.props.value);
+      emitChange(option.props.value);
       expanded.set(false);
     }
     focus();
@@ -683,7 +603,7 @@ export const useSelect = (props: TdSelectProps, emit: AnyFn) => {
     if (!isObject(option.value)) return arr.indexOf(option.value);
 
     return arr.findIndex((item) => {
-      return isEqual(get(item, props.valueKey!), getValueKey(option));
+      return isEqual(get(item, unref(props.valueKey)!), getValueKey(option));
     });
   };
 
@@ -696,7 +616,7 @@ export const useSelect = (props: TdSelectProps, emit: AnyFn) => {
         .get()
         .filter((item) => item.value === targetOption.value);
       if (options.length > 0) {
-        target = options[0].$el;
+        target = options[0].dom;
       }
     }
 
@@ -714,13 +634,17 @@ export const useSelect = (props: TdSelectProps, emit: AnyFn) => {
   };
 
   const onOptionCreate = (vm: TdOption) => {
-    states.options.set(vm.value, vm);
-    states.cachedOptions.set(vm.value, vm);
+    // console.warn('onOptionCreate . ');
+    states.options.get().set(unref(vm.props.value), vm);
+    states.options.set(states.options.get()); // 触发监听
+    states.cachedOptions.set(unref(vm.props.value), vm);
   };
 
   const onOptionDestroy = (key: any, vm: TdOption) => {
-    if (states.options.get(key) === vm) {
-      states.options.delete(key);
+    if (states.options.get().get(key) === vm) {
+      states.options.get().delete(key);
+      // console.warn('onOptionDestroy . then states.options.set')
+      states.options.set(states.options.get()); // 触发监听
     }
   };
 
@@ -731,7 +655,7 @@ export const useSelect = (props: TdSelectProps, emit: AnyFn) => {
   const handleMenuEnter = () => {
     states.isBeforeHide = false;
     nextTick(() => {
-      scrollbarRef.get()?.update();
+      scrollbarRef.get()?.updateDom?.();
       scrollToOption(states.selected);
     });
   };
@@ -775,7 +699,7 @@ export const useSelect = (props: TdSelectProps, emit: AnyFn) => {
 
     // We only set the inputHovering state to true on mouseenter event on iOS devices
     // To keep the state updated we set it here to true
-    if (isIOS) states.inputHovering = true;
+    if (isIOS) states.inputHovering.set(true);
 
     if (states.menuVisibleOnFocus) {
       // controlled by automaticDropdown
@@ -797,7 +721,7 @@ export const useSelect = (props: TdSelectProps, emit: AnyFn) => {
   };
 
   const getValueKey = (item: any) => {
-    return isObject(item.value) ? get(item.value, props.valueKey!) : item.value;
+    return isObject(item.value) ? get(item.value, unref(props.valueKey)!) : item.value;
   };
 
   const optionsAllDisabled = computed(() =>
@@ -808,20 +732,21 @@ export const useSelect = (props: TdSelectProps, emit: AnyFn) => {
   );
 
   const showTagList = computed(() => {
-    if (!props.multiple) {
+    console.warn('showTagList . ');
+    if (!unref(props.multiple)) {
       return [];
     }
-    return props.collapseTags
-      ? states.selected.slice(0, props.maxCollapseTags)
+    return unref(props.collapseTags)
+      ? states.selected.slice(0, unref(props.maxCollapseTags))
       : states.selected;
   });
 
   const collapseTagList = computed(() => {
-    if (!props.multiple) {
+    if (!unref(props.multiple)) {
       return [];
     }
-    return props.collapseTags
-      ? states.selected.slice(props.maxCollapseTags)
+    return unref(props.collapseTags)
+      ? states.selected.slice(unref(props.maxCollapseTags))
       : [];
   });
 
@@ -831,7 +756,7 @@ export const useSelect = (props: TdSelectProps, emit: AnyFn) => {
       return;
     }
     if (
-      states.options.size === 0 ||
+      states.options.get().size === 0 ||
       filteredOptionsCount.get() === 0 ||
       isComposing.get()
     )
@@ -840,13 +765,13 @@ export const useSelect = (props: TdSelectProps, emit: AnyFn) => {
     if (!optionsAllDisabled.get()) {
       if (direction === 'next') {
         states.hoveringIndex++;
-        if (states.hoveringIndex === states.options.size) {
+        if (states.hoveringIndex === states.options.get().size) {
           states.hoveringIndex = 0;
         }
       } else if (direction === 'prev') {
         states.hoveringIndex--;
         if (states.hoveringIndex < 0) {
-          states.hoveringIndex = states.options.size - 1;
+          states.hoveringIndex = states.options.get().size - 1;
         }
       }
       const option = optionsArray.get()[states.hoveringIndex];
@@ -867,7 +792,7 @@ export const useSelect = (props: TdSelectProps, emit: AnyFn) => {
   const tagStyle = computed(() => {
     const gapWidth = getGapWidth();
     const maxWidth =
-      collapseItemRef.get() && props.maxCollapseTags === 1
+      collapseItemRef.get() && unref(props.maxCollapseTags) === 1
         ? states.selectionWidth - states.collapseItemWidth! - gapWidth
         : states.selectionWidth;
     return { maxWidth: `${maxWidth}px` };

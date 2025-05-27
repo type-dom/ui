@@ -9,9 +9,9 @@
   @include e(popper) {
     @include set-css-var-type('datepicker', 'border-color', $datepicker);
     @include picker-popper(
-                    getCssVar('bg-color', 'overlay'),
-                    1px solid getCssVar('datepicker', 'border-color'),
-                    getCssVar('box-shadow', 'light')
+      getCssVar('bg-color', 'overlay'),
+      1px solid getCssVar('datepicker', 'border-color'),
+      getCssVar('box-shadow', 'light')
     );
   }
 }
@@ -25,10 +25,10 @@
 
   &.#{$namespace}-input__wrapper {
     @include inset-input-border(
-                    var(
-                                    #{getCssVarName('input-border-color')},
-                                    map.get($input, 'border-color')
-                    )
+      var(
+        #{getCssVarName('input-border-color')},
+        map.get($input, 'border-color')
+      )
     );
 
     &:hover {
@@ -44,22 +44,22 @@
 
   @include m((monthrange)) {
     @include css-var-from-global(
-                    'date-editor-width',
-                    'date-editor-monthrange-width'
+      'date-editor-width',
+      'date-editor-monthrange-width'
     );
   }
 
   @include m((daterange, timerange)) {
     @include css-var-from-global(
-                    'date-editor-width',
-                    'date-editor-daterange-width'
+      'date-editor-width',
+      'date-editor-daterange-width'
     );
   }
 
   @include m(datetimerange) {
     @include css-var-from-global(
-                    'date-editor-width',
-                    'date-editor-datetimerange-width'
+      'date-editor-width',
+      'date-editor-datetimerange-width'
     );
   }
 
@@ -78,7 +78,7 @@
     cursor: pointer;
 
     &:hover {
-      color: getCssVar('text-color', 'secondary');
+      color: getCssVar('input-clear-hover-color');
     }
   }
 
@@ -134,7 +134,7 @@
     cursor: pointer;
 
     &:hover {
-      color: getCssVar('text-color', 'secondary');
+      color: getCssVar('input-clear-hover-color');
     }
 
     svg {
@@ -189,6 +189,7 @@
     border-color: map.get($input-disabled, 'border');
     color: map.get($input-disabled, 'text-color');
     cursor: not-allowed;
+    pointer-events: none;
 
     &:hover,
     &:focus {
@@ -199,7 +200,6 @@
       background-color: map.get($input-disabled, 'fill');
       color: map.get($input-disabled, 'text-color');
       cursor: not-allowed;
-
       &::placeholder {
         color: map.get($input-disabled, 'placeholder-color');
       }

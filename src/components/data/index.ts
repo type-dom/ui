@@ -29,7 +29,6 @@ export { TdResult } from './td-result/td-result.class';
 export type * from './td-result/td-result.interface';
 export { TdSegmented } from './td-segmented/td-segmented.class';
 export type * from './td-segmented/td-segmented.interface';
-export * from './td-segmented/td-segmented.style';
 export { TdTag } from './td-tag/td-tag.class';
 export type * from './td-tag/td-tag.interface';
 export { TdCheckTag } from './td-check-tag/td-check-tag.class';

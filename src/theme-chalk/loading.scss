@@ -32,7 +32,7 @@
 
     .#{$namespace}-loading-spinner {
       margin-top: calc(
-              (0px - getCssVar('loading-fullscreen-spinner-size')) / 2
+        (0px - getCssVar('loading-fullscreen-spinner-size')) / 2
       );
 
       .circular {

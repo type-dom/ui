@@ -2,15 +2,16 @@ import { ComputePositionConfig, Placement } from '@type-dom/popper';
 import { ISlotItem, ITypeDiv, TypeDivProps } from '@type-dom/framework';
 import { MaybeRef, Ref, ToRefs } from '@type-dom/signals';
 import { ElArrowDownSvg, ElCircleCloseSvg } from '@type-dom/svgs';
-import { AnyFn, IPrimitive } from '@type-dom/utils';
+import { AnyFn } from '@type-dom/utils';
 
 import { ComponentSize } from '../../../constants/size';
 import { IType } from '../../../styles';
 import { TooltipContentProps } from '../../feedback/td-tooltip/content/content.interface';
-import { CheckboxValueType } from '../td-checkbox/td-checkbox.interface';
+// import { CheckboxValueType } from '../td-checkbox/td-checkbox.interface';
 import { TdOption } from '../td-option/td-option.class';
 import { TdOptionGroup } from '../td-option-group/td-option-group.class';
 import { OptionGroupProps } from '../td-option-group/td-option-group.interface';
+import { OptionBasic, OptionValue } from '../td-option/td-option.interface';
 
 export interface ITdSelect extends ITypeDiv {
   className: 'TdSelect';
@@ -29,7 +30,7 @@ export interface TdSelectProps extends TypeDivProps {
    * @description binding value
    *     default: undefined,
    */
-  modelValue?: IPrimitive | object | CheckboxValueType[];
+  modelValue?: OptionValue | OptionValue[];
   /**
    * @description the autocomplete attribute of select input
    *     default: 'off',
@@ -175,6 +176,7 @@ export interface TdSelectProps extends TypeDivProps {
   // tagType: { ...tagProps.type,  },
   /**
    * @description tag effect
+   * default: 'light'
    */
   tagEffect?: 'dark' | 'light' | 'plain';
   /**
@@ -188,10 +190,12 @@ export interface TdSelectProps extends TypeDivProps {
   remoteShowSuffix?: boolean;
   /**
    * @description determines whether the arrow is displayed
+   *     default: true,
    */
   showArrow?: boolean;
   /**
    * @description offset of the dropdown
+   *     default: 12,
    */
   offset?: number;
   /**
@@ -211,6 +215,7 @@ export interface TdSelectProps extends TypeDivProps {
   // },
   /**
    * @description tabindex for input
+   *     default: 0,
    */
   tabindex?: string | number;
   /**
@@ -226,10 +231,12 @@ export interface TdSelectProps extends TypeDivProps {
   /**
    * @description empty values supported by the component
    */
+  emptyValues?: any[];
   // emptyValues: Array,
   /**
    * @description return value when cleared, if you want to set `undefined`, use `() => undefined`
    */
+  valueOnClear?: string | number | boolean | AnyFn;
   // valueOnClear: {
   //   type: [String, Number, Boolean, Function],
   //   default: undefined,
@@ -244,7 +251,7 @@ export interface TdSelectProps extends TypeDivProps {
     prefix?: ISlotItem;
     header?: ISlotItem;
     footer?: ISlotItem;
-    label?: (label?: string, value?: string) => string;
+    label?: (label?: string | number | boolean | undefined, value?: any) => string;
   };
 }
 
@@ -253,11 +260,11 @@ export interface SelectGroupContext extends OptionGroupProps {
 }
 
 export interface SelectContext {
-  props: TdSelectProps;
+  props: ToRefs<TdSelectProps>;
   states: any;
   expanded?: boolean;
   selectRef: Ref<HTMLElement | undefined>;
-  optionsArray: any[];
+  optionsArray?: any[];
   setSelected(): void;
   onOptionCreate(vm?: TdOption /*SelectOptionProxy*/): void;
   onOptionDestroy(
@@ -265,6 +272,21 @@ export interface SelectContext {
     vm: TdOption, // SelectOptionProxy
   ): void;
   handleOptionSelect(vm?: TdOption /*SelectOptionProxy*/): void;
+}
+export type SelectStates = {
+  inputValue: string
+  options: Map<OptionValue, TdOption>
+  cachedOptions: Map<OptionValue, TdOption>
+  optionValues: OptionValue[]
+  selected: OptionBasic[]
+  hoveringIndex: number
+  inputHovering: boolean
+  selectionWidth: number
+  collapseItemWidth: number
+  previousQuery: string | null
+  selectedLabel: string
+  menuVisibleOnFocus: boolean
+  isBeforeHide: boolean
 }
 
 export interface SelectOptionProxy {

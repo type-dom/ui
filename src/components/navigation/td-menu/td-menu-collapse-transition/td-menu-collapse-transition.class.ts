@@ -3,12 +3,10 @@ import {
   TransitionProps,
   TypeFragment,
   TypeFragmentProps,
-  TypeProps,
   TypeTransitionProps
 } from '@type-dom/framework';
 import { addClass, hasClass, removeClass } from '@type-dom/utils';
 import { useNamespace } from '../../../../hooks/use-namespace';
-
 
 export class TdMenuCollapseTransition extends TypeFragment {
   className: 'TdMenuCollapseTransition';

@@ -1,5 +1,6 @@
-import { ITypeFragment, TypeFragmentProps, TypeSvg, TypeSvgSvg } from '@type-dom/framework';
+import { ITypeFragment, TypeFragmentProps, TypeSvgSvg } from '@type-dom/framework';
 import { IButtonType } from '../../basic/td-button/td-button.interface';
+import { Placement } from '@type-dom/popper';
 
 export interface ITdPopconfirm extends ITypeFragment {
   className: 'TdPopconfirm'
@@ -61,4 +62,10 @@ export interface PopconfirmProps extends TypeFragmentProps {
    *     default: 150,
    */
   width?: string | number,
+
+  /**
+   * @description popover placement  tooltip
+   * bottom
+   */
+  placement?: Placement;
 }

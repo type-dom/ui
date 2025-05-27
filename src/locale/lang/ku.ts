@@ -84,7 +84,7 @@ export default {
       pageClassifier: '',
       page: 'Page', // to be translated
       prev: 'Go to previous page', // to be translated
-      next: 'Go to next page', // to be translated
+      next: 'Go to preview page', // to be translated
       currentPage: 'page {pager}', // to be translated
       prevPages: 'Previous {pager} pages', // to be translated
       nextPages: 'Next {pager} pages', // to be translated
@@ -116,7 +116,7 @@ export default {
       noData: 'Agahî tune',
       titles: ['Lîste 1', 'Lîste 2'],
       filterPlaceholder: 'Binivîse',
-      noCheckedFormat: '{total} lib',
+      noCheckedFormat: '{total} test-dts',
       hasCheckedFormat: '{checked}/{total} bijartin',
     },
     image: {
@@ -135,4 +135,4 @@ export default {
       indicator: 'Carousel switch to index {index}', // to be translated
     },
   },
-};
+}

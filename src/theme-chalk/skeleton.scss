@@ -8,10 +8,10 @@
 
 @mixin skeleton-color() {
   background: linear-gradient(
-                  90deg,
-                  getCssVar('skeleton-color') 25%,
-                  getCssVar('skeleton-to-color') 37%,
-                  getCssVar('skeleton-color') 63%
+    90deg,
+    getCssVar('skeleton-color') 25%,
+    getCssVar('skeleton-to-color') 37%,
+    getCssVar('skeleton-color') 63%
   );
   background-size: 400% 100%;
   animation: #{$namespace}-skeleton-loading 1.4s ease infinite;

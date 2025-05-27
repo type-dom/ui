@@ -1,12 +1,12 @@
 import {
   Arrayable,
   defineExpose,
-  logMethod,
+  // logMethod,
   provide,
   TypeForm,
 } from '@type-dom/framework';
 import { debugWarn, isFunction } from '@type-dom/utils';
-import { computed, unref, watch } from '@type-dom/signals';
+import { signal, computed, unref, watch } from '@type-dom/signals';
 import { useNamespace } from '../../../hooks/use-namespace';
 import { TdFormItem } from '../td-form-item/td-form-item.class';
 import { FormItemProp } from '../td-form-item/td-form-item.interface';
@@ -48,11 +48,13 @@ export class TdForm extends TypeForm implements ITdForm {
     this.props = this.useParams(params);
   }
 
-  @logMethod
+  // @logMethod
   override setup() {
     const COMPONENT_NAME = 'TdForm';
     const props = this.props;
     const emit = this.emit;
+
+    const formRef = signal<HTMLElement>()
     const fields: FormItemContext[] = [];
 
     const formSize = useFormSize();
@@ -162,7 +164,14 @@ export class TdForm extends TypeForm implements ITdForm {
         const invalidFields = e as ValidateFieldsError;
 
         if (props.scrollToError) {
-          scrollToField(Object.keys(invalidFields)[0]);
+          // form-item may be dynamically rendered based on the judgment conditions, and the order in invalidFields is uncertain.
+          // Therefore, the first form field with an error is determined by directly looking for the rendered element.
+          if (formRef.get()) {
+            const formItem = formRef.get()!.querySelector(
+              `.${ns.b()}-item.is-error`
+            )
+            formItem?.scrollIntoView(props.scrollIntoViewOptions)
+          }
         }
         await callback?.(false, invalidFields);
         return shouldThrow && Promise.reject(invalidFields);
@@ -228,6 +237,9 @@ export class TdForm extends TypeForm implements ITdForm {
       fields,
     });
 
+    this.assignProps({
+      refDom: formRef,
+    })
     this.attr.addClass(formClasses);
     this.slotChildren(props.slot || props.slots?.default);
   }

@@ -1,13 +1,13 @@
 // import { getCurrentInstance, useAttrs, useSlots } from 'vue'
 import dayjs from 'dayjs';
 import { getCurrentInstance, useAttrs, useSlots } from '@type-dom/framework';
+import { isFunction } from '@type-dom/utils';
 // import { isFunction } from '@element-plus/utils'
 //
 // import type { SetupContext } from 'vue'
 // import type { useLocale } from '@element-plus/hooks'
-import type { RangePickerSharedEmits } from '../props/shared';
 import { useLocale } from '../../../../hooks/use-locale';
-import { isFunction } from '@type-dom/utils';
+import type { RangePickerSharedEmits } from '../props/shared';
 
 // FIXME: extract this to `date-picker.ts`
 export type Shortcut = {

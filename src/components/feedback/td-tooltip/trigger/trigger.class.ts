@@ -1,6 +1,5 @@
 import {
   defineExpose,
-  IEvent,
   inject,
   TypeFragment,
 } from '@type-dom/framework';
@@ -12,7 +11,7 @@ import { TdPopperTrigger } from '../../td-popper/trigger/trigger.class';
 import { OnlyChildExpose } from '../../td-only-child/td-only-child.interface';
 import { whenTrigger } from '../utils';
 import { TOOLTIP_INJECTION_KEY } from '../td-tooltip.const';
-import { TooltipContext } from '../td-tooltip.interface';
+// import { TooltipContext } from '../td-tooltip.interface';
 import { ITdTooltipTrigger, TooltipTriggerProps } from './trigger.interface';
 import { tooltipTriggerProps } from './trigger.const';
 
@@ -118,7 +117,7 @@ export class TdTooltipTrigger
         virtualRef: props.virtualRef,
         open: open,
         virtualTriggering: props.virtualTriggering,
-        class: ns.e('trigger'),
+        class: [ns.e('trigger')],
         onBlur,
         onClick,
         onContextmenu,

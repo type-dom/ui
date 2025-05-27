@@ -22,8 +22,8 @@ export class TdAlert extends TypeFragment implements ITdAlert {
   override props: AlertProps;
   // private alertDiv: Div;
   // private alertContent: Div;
-  private alertTitle?: Span;
-  private alertDescription?: P;
+  alertTitle?: Span;
+  alertDescription?: P;
   name?: string;
 
   constructor(params: AlertProps = {}) {
@@ -53,12 +53,12 @@ export class TdAlert extends TypeFragment implements ITdAlert {
       this.emit('close', evt);
     };
     const { type, center, effect } = props;
-    const alertKls = [
-      ns.b(),
-      ns.m(type),
-      ns.is('center', center),
-      ns.is(effect!),
-    ];
+    // const alertKls = [
+    //   ns.b(),
+    //   ns.m(type),
+    //   ns.is('center', center),
+    //   ns.is(effect!),
+    // ];
     // console.warn('alertKls is ', alertKls);
     this.addChild(
       new Transition({
@@ -79,7 +79,7 @@ export class TdAlert extends TypeFragment implements ITdAlert {
             new TdIcon({
               vIf: props.showIcon && iconComponent,
               class: [ns.e('icon'), { [ns.is('big')]: hasDesc }],
-              slot: new (iconComponent.get())(),
+              slot: slots?.icon || new (iconComponent.get())(),
             }),
             new Div({
               class: ns.e('content'),

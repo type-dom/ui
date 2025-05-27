@@ -1,4 +1,5 @@
 import { InjectionKey } from '@type-dom/framework';
+import { ElLoadingSvg } from '@type-dom/svgs';
 import type { TdButtonProps } from './td-button.interface';
 
 export interface ButtonGroupContext {
@@ -19,7 +20,7 @@ export const buttonTypes = [
   'danger',
   /**
    * @deprecated
-   * Text type will be deprecated in the next major version (3.0.0)
+   * Text type will be deprecated in the preview major version (3.0.0)
    */
   'text',
   '',
@@ -30,6 +31,9 @@ export const buttonNativeTypes = ['button', 'submit', 'reset'] as const;
 export const buttonProps = {
   type: '',
   nativeType: 'button',
+  loadingIcon: ElLoadingSvg,
+  plain: undefined,
+  round: undefined,
   tag: 'button',
 };
 export const buttonEmits = {
@@ -40,5 +44,8 @@ export type ButtonType = TdButtonProps['type'];
 export type ButtonNativeType = TdButtonProps['nativeType'];
 
 export interface ButtonConfigContext {
+  type?: string
+  plain?: boolean
+  round?: boolean
   autoInsertSpace?: boolean;
 }

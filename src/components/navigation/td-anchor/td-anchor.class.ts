@@ -19,7 +19,7 @@ import {
 } from '@type-dom/utils';
 import { useNamespace } from '../../../hooks/use-namespace';
 import { ITdAnchor, AnchorProps, AnchorLinkState } from './td-anchor.interface';
-import { scrollTo } from './td-anchor.function';
+// import { scrollTo } from './td-anchor.function';
 import { anchorEmits, anchorProps } from './td-anchor.const';
 import { anchorKey } from './constants';
 

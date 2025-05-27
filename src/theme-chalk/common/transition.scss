@@ -15,7 +15,6 @@
 .#{$namespace}-fade-in-linear-leave-active {
   transition: getCssVar('transition-fade', 'linear');
 }
-
 .#{$namespace}-fade-in-linear-enter-from,
 .#{$namespace}-fade-in-linear-leave-to {
   opacity: 0;
@@ -25,7 +24,6 @@
 .#{$namespace}-fade-in-leave-active {
   transition: all getCssVar('transition-duration') cubic-bezier(0.55, 0, 0.1, 1);
 }
-
 .#{$namespace}-fade-in-enter-from,
 .#{$namespace}-fade-in-leave-active {
   opacity: 0;
@@ -35,7 +33,6 @@
 .#{$namespace}-zoom-in-center-leave-active {
   transition: all getCssVar('transition-duration') cubic-bezier(0.55, 0, 0.1, 1);
 }
-
 .#{$namespace}-zoom-in-center-enter-from,
 .#{$namespace}-zoom-in-center-leave-active {
   opacity: 0;
@@ -53,7 +50,6 @@
     transform-origin: center bottom;
   }
 }
-
 .#{$namespace}-zoom-in-top-enter-from,
 .#{$namespace}-zoom-in-top-leave-active {
   opacity: 0;
@@ -67,7 +63,6 @@
   transition: getCssVar('transition-md-fade');
   transform-origin: center bottom;
 }
-
 .#{$namespace}-zoom-in-bottom-enter-from,
 .#{$namespace}-zoom-in-bottom-leave-active {
   opacity: 0;
@@ -81,7 +76,6 @@
   transition: getCssVar('transition-md-fade');
   transform-origin: top left;
 }
-
 .#{$namespace}-zoom-in-left-enter-from,
 .#{$namespace}-zoom-in-left-leave-active {
   opacity: 0;
@@ -90,21 +84,21 @@
 
 .collapse-transition {
   transition: getCssVar('transition-duration') height ease-in-out,
-  getCssVar('transition-duration') padding-top ease-in-out,
-  getCssVar('transition-duration') padding-bottom ease-in-out;
+    getCssVar('transition-duration') padding-top ease-in-out,
+    getCssVar('transition-duration') padding-bottom ease-in-out;
 }
 
 .#{$namespace}-collapse-transition-leave-active,
 .#{$namespace}-collapse-transition-enter-active {
   transition: getCssVar('transition-duration') max-height ease-in-out,
-  getCssVar('transition-duration') padding-top ease-in-out,
-  getCssVar('transition-duration') padding-bottom ease-in-out;
+    getCssVar('transition-duration') padding-top ease-in-out,
+    getCssVar('transition-duration') padding-bottom ease-in-out;
 }
 
 .horizontal-collapse-transition {
   transition: getCssVar('transition-duration') width ease-in-out,
-  getCssVar('transition-duration') padding-left ease-in-out,
-  getCssVar('transition-duration') padding-right ease-in-out;
+    getCssVar('transition-duration') padding-left ease-in-out,
+    getCssVar('transition-duration') padding-right ease-in-out;
 }
 
 .#{$namespace}-list-enter-active,
@@ -123,5 +117,6 @@
 }
 
 .#{$namespace}-opacity-transition {
-  transition: opacity getCssVar('transition-duration') cubic-bezier(0.55, 0, 0.1, 1);
+  transition: opacity getCssVar('transition-duration')
+    cubic-bezier(0.55, 0, 0.1, 1);
 }

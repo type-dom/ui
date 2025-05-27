@@ -19,8 +19,8 @@ export const useCheckboxModel = (props: CheckboxProps) => {
   const isGroup = computed(() => isUndefined(checkboxGroup) === false);
   const isLimitExceeded = signal(false);
 
-  const model = computed({
-    get() {
+  const model = computed(
+    () => {
       // console.log('get model value isGroup is  ', isGroup.get());
       return isGroup.get()
         ? checkboxGroup?.modelValue?.get()
@@ -30,7 +30,7 @@ export const useCheckboxModel = (props: CheckboxProps) => {
           //   所以这里还是用 vModel.get的方式。
           props.vModel?.get() ?? selfModel.get(); // : props.modelValue ?? selfModel.get();
     },
-    set(val: unknown) {
+    (val: unknown) => {
       // console.log('set model value is ', val);
       if (isGroup.get() && isArray(val)) {
         isLimitExceeded.set(
@@ -44,7 +44,7 @@ export const useCheckboxModel = (props: CheckboxProps) => {
         selfModel.set(val);
       }
     },
-  });
+  );
 
   return {
     model,

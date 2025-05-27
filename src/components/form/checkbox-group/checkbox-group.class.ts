@@ -4,7 +4,7 @@ import { ICheckboxGroup } from './checkbox-group.interface';
 
 export class CheckboxGroup extends TypeDiv implements ICheckboxGroup {
   className: 'CheckboxGroup';
-  public override parent?: TypeHtml;
+  override parent?: TypeHtml = undefined;
   override childNodes: CheckboxOption[];
   value: (string | number | boolean)[]; // 应该是个数组
   constructor() {

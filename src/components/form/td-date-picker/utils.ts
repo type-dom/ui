@@ -4,9 +4,9 @@ import dayjs from 'dayjs';
 
 import type { Dayjs } from 'dayjs';
 import { isArray } from '@type-dom/utils';
-import { rangeArr } from '../td-time-picker/utils';
-import type { DateCell } from './date-picker.type';
-import type { DisabledDateType } from './props/shared';
+// import { rangeArr } from '../td-time-picker/utils';
+// import type { DateCell } from './date-picker.type';
+// import type { DisabledDateType } from './props/shared';
 
 type DayRange = [Dayjs | undefined, Dayjs | undefined];
 
@@ -35,7 +35,7 @@ export const getDefaultValue = (
   let start: Dayjs;
 
   if (isArray(defaultValue)) {
-    // eslint-disable-next-line prefer-const
+    // eslint-disable-preview-line prefer-const
     let [left, right] = defaultValue.map((d) => dayjs(d).locale(lang));
     if (!unlinkPanels) {
       right = left.add(1, unit);

@@ -135,7 +135,7 @@ export class TdUploadList extends TypeFragment implements ITdUploadList {
                         type: props.listType === 'picture-card' ? 'circle' : 'line',
                         strokeWidth: props.listType === 'picture-card' ? 6 : 2,
                         percentage: Number(file.percentage),
-                        styleObj: props.listType === 'picture-card' ? '' : { marginTop: '0.5rem' }
+                        styleObj: props.listType === 'picture-card' ? undefined : { marginTop: '0.5rem' }
                       }),
                     ]
                   }),

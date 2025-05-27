@@ -26,7 +26,7 @@ import {
   useSlots,
 } from '@type-dom/framework';
 import { computed, signal, unref, watch } from '@type-dom/signals';
-import { throttle } from 'lodash';
+import { throttle } from 'lodash-es';
 import { AnyFn, debugWarn, isString } from '@type-dom/utils';
 import { useOrderedChildren } from '../../../hooks/use-ordered-children';
 import type { CarouselItemContext } from './constants';
@@ -92,11 +92,11 @@ export const useCarousel = (
     },
     THROTTLE_TIME,
     { trailing: true }
-  );
+  ) as (index: number) => void;
 
   const throttledIndicatorHover = throttle((index: number) => {
     handleIndicatorHover(index);
-  }, THROTTLE_TIME);
+  }, THROTTLE_TIME) as (index: number) => void;
 
   const isTwoLengthShow = (index: number) => {
     if (!isItemsTwoLength.get()) return true;
@@ -295,7 +295,11 @@ export const useCarousel = (
   watch(
     () => props.autoplay,
     (autoplay) => {
-      autoplay ? startTimer() : pauseTimer();
+      if (autoplay) {
+        startTimer();
+      } else {
+        pauseTimer();
+      }
     }
   );
   watch(

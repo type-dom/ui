@@ -73,7 +73,7 @@ export class Select extends TypeSelect implements ISelect {
   // 2.向select选项中 加入一个Item
   jsAddItemToSelect(
     objSelect: HTMLSelectElement,
-    objItemText: string | undefined,
+    _objItemText: string | undefined,
     objItemValue: string
   ): void {
     // 判断是否存在

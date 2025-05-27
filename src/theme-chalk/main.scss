@@ -8,7 +8,7 @@
   display: block;
   flex: 1;
   flex-basis: auto;
-  //overflow: auto; // affix bug  can't scroll
+  overflow: auto;
   box-sizing: border-box;
   padding: getCssVar('main-padding');
 }

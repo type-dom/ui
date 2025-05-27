@@ -1,4 +1,4 @@
-import { TypeDiv, TypeElement } from '@type-dom/framework';
+import { TypeDiv } from '@type-dom/framework';
 import { useNamespace } from '../../../hooks/use-namespace';
 import { useSameTarget } from '../../../hooks/use-same-target';
 import { overlayEmits, overlayProps } from './td-overlay.const';
@@ -20,13 +20,13 @@ export class TdOverlay extends TypeDiv implements ITdOverlay {
   override setup() {
     const BLOCK = 'overlay';
     const props = this.props;
-    const emit = this.emit;
+    // const emit = this.emit;
     // No reactivity on this prop because when its rendering with a global
     // component, this will be a constant flag.
     const ns = useNamespace(BLOCK);
 
-    const onMaskClick = (e?: MouseEvent) => {
-      // emit('click', e)  // 会死循环
+    const onMaskClick = () => {
+      // emit('click', e)  // todo 会死循环
     };
 
     const { onClick, onMousedown, onMouseup } = useSameTarget(

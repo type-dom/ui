@@ -9,6 +9,7 @@ export interface ITdSliderButton extends ITypeDiv {
 
 export interface SliderButtonProps extends TypeDivProps {
   modelValue?: number;
+  vModel?: Ref<number>;
   vertical?: boolean;
   tooltipClass?: string;
   placement?: Placement;

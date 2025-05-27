@@ -1,5 +1,5 @@
 import { NOOP } from '@type-dom/utils';
-import { Ref, signal } from '@type-dom/signals';
+import { signal } from '@type-dom/signals';
 import { UploadBaseProps, UploadProps } from './td-upload.interface';
 import { ajaxUpload } from './ajax';
 

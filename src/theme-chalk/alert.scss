@@ -40,8 +40,8 @@
   @each $type in (success, info, warning, error) {
     @include m($type) {
       @include css-var-from-global(
-                              ('alert', 'bg-color'),
-                              ('color', $type, 'light-9')
+        ('alert', 'bg-color'),
+        ('color', $type, 'light-9')
       );
 
       &.is-light {

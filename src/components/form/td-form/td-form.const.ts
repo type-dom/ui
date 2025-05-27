@@ -16,6 +16,7 @@ export const formProps: FormProps = {
   labelSuffix: '',
   showMessage: true,
   validateOnRuleChange: true,
+  scrollIntoViewOptions: true
 };
 
 export const formEmits = {

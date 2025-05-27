@@ -2,7 +2,7 @@
 // import { addUnit } from '@element-plus/utils'
 // import type { ComputedRef, Ref } from 'vue'
 
-import { Computed, effect, MaybeRef, Ref, unref } from '@type-dom/signals';
+import { Computed, effect, Ref, unref } from '@type-dom/signals';
 import { addUnit } from '@type-dom/utils';
 import { onBeforeUnmount, onMounted } from '@type-dom/framework';
 

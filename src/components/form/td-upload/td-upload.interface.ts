@@ -1,7 +1,7 @@
 import { Awaitable, Mutable } from '@type-dom/utils';
-import { UploadAjaxError } from './ajax';
 import { ITypeDiv, TypeDivProps } from '@type-dom/framework';
-import { MaybeRef, Signal } from '@type-dom/signals';
+import { MaybeRef } from '@type-dom/signals';
+import { UploadAjaxError } from './ajax';
 
 export interface ITdUpload extends ITypeDiv {
   className: 'TdUpload';
@@ -15,7 +15,7 @@ export interface UploadBaseProps extends TypeDivProps {
   /**
    * @description request headers
    */
-  headers?: Headers | Record<string, any>
+  headers?: Headers | Record<string, unknown>
   /**
    * @description set upload request method
    */
@@ -146,13 +146,13 @@ export interface UploadProgressEvent extends ProgressEvent {
 export interface UploadRequestOptions {
   action?: string
   method?: string
-  data?: Record<string, string | Blob | [Blob, string]>
+  data?: Record<string, string | Blob | [Blob, string] | unknown>
   filename?: string
   file?: UploadRawFile
-  headers?: Headers | Record<string, string | number | null | undefined>
+  headers?: Headers | Record<string, string | number | null | undefined | unknown>
   onError?: (evt: UploadAjaxError) => void
   onProgress?: (evt: UploadProgressEvent) => void
-  onSuccess?: (response: any) => void
+  onSuccess?: (response: unknown) => void
   withCredentials?: boolean
 }
 export interface UploadFile {
@@ -171,6 +171,7 @@ export type UploadUserFile = Omit<UploadFile, 'status' | 'uid'> &
 export type UploadFiles = UploadFile[]
 export interface UploadRawFile extends File {
   uid: number
+  isDirectory?: boolean
 }
 export type UploadRequestHandler = (
   options: UploadRequestOptions
@@ -204,4 +205,4 @@ export interface UploadHooks {
   onExceed: (files: File[], uploadFiles: UploadUserFile[]) => void
 }
 
-export type UploadData = Mutable<Record<string, any>>
+export type UploadData = Mutable<Record<string, unknown>>

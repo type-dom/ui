@@ -44,7 +44,7 @@ export class TdDialog extends TypeFragment implements ITdDialog {
 
   override setup() {
     const props = this.props;
-    const emit = this.emit;
+    // const emit = this.emit;
     const slots = useSlots<{
       header: (arg: any) => any;
       title: ISlotRaw;

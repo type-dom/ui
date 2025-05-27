@@ -1,12 +1,9 @@
-import { inject, Router, Span, TypeSpan } from '@type-dom/framework';
+import { inject, Span, TypeSpan } from '@type-dom/framework';
 import { signal } from '@type-dom/signals';
 import { useNamespace } from '../../../hooks/use-namespace';
 import { TdIcon } from '../../basic/td-icon/td-icon.class';
 import { breadcrumbKey } from '../td-breadcrumb/constants';
-import {
-  ITdBreadcrumbItem,
-  BreadcrumbItemProps,
-} from './td-breadcrumb-item.interface';
+import { ITdBreadcrumbItem, BreadcrumbItemProps } from './td-breadcrumb-item.interface';
 import './style/index';
 
 export class TdBreadcrumbItem extends TypeSpan implements ITdBreadcrumbItem {

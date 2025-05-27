@@ -1,4 +1,4 @@
-import { TypeDiv, TypeElement } from '@type-dom/framework';
+import { TypeDiv } from '@type-dom/framework';
 import { ITdOverlay, OverlayProps } from './td-overlay.interface';
 import { $tdOverlayStyle } from './td-overlay.style';
 

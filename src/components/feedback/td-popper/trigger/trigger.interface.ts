@@ -1,10 +1,6 @@
 import {
   ITypeFragment,
-  TypeFragmentProps,
-  TypeElement,
-  TypeHtml,
-  TypeNode,
-  IEvent,
+  TypeFragmentProps
 } from '@type-dom/framework';
 import { MaybeRef, Ref, Signal } from '@type-dom/signals';
 import { Measurable } from '../td-popper.interface';

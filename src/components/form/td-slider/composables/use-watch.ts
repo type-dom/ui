@@ -44,7 +44,7 @@ export const useWatch = (
     if (unref(props.min)! > unref(props.max)!) {
       throwError('Slider', 'min should not be greater than max.')
     }
-    const val = props.modelValue
+    const val = props.vModel!.get() // props.modelValue
     if (props.range && isArray(val)) {
       if (val[1] < unref(props.min)!) {
         _emit([unref(props.min)!, unref(props.min)!])
@@ -84,19 +84,23 @@ export const useWatch = (
   setValues()
 
   watch(
-    () => initData.dragging,
+    () => initData.dragging.get(),
     (val) => {
       if (!val) {
         setValues()
       }
+    },
+    {
+      immediate: true,
     }
   )
 
   watch(
     props.vModel,
     (val, oldVal) => {
+      // console.warn('watch props.vModel val is ', val);
       if (
-        initData.dragging ||
+        initData.dragging.get() ||
         (isArray(val) &&
           isArray(oldVal) &&
           val.every((item, index) => item === oldVal[index]) &&
@@ -107,9 +111,9 @@ export const useWatch = (
       }
       setValues()
     },
-    // {
-    //   deep: true,
-    // }
+    {
+      immediate: true,
+    }
   )
 
   watch(

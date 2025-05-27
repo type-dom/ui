@@ -15,7 +15,7 @@ import type { ComputePositionConfig as Options } from '@type-dom/popper';
 import type { Dayjs } from 'dayjs';
 import {
   TypeDivProps,
-  TypeFragmentProps,
+  // TypeFragmentProps,
   TypeSvgSvg,
 } from '@type-dom/framework';
 import { Placement } from '@type-dom/popper';

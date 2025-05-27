@@ -9,7 +9,6 @@ import {
 } from '../../../styles/var';
 import { $message } from '../td-message/td-message.style';
 import {
-  MessageBoxProps,
   TdMessageBoxOptions,
 } from './td-message-box.interface';
 

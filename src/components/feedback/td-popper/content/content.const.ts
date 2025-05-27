@@ -1,4 +1,6 @@
+import { signal } from '@type-dom/signals';
 import { PopperCoreConfigProps, PopperContentProps } from './content.interface';
+// import { popperArrowProps } from '../arrow/arrow.const';
 
 export const popperCoreConfigProps: PopperCoreConfigProps = {
   boundariesPadding: 0,
@@ -15,6 +17,8 @@ export const popperContentProps: PopperContentProps = {
   placement: 'bottom',
   strategy: 'absolute',
   // ...popperCoreConfigProps,
+  // ...popperArrowProps,
+  arrowOffset: signal(5),
   effect: 'dark',
   enterable: true,
   focusOnShow: false,

@@ -6,9 +6,9 @@ import { Example } from './example';
 
 export class OpBtns extends TypeDiv {
   className: 'OpBtns';
-  override parent!: Example;
+  override parent?: Example = undefined;
 
-  constructor(params: TypeProps) {
+  constructor(params: TypeProps = {}) {
     super();
     this.className = 'OpBtns';
     this.parent = params.parent as Example;
@@ -40,7 +40,7 @@ export class OpBtns extends TypeDiv {
             //   textToCopy = this.parent.props.sourceWrapper?.value;
             // } else {
             textToCopy =
-              (toValue(this.parent.props.sourceWrapper) as string) ?? '';
+              (toValue(this.parent!.props.sourceWrapper) as string) ?? '';
             // }
             // 尝试使用Async Clipboard API
             try {
@@ -80,12 +80,12 @@ export class OpBtns extends TypeDiv {
         slot: new TdViewCodeSvg(),
         events: {
           click: () => {
-            if (this.parent.sourceWrapper.style.get('display') === 'none') {
+            if (this.parent?.sourceWrapper.style.get('display') === 'none') {
               this.parent.sourceWrapper.style.show();
               this.parent.floatControl.style.show('flex');
             } else {
-              this.parent.sourceWrapper.style.hide();
-              this.parent.floatControl.style.hide();
+              this.parent?.sourceWrapper.style.hide();
+              this.parent?.floatControl.style.hide();
             }
           },
         },

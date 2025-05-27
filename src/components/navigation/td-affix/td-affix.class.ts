@@ -4,14 +4,16 @@ import { computed, effect, signal, watch } from '@type-dom/signals';
 import {
   defineExpose,
   nextFrame,
+  nextTick,
   onMounted,
   useElementBounding,
   useEventListener,
   useWindowSize,
   Div,
-  TypeDiv,
+  TypeDiv
 } from '@type-dom/framework';
 import { useNamespace } from '../../../hooks/use-namespace';
+import { CHANGE_EVENT } from '../../../constants/event';
 import { ITdAffix, AffixProps } from './td-affix.interface';
 import { affixEmits, affixProps } from './td-affix.const';
 import './style/index';
@@ -41,9 +43,9 @@ export class TdAffix extends TypeDiv implements ITdAffix {
 
     const ns = useNamespace('affix');
 
-    const target = signal<HTMLElement>();
-    const root = signal<HTMLDivElement | undefined>();
-    const scrollContainer = signal<HTMLElement | Window>();
+    const target = signal<HTMLElement | null>();
+    const root = signal<HTMLDivElement>();
+    const scrollContainer = signal<HTMLElement | Window | undefined>();
     const { height: windowHeight } = useWindowSize();
     const {
       height: rootHeight,
@@ -88,9 +90,7 @@ export class TdAffix extends TypeDiv implements ITdAffix {
       const height = rootHeight.get() ? `${rootHeight.get()}px` : undefined;
       const width = rootWidth.get() ? `${rootWidth.get()}px` : undefined;
       const top = props.position === 'top' ? offsetY : '';
-      const transformY = transform.get()
-        ? `translateY(${transform.get()}px)`
-        : '';
+      const transformY = transform.get() ? `translateY(${transform.get()}px)` : '';
       return {
         height,
         width,
@@ -103,7 +103,10 @@ export class TdAffix extends TypeDiv implements ITdAffix {
 
     const updateAffix = () => {
       // console.warn('updateAffix . ');
-      if (!scrollContainer.get()) return;
+      if (!scrollContainer.get()) {
+        // console.error(COMPONENT_NAME, 'Scroll container is not available.');
+        return;
+      }
 
       scrollTop.set(
         scrollContainer.get() instanceof Window
@@ -114,7 +117,7 @@ export class TdAffix extends TypeDiv implements ITdAffix {
       const { position, target } = props;
       // todo offset floatingui function, here cannot set .
       // console.error('then offset . ');
-      const offset = props.offset ?? 0;
+      // const offset = props.offset ?? 0;
       const offsetY = props.offset ?? 0;
       const rootHeightOffset = offsetY + rootHeight.get();
 
@@ -140,42 +143,41 @@ export class TdAffix extends TypeDiv implements ITdAffix {
       }
     };
 
-    const handleScroll = () => {
+    const handleScroll = async () => {
       // console.warn('handleScroll . ');
       updateRoot();
+      await nextTick()
       emit('scroll', {
         scrollTop: scrollTop.get(),
         fixed: fixed.get(),
       });
     };
 
-    watch(fixed, (val) => emit('change', val));
+    watch(() => fixed.get(), (val) => emit(CHANGE_EVENT, val));
 
     onMounted(() => {
-      nextFrame(() => {
+      // console.warn('onMounted . ');
+      nextFrame(() => { // getScrollContainer 需要确保 root 已经渲染完成，并挂载到页面上；
         // console.warn('nextFrame . ');
         if (props.target) {
-          target.set(
-            document.querySelector<HTMLElement>(props.target) ?? undefined
-          );
+          target.set(document.querySelector<HTMLElement>(props.target));
 
           if (!target.get()) {
-            throwError(
-              COMPONENT_NAME,
-              `Target does not exist: ${props.target}`
-            );
+            throwError(COMPONENT_NAME, `Target does not exist: ${props.target}`);
+            // console.error(COMPONENT_NAME, `Target does not exist: ${props.target}`);
+            // return;
           }
         } else {
           target.set(document.documentElement);
         }
-        scrollContainer.set(getScrollContainer(root.get()!, true));
+        scrollContainer.set(getScrollContainer(root.get(), true));
         // console.warn('scrollContainer.get() is ', scrollContainer.get());
         updateRoot();
+
+        useEventListener(scrollContainer, 'scroll', handleScroll);
+        effect(() => updateAffix());
       });
     });
-
-    useEventListener(scrollContainer, 'scroll', handleScroll);
-    effect(updateAffix);
 
     defineExpose({
       /** @description update affix status */

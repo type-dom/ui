@@ -1,4 +1,4 @@
-import { Arrayable, isArray, isNumber, isString } from '@type-dom/utils';
+import { isArray, isNumber, isString } from '@type-dom/utils';
 import { CHANGE_EVENT, UPDATE_MODEL_EVENT } from '../../../constants/event';
 import { CollapseModelValue } from './td-collapse.interface';
 

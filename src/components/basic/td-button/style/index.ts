@@ -1,2 +1,2 @@
-import '../../../base/style';
+import '../../../base/style/index';
 import '../../../../theme-chalk/button.scss';

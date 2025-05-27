@@ -177,4 +177,4 @@ export default {
       indicator: '投影片切換至索引 {index}',
     },
   },
-};
+}

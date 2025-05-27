@@ -4,7 +4,6 @@ import {
   getCurrentInstance,
   nextTick,
   provide,
-  Span,
   TypeDiv,
   useSlots,
 } from '@type-dom/framework';
@@ -17,7 +16,7 @@ import { useOrderedChildren } from '../../../hooks/use-ordered-children';
 import { UPDATE_MODEL_EVENT } from '../../../constants/event';
 import { EVENT_CODE } from '../../../constants';
 import { TdIcon } from '../../basic/td-icon/td-icon.class';
-import { TabPaneProps } from '../td-tab-pane/td-tab-pane.interface';
+// import { TabPaneProps } from '../td-tab-pane/td-tab-pane.interface';
 import { tabsEmits, tabsProps } from './td-tabs.const';
 import { TabPaneName, ITdTabs, TabsProps } from './td-tabs.interface';
 import { TdTabNav } from './td-tab-nav.class';
@@ -73,7 +72,9 @@ export class TdTabs extends TypeDiv implements ITdTabs {
 
           nav$.get()?.removeFocus?.();
         }
-      } catch {}
+      } catch {
+      //   nothing
+      }
     };
 
     const handleTabClick = (
@@ -100,10 +101,10 @@ export class TdTabs extends TypeDiv implements ITdTabs {
 
     watch(
       () => props.vModel?.get(),
-      (modelValue) => setCurrentName(modelValue)
+      (modelValue) => setCurrentName(modelValue as TabPaneName)
     );
 
-    watch(currentName, async () => {
+    watch(() => currentName.get(), async () => {
       await nextTick();
       nav$.get()?.scrollToActiveTab?.();
     });
@@ -139,8 +140,8 @@ export class TdTabs extends TypeDiv implements ITdTabs {
             events: {
               click: handleTabAdd,
               keydown: (ev?: KeyboardEvent) => {
-                if (
-                  [EVENT_CODE.enter, EVENT_CODE.numpadEnter].includes(ev?.code!)
+                if ( ev &&
+                  [EVENT_CODE.enter, EVENT_CODE.numpadEnter].includes(ev.code)
                 )
                   handleTabAdd();
               },

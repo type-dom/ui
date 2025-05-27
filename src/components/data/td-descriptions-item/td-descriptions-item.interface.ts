@@ -1,9 +1,4 @@
-import {
-  ITypeFragment,
-  TypeFragmentProps,
-  TypeHtml,
-} from '@type-dom/framework';
-import { IStyle } from '@type-dom/css-type';
+import { ITypeFragment, TypeFragmentProps, TypeHtml, } from '@type-dom/framework';
 
 export interface ITdDescriptionsItem extends ITypeFragment {
   className: 'TdDescriptionsItem';
@@ -22,6 +17,11 @@ export interface DescriptionsItemProps extends TypeFragmentProps {
    */
   span?: number;
   /**
+   * @description the number of rows a cell should span
+   *  default: 1,
+   */
+  rowspan?: number;
+  /**
    * @description column width, the width of the same column in different rows is set by the max value (If no `border`, width contains label and content)
    *     default: '',
    */
@@ -31,6 +31,11 @@ export interface DescriptionsItemProps extends TypeFragmentProps {
    *     default: '',
    */
   minWidth?: string | number;
+  /**
+   * @description column label width, if not set, it will be the same as the width of the column. Higher priority than the `label-width` of `Descriptions`
+   * default: '',
+   */
+  labelWidth?: string | number;
   /**
    * @description column content alignment (If no `border`, effective for both label and content)
    *     default: 'left',
@@ -45,14 +50,12 @@ export interface DescriptionsItemProps extends TypeFragmentProps {
    * @description column content custom class name
    *     default: '',
    */
-  // className?: string; // 暂不用
-  contentStyle?: IStyle;
+  className?: string;
   /**
    * @description column label custom class name
    *     default: '',
    */
-  // labelClassName?: string; // 暂不用
-  labelStyle?: IStyle; // add by me 2024/07/19 框架不使用样式类
+  labelClassName?: string;
 
   slots?: {
     label: TypeHtml;

@@ -1,8 +1,8 @@
 // import { computed, inject, nextTick, ref, watch } from 'vue'
 // import { debounce } from 'lodash-unified'
-import { computed, Computed, Ref, signal, unref, watch } from '@type-dom/signals';
+import { computed, Computed, signal, unref, watch } from '@type-dom/signals';
 import { inject, nextTick, useEventListener } from '@type-dom/framework';
-import { debounce } from '@type-dom/utils';
+import { AnyFn, debounce } from '@type-dom/utils';
 import { IStyle } from '@type-dom/css-type';
 // import { useEventListener } from '@vueuse/core'
 
@@ -39,13 +39,15 @@ const useTooltip = (
       props.vModel?.get()
     ) as number | undefined
   })
-
+  
   const displayTooltip = debounce(() => {
-    showTooltip && (tooltipVisible.set(true))
+    if (showTooltip) {
+      (tooltipVisible.set(true));
+    }
   }, 50)
 
   const hideTooltip = debounce(() => {
-    showTooltip && (tooltipVisible.set(false))
+    if (showTooltip) (tooltipVisible.set(false))
   }, 50)
 
   return {
@@ -57,35 +59,14 @@ const useTooltip = (
   }
 }
 
-type HTMLType = HTMLDivElement | undefined
-type UseSliderButtonType = (
-  props: SliderButtonProps,
-  initData: SliderButtonInitData,
-  emit: any // SetupContext<SliderButtonEmits>['emit']
-) => {
-  disabled: Ref<boolean>
-  button: Ref<HTMLType>
-  tooltip: Ref<TdTooltip | undefined>
-  tooltipVisible: Ref<boolean>
-  showTooltip: Ref<SliderProps['showTooltip']>
-  persistent: Ref<SliderProps['persistent']>
-  wrapperStyle: Computed<IStyle>
-  formatValue: Computed<number | string>
-  handleMouseEnter: () => void
-  handleMouseLeave: () => void
-  onButtonDown: (event?: MouseEvent | TouchEvent) => void
-  onKeyDown: (event?: KeyboardEvent) => void
-  setPosition: (newPosition: number) => Promise<void>
-}
-
 export const useSliderButton = (
   props: SliderButtonProps,
   initData: SliderButtonInitData,
-  emit: any, // SetupContext<SliderButtonEmits>['emit']
+  emit: AnyFn, // SetupContext<SliderButtonEmits>['emit']
 ) => {
   const {
     disabled,
-    min: minValue,  // is a function, not a number ???? 变量被提升了。
+    min: minValue,  // todo is a function, not a number ???? 变量被提升了。
     max,
     step,
     showTooltip,
@@ -208,7 +189,7 @@ export const useSliderButton = (
         break
     }
 
-    isPreventDefault && event?.preventDefault()
+    if (isPreventDefault) event?.preventDefault()
   }
 
   const getClientXY = (event?: MouseEvent | TouchEvent) => {
@@ -309,7 +290,7 @@ export const useSliderButton = (
     }
 
     await nextTick()
-    initData.dragging && displayTooltip()
+    if (initData.dragging) displayTooltip()
     tooltip?.get()!.updatePopper?.()
   }
 

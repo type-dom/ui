@@ -58,7 +58,7 @@ export const useLockscreen = (
 
   const cleanup = () => {
     setTimeout(() => {
-      // When the test case is running, the context environment simulated by jsdom may have been destroyed,
+      // When the test-dts case is running, the context environment simulated by jsdom may have been destroyed,
       // and the document does not exist at this time.
       if (typeof document === 'undefined') return;
       removeClass(document?.body, hiddenCls.get());
@@ -67,7 +67,7 @@ export const useLockscreen = (
       }
     }, 200);
   };
-  watch(trigger, (val) => {
+  watch(() => trigger.get(), (val) => {
     if (!val) {
       cleanup();
       return;

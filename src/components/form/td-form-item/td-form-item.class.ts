@@ -7,33 +7,30 @@ import {
   clone, getProp, ensureArray
 } from '@type-dom/utils';
 import AsyncValidator, { RuleItem } from '@type-dom/async-validator';
-// import { clone } from 'lodash';
+// import { clone } from 'lodash-es';
 import {
   Arrayable,
   arraySlot,
   defineExpose,
   Div,
   inject,
-  logMethod,
-  logProperty,
   nextTick,
   onBeforeUnmount,
   onMounted,
   provide,
   refDebounced,
-  Span,
   TransitionGroup,
   TypeDiv,
   useSlots,
   XElement,
 } from '@type-dom/framework';
 import { IStyle } from '@type-dom/css-type';
-import { computed, Signal, signal, watch } from '@type-dom/signals';
+import { computed, signal, watch } from '@type-dom/signals';
 
 import { useNamespace } from '../../../hooks/use-namespace';
 import { useId } from '../../../hooks/use-id';
 import { formContextKey, formItemContextKey } from '../td-form/td-form.const';
-import { FormItemContext, FormProps } from '../td-form/td-form.interface';
+import { FormItemContext } from '../td-form/td-form.interface';
 import { useFormSize } from '../td-form/hooks/use-form-common-props';
 import { FormLabelWrap } from '../td-form/form-label-wrap/form-label-wrap.class';
 import {
@@ -225,7 +222,7 @@ export class TdFormItem extends TypeDiv implements ITdFormItem {
             }
           })
           // exclude trigger
-          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+          // eslint-disable-preview-line @typescript-eslint/no-unused-vars
           .map(({ trigger, ...rule }): RuleItem => rule)
       );
     };

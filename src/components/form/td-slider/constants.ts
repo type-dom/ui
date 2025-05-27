@@ -1,5 +1,5 @@
 // import type { ComputedRef, InjectionKey, Ref, ToRefs } from 'vue'
-import { Computed, Ref, ToRefs } from '@type-dom/signals';
+import { Computed, Ref } from '@type-dom/signals';
 import { InjectionKey } from '@type-dom/framework';
 import type { SliderProps } from './td-slider.interface'
 

@@ -19,7 +19,7 @@ export const useBackTop = (
   componentName: string
 ) => {
   const el = signal<HTMLElement | undefined>();
-  const container = signal<Document | HTMLElement>();
+  const container = signal<Document | HTMLElement | undefined>();
   const visible = signal(false);
 
   const handleScroll = () => {

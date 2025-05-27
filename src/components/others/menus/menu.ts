@@ -1,31 +1,26 @@
-import {
-  Div,
-  TypeMenu,
-  type IRoute,
-  Router,
-  TypeProps,
-} from '@type-dom/framework';
+import { Div, SvgSvg, TypeMenu, TypeProps, onMounted } from '@type-dom/framework';
+import { Router, RouteRecordNormalized, RouteRecordRaw, useRoute } from '@type-dom/router';
 import { ElCaretBottomSvg, ElCaretLeftSvg } from '@type-dom/svgs';
 import { TdIcon } from '../../basic/td-icon/td-icon.class';
 import { Menus } from './menus';
 
-export interface IMenuConfig extends TypeProps {
-  route: IRoute;
+export interface MenuProps extends TypeProps {
+  route: RouteRecordNormalized | RouteRecordRaw;
   router?: Router;
   width?: string;
 }
 
 export class Menu extends TypeMenu {
   className: 'Menu';
-  route?: IRoute;
+  route?: RouteRecordNormalized | RouteRecordRaw;
   router?: Router;
-  override parent?: Menu | Menus;
+  override parent?: Menu | Menus = undefined;
   contentItem: Div;
   menuItems: Menu[];
   collapsed?: boolean;
   caret?: TdIcon;
 
-  constructor(params: IMenuConfig) {
+  constructor(params: MenuProps) {
     // console.log('Menu constructor . ');
     super();
     this.className = 'Menu';
@@ -43,10 +38,10 @@ export class Menu extends TypeMenu {
         alignItems: 'center',
       },
     });
-    if (this.route.svgObj) {
+    if (this.route.meta?.svgObj) {
       div.addChild(
         new TdIcon({
-          slot: this.route.svgObj,
+          slot: this.route.meta.svgObj as SvgSvg,
           styleObj: {
             paddingRight: '5px',
           },
@@ -55,7 +50,7 @@ export class Menu extends TypeMenu {
     }
     div.addChild(
       new Div({
-        slot: this.route.name,
+        slot: this.route.name as string,
         attrObj: {
           name: 'route-name',
         },
@@ -69,10 +64,12 @@ export class Menu extends TypeMenu {
         slot: new ElCaretBottomSvg(),
         // size: '30px'
       });
-      caret.appendParent(div);
+      div.addChild(caret);
+      // caret.appendParent(div);
       this.caret = caret;
     }
-    div.appendParent(this);
+    // div.appendParent(this);
+    this.addChild(div);
     this.contentItem = div;
     this.menuItems = [];
     this.useParams(params);
@@ -83,17 +80,21 @@ export class Menu extends TypeMenu {
   }
 
   override setup() {
+    const route = useRoute();
+    // console.warn('route.get().fullPath is ', route.get().fullPath);
     if (this.route?.redirect === undefined) {
       // todo addEvent 如何pipe ??
       this.contentItem.addEvents({
         click: (event) => {
-          // console.log('click . ');
+          console.log('menu click . ');
           if (this.menuRoot?.selectedMenu === this) {
             return;
           }
-          this.router?.push(this.route!.path);
+          console.error('then push path ', this.route?.path);
+          const fullPath = this.router?.resolve(this.route!).fullPath;
+          if (fullPath) this.router?.push(fullPath);
           this.menuRoot?.setSelectedMenu(this);
-          document.title = 'UI - ' + this.route?.name;
+          if (this.route?.path) document.title = this.route.path;
           event?.stopPropagation(); // 防止冒泡
           event?.preventDefault();
         },
@@ -114,7 +115,7 @@ export class Menu extends TypeMenu {
       // })
       // bottomSvg.resetSize('1.5em', '1.5em');
       this.contentItem.addEvent('click', (event) => {
-        // console.log('click .');
+        // console.warn('click .');
         if (this.menuRoot?.selectedMenu === this) {
           return;
         }
@@ -125,7 +126,8 @@ export class Menu extends TypeMenu {
               display: 'none',
             });
           });
-          this.caret?.replaceSvg(leftSvg); // 左三角
+          this.caret?.slotChildren(leftSvg);
+          // this.caret?.replaceSvg(leftSvg); // 左三角
         } else {
           this.collapsed = false;
           this.menuItems.forEach((menu) => {
@@ -133,11 +135,19 @@ export class Menu extends TypeMenu {
               display: 'block',
             });
           });
-          this.caret?.replaceSvg(bottomSvg); // 向下三角
+          this.caret?.slotChildren(bottomSvg); // 向下三角
         }
         event?.stopPropagation(); // 防止冒泡
         event?.preventDefault();
       });
     }
+    onMounted(() => {
+      // console.warn('mounted .  this.route is ', this.route);
+      const fullPath = this.router?.resolve(this.route!).fullPath;
+      if (route.get().fullPath === fullPath) { // todo
+        this.menuRoot?.setSelectedMenu(this);
+        if (this.route?.path) document.title = this.route.path;
+      }
+    })
   }
 }

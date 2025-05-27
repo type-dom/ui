@@ -6,7 +6,7 @@
 // import type { InjectionKey, Ref } from 'vue'
 // import type { Language } from '@element-plus/locale'
 
-import { get } from 'lodash';
+import { get } from 'lodash-es';
 import {
   computed,
   isRef,

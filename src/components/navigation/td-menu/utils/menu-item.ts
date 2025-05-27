@@ -26,14 +26,13 @@ class MenuItem {
       switch (event.code) {
         case EVENT_CODE.down: {
           triggerEvent(event.currentTarget as HTMLElement, 'mouseenter')
-          this.submenu && this.submenu.gotoSubIndex(0)
+          if (this.submenu) this.submenu.gotoSubIndex(0)
           prevDef = true
           break
         }
         case EVENT_CODE.up: {
           triggerEvent(event.currentTarget as HTMLElement, 'mouseenter')
-          this.submenu &&
-            this.submenu.gotoSubIndex(this.submenu.subMenuItems.length - 1)
+          if (this.submenu) this.submenu.gotoSubIndex(this.submenu.subMenuItems.length - 1)
           prevDef = true
           break
         }

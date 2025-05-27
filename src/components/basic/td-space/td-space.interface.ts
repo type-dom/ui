@@ -1,13 +1,10 @@
 import {
   ITypeDiv,
   TypeDivProps,
-  StyleAlignItems,
-  TypeSvgSvg,
-  IClass,
   TypeNode,
 } from '@type-dom/framework';
 import { Property } from '@type-dom/css-type';
-import { MaybeRef, Signal } from '@type-dom/signals';
+import { MaybeRef } from '@type-dom/signals';
 import { ComponentSize } from '../../../constants';
 
 export interface ITdSpace extends ITypeDiv {
@@ -24,7 +21,7 @@ export interface SpaceProps extends TypeDivProps {
   /**
    * @description Classname
    */
-  class?: IClass;
+  // class?: ClassValue;
   /**
    * @description Controls the alignment of items	对齐方式
    * 对应 align-items

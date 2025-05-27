@@ -44,7 +44,7 @@ export class TdSpace extends TypeDiv implements ITdSpace {
     ) {
       // console.warn('extractChildren is ', children);
       // const { prefixCls } = props
-      children.forEach((child, loopKey) => {
+      children.forEach((child, _loopKey) => {
         if (isFragment(child)) {
           if (child instanceof For) {
             // For element should be done here
@@ -145,7 +145,7 @@ export class TdSpace extends TypeDiv implements ITdSpace {
                 new Span({
                   styleObj: computed(() => [
                     itemStyle.get(),
-                    { width: direction === 'vertical' ? '100%' : null },
+                    { width: direction === 'vertical' ? '100%' : undefined },
                   ]),
                   // if spacer is already a valid node, then append it to the current
                   // span element.

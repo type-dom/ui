@@ -4,7 +4,6 @@ import {
   onMounted,
   onUnmounted,
   useSlots,
-  TypeDiv,
   TypeFragment,
   Div,
 } from '@type-dom/framework';
@@ -52,7 +51,7 @@ export class TdTabPane extends TypeFragment implements ITdTabPane {
       () => !props.lazy || loaded.get() || active.get()
     );
 
-    watch(active, (val) => {
+    watch(() => active.get(), (val) => {
       if (val) loaded.set(true);
     });
 

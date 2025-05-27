@@ -1,5 +1,5 @@
-import { TypeProps, ITypeHtml, TypeLabelProps } from '@type-dom/framework';
-import { MaybeRef, Signal } from '@type-dom/signals';
+import { TypeProps, ITypeHtml } from '@type-dom/framework';
+import { Signal } from '@type-dom/signals';
 import { ComponentSize } from '../../../constants/size';
 
 export interface ITdCheckbox extends ITypeHtml {

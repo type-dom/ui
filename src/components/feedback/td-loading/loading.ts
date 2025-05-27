@@ -18,8 +18,8 @@
 
 import { signal } from '@type-dom/signals';
 import { removeClass } from '@type-dom/utils';
-import { Div, P, SvgCircle, Transition, TypeFragment } from '@type-dom/framework';
-import { SvgSvg } from '@type-dom/svgs';
+import { Div, P, Transition, TypeFragment } from '@type-dom/framework';
+// import { SvgSvg } from '@type-dom/svgs';
 import { UseNamespaceReturn } from '../../../hooks/use-namespace';
 import { useGlobalComponentSettings } from '../../configuration/td-config-provider';
 import { LoadingOptionsResolved } from './types';
@@ -92,24 +92,24 @@ export function createLoadingComponent(options: LoadingOptionsResolved) {
     }
 
     override setup() {
-      const { ns, zIndex } = useGlobalComponentSettings('loading');
-      const svg = data?.spinner || data?.svg;
-      const spinner = new SvgSvg({
-        name: 'spinner',
-        attrObj: {
-          class: 'circular',
-          viewBox: data?.svgViewBox ? data.svgViewBox : '0 0 50 50'
-        },
-        slot: new SvgCircle({
-          attrObj: {
-            class: 'path',
-            cx: '25',
-            cy: '25',
-            r: '20',
-            fill: 'none'
-          }
-        })
-      });
+      const { ns } = useGlobalComponentSettings('loading');
+      // const svg = data?.spinner || data?.svg;
+      // const spinner = new SvgSvg({
+      //   name: 'spinner',
+      //   attrObj: {
+      //     class: 'circular',
+      //     viewBox: data?.svgViewBox ? data.svgViewBox : '0 0 50 50'
+      //   },
+      //   slot: new SvgCircle({
+      //     attrObj: {
+      //       class: 'path',
+      //       cx: '25',
+      //       cy: '25',
+      //       r: '20',
+      //       fill: 'none'
+      //     }
+      //   })
+      // });
       const spinnerText = data.text ? new P({
         class: ns.b('text'),
         slot: data.text

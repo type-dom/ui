@@ -15,11 +15,10 @@ import { computed, signal, unref, watch, Ref, Computed } from '@type-dom/signals
 import {
   VirtualElement,
   ComputePositionConfig as Options,
-  MiddlewareState,
   FloatingElement,
   Middleware,
-  State, Instance, ComputePositionConfig,
-  createPopper, PopperOptions
+  State, Instance, PopperOptions,
+  createPopper
 } from '@type-dom/popper';
 import { nextFrame, onBeforeUnmount } from '@type-dom/framework';
 
@@ -90,7 +89,7 @@ export const usePopper = (
   };
 
   watch(
-    options,
+    () => options.get(),
     (newOptions) => {
       // console.warn('watch options newOption is ', newOptions);
       const instance = unref(instanceRef);
@@ -136,42 +135,42 @@ export const usePopper = (
   };
 };
 
-interface UpdateParams {
-  arrowRef: Ref<HTMLElement | undefined>,
-  arrowOffset: Ref<number | undefined>,
-  contentRef: Ref<HTMLElement | undefined>,
-}
+// interface UpdateParams {
+//   arrowRef: Ref<HTMLElement | undefined>,
+//   arrowOffset: Ref<number | undefined>,
+//   contentRef: Ref<HTMLElement | undefined>,
+// }
 
 // 好像在新版中没有什么用
-function deriveState(state: MiddlewareState) {
-  const elements = Object.keys(state.elements) as unknown as Array<
-    keyof State['elements']
-  >;
-
-  // const styles = fromPairs(
-  //   elements.map(
-  //     (element) =>
-  //       [element, state.styles[element] || {}] as [
-  //         string,
-  //         State['styles'][keyof State['styles']]
-  //       ]
-  //   )
-  // )
-
-  // const attributes = fromPairs(
-  //   elements.map(
-  //     (element) =>
-  //       [element, state.attributes[element]] as [
-  //         string,
-  //         State['attributes'][keyof State['attributes']]
-  //       ]
-  //   )
-  // )
-
-  // return {
-  //   styles,
-  //   attributes,
-  // }
-}
+// function deriveState(state: MiddlewareState) {
+//   const elements = Object.keys(state.elements) as unknown as Array<
+//     keyof State['elements']
+//   >;
+//
+//   // const styles = fromPairs(
+//   //   elements.map(
+//   //     (element) =>
+//   //       [element, state.styles[element] || {}] as [
+//   //         string,
+//   //         State['styles'][keyof State['styles']]
+//   //       ]
+//   //   )
+//   // )
+//
+//   // const attributes = fromPairs(
+//   //   elements.map(
+//   //     (element) =>
+//   //       [element, state.attributes[element]] as [
+//   //         string,
+//   //         State['attributes'][keyof State['attributes']]
+//   //       ]
+//   //   )
+//   // )
+//
+//   // return {
+//   //   styles,
+//   //   attributes,
+//   // }
+// }
 
 // export type UsePopperReturn = ReturnType<typeof usePopper>

@@ -5,22 +5,22 @@
 
 $descriptions-item-label-margin-right: () !default;
 $descriptions-item-label-margin-right: map.merge(
-                (
-                        'large': 16px,
-                        'default': 16px,
-                        'small': 12px,
-                ),
-                $descriptions-item-label-margin-right
+  (
+    'large': 16px,
+    'default': 16px,
+    'small': 12px,
+  ),
+  $descriptions-item-label-margin-right
 );
 
 $descriptions-item-vertical-label-padding-bottom: () !default;
 $descriptions-item-vertical-label-padding-bottom: map.merge(
-                (
-                        'large': 8px,
-                        'default': 6px,
-                        'small': 4px,
-                ),
-                $descriptions-item-vertical-label-padding-bottom
+  (
+    'large': 8px,
+    'default': 6px,
+    'small': 4px,
+  ),
+  $descriptions-item-vertical-label-padding-bottom
 );
 
 @include b(descriptions) {
@@ -38,8 +38,8 @@ $descriptions-item-vertical-label-padding-bottom: map.merge(
 
     &.#{$namespace}-descriptions__cell:not(.is-bordered-label).is-vertical-label {
       padding-bottom: map.get(
-                      $descriptions-item-vertical-label-padding-bottom,
-                      'default'
+        $descriptions-item-vertical-label-padding-bottom,
+        'default'
       );
     }
   }
@@ -63,8 +63,8 @@ $descriptions-item-vertical-label-padding-bottom: map.merge(
 
         &.#{$namespace}-descriptions__cell:not(.is-bordered-label).is-vertical-label {
           padding-bottom: map.get(
-                          $descriptions-item-vertical-label-padding-bottom,
-                          $size
+            $descriptions-item-vertical-label-padding-bottom,
+            $size
           );
         }
       }

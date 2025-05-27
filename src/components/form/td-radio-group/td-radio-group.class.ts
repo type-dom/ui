@@ -1,16 +1,13 @@
 import { nextTick, onMounted, provide, TypeDiv } from '@type-dom/framework';
 import {
   computed,
-  Computed,
   signal,
-  Signal,
-  toRefs,
   watch,
 } from '@type-dom/signals';
 import { debugWarn } from '@type-dom/utils';
 import { useId } from '../../../hooks/use-id';
 import { useNamespace } from '../../../hooks/use-namespace';
-import { UPDATE_MODEL_EVENT } from '../../../constants/event';
+import { CHANGE_EVENT, UPDATE_MODEL_EVENT } from '../../../constants/event';
 import { radioGroupKey } from '../td-radio/constants';
 import {
   useFormItem,
@@ -33,9 +30,9 @@ export class TdRadioGroup extends TypeDiv implements ITdRadioGroup {
     this.attr.addObj({
       name: 'td-radio-group',
     });
+    this.addEmits(radioGroupEmits);
     this.assignProps(radioGroupProps);
     this.props = this.useParams(params);
-    this.addEmits(radioGroupEmits);
   }
 
   override setup(): void {
@@ -43,6 +40,7 @@ export class TdRadioGroup extends TypeDiv implements ITdRadioGroup {
     const emit = this.emit;
     const ns = useNamespace('radio');
     const radioId = useId();
+    // console.warn('radioId is ', radioId);
     const radioGroupRef = signal<HTMLDivElement>();
     const { formItem } = useFormItem();
     const { inputId: groupId, isLabeledByFormItem } = useFormItemInputId(
@@ -54,13 +52,11 @@ export class TdRadioGroup extends TypeDiv implements ITdRadioGroup {
 
     const changeEvent = (value: RadioGroupProps['modelValue']) => {
       emit(UPDATE_MODEL_EVENT, value);
-      nextTick(() => emit('change', value));
+      nextTick(() => emit(CHANGE_EVENT, value));
     };
 
     onMounted(() => {
-      const radios = radioGroupRef
-        .get()
-        ?.querySelectorAll<HTMLInputElement>('[type=radio]');
+      const radios = radioGroupRef.get()?.querySelectorAll<HTMLInputElement>('[type=radio]');
       const firstLabel = radios?.[0];
       if (
         radios &&
@@ -71,14 +67,14 @@ export class TdRadioGroup extends TypeDiv implements ITdRadioGroup {
       }
     });
 
-    const name = computed<string>(() => {
+    const name = computed(() => {
       return props.name || radioId.get();
     });
 
     provide(radioGroupKey, {
       ...props,
       changeEvent,
-      name: name.get() as string,
+      name: name.get(),
     });
 
     watch(
@@ -91,10 +87,10 @@ export class TdRadioGroup extends TypeDiv implements ITdRadioGroup {
     );
 
     this.assignProps({
-      id: groupId,
       refDom: radioGroupRef,
     });
     this.attr.addObj({
+      id: groupId,
       class: ns.b('group'),
       role: 'radiogroup',
       ariaLabel: !isLabeledByFormItem.get()

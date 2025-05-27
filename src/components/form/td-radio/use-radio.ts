@@ -26,12 +26,12 @@ export const useRadio = (
     }
     return props.label;
   });
-  const modelValue = computed({
-    get() {
+  const modelValue = computed(
+    () => {
       // console.error('get model value isGroup is  ', isGroup.get());
       return isGroup.get() ? radioGroup?.vModel?.get() : props.vModel?.get();
     },
-    set(val) {
+    (val) => {
       // console.error('set model value is ', val);
       if (isGroup.get()) {
         radioGroup.changeEvent(val);
@@ -40,7 +40,7 @@ export const useRadio = (
       }
       radioRef.get()!.checked = modelValue.get() === actualValue.get();
     },
-  });
+  );
 
   const size = useFormSize(computed(() => radioGroup?.size));
   const disabled = useFormDisabled(computed(() => radioGroup?.disabled));

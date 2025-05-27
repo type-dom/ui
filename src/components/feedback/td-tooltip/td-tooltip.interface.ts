@@ -1,12 +1,9 @@
 import {
-  ISlot,
   ISlotItem,
   ITypeFragment,
   TypeElement,
-  TypeFragmentProps,
-  TypeNode,
 } from '@type-dom/framework';
-import { Computed, Ref, Signal } from '@type-dom/signals';
+import { Computed, Signal } from '@type-dom/signals';
 import { Arrayable } from '@type-dom/utils';
 import { PopperProps } from '../td-popper/td-popper.interface';
 import {
@@ -23,8 +20,8 @@ export interface ITdTooltip extends ITypeFragment {
 export interface TooltipProps
   extends PopperProps,
     Omit<TooltipTriggerProps, 'open' | 'nodeName'>,
-    Omit<PopperArrowProps, 'nodeName'>,
-    Omit<TooltipContentProps, 'slot' | 'nodeName'> {
+    Omit<TooltipContentProps, 'slot' | 'nodeName'>,
+    Omit<PopperArrowProps, 'nodeName'> {
   // ...popperProps,
   // ...useTooltipModelToggleProps,
   // ...useTooltipContentProps,

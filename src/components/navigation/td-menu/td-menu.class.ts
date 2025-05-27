@@ -5,31 +5,35 @@ import {
   onMounted,
   provide,
   useResizeObserver,
+  defineExpose,
   SvgSvg,
   TypeNode,
-  TypeUL,
-  UL, UseResizeObserverReturn, defineExpose, TypeFragment
+  UL, UseResizeObserverReturn, TypeFragment
 } from '@type-dom/framework';
-import { computed, effect, signal, unref, watch } from '@type-dom/signals';
+import { computed, effect, signal, unref, watch, toRefs } from '@type-dom/signals';
 import { ensureArray, isNil } from '@type-dom/utils';
 import { useNamespace } from '../../../hooks/use-namespace/index';
 import { TdIcon } from '../../basic/td-icon/td-icon.class';
 import { Menu as Menubar } from './utils/menu-bar';
-import { TdSubMenu } from './td-sub-menu/td-sub-menu.class';
+import { TdSubMenu } from '../td-sub-menu/td-sub-menu.class';
 import { TdMenuCollapseTransition } from './td-menu-collapse-transition/td-menu-collapse-transition.class';
 import { ITdMenu, MenuProps } from './td-menu.interface';
 import { menuEmits, menuProps } from './td-menu.const';
 import { useMenuCssVar } from './use-menu-css-var';
 import { MenuProvider, SubMenuProvider } from './types';
 import './style/index';
+import { useRouter } from '@type-dom/router';
 
 export class TdMenu extends TypeFragment implements ITdMenu {
   className: 'TdMenu';
   override props: MenuProps;
+  open?: (index: string) => void;
+  close?: (index: string) => void;
+  updateActiveIndex?: (val: string) => void;
+  handleResize?: () => void;
 
   constructor(params = {} as MenuProps) {
     super();
-    // this.useTag('ul');
     this.className = 'TdMenu';
 
     this.addEmits(menuEmits);
@@ -40,6 +44,8 @@ export class TdMenu extends TypeFragment implements ITdMenu {
   override setup() {
     const props = this.props;
     const emit = this.emit;
+
+    const router = useRouter();
     const instance = getCurrentInstance()! as TdMenu;
     // const router = instance?.root?.props.globalProperties.$router as Router
     const menu = signal<HTMLUListElement>()
@@ -49,34 +55,36 @@ export class TdMenu extends TypeFragment implements ITdMenu {
     // data
     const sliceIndex = signal(-1)
 
+    // todo 数组，需要单独触发跟踪
     const openedMenus = signal<string[]>(
       props.defaultOpeneds && !unref(props.collapse)
         ? props.defaultOpeneds.slice(0)
         : []
     )
-    const activeIndex = signal<MenuProvider['activeIndex']>(unref(props.defaultActive))
-    const items = signal<MenuProvider['items']>({})
-    const subMenus = signal<MenuProvider['subMenus']>({})
+    const activeIndex = signal(unref(props.defaultActive)) as MenuProvider['activeIndex'];
+    // 对象类型的更新需要手动触发Signals跟踪。
+    const items = signal({}) as MenuProvider['items'];
+    const subMenus = signal({}) as MenuProvider['subMenus'];
 
     // computed
-    const isMenuPopup = computed<MenuProvider['isMenuPopup']>(
+    const isMenuPopup = computed(
       () =>
         props.mode === 'horizontal' ||
         (props.mode === 'vertical' && unref(props.collapse))
-    )
+    ) as MenuProvider['isMenuPopup'];
 
     // methods
     const initMenu = () => {
-      const activeItem = activeIndex.get() && items.get()[activeIndex.get()!]
-      if (!activeItem || props.mode === 'horizontal' || props.collapse) return
+      const activeItem = activeIndex?.get() && items.get()[activeIndex.get()!]
+      if (!activeItem || props.mode === 'horizontal' || unref(props.collapse)) return
 
-      const indexPath = unref(activeItem.indexPath)
+      const indexPath = activeItem.indexPath.get() as string[];
 
       // 展开该菜单项的路径上所有子菜单
       // expand all subMenus of the menu item
       indexPath.forEach((index) => {
         const subMenu = subMenus.get()[index!]
-        subMenu && openMenu(index!, unref(subMenu.indexPath))
+        if (subMenu) openMenu(index!, unref(subMenu.indexPath))
       })
     }
 
@@ -90,6 +98,7 @@ export class TdMenu extends TypeFragment implements ITdMenu {
         ))
       }
       openedMenus.get().push(index)
+      openedMenus.notify();
       emit('open', index, indexPath)
     }
 
@@ -98,6 +107,7 @@ export class TdMenu extends TypeFragment implements ITdMenu {
       if (i !== -1) {
         openedMenus.get().splice(i, 1)
       }
+      openedMenus.notify();
     }
 
     const closeMenu: MenuProvider['closeMenu'] = (index, indexPath) => {
@@ -107,49 +117,52 @@ export class TdMenu extends TypeFragment implements ITdMenu {
 
     const handleSubMenuClick: MenuProvider['handleSubMenuClick'] = ({ index, indexPath }) => {
       console.warn('handleSubMenuClick . ');
-      const isOpened = openedMenus.get().includes(index)
-
-      isOpened ? closeMenu(index, unref(indexPath)) : openMenu(index, unref(indexPath))
+      const isOpened = openedMenus.get().includes(index);
+      if (isOpened) {
+        closeMenu(index, indexPath.get());
+      } else {
+        openMenu(index, indexPath.get());
+      }
     }
 
     const handleMenuItemClick: MenuProvider['handleMenuItemClick'] = (
       menuItem
     ) => {
-      console.warn('handleMenuItemClick . ');
+      console.warn('handleMenuItemClick . menuItem is ', menuItem);
       if (props.mode === 'horizontal' || unref(props.collapse)) {
         openedMenus.set([]);
       }
       const { index, indexPath } = menuItem
       if (isNil(index) || isNil(indexPath)) return
 
-      // if (props.router && router) {
-      //   const route = menuItem.route || index
-      //   const routerResult = router.push(route).then((res: any) => {
-      //     if (!res) activeIndex.set(index)
-      //     return res
-      //   })
-      //   emit(
-      //     'select',
-      //     index,
-      //     indexPath,
-      //     { index, indexPath, route },
-      //     routerResult
-      //   )
-      // } else {
-      console.warn('index is ', index);
-        activeIndex.set(index);
+      if (props.router && router) {
+        const route = menuItem.route || index
+        const routerResult = router.push(route).then((res: any) => {
+          if (!res) activeIndex?.set(index)
+          return res
+        })
+        emit(
+          'select',
+          index,
+          indexPath,
+          { index, indexPath, route },
+          routerResult
+        )
+      } else {
+        console.warn('index is ', index);
+        activeIndex?.set(index);
         emit('select', index, indexPath, { index, indexPath })
-      // }
+      }
     }
 
     const updateActiveIndex = (val: string) => {
       const itemsInData = items.get()
       const item =
         itemsInData[val] ||
-        (activeIndex.get() && itemsInData[activeIndex.get()!]) ||
+        (activeIndex?.get() && itemsInData[activeIndex.get()!]) ||
         itemsInData[unref(props.defaultActive)!]
 
-      activeIndex.set(item?.index ?? val)
+      activeIndex?.set(item?.index ?? val)
     }
 
     const calcMenuItemWidth = (menuItem: HTMLElement) => {
@@ -181,13 +194,15 @@ export class TdMenu extends TypeFragment implements ITdMenu {
       return sliceIndex === items.length ? -1 : sliceIndex
     }
 
-    const getIndexPath = (index: string) => subMenus.get()[index].indexPath
+    // const getIndexPath = (index: string) => subMenus.get()[index].indexPath
 
     // Common computer monitor FPS is 60Hz, which means 60 redraws per second. Calculation formula: 1000ms/60 ≈ 16.67ms, In order to avoid a certain chance of repeated triggering when `resize`, set wait to 16.67 * 2 = 33.34
     const debounce = (fn: () => void, wait = 33.34) => {
       let timmer: ReturnType<typeof setTimeout> | null
       return () => {
-        timmer && clearTimeout(timmer)
+        if (timmer) {
+          clearTimeout(timmer);
+        }
         timmer = setTimeout(() => {
           fn()
         }, wait)
@@ -204,7 +219,11 @@ export class TdMenu extends TypeFragment implements ITdMenu {
         })
       }
       // execute callback directly when first time resize to avoid shaking
-      isFirstTimeRender ? callback() : debounce(callback)()
+      if (isFirstTimeRender) {
+        callback();
+      } else {
+        debounce(callback)();
+      }
       isFirstTimeRender = false
     }
 
@@ -212,7 +231,7 @@ export class TdMenu extends TypeFragment implements ITdMenu {
       () => unref(props.defaultActive)!,
       (currentActive: string) => {
         if (!items.get()[currentActive!]) {
-          activeIndex.set('');
+          activeIndex?.set('');
         }
         updateActiveIndex(currentActive!)
       }
@@ -225,10 +244,10 @@ export class TdMenu extends TypeFragment implements ITdMenu {
       }
     )
 
-    watch(items, initMenu)
+    watch(() => items.get(), initMenu)
 
     let resizeStopper: UseResizeObserverReturn['stop']
-    effect(() => {
+    effect(() => { // watchEffect
       if (props.mode === 'horizontal' && props.ellipsis)
         resizeStopper = useResizeObserver(menu, handleResize).stop
       else resizeStopper?.()
@@ -239,27 +258,36 @@ export class TdMenu extends TypeFragment implements ITdMenu {
     // provide
     // {
       const addSubMenu: MenuProvider['addSubMenu'] = (item) => {
-        (subMenus.get() as any)[item.get().index] = item
+        console.warn('addSubMenu . item is ', item);
+        (subMenus.get() as any)[item.index] = item
+        subMenus.notify();
       }
 
       const removeSubMenu: MenuProvider['removeSubMenu'] = (item) => {
-        delete subMenus.get()[item.get().index]
+        console.warn('removeSubMenu . item is ', item);
+        delete subMenus.get()[item.index]
+        subMenus.notify();
       }
 
       const addMenuItem: MenuProvider['addMenuItem'] = (item) => {
-        (items.get() as any)[item.get().index] = item
+        console.warn('addMenuItem . item is ', item);
+        (items.get() as any)[item.index] = item
+        items.notify();
       }
 
       const removeMenuItem: MenuProvider['removeMenuItem'] = (item) => {
-        delete items.get()[item.get().index]
+        console.warn('removeMenuItem . item is ', item);
+        delete items.get()[item.index];
+        items.notify();
       }
-      provide<MenuProvider>('rootMenu', {
-        props,
+    const refsProps = toRefs(props);
+      provide<MenuProvider>('rootMenu', { // reactive({
+        props: refsProps,
         openedMenus: openedMenus,
-        items: items.get(),
-        subMenus: subMenus.get(),
-        activeIndex: activeIndex.get(),
-        isMenuPopup: isMenuPopup.get(),
+        items: items,
+        subMenus: subMenus,
+        activeIndex: activeIndex,
+        isMenuPopup: isMenuPopup,
 
         addMenuItem,
         removeMenuItem,
@@ -288,17 +316,18 @@ export class TdMenu extends TypeFragment implements ITdMenu {
     // {
       const open = (index: string) => {
         const { indexPath } = subMenus.get()[index]
-        unref(indexPath).forEach((i) => openMenu(i!, unref(indexPath)))
+        indexPath.get().forEach((i: string) => openMenu(i!, unref(indexPath)))
       }
 
       defineExpose({
         open,
         close,
+        updateActiveIndex,
         handleResize,
       })
     // }
 
-    const ulStyle = useMenuCssVar(props, 0)
+    const ulStyle = useMenuCssVar(refsProps, 0)
     // this.slotChildren(props.slot);
     let slot = ensureArray(props.slot) as TypeNode[];
     const vShowMore: TdSubMenu[] = []

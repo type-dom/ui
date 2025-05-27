@@ -1,11 +1,9 @@
 import {
   ITypeFragment,
   TypeFragmentProps,
-  TypeElement,
-  ISlotRaw,
 } from '@type-dom/framework';
 import { ON_RELEASE_FOCUS_EVT, ON_TRAP_FOCUS_EVT } from './tokens';
-import { MaybeRef, Signal } from '@type-dom/signals';
+import { MaybeRef } from '@type-dom/signals';
 
 export interface ITdFocusTrap extends ITypeFragment {
   className: 'TdFocusTrap';

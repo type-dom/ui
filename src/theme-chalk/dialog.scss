@@ -34,6 +34,7 @@
     margin-bottom: 0;
     height: 100%;
     overflow: auto;
+    border-radius: 0px;
   }
 
   @include e(wrapper) {
@@ -58,9 +59,11 @@
 
     &.show-close {
       padding-right: calc(
-              getCssVar('dialog', 'padding-primary') +
-              var(#{getCssVarName('message-close-size')},
-                      map.get($message, 'close-size'))
+        getCssVar('dialog', 'padding-primary') +
+          var(
+            #{getCssVarName('message-close-size')},
+            map.get($message, 'close-size')
+          )
       );
     }
   }
@@ -77,8 +80,8 @@
     outline: none;
     cursor: pointer;
     font-size: var(
-                    #{getCssVarName('message-close-size')},
-                    map.get($message, 'close-size')
+      #{getCssVarName('message-close-size')},
+      map.get($message, 'close-size')
     );
 
     .#{$namespace}-dialog__close {
@@ -136,7 +139,6 @@
 
 .dialog-fade-enter-active {
   animation: modal-fade-in getCssVar('transition-duration');
-
   .#{$namespace}-overlay-dialog {
     animation: dialog-fade-in getCssVar('transition-duration');
   }
@@ -144,7 +146,6 @@
 
 .dialog-fade-leave-active {
   animation: modal-fade-out getCssVar('transition-duration');
-
   .#{$namespace}-overlay-dialog {
     animation: dialog-fade-out getCssVar('transition-duration');
   }

@@ -1,5 +1,4 @@
-import { ITypeDiv, TypeDivProps, TypeHtml } from '@type-dom/framework';
-import { MaybeRef } from '@type-dom/signals';
+import { ITypeDiv, TypeDivProps } from '@type-dom/framework';
 
 export interface ITdAffix extends ITypeDiv {
   className: 'TdAffix';

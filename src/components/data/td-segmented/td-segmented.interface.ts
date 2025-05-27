@@ -11,13 +11,16 @@ export interface ITdSegmented extends ITypeFragment {
 }
 
 export type OptionObject = {
-  label: string;
-  value: string | number | boolean;
+  label?: string;
+  myLabel?: string;
+  value?: string | number | boolean;
+  myValue?: string | number | boolean;
   disabled?: boolean;
+  myDisabled?: boolean;
   slot?: TypeElement;
   [key: string]: any;
 };
-export type Option = OptionObject | string | number | boolean | undefined;
+export type Option = Record<string, any> | string | number | boolean;
 
 export interface SegmentedProps extends TypeFragmentProps {
   // default: 'horizontal',
@@ -31,7 +34,12 @@ export interface SegmentedProps extends TypeFragmentProps {
    * @description binding value
    *     default: undefined,
    */
-  modelValue?: string | number | boolean; // todo Ref
+  modelValue?: string | number | boolean;
+  /**
+   * @description configuration options, see the following table
+   *     default: () => defaultProps,
+   */
+  props?: Props;
   /**
    * @description fit width of parent content
    */
@@ -57,4 +65,12 @@ export interface SegmentedProps extends TypeFragmentProps {
    * @description native `name` attribute
    */
   name?: string;
+
+  ariaLabel?: string;
+}
+
+export interface Props {
+  label?: string
+  value?: string
+  disabled?: string
 }

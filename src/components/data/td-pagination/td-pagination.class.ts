@@ -116,11 +116,11 @@ export class TdPagination extends TypeFragment implements ITdPagination {
       isAbsent(props.defaultCurrentPage) ? 1 : props.defaultCurrentPage
     );
 
-    const pageSizeBridge = computed({
-      get() {
+    const pageSizeBridge = computed(
+      () => {
         return isAbsent(props.pageSize) ? innerPageSize.get() : props.pageSize;
       },
-      set(v: number) {
+      (v: number) => {
         if (isAbsent(props.pageSize)) {
           innerPageSize.set(v);
         }
@@ -129,7 +129,7 @@ export class TdPagination extends TypeFragment implements ITdPagination {
           emit('size-change', v);
         }
       },
-    });
+    );
 
     const pageCountBridge = computed<number>(() => {
       let pageCount = 0;
@@ -141,13 +141,13 @@ export class TdPagination extends TypeFragment implements ITdPagination {
       return pageCount;
     });
 
-    const currentPageBridge = computed<number>({
-      get() {
+    const currentPageBridge = computed<number>(
+      () => {
         return isAbsent(props.currentPage)
           ? innerCurrentPage.get()
           : props.currentPage;
       },
-      set(v) {
+      (v) => {
         let newCurrentPage = v;
         if (v < 1) {
           newCurrentPage = 1;
@@ -162,9 +162,9 @@ export class TdPagination extends TypeFragment implements ITdPagination {
           emit('current-change', newCurrentPage);
         }
       },
-    });
+    );
 
-    watch(pageCountBridge, (val) => {
+    watch(() => pageCountBridge.get(), (val) => {
       if (currentPageBridge.get() > val) currentPageBridge.set(val);
     });
 
@@ -249,7 +249,7 @@ export class TdPagination extends TypeFragment implements ITdPagination {
 
         disabled: props.disabled,
         events: {
-          change: (evt) => handleCurrentChange, // todo
+          change: () => handleCurrentChange, // todo
         },
       }),
       next: new PaginationNext({

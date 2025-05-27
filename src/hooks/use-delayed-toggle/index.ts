@@ -1,7 +1,7 @@
 // import { unref } from 'vue'
 // import { buildProps, isNumber } from '@element-plus/utils'
 import { useTimeout } from '../use-timeout';
-import { ToRefs, unref } from '@type-dom/signals';
+import { unref } from '@type-dom/signals';
 import { isNumber } from '@type-dom/utils';
 
 // import type { ExtractPropTypes, ToRefs } from 'vue'

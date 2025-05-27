@@ -4,7 +4,7 @@
 // import type { CSSProperties } from 'vue'
 import { computed, signal } from '@type-dom/signals';
 import { defineExpose, Input, TypeDiv } from '@type-dom/framework';
-import { useAttrs } from '../../../../hooks/use-attrs';
+// import { useAttrs } from '../../../../hooks/use-attrs';
 import { useNamespace } from '../../../../hooks/use-namespace';
 import { useFocusController } from '../../../../hooks/use-focus-controller';
 import { TimePickerRangeTriggerProps } from './props';
@@ -26,7 +26,7 @@ export class PickerRangeTrigger extends TypeDiv {
     const props = this.props;
     const emit = this.emit;
 
-    const attrs = useAttrs();
+    // const attrs = useAttrs();
     const nsDate = useNamespace('date');
     const nsRange = useNamespace('range');
 

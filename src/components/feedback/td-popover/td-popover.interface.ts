@@ -1,15 +1,13 @@
 import {
   ITypeFragment,
   TypeFragmentProps,
-  TypeElement,
-  TypeHtml,
 } from '@type-dom/framework';
-import { TooltipTriggerType } from '../td-tooltip/trigger/trigger.interface';
 import { Placement } from '@type-dom/popper';
 import { IStyle } from '@type-dom/css-type';
 import { Ref } from '@type-dom/signals';
 import { Measurable } from '../td-popper/td-popper.interface';
 import { TooltipContentProps } from '../td-tooltip/content/content.interface';
+import { TooltipTriggerType } from '../td-tooltip/trigger/trigger.interface';
 
 export interface ITdPopover extends ITypeFragment {
   className: 'TdPopover';
@@ -73,6 +71,10 @@ export interface PopoverProps extends TypeFragmentProps {
    * true
    */
   teleported?: boolean;
+  /**
+   * @description which select dropdown appends to
+   */
+  appendTo?: HTMLElement | string,
   /**
    * @description popover title
    */

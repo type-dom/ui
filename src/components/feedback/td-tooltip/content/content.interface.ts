@@ -1,5 +1,5 @@
 import { ITypeFragment, TypeFragmentProps } from '@type-dom/framework';
-import { MaybeRef, Ref } from '@type-dom/signals';
+import { MaybeRef } from '@type-dom/signals';
 import { UseDelayedToggleProps } from '../../../../hooks/use-delayed-toggle';
 import { PopperContentProps } from '../../td-popper/content/content.interface';
 
@@ -8,9 +8,7 @@ export interface ITdTooltipContent extends ITypeFragment {
   props: TooltipContentProps & TypeFragmentProps;
 }
 
-export interface TooltipContentProps
-  extends PopperContentProps,
-    UseDelayedToggleProps {
+export interface TooltipContentProps extends PopperContentProps, UseDelayedToggleProps {
   // ...useDelayedToggleProps,
   /**
    * @description delay of appearance, in millisecond
@@ -31,7 +29,7 @@ export interface TooltipContentProps
   /**
    * @description which element the tooltip CONTENT appends to
    */
-  appendTo?: string | HTMLElement;
+  appendTo?: MaybeRef<string | HTMLElement>;
   /**
    * @description display content, can be overridden by `slot#content`
    */
@@ -68,5 +66,5 @@ export interface TooltipContentProps
   /**
    * @description whether Tooltip is disabled
    */
-  disabled?: MaybeRef<boolean>;
+  disabled?: MaybeRef<boolean | undefined>;
 }

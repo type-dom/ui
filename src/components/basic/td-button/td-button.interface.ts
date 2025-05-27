@@ -2,13 +2,7 @@ import { TypeProps, ITypeHtml, TypeSvgSvg } from '@type-dom/framework';
 import { MaybeRef } from '@type-dom/signals';
 import { ComponentSize } from '../../../constants';
 
-export interface ITdButtonAbstract extends ITypeHtml {
-  // nodeName: 'button',
-  className: 'TdButton' | string;
-  // childNodes: IXElement[];
-}
-
-export interface ITdButton extends ITdButtonAbstract {
+export interface ITdButton extends ITypeHtml {
   className: 'TdButton';
   props: TdButtonProps;
 }
@@ -24,7 +18,7 @@ export type IButtonType =
   | 'danger'
   /**
    * @deprecated
-   * Text type will be deprecated in the next major version (3.0.0)
+   * Text type will be deprecated in the preview major version (3.0.0)
    */
   | 'text'
   | '';
@@ -46,7 +40,7 @@ export type IButtonNativeType = 'button' | 'submit' | 'reset';
  */
 export interface TdButtonProps extends TypeProps {
   // FormItemProps
-  svgObj?: TypeSvgSvg;
+  // svgObj?: TypeSvgSvg;
   // loadingIcon?: TypeSvgSvg;
   // slots?: ITdButtonSlots;
   /**
@@ -80,6 +74,7 @@ export interface TdButtonProps extends TypeProps {
   loadingIcon?: TypeSvgSvg;
   /**
    * @description determine whether it's a plain button
+   *     default: undefined,
    */
   plain?: boolean;
   /**
@@ -100,6 +95,7 @@ export interface TdButtonProps extends TypeProps {
   autofocus?: boolean;
   /**
    * @description determine whether it's a round button
+   *     default: undefined,
    */
   round?: boolean;
   /**

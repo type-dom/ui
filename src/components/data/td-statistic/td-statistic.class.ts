@@ -1,6 +1,7 @@
 import { defineExpose, Div, Span, TypeDiv } from '@type-dom/framework';
-import { Computed, computed } from '@type-dom/signals';
+import { Computed, computed, unref } from '@type-dom/signals';
 import { isFunction, isNumber } from '@type-dom/utils';
+import { Dayjs } from 'dayjs';
 import { useNamespace } from '../../../hooks/use-namespace';
 import { StatisticProps, ITdStatistic } from './td-statistic.interface';
 import { statisticProps } from './td-statistic.const';
@@ -9,7 +10,7 @@ import './style/index';
 export class TdStatistic extends TypeDiv implements ITdStatistic {
   className: 'TdStatistic';
   override props: StatisticProps;
-  displayValue?: Computed;
+  displayValue?: Computed<string | number | number[] | Dayjs>;
 
   constructor(params: StatisticProps = {}) {
     super();
@@ -33,7 +34,7 @@ export class TdStatistic extends TypeDiv implements ITdStatistic {
 
       // https://github.com/element-plus/element-plus/issues/17784
       if (!isNumber(value) || Number.isNaN(value)) {
-        return value;
+        return unref(value);
       }
 
       let [integer, decimal = ''] = String(value).split('.');

@@ -5,7 +5,7 @@ import { ICheckboxOption } from './checkbox-option.interface';
 export class CheckboxOption extends TypeSpan implements ICheckboxOption {
   className: 'CheckboxOption';
   input: Input;
-  override parent?: CheckboxGroup;
+  override parent?: CheckboxGroup = undefined;
   override childNodes: [Input, TextNode];
 
   constructor() {

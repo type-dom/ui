@@ -27,11 +27,8 @@ import { TdMessageBox } from './td-message-box.class';
 import type {
   Action,
   Callback,
-  MessageBoxProps,
   TdMessageBoxShortcutMethod,
-  ITdMessageBox,
   MessageBoxData,
-  MessageBoxState,
   ITdMessageBoxFn,
   TdMessageBoxOptions,
 } from './td-message-box.interface';
@@ -157,7 +154,12 @@ const showMessage = (options: any) => {
 
   for (const prop in options) {
     if (hasOwn(options, prop) && !hasOwn(vm.props, prop)) {
-      (vm as any)[prop] = options[prop];
+      // if (prop === 'closeIcon' && isObject(options[prop])) {
+      //   (vm as any)[prop] = markRaw(options[prop])
+      // } else {
+      //   (vm as any)[prop] = options[prop]
+      // }
+      (vm as any)[prop] = options[prop]
     }
   }
 

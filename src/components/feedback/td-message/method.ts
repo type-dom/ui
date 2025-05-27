@@ -43,10 +43,9 @@ import {
   MessageFn,
   MessageHandler,
   MessageOptions,
-  MessageParams,
   MessageParamsNormalized,
 } from './td-message.interface';
-import { messageDefaults, messageTypes } from './td-message.const';
+import { messageDefaults } from './td-message.const';
 import { MessageClass } from './td-message.class';
 import { instances } from './instance';
 
@@ -184,7 +183,7 @@ const createMessage = ({
   return instance;
 };
 
-const message: MessageFn & Partial<Message> = (
+const message: MessageFn & Message = (
   options = {} as string | TypeNode
 ) => {
   // console.log('message options is ', options);
@@ -219,13 +218,30 @@ const message: MessageFn & Partial<Message> = (
   // normalized.appendTo.appendChild(instance.vnode.dom!);
   return instance.handler;
 };
+message.error = (options = {}) => {
+  const normalized = normalizeOptions(options as any);
+  return message({ ...normalized, type: 'error' });
+};
+// 为了跟接口一致
+message.success = (options = {}) => {
+  const normalized = normalizeOptions(options as any);
+  return message({ ...normalized, type: 'success' });
+};
+message.warning = (options = {}) => {
+  const normalized = normalizeOptions(options as any);
+  return message({ ...normalized, type: 'warning' });
+};
+message.info = (options = {}) => {
+  const normalized = normalizeOptions(options as any);
+  return message({ ...normalized, type: 'info' });
+};
+// messageTypes.forEach((type) => {
+//   message[type] = (options = {}) => {
+//     const normalized = normalizeOptions(options as any);
+//     return message({ ...normalized, type });
+//   };
+// });
 
-messageTypes.forEach((type) => {
-  message[type] = (options = {}) => {
-    const normalized = normalizeOptions(options as any);
-    return message({ ...normalized, type });
-  };
-});
 
 export function closeAll(type?: IMessageType): void {
   for (const instance of instances.get()) {

@@ -8,12 +8,12 @@
 
 $button-icon-span-gap: () !default;
 $button-icon-span-gap: map.merge(
-                (
-                        'large': 8px,
-                        'default': 6px,
-                        'small': 4px,
-                ),
-                $button-icon-span-gap
+  (
+    'large': 8px,
+    'default': 6px,
+    'small': 4px,
+  ),
+  $button-icon-span-gap
 );
 
 @include b(button) {
@@ -74,10 +74,10 @@ $button-icon-span-gap: map.merge(
 
   & {
     @include button-size(
-                    map.get($button-padding-vertical, 'default') - $button-border-width,
-                    map.get($button-padding-horizontal, 'default') - $button-border-width,
-                    map.get($button-font-size, 'default'),
-                    map.get($button-border-radius, 'default')
+      map.get($button-padding-vertical, 'default') - $button-border-width,
+      map.get($button-padding-horizontal, 'default') - $button-border-width,
+      map.get($button-font-size, 'default'),
+      map.get($button-border-radius, 'default')
     );
   }
 
@@ -89,7 +89,6 @@ $button-icon-span-gap: map.merge(
     & + span {
       margin-left: map.get($button-icon-span-gap, 'default');
     }
-
     svg {
       vertical-align: bottom;
     }
@@ -97,16 +96,16 @@ $button-icon-span-gap: map.merge(
 
   @include when(plain) {
     @include css-var-from-global(
-                            ('button', 'hover', 'text-color'),
-                            ('color', 'primary')
+      ('button', 'hover', 'text-color'),
+      ('color', 'primary')
     );
     @include css-var-from-global(
-                            ('button', 'hover', 'bg-color'),
-                            ('fill-color', 'blank')
+      ('button', 'hover', 'bg-color'),
+      ('fill-color', 'blank')
     );
     @include css-var-from-global(
-                            ('button', 'hover', 'border-color'),
-                            ('color', 'primary')
+      ('button', 'hover', 'border-color'),
+      ('color', 'primary')
     );
   }
 
@@ -275,8 +274,8 @@ $button-icon-span-gap: map.merge(
   @each $size in (large, small) {
     @include m($size) {
       @include set-css-var-value(
-                              ('button', 'size'),
-                      map.get($input-height, $size)
+        ('button', 'size'),
+        map.get($input-height, $size)
       );
 
       height: getCssVar('button', 'size');
@@ -289,10 +288,10 @@ $button-icon-span-gap: map.merge(
 
       & {
         @include button-size(
-                        map.get($button-padding-vertical, $size) - $button-border-width,
-                        map.get($button-padding-horizontal, $size) - $button-border-width,
-                        map.get($button-font-size, $size),
-                        map.get($button-border-radius, $size)
+          map.get($button-padding-vertical, $size) - $button-border-width,
+          map.get($button-padding-horizontal, $size) - $button-border-width,
+          map.get($button-font-size, $size),
+          map.get($button-border-radius, $size)
         );
       }
 

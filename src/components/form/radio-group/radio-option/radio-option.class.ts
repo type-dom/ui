@@ -6,7 +6,7 @@ export class RadioOption extends TypeSpan implements IRadioOption {
   className: 'RadioOption';
   override props: IRadioOptionConfig;
   input: Input;
-  override parent?: RadioGroup;
+  override parent?: RadioGroup = undefined;
   override childNodes: [Input, TextNode];
 
   constructor(params: IRadioOptionConfig = {}) {

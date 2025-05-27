@@ -1,10 +1,8 @@
 import {
   defineExpose,
-  Fragment,
   inject,
   Span,
   TypeDiv,
-  TypeSvgSvg,
 } from '@type-dom/framework';
 import { ITdRate, RateProps } from './td-rate.interface';
 import { rateEmits, rateProps } from './td-rate.const';
@@ -13,13 +11,12 @@ import {
   hasClass,
   isArray,
   isObject,
-  isString,
 } from '@type-dom/utils';
 import { formContextKey, formItemContextKey } from '../td-form/td-form.const';
 import { useFormSize } from '../td-form/hooks/use-form-common-props';
 import { useFormItemInputId } from '../td-form/hooks/use-form-item';
 import { useNamespace } from '../../../hooks/use-namespace';
-import { UPDATE_MODEL_EVENT } from '../../../constants/event';
+import { CHANGE_EVENT, UPDATE_MODEL_EVENT } from '../../../constants/event';
 import { EVENT_CODE } from '../../../constants/aria';
 import { computed, signal, unref, watch } from '@type-dom/signals';
 import { IStyle } from '@type-dom/css-type';
@@ -98,12 +95,12 @@ export class TdRate extends TypeDiv implements ITdRate {
     const text = computed(() => {
       let result = '';
       if (props.showScore) {
-        result = props.scoreTemplate?.replace(
+        result = props.scoreTemplate!.replace(
           /\{\s*value\s*\}/,
           rateDisabled.get() ? `${props.modelValue}` : `${currentValue.get()}`
         )!;
       } else if (props.showText) {
-        result = props.texts?.[Math.ceil(currentValue.get()!) - 1]!;
+        result = props.texts![Math.ceil(currentValue.get()!) - 1]!;
       }
       return result;
     });
@@ -200,7 +197,7 @@ export class TdRate extends TypeDiv implements ITdRate {
 
       emit(UPDATE_MODEL_EVENT, value);
       if (props.modelValue !== value) {
-        emit('change', value);
+        emit(CHANGE_EVENT, value);
       }
     }
 
@@ -241,7 +238,7 @@ export class TdRate extends TypeDiv implements ITdRate {
       _currentValue = _currentValue < 0 ? 0 : _currentValue;
       _currentValue = _currentValue > props.max! ? props.max! : _currentValue!;
       emit(UPDATE_MODEL_EVENT, _currentValue);
-      emit('change', _currentValue);
+      emit(CHANGE_EVENT, _currentValue);
       return _currentValue;
     }
 
@@ -279,7 +276,7 @@ export class TdRate extends TypeDiv implements ITdRate {
       hoverIndex.set(-1);
     }
 
-    watch(props.vModel, (val: number) => {
+    watch(() => props.vModel?.get(), (val) => {
       currentValue.set(val);
       pointerAtLeftHalf.set(props.modelValue !== Math.floor(props.modelValue!));
     });

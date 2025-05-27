@@ -1,2 +1,2 @@
 import '../../../../../components/base/style';
-import '../../../../../theme-chalk/footer.scss';
+import '../../../../theme-chalk/footer.scss';

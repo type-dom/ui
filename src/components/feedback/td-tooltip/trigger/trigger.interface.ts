@@ -1,4 +1,4 @@
-import { ITypeFragment, TypeFragmentProps } from '@type-dom/framework';
+import { ITypeFragment } from '@type-dom/framework';
 import { PopperTriggerProps } from '../../td-popper/trigger/trigger.interface';
 import { MaybeRef } from '@type-dom/signals';
 
@@ -12,7 +12,7 @@ export interface TooltipTriggerProps extends PopperTriggerProps {
   /**
    * @description whether Tooltip is disabled
    */
-  disabled?: MaybeRef<boolean>;
+  disabled?: MaybeRef<boolean | undefined>;
   /**
    * @description How should the tooltip be triggered (to show)
    */

@@ -24,10 +24,10 @@
     $content-selector: &;
 
     $sides: (
-            'top': 'bottom',
-            'bottom': 'top',
-            'left': 'right',
-            'right': 'left',
+      'top': 'bottom',
+      'bottom': 'top',
+      'left': 'right',
+      'right': 'left',
     );
 
     @include e(arrow) {
@@ -40,12 +40,14 @@
       box-sizing: border-box;
 
       @each $side,
-      $adjacency in (
-              'top': 'left',
-              'bottom': 'right',
-              'left': 'bottom',
-              'right': 'top'
-      ) {
+        $adjacency
+          in (
+            'top': 'left',
+            'bottom': 'right',
+            'left': 'bottom',
+            'right': 'top'
+          )
+      {
         #{$content-selector}[data-side^='#{$side}'] & {
           border-#{$side}-color: transparent;
           border-#{$adjacency}-color: transparent;
@@ -71,8 +73,8 @@
       outline: none;
       cursor: pointer;
       font-size: var(
-                      #{getCssVarName('message-close-size')},
-                      map.get($message, 'close-size')
+        #{getCssVarName('message-close-size')},
+        map.get($message, 'close-size')
       );
 
       .#{$namespace}-tour__close {
@@ -93,9 +95,11 @@
 
       &.show-close {
         padding-right: calc(
-                getCssVar('tour-padding-primary') +
-                var(#{getCssVarName('message-close-size')},
-                        map.get($message, 'close-size'))
+          getCssVar('tour-padding-primary') +
+            var(
+              #{getCssVarName('message-close-size')},
+              map.get($message, 'close-size')
+            )
         );
       }
     }

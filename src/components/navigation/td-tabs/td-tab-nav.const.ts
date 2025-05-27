@@ -2,7 +2,7 @@ import { TabsPaneContext } from './constants';
 import { TabPaneName } from './td-tabs.interface';
 
 export const tabNavEmits = {
-  tabClick: (tab: TabsPaneContext, tabName: TabPaneName, ev: Event) =>
+  tabClick: (_tab: TabsPaneContext, _tabName: TabPaneName, ev: Event) =>
     ev instanceof Event,
-  tabRemove: (tab: TabsPaneContext, ev: Event) => ev instanceof Event,
+  tabRemove: (_tab: TabsPaneContext, ev: Event) => ev instanceof Event,
 };

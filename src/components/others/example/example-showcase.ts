@@ -4,7 +4,7 @@ import { Example } from './example';
 
 export class ExampleShowcase extends TypeDiv {
   className: 'ExampleShowcase';
-  override parent!: Example;
+  override parent?: Example = undefined;
 
   constructor(params: TypeProps) {
     super();
@@ -16,6 +16,7 @@ export class ExampleShowcase extends TypeDiv {
       // background-color: var(--bg-color),
       backgroundColor: $bgColor.default,
     });
+    this.slotChildren(params.slot);
     this.useParams(params);
   }
 }

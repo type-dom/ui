@@ -6,20 +6,20 @@
 
 $rate-height: () !default;
 $rate-height: map.merge(
-                (
-                        'large': 40px,
-                        'default': 32px,
-                        'small': 24px,
-                ),
-                $rate-height
+  (
+    'large': 40px,
+    'default': 32px,
+    'small': 24px,
+  ),
+  $rate-height
 );
 
 $rate-size: () !default;
 $rate-size: map.merge(
-                (
-                        'small': 14px,
-                ),
-                $rate-size
+  (
+    'small': 14px,
+  ),
+  $rate-size
 );
 
 @include b(rate) {

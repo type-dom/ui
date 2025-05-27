@@ -1,19 +1,14 @@
 import {
-  Signal,
-  Computed,
+  WatchStopHandle,
   signal,
   computed,
   watch,
-  Effect,
-  toRef,
-  WatchStopHandle,
-  unref,
-  Ref,
+  unref, Ref
 } from '@type-dom/signals';
 import { inject, onMounted, onUnmounted } from '@type-dom/framework';
+import { useId } from '../../../../hooks/use-id';
 import { formContextKey, formItemContextKey } from '../td-form.const';
 import { FormContext, FormItemContext } from '../td-form.interface';
-import { useId } from '../../../../hooks/use-id';
 
 export const useFormItem = () => {
   const form = inject<FormContext>(formContextKey, undefined);
@@ -38,8 +33,8 @@ export const useFormItemInputId = (
     disableIdManagement,
   }: {
     formItemContext?: FormItemContext;
-    disableIdGeneration?: Computed | Signal<string | boolean>;
-    disableIdManagement?: Computed<boolean> | Signal<boolean>;
+    disableIdGeneration?: Ref<string | boolean>;
+    disableIdManagement?: Ref<boolean>;
   }
 ) => {
   if (!disableIdGeneration) {
@@ -49,7 +44,7 @@ export const useFormItemInputId = (
     disableIdManagement = signal<boolean>(false);
   }
 
-  const inputId = signal<string>();
+  const inputId = signal<string | undefined>();
   let idUnwatch: WatchStopHandle | undefined = undefined; // effect中的 stop
 
   const isLabeledByFormItem = computed<boolean>(() => {
@@ -64,12 +59,12 @@ export const useFormItemInputId = (
   // Generate id for TdFormItem label if not provided as prop
   onMounted(() => {
     idUnwatch = watch(
-      () => [unref(props.id), disableIdGeneration?.get()],
+      () => [unref(props.id), disableIdGeneration?.get()] as [string | undefined, string | boolean | undefined],
       ([id, disableIdGeneration]) => {
         const newId = id ?? (!disableIdGeneration ? useId().get() : undefined);
         if (newId !== inputId.get()) {
           if (formItemContext?.removeInputId) {
-            inputId.get() && formItemContext.removeInputId(inputId.get()!);
+            if (inputId.get()) formItemContext.removeInputId(inputId.get()!);
             if (!disableIdManagement?.get() && !disableIdGeneration && newId) {
               formItemContext.addInputId(newId);
             }
@@ -82,9 +77,9 @@ export const useFormItemInputId = (
   });
 
   onUnmounted(() => {
-    idUnwatch && idUnwatch();
+    idUnwatch?.();
     if (formItemContext?.removeInputId) {
-      inputId.get() && formItemContext.removeInputId(inputId.get()!);
+      if (inputId.get()) formItemContext.removeInputId(inputId.get()!);
     }
   });
 

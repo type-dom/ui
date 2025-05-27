@@ -31,7 +31,7 @@ export const useFormSize = (
   );
 };
 
-export const useFormDisabled = (fallback?: MaybeRef<boolean>) => {
+export const useFormDisabled = (fallback?: MaybeRef<boolean | undefined>) => {
   const disabled = useProp<MaybeRef<boolean>>('disabled');
   // console.warn('disabled is ', disabled);
   const form = inject(formContextKey, undefined);

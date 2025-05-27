@@ -22,7 +22,7 @@ export class TdDivider extends TypeDiv implements ITdDivider {
     const ns = useNamespace('divider');
     const dividerStyle = computed(() => {
       return ns.cssVar({
-        borderStyle: props.borderStyle!,
+        'border-style': props.borderStyle!,
       });
     });
 

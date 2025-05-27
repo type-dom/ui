@@ -1,6 +1,6 @@
 // import { computed, getCurrentInstance, inject, toRaw, watch } from 'vue'
 import { computed, toRaw, unref, watch } from '@type-dom/signals';
-import { get } from 'lodash';
+import { get, isEqual } from 'lodash-es';
 import { ensureArray, escapeStringRegexp, isObject } from '@type-dom/utils';
 import { getCurrentInstance, inject } from '@type-dom/framework';
 import { selectGroupKey, selectKey } from '../td-select/token';
@@ -14,16 +14,16 @@ export function useOption(props: TdOptionProps, states: OptionStates) {
 
   // computed
   const itemSelected = computed(() => {
-    return contains(ensureArray(select.props.modelValue), props.value);
+    return contains(ensureArray(unref(select.props.modelValue)), props.value);
   });
 
   const limitReached = computed(() => {
-    if (select.props.multiple) {
-      const modelValue = ensureArray(select.props.modelValue ?? []);
+    if (unref(select.props.multiple)) {
+      const modelValue = ensureArray(unref(select.props.modelValue) ?? []);
       return (
         !itemSelected.get() &&
-        modelValue.length >= select.props.multipleLimit! &&
-        select.props.multipleLimit! > 0
+        modelValue.length >= unref(select.props.multipleLimit)! &&
+        unref(select.props.multipleLimit)! > 0
       );
     } else {
       return false;
@@ -31,6 +31,7 @@ export function useOption(props: TdOptionProps, states: OptionStates) {
   });
 
   const currentLabel = computed(() => {
+    // console.warn('currentLabel computed . ');
     return props.label || (isObject(props.value) ? '' : props.value);
   });
 
@@ -39,7 +40,7 @@ export function useOption(props: TdOptionProps, states: OptionStates) {
   });
 
   const isDisabled = computed(() => {
-    return props.disabled || states.groupDisabled || limitReached.get();
+    return props.disabled || states.groupDisabled?.get() || limitReached.get();
   });
 
   const instance = getCurrentInstance() as TdOption;
@@ -48,7 +49,7 @@ export function useOption(props: TdOptionProps, states: OptionStates) {
     if (!isObject(props.value)) {
       return arr && arr.includes(target);
     } else {
-      const valueKey = select.props.valueKey!;
+      const valueKey = unref(select.props.valueKey)!;
       return (
         arr &&
         arr.some((item) => {
@@ -59,20 +60,22 @@ export function useOption(props: TdOptionProps, states: OptionStates) {
   };
 
   const hoverItem = () => {
+    // console.warn('hoverItem . ');
     if (!props.disabled && !selectGroup.disabled) {
-      select.states.hoveringIndex = select.optionsArray.indexOf(instance);
+      select.states.hoveringIndex = select.optionsArray?.indexOf(instance);
     }
   };
 
   const updateOption = (query: string) => {
     const regexp = new RegExp(escapeStringRegexp(query), 'i');
-    states.visible = regexp.test(currentLabel.get() as string) || props.created;
+    states.visible?.set(regexp.test(currentLabel.get() as string) || props.created || false);
   };
 
   watch(
     () => currentLabel.get(),
     () => {
-      if (!props.created && !select.props.remote) select.setSelected();
+      // console.warn('watch currentLabel ');
+      if (!props.created && !unref(select.props.remote)) select.setSelected();
     }
   );
 
@@ -82,17 +85,19 @@ export function useOption(props: TdOptionProps, states: OptionStates) {
       if (!select) return;
       const { remote, valueKey } = select.props;
 
-      if (val !== oldVal) {
-        select.onOptionDestroy(oldVal, instance);
-        select.onOptionCreate(instance);
+      const shouldUpdate = remote ? val !== oldVal : !isEqual(val, oldVal)
+      if (shouldUpdate) {
+        select.onOptionDestroy(oldVal, instance)
+        // console.warn('useOption then onOptionCreate instance ', instance);
+        select.onOptionCreate(instance)
       }
 
-      if (!props.created && !remote) {
+      if (!props.created && !unref(remote)) {
         if (
-          valueKey &&
+          unref(valueKey) &&
           isObject(val) &&
           isObject(oldVal) &&
-          (val as any)[valueKey] === (oldVal as any)[valueKey]
+          (val as any)[unref(valueKey)!] === (oldVal as any)[unref(valueKey)!]
         ) {
           return;
         }
@@ -102,9 +107,9 @@ export function useOption(props: TdOptionProps, states: OptionStates) {
   );
 
   watch(
-    () => selectGroup.disabled,
+    () => unref(selectGroup.disabled),
     () => {
-      states.groupDisabled = selectGroup.disabled;
+      states.groupDisabled?.set(unref(selectGroup.disabled)) ;
     },
     { immediate: true }
   );

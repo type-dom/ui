@@ -43,8 +43,8 @@ export const useRangePicker = (
   const drpNs = useNamespace('date-range-picker');
   const { t, lang } = useLocale();
   const handleShortcutClick = useShortcut(lang);
-  const minDate = signal<Dayjs>();
-  const maxDate = signal<Dayjs>();
+  const minDate = signal<Dayjs | undefined>();
+  const maxDate = signal<Dayjs | undefined>();
   const rangeState = signal<RangeState>({
     endDate: null,
     selecting: false,
@@ -95,7 +95,7 @@ export const useRangePicker = (
   };
 
   watch(
-    defaultValue,
+    () => defaultValue.get(),
     (val) => {
       if (val) {
         restoreDefault();

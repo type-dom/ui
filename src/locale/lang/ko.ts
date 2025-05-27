@@ -168,4 +168,4 @@ export default {
       indicator: 'Carousel switch to index {index}', // to be translated
     },
   },
-};
+}

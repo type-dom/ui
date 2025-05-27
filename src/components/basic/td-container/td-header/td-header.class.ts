@@ -8,7 +8,7 @@ import type { ITdHeader, TdHeaderProps } from './td-header.interface';
 export class TdHeader extends TypeHeader implements ITdHeader {
   className: 'TdHeader';
   override props: TdHeaderProps;
-  override parent?: TdContainer;
+  override parent?: TdContainer = undefined;
 
   constructor(params: TdHeaderProps = {}) {
     super();

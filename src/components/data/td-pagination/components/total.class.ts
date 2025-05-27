@@ -1,7 +1,7 @@
 import { TextNode, TypeSpan, TypeSpanProps } from '@type-dom/framework';
 import { useLocale } from '../../../../hooks/use-locale';
 import { useNamespace } from '../../../../hooks/use-namespace';
-import { usePagination } from '../usePagination';
+// import { usePagination } from '../usePagination';
 
 export interface PaginationTotalProps extends TypeSpanProps {
   total?: number;
@@ -24,11 +24,11 @@ export class PaginationTotal extends TypeSpan {
 
   override setup() {
     const props = this.props;
-    const emit = this.emit;
+    // const emit = this.emit;
 
     const { t } = useLocale();
     const ns = useNamespace('pagination');
-    const { disabled } = usePagination();
+    // const { disabled } = usePagination();
     this.attr.addObj({
       class: ns.e('total'),
       role: 'status',

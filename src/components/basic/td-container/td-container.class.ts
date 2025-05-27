@@ -1,37 +1,22 @@
 import {
   arraySlot,
-  TypeProps,
-  TypeElement,
   TypeNode,
   TypeSection,
   useSlots,
 } from '@type-dom/framework';
 import { computed, unref } from '@type-dom/signals';
 import { useNamespace } from '../../../hooks/use-namespace';
-import { TdAside } from './td-aside/td-aside.class';
-import { TdHeader } from './td-header/td-header.class';
-import { TdMain } from './td-main/td-main.class';
 import { ITdContainer, ContainerProps } from './td-container.interface';
 import './style/index';
 
 export class TdContainer extends TypeSection implements ITdContainer {
   className: 'TdContainer';
   override props: ContainerProps;
-  override childNodes: (
-    | TdAside
-    | TdHeader
-    | TdMain
-    | TdContainer
-    | TypeElement
-  )[];
 
   constructor(params: ContainerProps = {}) {
     super();
     this.className = 'TdContainer';
-    this.childNodes = [];
-    this.attr.addObj({
-      name: 'td-container',
-    });
+    this.attr.addName('td-container');
 
     this.props = this.useParams(params);
   }
@@ -63,9 +48,10 @@ export class TdContainer extends TypeSection implements ITdContainer {
         return false;
       }
     });
-    this.assignProps({
-      class: computed(() => [ns.b(), ns.is('vertical', isVertical.get())]),
-    });
+    // this.assignProps({
+    //   class: computed(() => [ns.b(), ns.is('vertical', isVertical.get())]), // todo 不生效
+    // });
+    this.attr.addClass([ns.b(), ns.is('vertical', isVertical.get())]);
     this.slotChildren(slot);
   }
 }

@@ -1,7 +1,7 @@
 import { IStyle } from '@type-dom/css-type';
-import { ITypeDiv, TypeDivProps, TypeDiv, IClass } from '@type-dom/framework';
-import { TdScrollbar } from './td-scrollbar.class';
-import { Ref, Signal } from '@type-dom/signals';
+import { ClassValue, ITypeDiv, TypeDivProps } from '@type-dom/framework';
+// import { TdScrollbar } from './td-scrollbar.class';
+import { Signal } from '@type-dom/signals';
 
 export interface ITdScrollbar extends ITypeDiv {
   className: 'TdScrollbar';
@@ -28,14 +28,14 @@ export interface ScrollbarProps extends TypeDivProps {
   /**
    * @description class of wrap
    */
-  wrapClass?: IClass;
+  wrapClass?: ClassValue;
   //   type: [String, Array],
   //   default: '',
   // },
   /**
    * @description class of view
    */
-  viewClass?: IClass;
+  viewClass?: ClassValue;
   //   type: [String, Array],
   //   default: '',
   // },

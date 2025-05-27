@@ -1,5 +1,6 @@
 import { ITypeDiv, TypeDivProps } from '@type-dom/framework';
 import { ComponentSize } from '../../../constants/size';
+import { Signal } from '@type-dom/signals';
 
 export interface ITdInputNumber extends ITypeDiv {
   className: 'TdInputNumber';
@@ -34,6 +35,7 @@ export interface InputNumberProps extends TypeDivProps {
    * @description binding value
    */
   modelValue?: number,
+  vModel?: Signal<number>
   /**
    * @description same as `readonly` in native input
    */

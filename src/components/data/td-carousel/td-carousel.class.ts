@@ -3,7 +3,6 @@ import {
   Button,
   defineExpose,
   Div,
-  TypeProps,
   LI,
   Span,
   SvgDefs,
@@ -62,7 +61,6 @@ export class TdCarousel extends TypeDiv implements ITdCarousel {
       setActiveItem,
       prev,
       next,
-      PlaceholderItem,
       isTwoLengthShow,
       throttledArrowClick,
       throttledIndicatorHover,
@@ -95,22 +93,22 @@ export class TdCarousel extends TypeDiv implements ITdCarousel {
       return classes;
     });
 
-    const indicatorsClasses = computed(() => {
-      const classes = [
-        ns.e('indicators'),
-        ns.em('indicators', props.direction),
-      ];
-      if (unref(hasLabel)) {
-        classes.push(ns.em('indicators', 'labels'));
-      }
-      if (props.indicatorPosition === 'outside') {
-        classes.push(ns.em('indicators', 'outside'));
-      }
-      if (unref(isVertical)) {
-        classes.push(ns.em('indicators', 'right'));
-      }
-      return classes;
-    });
+    // const indicatorsClasses = computed(() => {
+    //   const classes = [
+    //     ns.e('indicators'),
+    //     ns.em('indicators', props.direction),
+    //   ];
+    //   if (unref(hasLabel)) {
+    //     classes.push(ns.em('indicators', 'labels'));
+    //   }
+    //   if (props.indicatorPosition === 'outside') {
+    //     classes.push(ns.em('indicators', 'outside'));
+    //   }
+    //   if (unref(isVertical)) {
+    //     classes.push(ns.em('indicators', 'right'));
+    //   }
+    //   return classes;
+    // });
 
     defineExpose({
       /** @description active slide index */
@@ -119,7 +117,7 @@ export class TdCarousel extends TypeDiv implements ITdCarousel {
       setActiveItem,
       /** @description switch to the previous slide */
       prev,
-      /** @description switch to the next slide */
+      /** @description switch to the preview slide */
       next,
     });
 
@@ -157,7 +155,7 @@ export class TdCarousel extends TypeDiv implements ITdCarousel {
                 throttledArrowClick(activeIndex.get() - 1);
                 evt?.stopPropagation();
               },
-              mouseenter: (evt) => handleButtonEnter('left'),
+              mouseenter: () => handleButtonEnter('left'),
               mouseleave: handleButtonLeave,
             },
             slot: new TdIcon({

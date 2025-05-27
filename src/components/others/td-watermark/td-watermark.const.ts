@@ -5,4 +5,5 @@ export const watermarkProps: WatermarkProps = {
   rotate: -22,
   content: 'TypeDom UI',
   gap: [100, 100],
+  offset: [50, 50],
 };

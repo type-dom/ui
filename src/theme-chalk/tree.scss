@@ -128,7 +128,7 @@
 }
 
 .#{$namespace}-tree--highlight-current
-.#{$namespace}-tree-node.is-current
-> .#{$namespace}-tree-node__content {
+  .#{$namespace}-tree-node.is-current
+  > .#{$namespace}-tree-node__content {
   background-color: getCssVar('color-primary-light-9');
 }

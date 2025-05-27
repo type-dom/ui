@@ -4,7 +4,7 @@ import {
   getCurrentInstance,
   inject,
 } from '@type-dom/framework';
-import { computed } from '@type-dom/signals';
+import { computed, Ref, signal } from '@type-dom/signals';
 
 export type EmptyValuesContext = {
   /**
@@ -21,7 +21,7 @@ export type EmptyValuesContext = {
   // }
 };
 
-export const emptyValuesContextKey: InjectionKey<EmptyValuesContext> = Symbol(
+export const emptyValuesContextKey: InjectionKey<Ref<EmptyValuesContext>> = Symbol(
   'emptyValuesContextKey'
 );
 export const SCOPE = 'use-empty-values';
@@ -59,11 +59,11 @@ export const useEmptyValues = (
   defaultValue?: null | undefined
 ) => {
   const config = getCurrentInstance()
-    ? inject<EmptyValuesContext>(emptyValuesContextKey, <EmptyValuesContext>{})
-    : <EmptyValuesContext>{};
+    ? inject(emptyValuesContextKey, signal<EmptyValuesContext>({}))
+    : signal<EmptyValuesContext>({});
 
   const emptyValues: Array<any> =
-    props.emptyValues || config?.emptyValues || DEFAULT_EMPTY_VALUES;
+    props.emptyValues || config.get().emptyValues || DEFAULT_EMPTY_VALUES;
 
   const valueOnClear = computed(() => {
     // function is used for undefined cause undefined can't be a value of prop
@@ -71,10 +71,10 @@ export const useEmptyValues = (
       return props.valueOnClear();
     } else if (props.valueOnClear !== undefined) {
       return props.valueOnClear;
-    } else if (isFunction(config.valueOnClear)) {
-      return config.valueOnClear();
-    } else if (config.valueOnClear !== undefined) {
-      return config.valueOnClear;
+    } else if (isFunction(config.get().valueOnClear)) {
+      return (config.get().valueOnClear as AnyFn)();
+    } else if (config.get().valueOnClear !== undefined) {
+      return config.get().valueOnClear;
     }
     return defaultValue !== undefined ? defaultValue : DEFAULT_VALUE_ON_CLEAR;
   });
@@ -83,7 +83,7 @@ export const useEmptyValues = (
     return emptyValues.includes(value);
   };
 
-  if (!emptyValues.includes(valueOnClear)) {
+  if (!emptyValues.includes(valueOnClear.get())) {
     debugWarn(SCOPE, 'value-on-clear should be a value of empty-values');
   }
 

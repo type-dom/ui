@@ -31,12 +31,12 @@ import {
   onMounted,
   useTimeoutFn,
 } from '@type-dom/framework';
-import { useGlobalConfig } from '../../configuration/td-config-provider';
 import { useZIndex } from '../../../hooks/use-z-index';
 import { useId } from '../../../hooks/use-id';
 import { defaultNamespace } from '../../../hooks/use-namespace';
 import { useLockscreen } from '../../../hooks/use-lockscreen';
 import { UPDATE_MODEL_EVENT } from '../../../constants/event';
+import { useGlobalConfig } from '../../configuration/td-config-provider';
 import { DialogProps } from './td-dialog.interface';
 
 export const useDialog = (

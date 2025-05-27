@@ -1,6 +1,6 @@
 import { TypeProps } from '@type-dom/framework';
 
-export interface IAriaConfig extends TypeProps {
+export interface AriaProp extends TypeProps {
   /**
    * @description native `aria-label` attribute
    */

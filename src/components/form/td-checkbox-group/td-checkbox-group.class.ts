@@ -1,7 +1,7 @@
 import { nextTick, TypeHtml } from '@type-dom/framework';
 import { debugWarn, pick } from '@type-dom/utils';
-import { computed, isRef, Signal, toRefs, watch } from '@type-dom/signals';
-import { UPDATE_MODEL_EVENT } from '../../../constants/event';
+import { computed, toRefs, watch } from '@type-dom/signals';
+import { CHANGE_EVENT, UPDATE_MODEL_EVENT } from '../../../constants/event';
 import { useNamespace } from '../../../hooks/use-namespace';
 import { checkboxGroupContextKey } from '../td-checkbox/td-checkbox.const';
 import {
@@ -60,19 +60,19 @@ export class TdCheckboxGroup extends TypeHtml implements ITdCheckboxGroup {
       // console.warn('td-check-group changeEvent, value is ', value);
       this.emit(UPDATE_MODEL_EVENT, value);
       await nextTick();
-      this.emit('change', value);
+      this.emit(CHANGE_EVENT, value);
     };
 
-    const modelValue = computed({
-      get() {
+    const modelValue = computed(
+      () => {
         // return props.modelValue; // 无法触发监听
         return props.vModel?.get();
       },
-      set(val: CheckboxGroupValueType) {
+      (val: CheckboxGroupValueType) => {
         // console.warn('modelValue', val);
         changeEvent(val);
       },
-    });
+    );
 
     // console.log('then provide checkboxGroupContext . ');
     this.provide(checkboxGroupContextKey, {

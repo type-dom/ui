@@ -1,4 +1,9 @@
-import { TypeI, TypeSvgSvg } from '@type-dom/framework';
+import {
+  TypeI,
+  TypeSvgSvg,
+  useRecurseRender,
+  // useUpdate,
+} from '@type-dom/framework';
 import { computed } from '@type-dom/signals';
 import { IStyle } from '@type-dom/css-type';
 import { addUnit, isUndefined } from '@type-dom/utils';
@@ -56,7 +61,7 @@ export class TdIcon extends TypeI implements ITdIcon {
    * @param fromSvg 可选参数，指定要替换的SVG元素。如果不提供，则替换所有实例化的SVG元素。
    */
   replaceSvg(toSvg: TypeSvgSvg, fromSvg?: TypeSvgSvg) {
-    // console.log('replaceSvg ');
+    console.warn('replaceSvg ');
     // 查找要替换的SVG元素的索引。
     const svgIndex = this.childNodes?.findIndex((child) => {
       // 如果指定了要替换的SVG元素，则判断当前元素是否是待替换的元素。
@@ -76,7 +81,7 @@ export class TdIcon extends TypeI implements ITdIcon {
     } else {
       // 替换找到的SVG元素为新SVG元素。
       if (fromSvg) {
-        fromSvg !== toSvg && this.replaceChild(toSvg, fromSvg);
+        if (fromSvg !== toSvg) this.replaceChild(toSvg, fromSvg);
       } else {
         this.addChild(toSvg);
       }
@@ -85,7 +90,9 @@ export class TdIcon extends TypeI implements ITdIcon {
     // // 设置新SVG元素的父节点为当前节点。
     // 更新渲染，以显示替换或添加的新SVG元素。
     // toSvg?.mount(this.dom);
-    toSvg?.update();
+    // toSvg?.update(); // todo
+    // useUpdate(toSvg);
+    useRecurseRender(this);
     // this.mount(this.elementParent?.dom);
   }
 }

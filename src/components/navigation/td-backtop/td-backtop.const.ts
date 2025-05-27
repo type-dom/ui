@@ -8,6 +8,6 @@ export const backtopProps: BacktopProps = {
 };
 
 export const backtopEmits = {
-  click: (evt: MouseEvent, target?: HTMLElement) => evt instanceof MouseEvent,
+  click: (evt: MouseEvent, _target?: HTMLElement) => evt instanceof MouseEvent,
 };
 export type BacktopEmits = typeof backtopEmits;

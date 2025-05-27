@@ -5,6 +5,9 @@ export { CollapsibleBoxContents } from './collapsible-box/contents/contents';
 export { TdDivider } from './td-divider/td-divider.class';
 export type * from './td-divider/td-divider.interface';
 
+export { TdWatermark } from './td-watermark/td-watermark.class';
+export type * from './td-watermark/td-watermark.interface';
+
 export * from './example';
 
 export { Menus } from './menus/menus';

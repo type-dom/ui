@@ -1,40 +1,47 @@
 import {
   defineExpose,
   Div,
+  LI,
   onBeforeUnmount,
   onClickOutside,
   onMounted,
-  Transition,
   TypeFragment,
   useAttrs as useRawAttrs,
+  StyleValue,
 } from '@type-dom/framework';
-import { debounce, isArray, throwError } from '@type-dom/utils';
-import { computed, signal } from '@type-dom/signals';
-import { IStyle } from '@type-dom/css-type';
+import { AnyFn, debounce, isArray, throwError } from '@type-dom/utils';
+import { computed, signal, unref, Signal } from '@type-dom/signals';
+import { ElLoadingSvg } from '@type-dom/svgs';
+// import { IStyle } from '@type-dom/css-type';
 import { useAttrs } from '../../../hooks/use-attrs';
 import { useId } from '../../../hooks/use-id';
-import {
-  CHANGE_EVENT,
-  INPUT_EVENT,
-  UPDATE_MODEL_EVENT,
-} from '../../../constants/event';
+import { CHANGE_EVENT, INPUT_EVENT, UPDATE_MODEL_EVENT, } from '../../../constants/event';
 import { useNamespace } from '../../../hooks/use-namespace';
 import { TdTooltip } from '../../feedback/td-tooltip/td-tooltip.class';
+import { TdScrollbar } from '../../basic/td-scrollbar/td-scrollbar.class';
+import { TdIcon } from '../../basic/td-icon/td-icon.class';
 import { TdInput } from '../td-input/td-input.class';
 import { useFormDisabled } from '../td-form/hooks/use-form-common-props';
-import {
-  AutocompleteProps,
-  ITdAutoComplete,
-} from './td-autocomplete.interface';
-import {
-  AutocompleteData,
-  autocompleteEmits,
-  autocompleteProps,
-} from './td-autocomplete.const';
+import { AutocompleteData, AutocompleteProps, ITdAutoComplete, } from './td-autocomplete.interface';
+import { autocompleteEmits, autocompleteProps, } from './td-autocomplete.const';
+import './style/index';
 
 export class TdAutocomplete extends TypeFragment implements ITdAutoComplete {
   className: 'TdAutoComplete';
   override props: AutocompleteProps;
+  highlightedIndex?: Signal<number>;
+  activated?: Signal<boolean>;
+  loading?: Signal<boolean>;
+  inputRef?: Signal<TdInput>;
+  popperRef?: Signal<TdTooltip>;
+  suggestions?: Signal<AutocompleteData>;
+  handleSelect?: AnyFn;
+  handleKeyEnter?: AnyFn;
+  focus?: AnyFn;
+  blur?: AnyFn;
+  close?: AnyFn;
+  highlight?: AnyFn;
+  getData?: AnyFn;
 
   constructor(params: AutocompleteProps = {}) {
     super();
@@ -50,7 +57,10 @@ export class TdAutocomplete extends TypeFragment implements ITdAutoComplete {
     const emit = this.emit;
 
     const attrs = useAttrs();
+    console.warn('autocomplete attrs is ', attrs.get());
+
     const rawAttrs = useRawAttrs();
+    console.warn('rawAttrs is ', rawAttrs);
     const disabled = useFormDisabled();
     const ns = useNamespace('autocomplete');
 
@@ -69,9 +79,10 @@ export class TdAutocomplete extends TypeFragment implements ITdAutoComplete {
     const loading = signal(false);
 
     const listboxId = useId();
-    const styles = computed(() => rawAttrs?.style as IStyle);
+    const styles = computed(() => rawAttrs?.style as StyleValue);
 
     const suggestionVisible = computed(() => {
+      console.warn('suggestionVisible. suggestions.get()', suggestions.get());
       const isValidData = suggestions.get().length > 0;
       return (isValidData || loading.get()) && activated.get();
     });
@@ -83,7 +94,7 @@ export class TdAutocomplete extends TypeFragment implements ITdAutoComplete {
     const refInput = computed<HTMLInputElement[]>(() => {
       if (inputRef.get()) {
         return Array.from<HTMLInputElement>(
-          inputRef.get()?.dom?.querySelectorAll('input')!
+          inputRef.get()!.dom!.querySelectorAll('input')!
         );
       }
       return [];
@@ -122,18 +133,20 @@ export class TdAutocomplete extends TypeFragment implements ITdAutoComplete {
         cb(props.fetchSuggestions);
       } else {
         const result = await props.fetchSuggestions?.(queryString, cb);
+        // console.warn('result is ', result);
         if (isArray(result)) cb(result);
       }
     };
     const debouncedGetData = debounce(getData, props.debounce!);
 
     const handleInput = (value?: string) => {
+      console.warn('handleInput . ');
       const valuePresented = !!value;
 
       emit(INPUT_EVENT, value);
       emit(UPDATE_MODEL_EVENT, value);
 
-      // suggestionDisabled.set(false)
+      suggestionDisabled.set(false)
       // activated.value ||= valuePresented
       if (!activated.get()) {
         activated.set(valuePresented);
@@ -149,6 +162,7 @@ export class TdAutocomplete extends TypeFragment implements ITdAutoComplete {
     };
 
     const handleMouseDown = (event?: MouseEvent) => {
+      console.warn('handleMouseDown . ');
       if (disabled.get()) return;
       if (
         (event?.target as HTMLElement)?.tagName !== 'INPUT' ||
@@ -159,16 +173,20 @@ export class TdAutocomplete extends TypeFragment implements ITdAutoComplete {
     };
 
     const handleChange = (value?: string) => {
+      console.warn('handleChange . ');
       emit(CHANGE_EVENT, value);
     };
 
     const handleFocus = (evt?: FocusEvent) => {
+      console.warn('handleFocus . ');
       if (!ignoreFocusEvent) {
         activated.set(true);
         emit('focus', evt);
-
+        console.warn('props.vModel.get() is ', props.vModel?.get());
+        console.warn('props.modelValue is ', props.modelValue);
+        const queryString = props.modelValue ?? ''
         if (props.triggerOnFocus && !readonly) {
-          debouncedGetData(String(props.modelValue));
+          debouncedGetData(String(queryString));
         }
       } else {
         ignoreFocusEvent = false;
@@ -178,12 +196,12 @@ export class TdAutocomplete extends TypeFragment implements ITdAutoComplete {
     const handleBlur = (evt?: FocusEvent) => {
       setTimeout(() => {
         // validate current focus event is inside el-tooltip-content
-        // if so, ignore the blur event and the next focus event
+        // if so, ignore the blur event and the preview focus event
         if (popperRef.get()?.isFocusInsideContent?.()) {
           ignoreFocusEvent = true;
           return;
         }
-        activated.get() && close();
+        if (activated.get()) close();
         emit('blur', evt);
       });
     };
@@ -202,7 +220,7 @@ export class TdAutocomplete extends TypeFragment implements ITdAutoComplete {
       ) {
         handleSelect(suggestions.get()[highlightedIndex.get()]);
       } else if (props.selectWhenUnmatched) {
-        emit('select', { value: props.modelValue });
+        emit('select', { value: props.vModel?.get() });
         suggestions.set([]);
         highlightedIndex.set(-1);
       }
@@ -221,11 +239,11 @@ export class TdAutocomplete extends TypeFragment implements ITdAutoComplete {
     };
 
     const focus = () => {
-      inputRef.get()?.dom?.focus();
+      inputRef.get()?.focus?.();
     };
 
     const blur = () => {
-      inputRef.get()?.dom?.blur();
+      inputRef.get()?.blur?.();
     };
 
     const handleSelect = async (item: any) => {
@@ -247,8 +265,7 @@ export class TdAutocomplete extends TypeFragment implements ITdAutoComplete {
       if (index >= suggestions.get().length) {
         index = suggestions.get().length - 1;
       }
-      const suggestion = regionRef
-        .get()!
+      const suggestion = regionRef.get()!
         .querySelector(`.${ns.be('suggestion', 'wrap')}`)!;
       const suggestionList = suggestion.querySelectorAll<HTMLElement>(
         `.${ns.be('suggestion', 'list')} li`
@@ -265,14 +282,16 @@ export class TdAutocomplete extends TypeFragment implements ITdAutoComplete {
       }
       highlightedIndex.set(index);
       // TODO: use Volar generate dts to fix it.
-      (inputRef.get() as any).ref!.setAttribute(
+      unref(inputRef.get().ref)?.setAttribute(
         'aria-activedescendant',
         `${listboxId.get()}-item-${highlightedIndex.get()}`
       );
     };
 
     const stopHandle = onClickOutside(listboxRef, () => {
-      suggestionVisible.get() && close();
+      // Prevent closing if focus is inside popper content
+      if (popperRef.get()?.isFocusInsideContent?.()) return
+      if (suggestionVisible.get()) close()
     });
 
     onBeforeUnmount(() => {
@@ -281,15 +300,15 @@ export class TdAutocomplete extends TypeFragment implements ITdAutoComplete {
 
     onMounted(() => {
       // TODO: use Volar generate dts to fix it.
-      (inputRef.get() as any).ref!.setAttribute('role', 'textbox');
-      (inputRef.get() as any).ref!.setAttribute('aria-autocomplete', 'list');
-      (inputRef.get() as any).ref!.setAttribute('aria-controls', 'id');
-      (inputRef.get() as any).ref!.setAttribute(
+      unref(inputRef.get().ref)?.setAttribute('role', 'textbox');
+      unref(inputRef.get().ref)?.setAttribute('aria-autocomplete', 'list');
+      unref(inputRef.get().ref)?.setAttribute('aria-controls', 'id');
+      unref(inputRef.get().ref)?.setAttribute(
         'aria-activedescendant',
         `${listboxId.get()}-item-${highlightedIndex.get()}`
       );
       // get readonly attr
-      readonly = (inputRef.get() as any).ref!.hasAttribute('readonly');
+      readonly = unref(inputRef.get().ref)!.hasAttribute('readonly');
     });
 
     defineExpose({
@@ -329,6 +348,7 @@ export class TdAutocomplete extends TypeFragment implements ITdAutoComplete {
         fallbackPlacements: ['bottom-start', 'top-start'],
         popperClass: [ns.e('popper'), props.popperClass],
         teleported: props.teleported,
+        appendTo: props.appendTo,
         gpuAcceleration: false,
         pure: true,
         // manualMode: true, // todo 手动模式
@@ -351,31 +371,25 @@ export class TdAutocomplete extends TypeFragment implements ITdAutoComplete {
           attrObj: {
             role: 'combobox',
             ariaHaspopup: 'listbox',
-            ariaExpanded: suggestionVisible.get(),
-            ariaOwns: 'listboxId',
+            ariaExpanded: suggestionVisible,
+            ariaOwns: listboxId,
           },
           slot: new TdInput({
             refEl: inputRef,
             // v-bind: attrs"
             clearable: props.clearable,
             disabled: disabled,
-            // name: name as string,
-            modelValue: props.modelValue as string,
+            name: props.name,
+            vModel: props.vModel,
+            modelValue: props.modelValue,
             attrObj: {
-              ariaLabel: 'ariaLabel',
+              ariaLabel: props.ariaLabel,
             },
             emits: {
-              input: (evt) => {
-                // todo
-                handleInput((evt?.target as HTMLInputElement).value);
-              },
-              change: (evt) => {
-                // todo
-                handleChange((evt?.target as HTMLInputElement).value);
-              },
-              focus: handleFocus,
-              blur: handleBlur,
+              change: handleChange,
               clear: handleClear,
+              focus: handleFocus,
+              input: handleInput,
               keydown: (evt) => {
                 // .up.prevent
                 if (evt?.code === 'up') {
@@ -394,6 +408,9 @@ export class TdAutocomplete extends TypeFragment implements ITdAutoComplete {
               },
               mousedown: handleMouseDown,
             },
+            events: {
+              blur: handleBlur,
+            },
             slots: {
               prepend: props.slots?.prepend,
               append: props.slots?.append,
@@ -401,23 +418,62 @@ export class TdAutocomplete extends TypeFragment implements ITdAutoComplete {
               suffix: props.slots?.suffix,
             },
           }),
-          slots: {
-            content: new Div({
-              refDom: regionRef,
-              class: [
-                ns.b('suggestion'),
-                ns.is('loading', suggestionLoading.get()),
-              ],
-              styleObj: {
-                [props.fitInputWidth ? 'width' : 'minWidth']: dropdownWidth,
-                outline: 'none',
-              },
-              attrObj: {
-                role: 'region',
-              },
-            }),
-          },
         }),
+        slots: {
+          content: new Div({
+            refDom: regionRef,
+            class: [
+              ns.b('suggestion'),
+              ns.is('loading', suggestionLoading.get()),
+            ],
+            styleObj: {
+              [props.fitInputWidth ? 'width' : 'minWidth']: dropdownWidth,
+              outline: 'none',
+            },
+            attrObj: {
+              role: 'region',
+            },
+            slot: new TdScrollbar({
+              tag: 'ul',
+              wrapClass: ns.be('suggestion', 'wrap'),
+              viewClass: ns.be('suggestion', 'list'),
+              attrObj: {
+                id: listboxId,
+                role: 'listbox',
+              },
+              slot: computed(() => {
+                console.warn('suggestionLoading.get() is ', suggestionLoading.get());
+                if (suggestionLoading.get()) {
+                  console.warn('suggestionLoading.get() is true');
+                  return new LI({
+                    slot: props.slots?.loading ?? new TdIcon({
+                      class: ns.is('loading'),
+                      slot: new ElLoadingSvg(),
+                    }),
+                  })
+                } else {
+                  console.warn('suggestions.get() is ', suggestions.get());
+                  if (!suggestions.get().length) return;
+                  return suggestions.get().map((item, index) => {
+                    console.warn('item is ', item, ' and props.valueKey is ', props.valueKey);
+                    return new LI({
+                      class: { highlighted: highlightedIndex.get() === index },
+                      attrObj: {
+                        id: `${listboxId.get()}-item-${index}`,
+                        role: 'option',
+                        ariaSelected: highlightedIndex.get() === index,
+                      },
+                      events: {
+                        click: () => handleSelect(item),
+                      },
+                      slot: item[props.valueKey!]
+                    });
+                  })
+                }
+              })
+            })
+          }),
+        },
       })
     );
   }

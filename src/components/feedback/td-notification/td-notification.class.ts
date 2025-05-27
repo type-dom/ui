@@ -4,17 +4,14 @@ import {
   Head,
   onMounted,
   P,
-  Parser,
   SvgSvg,
-  TextNode,
   Transition,
-  TypeElement,
   TypeFragment,
   useEventListener,
   useTimeoutFn,
 } from '@type-dom/framework';
 import { computed, Signal, signal } from '@type-dom/signals';
-import { CloseComponents, ElCloseSvg, TypeComponentsMap } from '@type-dom/svgs';
+import { CloseComponents, TypeComponentsMap } from '@type-dom/svgs';
 import { IStyle } from '@type-dom/css-type';
 import { EVENT_CODE } from '../../../constants/aria';
 import { TdIcon } from '../../basic/td-icon/td-icon.class';
@@ -167,7 +164,7 @@ export class TdNotification extends TypeFragment implements ITdNotification {
                 new Div({
                   vShow: props.message,
                   class: ns.e('content'),
-                  styleObj: !!props.title ? undefined : { margin: 0 },
+                  styleObj: props.title ? undefined : { margin: 0 },
                   slot: props.slot ??
                     props.slots?.default ?? [
                       !props.dangerouslyUseHTMLString

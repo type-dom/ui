@@ -84,7 +84,7 @@ export default {
       pageClassifier: '',
       page: 'Page', // to be translated
       prev: 'Go to previous page', // to be translated
-      next: 'Go to next page', // to be translated
+      next: 'Go to preview page', // to be translated
       currentPage: 'page {pager}', // to be translated
       prevPages: 'Previous {pager} pages', // to be translated
       nextPages: 'Next {pager} pages', // to be translated
@@ -138,4 +138,4 @@ export default {
       indicator: 'Carousel switch to index {index}', // to be translated
     },
   },
-};
+}

@@ -3,7 +3,7 @@ import { CollapsibleBox } from '../collapsible-box';
 
 export class CollapsibleBoxContents extends TypeDiv {
   className: 'CollapsibleBoxContents' | string;
-  public override parent?: CollapsibleBox;
+  override parent?: CollapsibleBox = undefined;
 
   // childNodes: ControlMenu[];
   constructor() {

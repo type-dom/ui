@@ -1,2 +1,2 @@
 import '../../../base/style/css';
-import '../../../..//theme-chalk/el-checkbox-button.css';
+import '../../../../theme-chalk/el-checkbox-button.css';

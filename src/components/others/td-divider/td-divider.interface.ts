@@ -1,4 +1,5 @@
 import { ITypeDiv, TypeDivProps } from '@type-dom/framework';
+import { IStyle } from '@type-dom/css-type';
 
 export interface ITdDivider extends ITypeDiv {
   className: 'TdDivider';
@@ -7,12 +8,14 @@ export interface ITdDivider extends ITypeDiv {
 export interface DividerProps extends TypeDivProps {
   /**
    * @description Set divider's direction
+   *  default: 'horizontal',
    */
-  direction?: 'horizontal' | 'vertical'; // default: 'horizontal',
+  direction?: 'horizontal' | 'vertical';
   /**
    * @description Set the style of divider
+   *  default: 'center',
    */
-  contentPosition?: 'left' | 'center' | 'right'; // default: 'center',
+  contentPosition?: 'left' | 'center' | 'right';
   /**
    * @description the position of the customized content on the divider line
    *  default: 'solid',
@@ -27,3 +30,5 @@ export interface DividerProps extends TypeDivProps {
     | 'inset'
     | 'outset';
 }
+
+export type BorderStyle = IStyle['borderStyle'];

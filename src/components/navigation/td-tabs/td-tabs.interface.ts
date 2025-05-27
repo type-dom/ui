@@ -1,8 +1,8 @@
 import { IStyle } from '@type-dom/css-type';
 import { ITypeDiv, TypeDivProps } from '@type-dom/framework';
-import { UPDATE_MODEL_EVENT } from '../../../constants/event';
+// import { UPDATE_MODEL_EVENT } from '../../../constants/event';
 import { TdIcon } from '../../basic/td-icon/td-icon.class';
-import { TabPaneProps } from '../td-tab-pane/td-tab-pane.interface';
+// import { TabPaneProps } from '../td-tab-pane/td-tab-pane.interface';
 import { TdTabPane } from '../td-tab-pane/td-tab-pane.class';
 
 export interface ITdTabs extends ITypeDiv {

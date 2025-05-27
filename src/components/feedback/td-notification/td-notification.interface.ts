@@ -1,12 +1,8 @@
 import {
-  TypeProps,
-  ITypeElement,
   ITypeFragment,
   TypeFragmentProps,
-  TypeElement,
   TypeSvgSvg,
   TypeNode,
-  TypeHtml,
 } from '@type-dom/framework';
 import { TdNotification } from './td-notification.class';
 
